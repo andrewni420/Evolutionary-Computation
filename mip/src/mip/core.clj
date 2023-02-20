@@ -146,7 +146,6 @@
                 [#(identity 'Math/cos) 1]
                 [#(identity 'iflte) 4]])
 ;;logistic, tanh, relu, step, 
-
 ;; n lags and m nodes
 
 (defn terms 
