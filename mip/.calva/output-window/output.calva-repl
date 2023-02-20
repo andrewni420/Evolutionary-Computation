@@ -43,3 +43,5 @@ clj꞉mip.core꞉> 
  [#function[mip.core/fn--27108] 1]
  [#function[mip.core/fn--27110] 4]]
 clj꞉mip.core꞉> 
+#'mip.core/functions
+clj꞉mip.core꞉> 
