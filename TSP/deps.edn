@@ -1,0 +1,27 @@
+{
+ :deps {io.github.hypirion/clj-xchart
+        {:git/tag "0.2.0"
+         :git/sha "c059f83"
+         :deps/manifest :deps}
+
+        org.knowm.xchart/xchart
+        {:git/url "https://github.com/knowm/XChart"
+         :git/tag "xchart-3.2.1"
+         :git/sha "516be23"}
+
+       ;;  uncomplicate/neanderthal 
+       ;;  {:mvn/version "0.46.0"}
+
+       ;;  org.clojure/clojure       
+       ;;  {:mvn/version "1.10.3"}
+
+       ;;  org.clojure/clojurescript 
+       ;;  {:mvn/version "1.10.866"}
+        net.mikera/core.matrix {:mvn/version "0.63.0"}
+        net.mikera/vectorz-clj {:mvn/version "0.48.0"}
+        incanter/incanter {:mvn/version "1.9.3"}
+       ;;  matplotlib/matplotlib {:mvn/version "0.1.0"}
+ }
+;;   :mvn/repos
+;;  {"my-private-repo" {:url "s3://my-bucket/maven/releases"}}
+ };;
