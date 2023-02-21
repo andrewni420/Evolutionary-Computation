@@ -23,33 +23,3 @@
 clj꞉mip.core꞉>  ; Use `alt+enter` to evaluate
 ; Jack-in done.
 clj꞉mip.core꞉> 
-nil
-clj꞉Evo1꞉> 
-nil
-clj꞉mip.core꞉> 
-#'mip.core/make-fn
-clj꞉mip.core꞉> 
-#'mip.core/multiplot
-clj꞉mip.core꞉> 
-#'mip.core/square
-clj꞉mip.core꞉> 
-#'mip.core/functions
-clj꞉mip.core꞉> 
-[[#function[mip.core/fn--27098] 2]
- [#function[mip.core/fn--27100] 2]
- [#function[mip.core/fn--27102] 2]
- [#function[mip.core/fn--27104] 2]
- [#function[mip.core/fn--27106] 1]
- [#function[mip.core/fn--27108] 1]
- [#function[mip.core/fn--27110] 4]]
-clj꞉mip.core꞉> 
-#'mip.core/functions
-clj꞉mip.core꞉> 
-#'mip.core/functions
-clj꞉mip.core꞉> 
-#'mip.core/functions
-clj꞉mip.core꞉> 
-#'mip.core/functions
-clj꞉mip.core꞉> 
-#'mip.core/functions
-clj꞉mip.core꞉> 

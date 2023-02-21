@@ -4,8 +4,26 @@
             [incanter.stats]
             [incanter.datasets]
             [incanter.charts]
-            [clojure.core.matrix :as matrix]))
+            [clojure.core.matrix :as matrix]
+            [clojure.data.csv :as csv]
+            [clojure.java.io :as io]))
 
+;;Copied from clojure.data.csv readme
+(defn csv-data->maps [csv-data]
+  (map zipmap
+       (->> (first csv-data) ;; First row is the header
+            (map keyword) ;; Drop if you want string keys instead
+            repeat)
+       (rest csv-data)))
+
+(def temperatures
+  "Minimum daily temperatures from 1981-1990 in Melbourne Aus
+   Data from the Austrailian Bureau of Meteorology"
+  (with-open [reader (io/reader "resources/temperatures.csv")]
+    (doall (map
+            (fn [row] (update row :Temp #(Double/parseDouble %)))
+            (csv-data->maps
+             (csv/read-csv reader))))))
 
 
 (defmacro make-fn
@@ -151,7 +169,8 @@
 
 (defn terms 
   "n0 = input and last ni is the output
-   list of functions that output symbols or real numbers"
+   list of functions that output symbols or real numbers
+   concats terms and lags"
   [numTerms numLags]
   (concat (map 
          #(fn [] (symbol (str "n" %))) 
@@ -179,17 +198,23 @@
 (defn evaluate
   "Evaluates an expression given variable bindings.
    Bindings must be of the form '[a 0]"
-  [vars individual]
+  [vars expr]
   (eval (concat
          '(let)
          (list vars)
-         (list individual))))
+         (list expr))))
 
+
+(defn bindings 
+  "Creates bindings to put into evaluate
+   (terms lags)"
+  [vars vals]
+  (vec (mapcat #(list %1 %2) vars vals)))
 
 
 
 (defn randExpr
-  "Helper method for makeIndividual
+  "Helper method for makeExpression
    vars: calls random method in vars to generate a symbol or real number"
   [probReal vars depth]
   (let [[f n] (rand-nth functions)]
@@ -202,8 +227,8 @@
                        vars
                        (dec depth)))))))
 
-(defn makeIndividual
-  "Constructs a random expression.
+(defn makeExpression
+  "Constructs a random expression that is not a terminal.
    probReal: probabiliy an argument is a number or term vs an expression
    maxDepth: maximum depth of expressions"
   [probReal numTerms numLags maxDepth]
@@ -216,10 +241,67 @@
                      (terms numTerms numLags) 
                      (dec maxDepth)))))))
 
+(defn updateMIP
+  "Returns the next state as a function of the current state and the lags "
+  [state mip lags vars]
+  (let [b (bindings vars (concat state lags))]
+    (map (partial evaluate b) mip)))
+
+(defn makeMIP-1ahead [individual ts]
+  (let [{mip :mip 
+         state :state 
+         numLags :numVars 
+         vars :vars} individual]
+  (loop [mipseq [] 
+         obs (partition numLags 1 ts)
+         state state]
+    (if (empty? obs)
+      mipseq
+      (let [nextState (updateMIP state mip (first obs) vars)]
+        (recur
+       (conj mipseq (last state))
+       (rest obs)
+       nextState))))))
+
+(defn mipError [individual ts]
+  (let [{numLags :numLags} individual
+        n (count ts)
+        l (- n numLags 1)]
+    (/ (reduce + (map #(square (- %1 %2))
+                   (makeMIP-1ahead individual ts)
+                   (take l ts)))
+       l)))
+
+(defn MIP_AIC [individual ts]
+  (let [{numLags :numLags mip :mip error :error} individual
+        p (reduce + (map length mip))
+        l (- (count ts) numLags 1)]
+    (+ (* l (Math/log error))
+       (* 2 p))))
+
+
+(defn makeIndividual [params]
+  (let [{probReal :probReal
+         numTerms :numTerms
+         numLags :numLags
+         maxDepth :maxDepth} params]
+    (assoc {}
+           :objective (repeatedly
+                       numTerms
+                       #(makeExpression probReal
+                                                  numTerms
+                                                  numLags
+                                                  maxDepth))
+           :state (repeatedly numTerms rand)
+           :strategy [];;std PRprob PTprob PEprob Iprob DprobPOprob mutationProb
+           :error 0)))
+
+
+
 
 (defn length 
   "The number of parameters in an individual"
-  [individual] (-> individual (flatten) (count)))
+  [expr] (-> expr (flatten) (count)))
 
 
 ;more specific to more general
@@ -324,22 +406,23 @@
 (defn crossTrees 
   "Returns a binary function of a random subtree taken
    from each parent"
-  [p1 p2]
+  [t1 t2]
   (let [[f n] (rand-nth (filter #(= 2 (second %)) 
                                 functions))]
     (list (f)
-          (randomSubtree p1)
-          (randomSubtree p2))))
-
-(defn lazydec [n]
-  (if (>= 0 n)
-    [n]
-    (lazy-seq (cons n (lazydec (dec n))))))
-
-(lazydec 10)
+          (randomSubtree t1)
+          (randomSubtree t2))))
 
 (defn MIPcrossover-single [p1 p2]
-  ())
+  (let [newMIP (map crossTrees (:objective p1) (:objective p2))
+        newStrat (map #(if (< (rand) 0.5) %1 %2) (:strategy p1) (:strategy p2))]
+    (assoc {}
+           :objective newMIP
+           :strategy newStrat)))
+
+(defn addmipError [individual ts]
+  (assoc individual
+         :Error (mipError individual ts)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -401,6 +484,7 @@
                                (take m
                                      ts)))))))
 
+
 (defn makeAR-1ahead
   "AR functioning as an 1-ahead predictor of the timeseries" 
   [ar ts]
@@ -410,23 +494,30 @@
       (repeat (- (count ts) (count obs)) 0)
       (map #(dot ar (drop-last %)) obs))))
 
-(defn NNupdate 
+
+
+(defn NNupdate
   "returns next state of NN after feeding in lags"
   [nn lags]
   (let [{weights :weights state :state} nn
         nextState
-        (matrix/mmul weights
-                     (concat state lags [1]))]
+        (flatten
+         (matrix/mmul weights
+                      (map list
+                           (concat state
+                                   lags
+                                   [1]))))]
     (concat
      (map relu (drop-last nextState))
      (list (last nextState)))))
+
 
 (defn makeNN-1ahead 
   "NN functioning as a 1-ahead predictor of time series"
   [nn ts]
   (let [{weights :weights state :state} nn
-        n (count weights)
-        m (count (first weights))]
+        m (count (first weights))
+        n (count weights)]
     (loop [NNseq []
            state state
            obs (partition (- m n 1) 1 ts)]
@@ -435,7 +526,7 @@
         (recur
          (conj NNseq 
                (last state))
-         (NNupdate nn (first obs))
+         (NNupdate {:weights weights :state state} (first obs))
          (rest obs))))))
 
 (defn NNseq 
@@ -671,7 +762,7 @@
          (take tournamentSize) 
          (minAIC))))
 
-(defn evolve 
+(defn ARevolve 
   "Evolution generates excess individuals by mutating and/or crossing over
    existing individuals. Selection is then used to cull the population back
    to popsize.
@@ -715,20 +806,6 @@
   [p ts]
   (let [obs (partition (inc p) 1 ts)]
     (least-squares (map drop-last obs) (map last obs))))
-
-(ARmse (:objective (evolve 25 (makeLogistic 100 3.95 0.5)
-        :maxL 10
-        :maxGenerations 200)) (makeLogistic 100 3.95 0.5))
-
-(/ (reduce + (map #(square (- % 0.5)) (makeLogistic 100 3.95 0.5))) 100)
-;;                            :maxL 15)) (makeLogistic 100 3.95 0.5))
-(AR_AIC (AR-least-squares 5 (makeLogistic 100 3.95 0.5)) (makeLogistic 100 3.95 0.5))
-
-;; (ARmse (:objective (evolve 20 (makeLogistic 400 3.95 0.5)
-;;                            :maxGenerations 100
-;;                   :maxL 10)) 
-;;        (makeLogistic 200 3.95 0.5))
-
 
 
 ;; predict a chaotic system
@@ -960,10 +1037,10 @@
 ;;state: h1 h2 out
 ;;input: h1 h2 out x0 x1
 (defn NNIndividual2 [ts]
-  (let [weights [[0 0 0 (rand) (rand)];h0
-                 [0 0 0 (rand) (rand)];h1
-                 [(rand) (rand) 0 0 0]];out
-        state (repeatedly 3 #(rand))]
+  (let [weights [[0 0 0 (randNormal 0 1) (randNormal 0 1) (randNormal 0 1)];h0
+                 [0 0 0 (randNormal 0 1) (randNormal 0 1) (randNormal 0 1)];h1
+                 [(randNormal 0 1) (randNormal 0 1) 0 0 0 (randNormal 0 1)]];out
+        state (repeatedly 3 #(randNormal 0 1))]
     (assoc {}
            :weights weights
            :state state
@@ -1032,19 +1109,26 @@
 (let [ts (makeLogistic 100 3.95 0.5)]
   (compareModels ts [makeNN-1ahead
                   (NNevolve 50 ts :maxGenerations 100)]))
-(def ts (makeLogistic 100 3.95 0.5))
-(def best (NNevolve 50 (makeLogistic 100 3.95 0.5) :maxGenerations 100))
 
-(multiplot (range 100) ts (makeNN-1ahead best ts))
-best
+(def best (ARevolve 50 (take 100 (map :Temp temperatures)) :maxGenerations 200))
+(def bestNN (NNevolve 50 (take 100 (map :Temp temperatures)) :maxGenerations 200))
 
+(let [ts (take 100 (map :Temp temperatures))
+      nn (makeNN-1ahead bestNN ts)
+      ]
+  (multiplot (range 100) ts nn))
+bestNN
 
-(* 98 (Math/log 
- (/ 
-  (reduce + 
-          (map 
-           #(square (- % 0.5)) 
-           (makeLogistic 98 3.95 0.5))) 
-  98)))
+(makeNN-1ahead bestNN (take 100 (map :Temp temperatures)))
+(ARmse (:objective (evolve 25 (makeLogistic 100 3.95 0.5)
+                           :maxL 10
+                           :maxGenerations 200)) (makeLogistic 100 3.95 0.5))
 
-(+ (* 2 6) (* 98 (Math/log 0.10071839784509326)))
+(/ (reduce + (map #(square (- % 0.5)) (makeLogistic 100 3.95 0.5))) 100)
+;;                            :maxL 15)) (makeLogistic 100 3.95 0.5))
+(AR_AIC (AR-least-squares 5 (makeLogistic 100 3.95 0.5)) (makeLogistic 100 3.95 0.5))
+
+;; (ARmse (:objective (evolve 20 (makeLogistic 400 3.95 0.5)
+;;                            :maxGenerations 100
+;;                   :maxL 10)) 
+;;        (makeLogistic 200 3.95 0.5))
