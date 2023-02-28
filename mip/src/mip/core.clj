@@ -8,11 +8,25 @@
             [clojure.data.csv :as csv]
             [clojure.java.io :as io]))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;; Three algorithms for time series prediction          ;;;;;;;;;
+;;;;;; by evolving autoregressive models, recurrent         ;;;;;;;;;
+;;;;;; neural networks, and multiple interacting programs,  ;;;;;;;;;
+;;;;;; in order from least to most general.                 ;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;       Math and auxiliary functions        ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;Copied from clojure.data.csv readme
-(defn csv-data->maps [csv-data]
+(defn csv-data->maps 
+  "Turns csv data into a vector of maps"
+  [csv-data]
   (map zipmap
-       (->> (first csv-data) ;; First row is the header
-            (map keyword) ;; Drop if you want string keys instead
+       (->> (first csv-data)
+            (map keyword)
             repeat)
        (rest csv-data)))
 
@@ -25,42 +39,63 @@
             (csv-data->maps
              (csv/read-csv reader))))))
 
-
+;;copied from stackexchange
 (defmacro make-fn
+  "Turns a macro into a function"
   [m]
   `(fn [& args#]
      (eval
       (cons '~m args#))))
 
-(defn multiplot [x & ys]
+(defn multiplot 
+  "Plots multiple y-series against x-series
+   ys: [y-values label]"
+  [x & ys]
   (incanter.core/view
    (reduce
-    #(incanter.charts/add-lines %1 x %2)
-    (incanter.charts/xy-plot x (first ys))
+    #(incanter.charts/add-lines %1 x (first %2) :series-label (second %2))
+    (incanter.charts/xy-plot x (first (first ys)) :series-label (second (first ys)))
     (rest ys))))
 
 (defn compareModels
   "Compares different models for predicting timeseries on the same graph
-   models: [fn model] where (fn model ts) produces a list of the model's predictions"
+   models: [fn model label] where (fn model ts) produces a list of the model's predictions"
   [ts & models]
   (apply multiplot
          (range (count ts))
          ts
-         (map #((first %) (second %) ts) models)))
+         (map #(vector ((first %) (second %) ts) (nth % 2)) 
+              models)))
 
+
+
+(defn length
+  "The number of parameters in an expression"
+  [expr] (-> expr (flatten) (count)))
 
 (defn dot
+  "Dot product.
+   [a b] -> a.b
+   [a] -> a.a"
   ([a b] (reduce + (map * a b)))
   ([a] (dot a a)))
 
-(defn sigmoid [x]
+(defn sigmoid 
+  "Sigmoid function for neural networks"
+  [x]
   (/ 1 (+ 1 (Math/exp (- x)))))
 
-(defn relu [x] (max 0 x))
+(defn relu 
+  "Rectified linear for neural networks"
+  [x] (max 0 x))
 
-(defn magnitude [a] (Math/sqrt (dot a)))
+(defn magnitude 
+  "Magnitude of a vector"
+  [a] (Math/sqrt (dot a)))
 
-(defn square [n] (*' n n))
+(defn square 
+  "Square input with autopromotion"
+  [n] (*' n n))
 
 (defn randNormal
   "Marsaglia polar method for normal random variable"
@@ -93,24 +128,36 @@
       (recur (randNormal a b) (randNormal a b))
       (/ u v))))
 
-(defn mean [data]
+(defn mean 
+  "Takes the average of dataset"
+  [data]
   (/
    (reduce + data)
    (float (count data))))
 
-(defn geomMean [data]
+(defn geomMean 
+  "Takes the geometric mean of a dataset"
+  [data]
   (Math/pow
    (reduce * data)
    (/ 1 (count data))))
 
-(defn stdev [data]
+(defn median [data]
+  (let [s (sort-by :AIC data)
+        c (count data)]
+    (nth s (int (/ c 2)))))
+
+(defn stdev 
+  "Takes the standard deviation of a dataset"
+  [data]
   (let [x (mean data)]
     (Math/sqrt (/
                 (reduce + (map #(square (- % x)) data))
                 (count data)))))
 
 (defn MSE 
-  "Mean squared error of a prediction and a time seris"
+  "Mean squared error of a predicted time series 
+   and the ground truth time series"
   [prediction ts]
   (/ (reduce + (map #(square (- %1 %2))
                     ts
@@ -124,7 +171,9 @@
   (/ (MSE prediction ts)
      (square (stdev ts))))
 
-(defn preorderTraversal [individual]
+(defn preorderTraversal 
+  "Preorder traversal of a tree-based expression"
+  [individual]
   (if (seq? individual)
     (apply concat
            [individual]
@@ -132,7 +181,9 @@
     [individual]))
 
 
-(defn postorderTraversal [individual]
+(defn postorderTraversal 
+  "Postorder traversal of a tree-based expression"
+  [individual]
   (if (seq? individual)
     (concat (apply concat
                    (map postorderTraversal
@@ -141,36 +192,42 @@
     [individual]))
 
 
-;; multiple interacting programs
-;; tree structure
-;; + - * /
-;; apply function to arguments
-;;Each expression is a {:function f, :args }
-;; Predictive power vs AIC information
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;  Evolving Multiple Interacting Programs   ;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn safediv [a & args]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;                Expressions                ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn safediv 
+  "Protected division"
+  [a & args]
   (try (/ a (apply * args)) (catch Exception _ 0)))
 
-(defn iflte [a b c d]
+(defn iflte 
+  "If a<b then c else d"
+  [a b c d]
   (if (<= a b) c d))
 
-"List of functions that output symbols corresponding
+
+(def functions
+  "List of functions that output symbols corresponding
  to allowed functions in MIPs"
-(def functions [[#(identity '+) 2]
-                [#(identity '-) 2]
-                [#(identity '*) 2]
-                [#(identity 'safediv) 2]
-                [#(identity 'Math/sin) 1]
-                [#(identity 'Math/cos) 1]
-                [#(identity 'iflte) 4]])
+  [[#(identity '+) 2]
+   [#(identity '-) 2]
+   [#(identity '*) 2]
+   [#(identity 'safediv) 2]
+   [#(identity 'Math/sin) 1]
+   [#(identity 'Math/cos) 1]
+   [#(identity 'iflte) 4]])
 ;;logistic, tanh, relu, step, 
-;;p
-;; n lags and m nodes
+
 
 (defn terms 
-  "n0 = input and last ni is the output
-   list of functions that output symbols or real numbers
-   concats terms and lags"
+  "list of functions that output symbols or real numbers
+   [n0 ... np l0 ... lq N(0,1)]
+   for p terms and q lags"
   [numTerms numLags]
   (concat (map 
          #(fn [] (symbol (str "n" %))) 
@@ -178,7 +235,7 @@
           (map
            #(fn [] (symbol (str "l" %)))
            (range numLags))
-        [rand]))
+        [#(randNormal 0 1)]))
 
 
 
@@ -189,9 +246,11 @@
   [parent idx expr]
   (concat (take idx parent) (list expr) (drop (inc idx) parent)))
 
-(defn depth [individual]
-  (if (seq? individual)
-    (+ 1 (apply max (map depth individual)))
+(defn depth 
+  "Calculates the depth of a tree-based expression"
+  [expression]
+  (if (seq? expression)
+    (+ 1 (apply max (map depth expression)))
     0))
 
 
@@ -219,7 +278,7 @@
   [probReal vars depth]
   (let [[f n] (rand-nth functions)]
     (if (or (< (rand) probReal) (<= depth 0))
-      ((rand-nth vars))
+      (rand-nth vars)
       (concat
        (list (f))
        (repeatedly n #(randExpr  
@@ -227,187 +286,260 @@
                        vars
                        (dec depth)))))))
 
+
 (defn makeExpression
   "Constructs a random expression that is not a terminal.
-   probReal: probabiliy an argument is a number or term vs an expression
+   probTerminal: probabiliy an argument is terminal vs an expression
    maxDepth: maximum depth of expressions"
-  [probReal numTerms numLags maxDepth]
+  [probTerminal numTerms numLags maxDepth]
   (let [[f n] (rand-nth functions)]
     (apply list
      (concat
      (list (f))
      (repeatedly n #(randExpr 
-                     probReal 
-                     (terms numTerms numLags) 
+                     probTerminal 
+                     (map (fn [i] (i)) (terms numTerms numLags))
                      (dec maxDepth)))))))
 
 (defn updateMIP
-  "Returns the next state as a function of the current state and the lags "
+  "Returns the next state as a function of the current state and the lags
+  using the MIP expressions "
   [state mip lags vars]
   (let [b (bindings vars (concat state lags))]
     (map (partial evaluate b) mip)))
 
-(defn makeMIP-1ahead [individual ts]
-  (let [{mip :mip 
-         state :state 
-         numLags :numVars 
-         vars :vars} individual]
+
+(defn makeMIP-1ahead 
+  "Takes a time series and an individual, and returns a vector of the 
+   1-ahead predictions of the individual"
+  [individual numLags vars ts]
+  (let [{mip :objective 
+         state :state } individual]
   (loop [mipseq [] 
          obs (partition numLags 1 ts)
          state state]
     (if (empty? obs)
-      mipseq
+      (concat (repeat (- numLags 1) 0) mipseq)
       (let [nextState (updateMIP state mip (first obs) vars)]
         (recur
        (conj mipseq (last state))
        (rest obs)
        nextState))))))
 
-(defn mipError [individual ts]
-  (let [{numLags :numLags} individual
-        n (count ts)
+(defn mipError 
+  "Mean squared error of the 1-ahead predictions"
+  [individual numLags vars ts]
+  (let [n (count ts)
         l (- n numLags 1)]
     (/ (reduce + (map #(square (- %1 %2))
-                   (makeMIP-1ahead individual ts)
+                   (makeMIP-1ahead individual numLags vars ts)
                    (take l ts)))
        l)))
 
-(defn MIP_AIC [individual ts]
-  (let [{numLags :numLags mip :mip error :error} individual
-        p (reduce + (map length mip))
-        l (- (count ts) numLags 1)]
-    (+ (* l (Math/log error))
+(defn MIP_AIC 
+  "Akaike information criterion of the individual"
+  [individual numLags vars ts]
+  (let [{objective :objective} individual
+        p (reduce + (map length objective))
+        l (- (count ts) (dec numLags))]
+    (+ (* l (Math/log (mipError individual numLags vars ts)))
        (* 2 p))))
 
-
-(defn makeIndividual [params]
-  (let [{probReal :probReal
-         numTerms :numTerms
-         numLags :numLags
-         maxDepth :maxDepth} params]
-    (assoc {}
-           :objective (repeatedly
-                       numTerms
-                       #(makeExpression probReal
-                                                  numTerms
-                                                  numLags
-                                                  maxDepth))
-           :state (repeatedly numTerms rand)
-           :strategy [];;std PRprob PTprob PEprob Iprob DprobPOprob mutationProb
-           :error 0)))
-
-
-
-
-(defn length 
-  "The number of parameters in an individual"
-  [expr] (-> expr (flatten) (count)))
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;      Mutation Operators        ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;more specific to more general
-(defn perturbReal 
-  "Perturbs real numbers in an individual with a normal random
+(defn perturbReal
+  "Perturbs real numbers in an expression with a normal random
    variable N(0,std) with probability PRprob"
-  [individual PRprob std]
+  [expression PRprob std]
   (cond
-    (number? individual) (if (< (rand) PRprob)
-                           (+ individual (randNormal 0 std))
-                           individual)
-    (seq? individual) (map #(perturbReal % PRprob std) individual)
-    :else individual))
+    (number? expression) (if (< (rand) PRprob)
+                           (+ expression (randNormal 0 std))
+                           expression)
+    (seq? expression) (map #(perturbReal % PRprob std) expression)
+    :else expression))
+
 
 (defn perturbTerms
-  "Randomly replaces terms in an individual with probability PTprob"
-  [individual PTprob vars]
-  (if (seq? individual)
+  "Randomly replaces terms in an expression with probability PTprob"
+  [expression PTprob vars]
+  (if (seq? expression)
     (cons
-     (first individual)
+     (first expression)
      (map #(perturbTerms % PTprob vars)
-          (rest individual)))
+          (rest expression)))
     (if  (< (rand) PTprob)
-      ((rand-nth vars))
-      individual)))
+      (rand-nth vars)
+      expression)))
 
-(defn perturbExpr 
+(defn perturbExpr
   "Randomly replaces an expression with a random expression
-   in an individual with probability PEprob.
+  with probability PEprob.
    Random expr constrained to be at most one level deeper than replaced expr"
-  [individual PEprob vars probReal]
-  (if (seq? individual)
+  [expression PEprob vars probReal]
+  (if (seq? expression)
     (if (< (rand) PEprob)
-      (randExpr probReal vars (inc (depth individual)))
-      (map #(perturbExpr % PEprob vars probReal) individual))
-    individual))
+      (randExpr probReal vars (inc (depth expression)))
+      (map #(perturbExpr % PEprob vars probReal) expression))
+    expression))
 
-(defn insert 
+(defn safePerturbExpr
+  "Prevents returning a terminal"
+  [expression PEprob vars probReal]
+  (if (seq? expression)
+    (map #(perturbExpr % PEprob vars probReal) expression)
+    expression))
+
+(defn insert
   "Inserts randomly above an expression. Depth is increased by at most 1"
-  [individual Iprob vars probReal]
+  [expression Iprob vars probTerminal]
   (if (< (rand) Iprob)
-  (let [e (randExpr probReal vars 1)
-        i (inc (rand-int (dec (count e))))]
-    (replaceExpression e i individual))
-  (if (seq? individual)
-    (map #(insert % Iprob vars probReal) individual)
-   individual)))
+    (let [e (randExpr 0 vars 1)
+          i (inc (rand-int (dec (count e))))]
+      (replaceExpression e i expression))
+    (if (seq? expression)
+      (cons (first expression)
+        (map #(insert % Iprob vars probTerminal) 
+             (rest expression)))
+      expression)))
 
-
-(defn delete 
+;; Needs to be safe-ified
+(defn delete
   "Randomly promotes a child. Removes at most one from depth"
-  [individual Dprob]
-  (if (seq? individual)
+  [expression Dprob]
+  (if (seq? expression)
     (if (< (rand) Dprob)
-      (let [c (count individual)]
-        (nth individual (+ 1 (rand-int (dec c)))))
-      (map #(delete % Dprob) individual))
-    individual))
+      (let [c (count expression)]
+        (nth expression (+ 1 (rand-int (dec c)))))
+      (map #(delete % Dprob) expression))
+    expression))
 
-(defn enforceDepth [individual maxDepth]
-  (if (< maxDepth (depth individual))
-    (let [c (count individual)
+(defn safedelete
+  "Randomly promotes a child. Removes at most one from depth"
+  [expression Dprob]
+  (if (seq? expression)
+    (cons (first expression)
+      (map #(delete % Dprob) (rest expression)))
+    expression))
+
+(defn enforceDepth 
+  "Goes down tree until depth of the remaining tree <= maxDepth"
+  [expression maxDepth]
+  (if (< maxDepth (depth expression))
+    (let [c (count expression)
           i (+ 1 (rand-int (dec c)))]
-      (recur (nth individual i) maxDepth))
-    individual))
+      (recur (nth expression i) maxDepth))
+    expression))
 
-(defn suggestDepth [individual Dprob maxDepth numTries]
-  (if (or (<= (depth individual) maxDepth)
+(defn suggestDepth 
+  "Deletes numTries times or until reaching maxDepth or less"
+  [expression Dprob maxDepth numTries]
+  (if (or (<= (depth expression) maxDepth)
           (<= numTries 0))
-    individual
-    (recur (delete individual Dprob) 
-           Dprob 
-           maxDepth 
+    expression
+    (recur (safedelete expression Dprob)
+           Dprob
+           maxDepth
            (dec numTries))))
 
-(defn perturbOrder [individual POprob]
-  (if (and (seq? individual) (< (rand) POprob))
-    (cons (first individual)
-      (shuffle (map #(perturbOrder % POprob) (rest individual))))
-    individual))
+(defn perturbOrder 
+  "Shuffles terms around with probability POprob"
+  [expression POprob]
+  (if (and (seq? expression) (< (rand) POprob))
+    (cons (first expression)
+          (shuffle (map #(perturbOrder % POprob) (rest expression))))
+    expression))
 
-(defn mutateIndividual 
-  "replace any expression with another expression
-   given any expression, replace the i>0th with an expression
-   get all expressions in a list format?"
-  [individual mutationProb probReal vars]
-  (if (and (< (rand) mutationProb) (seq? individual))
-    (let [i (inc (rand-int (count individual)))
-          f #(mutateIndividual % mutationProb probReal vars)]
-      (concat
-       (list (first individual))
-       (map f (take (dec i) (rest individual)))
-       (list (randExpr probReal vars 1))
-       (map f (drop i (rest individual)))))
-    individual))
 
-(defn randomSubtree 
+(defn MIP_mutateState [individual]
+  (map
+   #(+ % (randNormal 0 (first (:strategy individual))))
+   (:state individual)))
+
+(defn MIP_mutateObjective 
+  "Always performs perturbReal.
+   Chooses randomly to perform one of:
+   perturbTerms, perturbExpr, insert, suggestDepth, perturbOrder"
+  [individual vars probTerminal]
+  (let [{strategy :strategy
+         objective :objective} individual]
+    (map
+     #(condp > (rand)
+        1/5 (perturbTerms %
+                          (nth strategy 2)
+                          vars)
+        2/5 (safePerturbExpr %
+                         (nth strategy 3)
+                         vars
+                         probTerminal)
+        3/5 (insert %
+                    (nth strategy 4)
+                    vars
+                    probTerminal)
+        4/5 (suggestDepth %
+                          (nth strategy 5)
+                          (max 1 (dec (depth %)))
+                          1)
+        (perturbOrder %
+                      (nth strategy 6)))
+     (perturbReal objective (first strategy) (second strategy)))))
+
+(defn MIP_mutateStrategy 
+  "Multiplies the stdev parameter by a lognormal random variable exp(tN(0,1))
+   where t is proportional to 1/sqrt(2n) for an individual with n interacting programs
+   Perturbs the other parameters using N(0,tau) and clamps them to the interval [0,1]"
+  [individual tau]
+  (let [{strategy :strategy} individual
+        r (->> individual
+               (:objective)
+               (count)
+               (* 2)
+               (Math/sqrt)
+               (/ tau)
+               (logNormal 0 1))]
+    (cons (* r (first strategy))
+      (map #(max 0 (min 1 (+ % (randNormal 0 tau)))) (rest strategy)))
+    ))
+
+     (defn addmipError 
+       "Calculates the fitness function of the individual
+        and adds it under the key :Error
+        Currently does nothing because I was trying out lexicase selection"
+       [individual numLags vars ts]
+      ;;  (assoc individual
+      ;;         :Error (MIP_AIC individual numLags vars ts))
+       individual
+       )
+
+(defn MIPmutate 
+  "Combines mutation of objective, state, and strategy parameters"
+  [individual ts numLags vars probReal tau]
+  (addmipError
+   (assoc {}
+          :objective (MIP_mutateObjective individual vars probReal)
+          :state (MIP_mutateState individual)
+          :strategy (MIP_mutateStrategy individual tau))
+   numLags
+   vars
+   ts))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;      Crossover Operators       ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defn randomSubtree
   "chooses a random subtree of an individual"
   [individual]
   (rand-nth (preorderTraversal individual)))
 
-(defn crossTrees 
+(defn crossTrees
   "Returns a binary function of a random subtree taken
    from each parent"
   [t1 t2]
-  (let [[f n] (rand-nth (filter #(= 2 (second %)) 
+  (let [[f n] (rand-nth (filter #(= 2 (second %))
                                 functions))]
     (list (f)
           (randomSubtree t1)
@@ -415,14 +547,155 @@
 
 (defn MIPcrossover-single [p1 p2]
   (let [newMIP (map crossTrees (:objective p1) (:objective p2))
-        newStrat (map #(if (< (rand) 0.5) %1 %2) (:strategy p1) (:strategy p2))]
+        newStrat (map #(if (< (rand) 0.5) %1 %2) (:strategy p1) (:strategy p2))
+        newState (map #(if (< (rand) 0.5) %1 %2) (:state p1) (:state p2))]
     (assoc {}
            :objective newMIP
+           :state newState
            :strategy newStrat)))
 
-(defn addmipError [individual ts]
-  (assoc individual
-         :Error (mipError individual ts)))
+
+
+(defn MIPcrossover [population n numLags vars ts]
+  (repeatedly n #(addmipError
+                  (apply MIPcrossover-single
+                         (take 2 (shuffle population)))
+                  numLags
+                  vars
+                  ts)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;        Initialization          ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn MIPIndividual
+  "probReal - probability of terminal vs expression
+   numTerms - number of MIPs
+   numLags - number of input nodes
+   maxDepth - maximum depth of a program
+   ts - time series"
+  [params]
+  (let [{probReal :probReal
+         numTerms :numTerms
+         numLags :numLags
+         maxDepth :maxDepth
+         ts :ts} params]
+    (addmipError
+     (assoc {}
+            :objective (repeatedly
+                        numTerms
+                        #(makeExpression probReal
+                                         numTerms
+                                         numLags
+                                         maxDepth))
+            :state (repeatedly numTerms rand)
+            :strategy (repeatedly 7 rand);;std PRprob PTprob PEprob Iprob Dprob POprob
+            )
+     numLags
+     (map #(%) (terms numTerms numLags))
+     ts)))
+
+(defn MIPselect
+  "tournament selection"
+  [population tournamentSize n]
+  (repeatedly
+   n
+   #(->> population
+         (shuffle)
+         (take tournamentSize)
+         (apply min-key :Error))))
+
+(defn lexicaseSelect
+  "tournament selection"
+  [population numLags vars numTrials epsilon ts]
+  (loop [obs (shuffle (partition (+ 1 numTrials numLags) numTrials ts))
+         pop population]
+    (if (or (<= (count population) 1) (empty? obs))
+      (rand-nth population)
+      (recur (rest obs)
+             (let [errors (map
+                           #(vector (mipError % numLags vars (first obs)) %)
+                           pop)
+                   best (apply min-key first errors)]
+               (map second (filter 
+                            #(< (abs (- (first %) (first best))) epsilon) 
+                            errors)))
+             ))))
+
+(filter #(= 1 %) [1 2 3 4])
+
+
+(defn mipError [individual numLags vars ts]
+  (let [n (count ts)
+        l (- n numLags 1)]
+    (/ (reduce + (map #(square (- %1 %2))
+                      (makeMIP-1ahead individual numLags vars ts)
+                      (take l ts)))
+       l)))
+
+
+
+(defn MIPevolve
+  "Evolution generates excess individuals by mutating and/or crossing over
+   existing individuals. Selection is then used to cull the population back
+   to popsize.
+   Meta evolution controls the probability of removing or adding a term,
+   the step size for changing existing terms, and the probability of crossing over."
+  [popsize ts & {:keys [maxGenerations tau tournamentSize propSelected numTrials epsilon probReal numLags numTerms maxDepth]
+                 :or {maxGenerations 100
+                      tau 0.1
+                      tournamentSize 3
+                      propSelected 0.333
+                      numTrials 3
+                      epsilon 0.0001
+                      probReal 0.8
+                      numLags 1
+                      numTerms 1
+                      maxDepth 3}}]
+  (loop [population (repeatedly popsize #(MIPIndividual {:probReal probReal
+                                                         :numTerms numTerms
+                                                         :numLags numLags
+                                                         :maxDepth maxDepth
+                                                         :ts ts}))
+         generation 0]
+    (println generation)
+    (let [;;best (apply min-key :Error population)
+          vars (map #(%) (terms numTerms numLags))]
+      (if (>= generation maxGenerations)
+        (apply min-key #(mipError % numLags vars ts) population)
+        (recur
+         (let [parents (repeatedly (* (count population) propSelected) #(lexicaseSelect population 
+                                  numLags vars numTrials epsilon ts))]
+           (concat parents
+                   (map #(MIPmutate % ts numLags vars probReal tau) parents )
+                   (MIPcrossover parents (count parents) numLags vars ts)))
+         (inc generation))))))
+
+;; (def ind (MIPevolve 50 (makeLogistic 50 3.95 0.5) 
+;;            :maxGenerations 20))
+;; ind
+;; (mipError ind 1 (map #(%) (terms 1 1)) (makeLogistic 50 3.95 0.5))
+
+;; (* 50 (square (stdev (makeLogistic 50 3.95 0.5))))
+
+
+;; (defn mutateIndividual 
+;;   "replace any expression with another expression
+;;    given any expression, replace the i>0th with an expression
+;;    get all expressions in a list format?"
+;;   [individual mutationProb probReal vars]
+;;   (if (and (< (rand) mutationProb) (seq? individual))
+;;     (let [i (inc (rand-int (count individual)))
+;;           f #(mutateIndividual % mutationProb probReal vars)]
+;;       (concat
+;;        (list (first individual))
+;;        (map f (take (dec i) (rest individual)))
+;;        (list (randExpr probReal vars 1))
+;;        (map f (drop i (rest individual)))))
+;;     individual))
+
+
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -488,7 +761,8 @@
 (defn makeAR-1ahead
   "AR functioning as an 1-ahead predictor of the timeseries" 
   [ar ts]
-  (let [m (count ar)
+  (let [ar (:objective ar)
+        m (count ar)
         obs (partition (inc m) 1 ts)]
      (concat 
       (repeat (- (count ts) (count obs)) 0)
@@ -638,8 +912,9 @@
            :AIC (AR_AIC ar ts))))
 
 (defn ARmutate-objective [individual maxL]
-  (let [{ar :objective 
-         strategy :strategy} individual
+  (let [{ar :objective ;;[0.5 0.6 0.7] AR model of 3 lags
+         strategy :strategy};; [0.3]
+        individual
         objective (map
                    #(+ % (randNormal 0 (first strategy)))
                    ar)]
@@ -693,8 +968,10 @@
 (defn ARcrossover-objective
   "Crossing over between two AR models"
   [ar1 ar2]
-  (let [n (rand-int (count ar1))]
-    (concat (take n ar1) (drop n ar2))))
+  (let [n (rand-int (count ar1))
+        obj (concat (take n ar1) (drop n ar2))
+        objsum (reduce + obj)]
+    (map #(/ % objsum) obj)))
 
 (defn ARcrossover-strategy 
   [s1 s2]
@@ -762,6 +1039,27 @@
          (take tournamentSize) 
          (minAIC))))
 
+(defn ARlexicaseSelect
+  "tournament selection"
+  [population epsilon ts]
+  (let [maxLag (apply max (map #(count (:objective %)) population))]
+    (loop [obs (shuffle (partition (+ 1 maxLag) 1 ts))
+         pop population]
+    (if (or (<= (count population) 1) (empty? obs))
+      (rand-nth population)
+      (recur (rest obs)
+             (let [errors (map ;;[error individual]
+                           #(let [p (count (:objective %))]
+                              (vector (ARsseSingle 
+                                     (:objective %) 
+                                     (take-last (inc p) (first obs))) 
+                                      %))
+                           pop)
+                   best (apply min-key first errors)]
+               (map second (filter
+                            #(< (abs (- (first %) (first best))) epsilon)
+                            errors))))))))
+
 (defn ARevolve 
   "Evolution generates excess individuals by mutating and/or crossing over
    existing individuals. Selection is then used to cull the population back
@@ -772,18 +1070,25 @@
               :or {maxGenerations 100
                    tau 0.1
                    maxL 6
-                   tournamentSize 5}}]
+                   tournamentSize 2}}]
   (loop [population (repeatedly popsize #(ARIndividual maxL ts))
          generation 0]
     (let [best (minAIC population)]
+      (println (:AIC best) (median (map :AIC population)))
         (if (>= generation maxGenerations)
       best
       (recur
        (-> population 
            (ARmutate maxL tau ts) 
-           (ARcrossover ts)
-           (ARselect tournamentSize popsize))
+          ;;  (ARcrossover ts)
+           (ARselect-lexicase popsize 0.00001 ts))
        (inc generation))))))
+
+(defn ARselect-lexicase [population popsize epsilon ts]
+  (repeatedly popsize #(ARlexicaseSelect population epsilon ts)))
+
+
+
 
 
 ; or concat (repeatedly #(
@@ -855,28 +1160,6 @@
 
 
 
-
-;; increase/decrease 2 dimensions of w
-;; (defn perturbArchitecture[individual prob]
-;;   (let [{weights :weights
-;;          state :state} individual]
-;;     (if (< (rand) prob)
-;;       (if (>= (count weights) (dec (count (first weights))))
-;;         (condp >= (rand)
-;;           0.5 {:weights (map #(concat % [(rand)]) weights)
-;;                :state state};increment count first weights
-;;           {:weights (drop-last weights)
-;;              :state (drop-last state)});decrement count weights
-;;         (condp >= (rand)
-;;           0.25 {:weights (concat weights [(repeatedly (count (first weights)) #(rand))])
-;;                 :state (concat state [(rand)])}
-;;           0.5 {:weights (map drop-last weights)
-;;                :state state}
-;;           0.75 {:weights (drop-last weights)
-;;                 :state (drop-last state)}
-;;           {:weights (map #(concat % [(rand)]) weights)
-;;              :state state}))
-;;       {:weights weights :state state})))
 
 ;;List of [boolean operator] where the boolean function evaluates
 ;;whether applying the variation operator to an individual will produce a valid child
@@ -1087,7 +1370,7 @@
                  :or {maxGenerations 100
                       tau 0.1
                       maxL 6
-                      tournamentSize 5
+                      tournamentSize 2
                       propCrossed 0.5}}]
   (loop [population (repeatedly popsize #(NNIndividual2 ts))
          generation 0]
@@ -1105,22 +1388,36 @@
           best)
          (inc generation))))))
 
-
 (let [ts (makeLogistic 100 3.95 0.5)]
-  (compareModels ts [makeNN-1ahead
-                  (NNevolve 50 ts :maxGenerations 100)]))
+  (compareModels [ts "TS"] [makeNN-1ahead (NNevolve 50 ts) "NN"]
+                    [makeAR-1ahead (ARevolve 50 ts) "AR"]))
 
-(def best (ARevolve 50 (take 100 (map :Temp temperatures)) :maxGenerations 200))
-(def bestNN (NNevolve 50 (take 100 (map :Temp temperatures)) :maxGenerations 200))
+(spit "test.txt" (with-out-str (ARevolve 50 (take 100 (map :Temp temperatures)))))
+(+ 1 2)
+(spit "test.txt" (with-out-str (println "hi")))
+(ARevolve 50 (take 100 (map :Temp temperatures)))
+(def best (ARevolve 50 (take 100 (map :Temp temperatures)) :maxGenerations 50))
+(def bestNN (NNevolve 50 (take 100 (map :Temp temperatures)) :maxGenerations 50))
+
+(def ARexample [-0.2641759954634062 0.2874019597966984 -0.28729532625686294 0.3624066158003387 -1.4809555937645422 2.3826183398877743])
+(def ARexample2 [0.1031 0.1109 -0.1206 0.1746 -0.1521 0.6216])
 
 (let [ts (take 100 (map :Temp temperatures))
-      nn (makeNN-1ahead bestNN ts)
-      ]
-  (multiplot (range 100) ts nn))
-bestNN
+      ar (makeAR-1ahead best ts)
+      nn (makeNN bestNN ts)]
+  (multiplot (range 100) [ts "TS"] [nn "NN"])
+  ;; (ARmse (map #(/ % n) ARexample) ts)
+  )
 
+(let [ts (take 100 (map :Temp temperatures))
+      ar (makeAR (:objective best) ts)]
+  (multiplot (range 100) [ts "TS"] [ar "AR"])
+  ;; (ARmse (map #(/ % n) ARexample) ts)
+  )
+
+(reduce + (:objective best))
 (makeNN-1ahead bestNN (take 100 (map :Temp temperatures)))
-(ARmse (:objective (evolve 25 (makeLogistic 100 3.95 0.5)
+(ARmse (:objective (ARevolve 25 (makeLogistic 100 3.95 0.5)
                            :maxL 10
                            :maxGenerations 200)) (makeLogistic 100 3.95 0.5))
 
@@ -1132,3 +1429,5 @@ bestNN
 ;;                            :maxGenerations 100
 ;;                   :maxL 10)) 
 ;;        (makeLogistic 200 3.95 0.5))
+
+(AR-least-squares 6 (take 100 (map :Temp temperatures)))

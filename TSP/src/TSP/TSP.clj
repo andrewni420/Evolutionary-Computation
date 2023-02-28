@@ -9,7 +9,9 @@
 ;;; Math and auxiliary functions ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
 ;;; Math
+
 (defn square [n] (* n n))
 
 (defn distance [n1 n2]

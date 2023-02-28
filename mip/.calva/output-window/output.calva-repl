@@ -23,3 +23,366 @@
 clj꞉mip.core꞉>  ; Use `alt+enter` to evaluate
 ; Jack-in done.
 clj꞉mip.core꞉> 
+#'mip.core/MIPevolve
+clj꞉mip.core꞉> 
+; Syntax error compiling at (src/mip/core.clj:602:24).
+; Unable to resolve symbol: makeLogistic in this context
+clj꞉mip.core꞉> 
+#'mip.core/lorentz
+clj꞉mip.core꞉> 
+#'mip.core/makeLorentz
+clj꞉mip.core꞉> 
+#'mip.core/logisticMap
+clj꞉mip.core꞉> 
+#'mip.core/makeLogistic
+clj꞉mip.core꞉> 
+; nREPL Connection was closed
+; Jacking in...
+; Connecting using "Leiningen" project type.
+; You can make Calva auto-select this:
+; "calva.autoSelectReplConnectProjectType": "Leiningen"
+;   - See https://calva.io/connect/#auto-select-project-type
+; 
+; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
+; Hooking up nREPL sessions...
+; Connected session: clj
+; TIPS:
+;   - You can edit the contents here. Use it as a REPL if you like.
+;   - `alt+enter` evaluates the current top level form.
+;   - `ctrl+enter` evaluates the current form.
+;   - `alt+up` and `alt+down` traverse up and down the REPL command history
+;      when the cursor is after the last contents at the prompt
+;   - Clojure lines in stack traces are peekable and clickable.
+clj꞉mip.core꞉> 
+; Jack-in done.
+clj꞉mip.core꞉> 
+; Syntax error compiling at (src/mip/core.clj:584:42).
+; Unable to resolve symbol: MIPIndividual in this context
+clj꞉mip.core꞉> 
+#'mip.core/MIPevolve
+clj꞉mip.core꞉> 
+; Syntax error compiling at (src/mip/core.clj:1:7966).
+; Unable to resolve symbol: r in this context
+clj꞉mip.core꞉> 
+#'mip.core/logisticMap
+clj꞉mip.core꞉> 
+#'mip.core/makeLogistic
+clj꞉mip.core꞉> 
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+#'mip.core/ind
+clj꞉mip.core꞉> 
+{:objective ((- 0.17620006766923557 (+ -0.16536102683999754 -0.3807384839113458))),
+ :state (2.797249178236409),
+ :strategy
+ (0.7067330220575465
+  0.30020319314303223
+  0.7767703363683076
+  0.6880917199795186
+  0.7373580488719365
+  0.9562607874223465
+  0.7324873646590917),
+ :Error -66.11975012569935}
+clj꞉mip.core꞉> 
+0.21818869820239675
+clj꞉mip.core꞉> 
+#'mip.core/addmipError
+clj꞉mip.core꞉> 
+0
+; Execution error (ArityException) at mip.core/addmipError (form-init10990933565607191295.clj:444).
+; Wrong number of args (0) passed to: clojure.lang.PersistentArrayMap
+clj꞉mip.core꞉> 
+#'mip.core/addmipError
+clj꞉mip.core꞉> 
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+#'mip.core/ind
+clj꞉mip.core꞉> 
+{:objective ((* (- (- l0 l0) (+ n0 l0)) -0.3790358410650752)),
+ :state (2.0339687348778632),
+ :strategy
+ (0.4780108544527357
+  0.692505368438243
+  0.5255719242457392
+  0.0304864184273725
+  0.7807523115826582
+  0.11479696310959515
+  0.6953814763515672)}
+clj꞉mip.core꞉> 
+0.23245407806065244
+clj꞉mip.core꞉> 
+#'mip.core/NNevolve
+clj꞉mip.core꞉> 
+; Execution error (ClassCastException) at mip.core/compareModels$fn (form-init10990933565607191295.clj:50).
+; class java.lang.Long cannot be cast to class clojure.lang.IFn (java.lang.Long is in module java.base of loader 'bootstrap'; clojure.lang.IFn is in unnamed module of loader 'app')
+clj꞉mip.core꞉> 
+#'mip.core/best
+clj꞉mip.core꞉> 
+#'mip.core/bestNN
+clj꞉mip.core꞉> 
+; Syntax error compiling at (src/mip/core.clj:1294:3).
+; Unable to resolve symbol: ts in this context
+clj꞉mip.core꞉> 
+; Execution error (ClassCastException) at mip.core/dot (form-init10990933565607191295.clj:59).
+; class clojure.lang.MapEntry cannot be cast to class java.lang.Number (clojure.lang.MapEntry is in unnamed module of loader 'app'; java.lang.Number is in module java.base of loader 'bootstrap')
+clj꞉mip.core꞉> 
+#'mip.core/makeAR-1ahead
+clj꞉mip.core꞉> 
+#object[org.jfree.chart.ChartFrame 0x282393f1 "org.jfree.chart.ChartFrame[frame0,0,25,500x400,layout=java.awt.BorderLayout,title=Incanter Plot,resizable,normal,defaultCloseOperation=DISPOSE_ON_CLOSE,rootPane=javax.swing.JRootPane[,0,28,500x372,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=16777675,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true]"]
+clj꞉mip.core꞉> 
+#'mip.core/multiplot
+clj꞉mip.core꞉> 
+#'mip.core/compareModels
+clj꞉mip.core꞉> 
+; Execution error (IndexOutOfBoundsException) at mip.core/compareModels$fn (form-init10990933565607191295.clj:50).
+; null
+clj꞉mip.core꞉> 
+; Execution error (ClassCastException) at clojure.core.matrix.impl.defaults/eval8553$fn (defaults.cljc:902).
+; class clojure.lang.LazySeq cannot be cast to class java.lang.Number (clojure.lang.LazySeq is in unnamed module of loader 'app'; java.lang.Number is in module java.base of loader 'bootstrap')
+clj꞉mip.core꞉> 
+#'mip.core/multiplot
+clj꞉mip.core꞉> 
+; Syntax error compiling at (src/mip/core.clj:1308:9).
+; Unable to resolve symbol: ARexample in this context
+clj꞉mip.core꞉> 
+#'mip.core/best
+clj꞉mip.core꞉> 
+#'mip.core/bestNN
+clj꞉mip.core꞉> 
+#object[org.jfree.chart.ChartFrame 0x535566a6 "org.jfree.chart.ChartFrame[frame1,0,25,500x400,layout=java.awt.BorderLayout,title=Incanter Plot,resizable,normal,defaultCloseOperation=DISPOSE_ON_CLOSE,rootPane=javax.swing.JRootPane[,0,28,500x372,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=16777673,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true]"]
+clj꞉mip.core꞉> 
+#'mip.core/compareModels
+clj꞉mip.core꞉> 
+; Execution error (ClassCastException) at clojure.core.matrix.impl.defaults/eval8553$fn (defaults.cljc:902).
+; class clojure.lang.LazySeq cannot be cast to class java.lang.Number (clojure.lang.LazySeq is in unnamed module of loader 'app'; java.lang.Number is in module java.base of loader 'bootstrap')
+clj꞉mip.core꞉> 
+#object[org.jfree.chart.ChartFrame 0x6cbbf6e6 "org.jfree.chart.ChartFrame[frame2,0,25,500x400,layout=java.awt.BorderLayout,title=Incanter Plot,resizable,normal,defaultCloseOperation=DISPOSE_ON_CLOSE,rootPane=javax.swing.JRootPane[,0,28,500x372,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=16777673,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true]"]
+clj꞉mip.core꞉> 
+#object[org.jfree.chart.ChartFrame 0x7a504d04 "org.jfree.chart.ChartFrame[frame3,0,25,500x400,layout=java.awt.BorderLayout,title=Incanter Plot,resizable,normal,defaultCloseOperation=DISPOSE_ON_CLOSE,rootPane=javax.swing.JRootPane[,0,28,500x372,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=16777673,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true]"]
+clj꞉mip.core꞉> 
+#object[org.jfree.chart.ChartFrame 0x3c64cb0b "org.jfree.chart.ChartFrame[frame4,0,25,500x400,layout=java.awt.BorderLayout,title=Incanter Plot,resizable,normal,defaultCloseOperation=DISPOSE_ON_CLOSE,rootPane=javax.swing.JRootPane[,0,28,500x372,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=16777675,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true]"]
+clj꞉mip.core꞉> 
+; Execution error (ClassCastException) at clojure.core.matrix.impl.defaults/eval8553$fn (defaults.cljc:902).
+; class clojure.lang.LazySeq cannot be cast to class java.lang.Number (clojure.lang.LazySeq is in unnamed module of loader 'app'; java.lang.Number is in module java.base of loader 'bootstrap')
+clj꞉mip.core꞉> 
+{:objective
+ (0.18559132300277914
+  0.0864167032532391
+  0.026977146594559034
+  0.12799261181652805
+  -0.106490954307563
+  0.6795131696404577),
+ :strategy (0.457071290034737 0.6151849799169342 0.5651984351012196),
+ :AIC 203.94030304844753}
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+3
+clj꞉mip.core꞉> 
+(20.7
+ 17.9
+ 18.8
+ 14.6
+ 15.8
+ 15.8
+ 15.8
+ 17.4
+ 21.8
+ 20.0
+ 16.2
+ 13.3
+ 16.7
+ 21.5
+ 25.0
+ 20.7
+ 20.6
+ 24.8
+ 17.7
+ 15.5
+ 18.2
+ 12.1
+ 14.4
+ 16.0
+ 16.5
+ 18.7
+ 19.4
+ 17.2
+ 15.5
+ 15.1
+ 15.4
+ 15.3
+ 18.8
+ 21.9
+ 19.9
+ 16.6
+ 16.8
+ 14.6
+ 17.1
+ 25.0
+ 15.0
+ 13.7
+ 13.9
+ 18.3
+ 22.0
+ 22.1
+ 21.2
+ 18.4
+ 16.6
+ 16.1
+ ...)
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+{:objective
+ (0.15524325779601011
+  0.13528501041846272
+  -0.02244904513447592
+  0.18093457306859403
+  -0.13382055109102128
+  0.6848067549424303),
+ :strategy (0.5749169821011164 0.6659541814928109 0.4061025449061567),
+ :AIC 203.3716248651456}
+clj꞉mip.core꞉> 
+#'mip.core/ARevolve
+clj꞉mip.core꞉> 
+; Execution error (NullPointerException) at mip.core/mean (form-init10990933565607191295.clj:104).
+; Cannot invoke "Object.getClass()" because "x" is null
+clj꞉mip.core꞉> 
+3
+clj꞉mip.core꞉> 
+; Execution error (NullPointerException) at mip.core/mean (form-init10990933565607191295.clj:104).
+; Cannot invoke "Object.getClass()" because "x" is null
+clj꞉mip.core꞉> 
+#'mip.core/ARevolve
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+#'mip.core/ARevolve
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+#'mip.core/median
+clj꞉mip.core꞉> 
+3
+clj꞉mip.core꞉> 
+#'mip.core/ARevolve
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+#'mip.core/ARevolve
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+1
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+#'mip.core/NNevolve
+clj꞉mip.core꞉> 
+#'mip.core/ARevolve
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+3
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+#'mip.core/ARevolve
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+#'mip.core/ARevolve
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+#'mip.core/ARlexicaseSelect
+clj꞉mip.core꞉> 
+#'mip.core/ARselect-lexicase
+clj꞉mip.core꞉> 
+#'mip.core/ARselect-lexicase
+clj꞉mip.core꞉> 
+#'mip.core/ARevolve
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+nil
+clj꞉mip.core꞉> 
+#'mip.core/hi
+clj꞉mip.core꞉> 
+#function[mip.core/hi]
+clj꞉mip.core꞉> 
+tagged-literal
+#function[clojure.core/tagged-literal]
+clj꞉mip.core꞉> 
+
+#function[mip.core/hi]
+clj꞉mip.core꞉> 
+hi
+#function[mip.core/hi]
+clj꞉mip.core꞉> 
+thisln
+; Syntax error compiling at (.calva/output-window/output.calva-repl:1:7966).
+; Unable to resolve symbol: thisln in this context
+clj꞉mip.core꞉> 
+#function[mip.core/hi]
+clj꞉mip.core꞉> 
+#function[mip.core/hi]
+clj꞉mip.core꞉> 
+j
+; Syntax error compiling at (.calva/output-window/output.calva-repl:1:7966).
+; Unable to resolve symbol: j in this context
+clj꞉mip.core꞉> 
+12
+12
+clj꞉mip.core꞉> 
+12
+12
+clj꞉mip.core꞉> 
+*1
+12
+clj꞉mip.core꞉> 
+; nREPL Connection was closed
