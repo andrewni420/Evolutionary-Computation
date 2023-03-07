@@ -419,6 +419,25 @@
                             numTerms
                             (dec maxDepth)))))))
 
+
+(defn predict-single [individual input]
+  ;; (println (:objective individual))
+  (let [e (evaluate (bindings input) (:objective individual))]
+    (if (seq? e)
+      (first e)
+      e)))
+
+
+
+(defn error [individual data]
+  (transduce (comp (map #(vector (predict-single individual
+                                                 (drop-last %))
+                                 (first (last %))))
+                   (map #(square (- (first %) (second %)))))
+             +
+             0
+             data))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;      Mutation Operators        ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -532,28 +551,67 @@
   "Always performs perturbReal.
    Chooses randomly to perform one of:
    perturbTerms, perturbExpr, insert, suggestDepth, perturbOrder"
-  [individual numTerms probTerminal]
+  [individual numTerms probTerminal data]
   (let [{strategy :strategy
          objective :objective} individual
-        objective (perturbReal objective (first strategy) (second strategy))]
+        objective (perturbReal objective (first strategy) (second strategy))
+        e (error {:objective objective} data)]
+    (if (not= objective (:objective individual)) (clojure.pprint/pprint {:method "perturbReal"
+              :gparent (:objective individual)
+              :parent (error individual data)
+              :gchild objective
+              :child e}))
     (condp > (rand)
-        1/5 (perturbTerms objective
-                          (nth strategy 2)
-                          numTerms)
-        2/5 (safePerturbExpr objective
-                             (nth strategy 3)
-                             numTerms
-                             probTerminal)
-        3/5 (insert objective
-                    (nth strategy 4)
-                    numTerms
-                    probTerminal)
-        4/5 (suggestDepth objective
-                          (nth strategy 5)
-                          (max 1 (dec (depth objective)))
-                          1)
-        (perturbOrder objective
-                      (nth strategy 6)))))
+      1/5 (let [newObj (perturbTerms objective
+                                     (nth strategy 2)
+                                     numTerms)]
+            (if (not= newObj objective) (clojure.pprint/pprint {:method "perturbTerms"
+                      :gparent objective
+                      :parent e
+                      :gchild newObj
+                      :child (error {:objective newObj} data)}))
+            newObj)
+      2/5 (let [newObj (safePerturbExpr objective
+                                        (nth strategy 3)
+                                        numTerms
+                                        probTerminal)]
+            (if (not= objective newObj) (clojure.pprint/pprint {:method "perturbExpr"
+                      :gparent objective
+                      :parent e
+                      :gchild newObj
+                      :child (error {:objective newObj} data)}))
+            newObj)
+      3/5 (let [newObj (insert objective
+                               (nth strategy 4)
+                               numTerms
+                               probTerminal)]
+            (if (not= objective newObj) (clojure.pprint/pprint {:method "insert"
+                      :gparent objective
+                      :parent e
+                      :gchild newObj
+                      :child (error {:objective newObj} data)}))
+            newObj)
+      4/5 (let [newObj (suggestDepth objective
+                                     (nth strategy 5)
+                                     (max 1 (dec (depth objective)))
+                                     1)]
+            (if (not= objective newObj) (clojure.pprint/pprint {:method "suggestDepth"
+                      :gparent objective
+                      :parent e
+                      :gchild newObj
+                      :child (error {:objective newObj} data)}))
+            newObj)
+      (let [newObj (perturbOrder objective
+                                 (nth strategy 6))]
+        (if (not= objective newObj)(clojure.pprint/pprint {:method "perturbOrder"
+                  :gparent objective
+                  :parent e
+                  :gchild newObj
+                  :child (error {:objective newObj} data)}))
+        newObj))))
+
+
+
 
 (defn mutateStrategy
   "Multiplies the stdev parameter by a lognormal random variable exp(tN(0,1))
@@ -573,10 +631,15 @@
 
 (defn mutate
   "Combines mutation of objective, state, and strategy parameters"
-  [individual numTerms probReal tau]
-   (assoc {}
-          :objective (mutateObjective individual numTerms probReal)
-          :strategy (mutateStrategy individual tau)))
+  [individual numTerms probReal tau data]
+   (let [newObjective (mutateObjective individual numTerms probReal data)
+         newStrategy (mutateStrategy individual tau)
+         newIndividual (assoc {}
+                              :objective newObjective
+                              :strategy newStrategy)]
+     #_(println {:parent (error individual data) 
+               :child (error newIndividual data)})
+     newIndividual))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;      Crossover Operators       ;;;
@@ -602,20 +665,25 @@
   "Produce a child from crossing over parents
    Subtree substitution for objective parameters
    Uniform for strategy parameters"
-  [p1 p2]
+  [p1 p2 data]
   (let [newObj (crossTrees (:objective p1) (:objective p2))
-        newStrat (map #(if (< (rand) 0.5) %1 %2) (:strategy p1) (:strategy p2))]
-    (assoc {}
-           :objective newObj
-           :strategy newStrat)))
+        newStrat (map #(if (< (rand) 0.5) %1 %2) (:strategy p1) (:strategy p2))
+        newInd (assoc {}
+                      :objective newObj
+                      :strategy newStrat)]
+    #_(println {:parent1 (error p1 data)
+              :parent2 (error p2 data)
+              :child (error newInd data)})
+    newInd))
 
 
 
 (defn crossover 
   "Produce n children via crossover from population"
-  [population n]
-  (repeatedly n #(apply crossover-single
-                         (take 2 (shuffle population)))))
+  [population n data]
+  (repeatedly n #(apply crossover-single 
+                         (concat (take 2 (shuffle population)) [data])
+                        )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;        Initialization          ;;;
@@ -644,23 +712,6 @@
          (apply min-key :Error))))
 
 
-(defn predict-single [individual input]
-  ;; (println (:objective individual))
-  (let [e (evaluate (bindings input) (:objective individual))]
-    (if (seq? e)
-      (first e)
-      e)))
-
-
-
-(defn error [individual data]
-  (transduce (comp (map #(vector (predict-single individual
-                                                 (drop-last %))
-                                 (first (last %))))
-                   (map #(square (- (first %) (second %)))))
-             +
-             0
-             data))
 
 (defn compareData [individual data]
   (map #(vector (predict-single individual
@@ -675,17 +726,19 @@
   [population numTrials epsilon ts]
   (loop [obs (take numTrials (shuffle ts))
          pop population]
-    (if (or (<= (count population) 1) (empty? obs))
-      (rand-nth population)
+    #_(println {:count-pop (count pop)})
+    (if (or (<= (count pop) 1) (empty? obs))
+      (do #_(println {:count (count obs) :numTrials numTrials})
+        (rand-nth pop))
       (recur (rest obs)
              (let [errors (map
                            #(vector (error % (take 1 obs)) %)
                            pop)
-                   best (apply min-key first errors)]
+                   best (apply min-key first errors)
+                   epsilon (* epsilon (count obs))]
                (map second (filter
                             #(< (abs (- (first %) (first best))) epsilon)
                             errors)))))))
-
 
 
 (defn evolve
@@ -694,30 +747,50 @@
    to popsize.
    Meta evolution controls the probability of removing or adding a term,
    the step size for changing existing terms, and the probability of crossing over."
-  [popsize data & {:keys [maxGenerations tau numTrials epsilon probReal numTerms maxDepth]
+  [popsize data & {:keys [maxGenerations tau minTrials maxTrials minEpsilon maxEpsilon probReal numTerms maxDepth]
                  :or {maxGenerations 100
                       tau 0.1
-                      numTrials 3
-                      epsilon 10
+                      minTrials 2
+                      maxTrials 2
+                      minEpsilon 1
+                      maxEpsilon 1
                       probReal 0.8
                       numTerms 1
                       maxDepth 3}}]
   (loop [population (repeatedly popsize #(individual probReal numTerms maxDepth))
          generation 0]
-    (println (apply min (map #(error % data) population)))
-      (if (>= generation maxGenerations)
-        (apply min-key #(error % data) population)
-        (recur
-         (let [parents (repeatedly popsize #(lexicaseSelect population numTrials epsilon data))]
-           (concat parents
-                   (map #(mutate % numTerms probReal tau) parents)
-                   (crossover parents (count parents))))
-         (inc generation)))))
+    (let [#_e #_(map #(error % data) population)]
+      #_(println {:min (apply min e) :median (median e) :std (stdev e)}))
+    (if (>= generation maxGenerations)
+      (apply min-key #(error % data) population)
+      (recur
+       (let [parents (repeatedly popsize 
+                                 #(lexicaseSelect population 
+                                    (+ minTrials 
+                                       (int (* (- maxTrials minTrials) 
+                                          (/ generation 
+                                             maxGenerations)))) 
+                                    (* maxEpsilon 
+                                       (Math/pow (/ minEpsilon maxEpsilon) 
+                                                 (/ generation
+                                                    maxGenerations))) 
+                                    data))
+             mutated (map #(mutate % numTerms probReal tau data) parents)
+             crossed (crossover parents (count parents) data)]
+         (concat parents
+                 mutated
+                 crossed))
+       (inc generation)))))
 
-(spit "test.txt"(with-out-str (evolve 20 (take 15 testA) :maxGenerations 50)))
+(spit "test.txt"(with-out-str (evolve 20 (take 20 testA) 
+                                      :maxGenerations 20
+                                      :minTrials 1
+                                      :maxTrials 20
+                                      :minEpsilon 0.01
+                                      :maxEpsilon 1000)))
 
 (evolve 10 (take 15 testA) :maxGenerations 2)
-
+(+ 1 2)
 
 (error {:objective '(v_cov n0 n0)} (take 15 testA))
 
@@ -731,3 +804,16 @@
 
 (map #(vector (:objective (mutate % 1 0.5 0.1)) (:objective %))
      (repeatedly 10 #(individual 0.5 1 2)))
+
+(individual 0.5 1 3)
+
+(take 1 testA)
+(def data (read-string (str "[" (slurp "test.txt") "]")))
+(def data )
+(distinct (map :method (read-string (str "[" (slurp "test.txt") "]"))))
+(map (fn [name] [name (mean (->> data
+           (filter #(= name (:method %)))
+           (map #(/ (- (:child %) (:parent %)) (:parent %)))
+           (map #(if (< % 0) 1 0))))]) 
+     (distinct (map :method data)))
+data

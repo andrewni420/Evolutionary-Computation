@@ -1,63 +1,5219 @@
-1187.1280349884614
-527.6532754960293 1174.234644167824
-74.17591539424825 0.0
-117.11710702851671 0.0
-786.1819046501798 1743.2485087970954
-65.9551182706871 0.0
-56.64351943690235 0.0
-783.8592193778913 1732.980230601631
-139.7691466738332 0.0
-118.41319879554906 0.0
-1301.8645740502895 2870.934773139727
-74.17591539424825 0.0
-65.9551182706871 0.0
-862.382874819528 1905.9747172850034
-139.7691466738332 0.0
-117.11710702851671 0.0
-776.3494726471295 1723.8942940269403
-66.4040050565595 0.0
-114.78078094981035 0.0
-802.663990448063 1775.2051192905817
-66.4040050565595 0.0
-118.41319879554906 0.0
-1038.8772800170896 2294.1002620510744
-102.95276463978988 0.0
-41.77614797981438 0.0
-802.663990448063 1775.2051192905817
-38.35892861732145 0.0
-74.17591539424825 0.0
-331.9900690361967 749.3168974634258
-118.41319879554906 0.0
-139.7691466738332 0.0
-759.7964949775093
-236.43617058131974 186.9505440778285
-11.358168112387409 0.0
-14.143399423946844 0.0
-248.387309538544 183.45625624667196
-13.388122002209046 0.0
-93.67537261049036 0.0
-161.78223179871023 127.70753435230297
-4.902394949608569 0.0
-206.3173637237247 0.0
-460.959937840017 357.30645253446124
-106.53020307725606 0.0
-206.3173637237247 0.0
-380.42525318895827 301.71282713936137
-21.214307186801662 0.0
-37.12234008827072 0.0
-161.78223179871023 127.70753435230297
-0.1801771852608145 0.0
-106.53020307725606 0.0
-395.8993111567017 302.5492819350279
-75.99225607205415 0.0
-15.861785394563759 0.0
-161.78223179871023 127.70753435230297
-0.00895118599173764 0.0
-25.868240959364158 0.0
-102.16003776530458 82.12397860194959
-112.82315520257967 0.0
-13.388122002209046 0.0
-460.959937840017 357.30645253446124
-25.868240959364158 0.0
-206.3173637237247 0.0
-679.5194452797105
+{:method "perturbReal",
+ :gparent (v_cov -2.610985671346856 1.4920186870039007),
+ :parent 5641.275093840648,
+ :gchild (v_cov -2.6189562594236264 1.4878650518927958),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  -1.1105979232303016
+  (v_pd 1.160117701605904 -1.0197079214606886)),
+ :parent 5623.358791252121,
+ :gchild
+ (v_distance
+  -1.1105979232303016
+  (v_pd 1.9351584564197517 -1.0197079214606886)),
+ :child 5132.799858033492}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  -1.1105979232303016
+  (v_pd 1.9351584564197517 -1.0197079214606886)),
+ :parent 5132.799858033492,
+ :gchild (v_distance -1.1105979232303016 1.9351584564197517),
+ :child 3811.414927367301}
+{:method "insert",
+ :gparent (v_mean -1.0099175931651472),
+ :parent 6329.941477963782,
+ :gchild (v_distance (v_mean -1.0099175931651472) -0.9936336609225744),
+ :child 5630.505234685413}
+{:method "perturbReal",
+ :gparent (v_mean 0.43691548844157924),
+ :parent 5355.98375027523,
+ :gchild (v_mean -1.675120786831989),
+ :child 6805.831805960559}
+{:method "insert",
+ :gparent (v_stdev n0),
+ :parent 3770.783024335916,
+ :gchild (v_pd (v_stdev n0) n0),
+ :child 5117.97370408387}
+{:method "perturbExpr",
+ :gparent (v_cov (v_distance (v_minus n0 -0.6691813467428236) n0) n0),
+ :parent 5641.275093840648,
+ :gchild (v_cov (v_mean -1.3597203126738393) n0),
+ :child 5641.275093840648}
+{:method "insert",
+ :gparent (v_stdev n0),
+ :parent 3770.783024335916,
+ :gchild (v_cov (v_stdev n0) n0),
+ :child 5641.275093840648}
+{:method "insert",
+ :gparent (v_stdev n0),
+ :parent 3770.783024335916,
+ :gchild (v_mean (v_stdev n0)),
+ :child 3770.783024335916}
+{:method "perturbReal",
+ :gparent (v_cov -2.610985671346856 1.4920186870039007),
+ :parent 5641.275093840648,
+ :gchild (v_cov -2.5920368487709338 1.51658685320363),
+ :child 5641.275093840648}
+{:method "insert",
+ :gparent (v_cov -2.5920368487709338 1.51658685320363),
+ :parent 5641.275093840648,
+ :gchild (v_minus n0 (v_cov -2.5920368487709338 1.51658685320363)),
+ :child 2326.3548030518314}
+{:method "perturbReal",
+ :gparent (v_mean 0.43691548844157924),
+ :parent 5355.98375027523,
+ :gchild (v_mean 1.1710403717976856),
+ :child 4893.818312759997}
+{:method "perturbTerms",
+ :gparent (v_mean 1.1710403717976856),
+ :parent 4893.818312759997,
+ :gchild (v_mean -0.16967034170476028),
+ :child 5754.122600092278}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  -1.1105979232303016
+  (v_pd 1.160117701605904 -1.0197079214606886)),
+ :parent 5623.358791252121,
+ :gchild
+ (v_distance
+  -1.1105979232303016
+  (v_pd 0.3380566452949425 -0.773529097360366)),
+ :child 5204.6465822492255}
+{:method "insert",
+ :gparent
+ (v_distance
+  -1.1105979232303016
+  (v_pd 0.3380566452949425 -0.773529097360366)),
+ :parent 5204.6465822492255,
+ :gchild
+ (v_distance
+  (v_mean -1.1105979232303016)
+  (v_pd
+   (v_stdev 0.3380566452949425)
+   (v_dot 0.2155755922509095 -0.773529097360366))),
+ :child 4931.055238588582}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  -1.1105979232303016
+  (v_pd 1.160117701605904 -1.0197079214606886)),
+ :parent 5623.358791252121,
+ :gchild
+ (v_distance
+  -1.1105979232303016
+  (v_pd 1.3835994068382393 -0.3739297775174113)),
+ :child 4061.865955569194}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  -1.1105979232303016
+  (v_pd 1.3835994068382393 -0.3739297775174113)),
+ :parent 4061.865955569194,
+ :gchild (v_distance n0 (v_pd -0.4772681165113176 n0)),
+ :child 5608.960347100503}
+{:method "perturbReal",
+ :gparent (v_stdev 0.2959559163834912),
+ :parent 5641.275093840648,
+ :gchild (v_stdev 0.42757300820323096),
+ :child 5641.275093840648}
+{:method "insert",
+ :gparent (v_stdev 0.42757300820323096),
+ :parent 5641.275093840648,
+ :gchild (v_log (v_stdev 0.42757300820323096)),
+ :child 35231.82610102921}
+{:method "perturbReal",
+ :gparent (v_stdev 0.2959559163834912),
+ :parent 5641.275093840648,
+ :gchild (v_stdev 0.5975875785798965),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent (v_mean 0.43691548844157924),
+ :parent 5355.98375027523,
+ :gchild (v_mean -0.2618449278778482),
+ :child 5815.910497009424}
+{:method "perturbTerms",
+ :gparent (v_mean -0.2618449278778482),
+ :parent 5815.910497009424,
+ :gchild (v_mean n0),
+ :child 2030.8590337826333}
+{:method "insert",
+ :gparent (v_dot 0.7178879995334878 1.7338068403494753),
+ :parent 4848.64897948372,
+ :gchild
+ (v_minus
+  -1.276014438803405
+  (v_dot 0.7178879995334878 1.7338068403494753)),
+ :child 7436.309028530806}
+{:method "perturbReal",
+ :gparent (v_distance n0 (v_stdev (v_log 0.7718797258055871))),
+ :parent 5400.706200523758,
+ :gchild (v_distance n0 (v_stdev (v_log 1.738536054630348))),
+ :child 5400.706200523758}
+{:method "perturbExpr",
+ :gparent (v_distance n0 (v_stdev (v_log 1.738536054630348))),
+ :parent 5400.706200523758,
+ :gchild (v_distance n0 0.23786019909742745),
+ :child 4798.108126233324}
+{:method "perturbTerms",
+ :gparent (v_stdev n0),
+ :parent 3770.783024335916,
+ :gchild (v_stdev 0.0013672589244174234),
+ :child 5641.275093840648}
+{:method "suggestDepth",
+ :gparent (v_mean (v_stdev n0)),
+ :parent 3770.783024335916,
+ :gchild (v_mean n0),
+ :child 2030.8590337826333}
+{:method "perturbReal",
+ :gparent (v_distance -1.1105979232303016 1.9351584564197517),
+ :parent 3811.414927367301,
+ :gchild (v_distance -0.7158856116090239 2.012929223006656),
+ :child 3984.532762302976}
+{:method "perturbReal",
+ :gparent (v_pd 1.4920186870039007 n0),
+ :parent 5386.808777535503,
+ :gchild (v_pd 1.8569163551045489 n0),
+ :child 5327.384754294176}
+{:method "insert",
+ :gparent (v_pd 1.8569163551045489 n0),
+ :parent 5327.384754294176,
+ :gchild (v_sin (v_pd 1.8569163551045489 n0)),
+ :child 5434.964583410552}
+{:method "insert",
+ :gparent (v_distance n0 n0),
+ :parent 5641.275093840648,
+ :gchild
+ (v_distance
+  (v_plus n0 2.030316283323069)
+  (v_minus 1.2835083638736442 n0)),
+ :child 55380.36492124418}
+{:method "perturbReal",
+ :gparent (v_cov -2.610985671346856 1.4920186870039007),
+ :parent 5641.275093840648,
+ :gchild (v_cov -2.6318091196229 1.4920186870039007),
+ :child 5641.275093840648}
+{:method "insert",
+ :gparent (v_cov -2.6318091196229 1.4920186870039007),
+ :parent 5641.275093840648,
+ :gchild (v_distance n0 (v_cov -2.6318091196229 1.4920186870039007)),
+ :child 5400.706200523758}
+{:method "perturbReal",
+ :gparent (v_mean -1.0099175931651472),
+ :parent 6329.941477963782,
+ :gchild (v_mean -0.8741467115307417),
+ :child 6234.985159453772}
+{:method "perturbReal",
+ :gparent (v_stdev 0.2959559163834912),
+ :parent 5641.275093840648,
+ :gchild (v_stdev 0.08314224104263118),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_dot 0.7178879995334878 1.7338068403494753)
+  1.160117701605904),
+ :parent 5585.463374293214,
+ :gchild
+ (v_distance
+  (v_dot 1.296979908294848 0.7838358055503091)
+  1.160117701605904),
+ :child 5546.73328674439}
+{:method "insert",
+ :gparent
+ (v_distance
+  (v_dot 1.296979908294848 0.7838358055503091)
+  1.160117701605904),
+ :parent 5546.73328674439,
+ :gchild
+ (v_sin
+  (v_distance
+   (v_dot 1.296979908294848 0.7838358055503091)
+   1.160117701605904)),
+ :child 5547.05600996452}
+{:method "perturbReal",
+ :gparent (v_mean 0.43691548844157924),
+ :parent 5355.98375027523,
+ :gchild (v_mean -0.11899137275516691),
+ :child 5720.295481735452}
+{:method "insert",
+ :gparent (v_stdev 0.5975875785798965),
+ :parent 5641.275093840648,
+ :gchild (v_cos (v_stdev 0.5975875785798965)),
+ :child 4999.5699034903655}
+{:method "perturbReal",
+ :gparent
+ (v_minus
+  (v_distance n0 (v_stdev (v_log 0.7718797258055871)))
+  (v_mean -1.0099175931651472)),
+ :parent 6077.648318325106,
+ :gchild
+ (v_minus
+  (v_distance n0 (v_stdev (v_log 0.5098970604417727)))
+  (v_mean -1.0099175931651472)),
+ :child 6077.648318325106}
+{:method "perturbReal",
+ :gparent (v_pd 1.9351584564197517 0.2959559163834912),
+ :parent 2169.6868041632492,
+ :gchild (v_pd 0.3849996535517266 -0.6725982395690713),
+ :child 6026.592480119978}
+{:method "perturbReal",
+ :gparent (v_distance (v_stdev 0.2959559163834912) n0),
+ :parent 5400.706200523758,
+ :gchild (v_distance (v_stdev 0.7192206398710679) n0),
+ :child 5400.706200523758}
+{:method "perturbReal",
+ :gparent (v_distance -0.7158856116090239 2.012929223006656),
+ :parent 3984.532762302976,
+ :gchild (v_distance -1.1583934749031979 3.1033037987799315),
+ :child 3184.5291611932357}
+{:method "perturbTerms",
+ :gparent (v_distance -1.1583934749031979 3.1033037987799315),
+ :parent 3184.5291611932357,
+ :gchild (v_distance n0 n0),
+ :child 5641.275093840648}
+{:method "perturbTerms",
+ :gparent
+ (v_distance (v_stdev n0) (v_stdev (v_log 0.7718797258055871))),
+ :parent 3770.783024335916,
+ :gchild
+ (v_distance (v_stdev n0) (v_stdev (v_log 0.2876812205187608))),
+ :child 3770.783024335916}
+{:method "perturbReal",
+ :gparent (v_pd -2.610985671346856 (v_mean -1.0099175931651472)),
+ :parent 4064.218913817627,
+ :gchild (v_pd -2.613740440537673 (v_mean -1.0099175931651472)),
+ :child 4062.6962018480367}
+{:method "perturbReal",
+ :gparent (v_pd 1.9351584564197517 0.2959559163834912),
+ :parent 2169.6868041632492,
+ :gchild (v_pd 3.6389105947637725 1.088668690014196),
+ :child 3652.954403367747}
+{:method "perturbReal",
+ :gparent (v_distance -0.7158856116090239 2.012929223006656),
+ :parent 3984.532762302976,
+ :gchild (v_distance 0.20358978427122498 2.6260707978575817),
+ :child 4155.67511884927}
+{:method "perturbReal",
+ :gparent (v_stdev 0.5975875785798965),
+ :parent 5641.275093840648,
+ :gchild (v_stdev 1.207069264136262),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent (v_mean 0.43691548844157924),
+ :parent 5355.98375027523,
+ :gchild (v_mean 0.32094630356052006),
+ :child 5430.9633895462985}
+{:method "insert",
+ :gparent (v_mean 0.32094630356052006),
+ :parent 5430.9633895462985,
+ :gchild (v_plus n0 (v_mean 0.32094630356052006)),
+ :child 2195.8869061476503}
+{:method "perturbOrder",
+ :gparent
+ (v_distance (v_stdev n0) (v_stdev (v_log 0.7718797258055871))),
+ :parent 3770.783024335916,
+ :gchild
+ (v_distance (v_stdev (v_log 0.7718797258055871)) (v_stdev n0)),
+ :child 3770.783024335916}
+{:method "perturbReal",
+ :gparent (v_stdev 0.0013672589244174234),
+ :parent 5641.275093840648,
+ :gchild (v_stdev 0.040470345671584806),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent (v_pd -2.610985671346856 (v_mean -1.0099175931651472)),
+ :parent 4064.218913817627,
+ :gchild (v_pd -2.610985671346856 (v_mean -1.0195024637011871)),
+ :child 4077.8006545201674}
+{:method "insert",
+ :gparent (v_pd -2.610985671346856 (v_mean -1.0195024637011871)),
+ :parent 4077.8006545201674,
+ :gchild
+ (v_dot
+  -0.4654662608484957
+  (v_pd -2.610985671346856 (v_mean -1.0195024637011871))),
+ :child 6458.499791669926}
+{:method "perturbReal",
+ :gparent (v_stdev 0.2959559163834912),
+ :parent 5641.275093840648,
+ :gchild (v_stdev -0.01714025371456429),
+ :child 5641.275093840648}
+{:method "perturbTerms",
+ :gparent (v_dot 0.7178879995334878 1.7338068403494753),
+ :parent 4848.64897948372,
+ :gchild (v_dot n0 0.6763058435716595),
+ :child 109734.31172114093}
+{:method "perturbReal",
+ :gparent (v_pd -2.610985671346856 (v_mean -1.0099175931651472)),
+ :parent 4064.218913817627,
+ :gchild (v_pd -2.610985671346856 (v_mean -0.9971205651890638)),
+ :child 4045.716670271136}
+{:method "perturbReal",
+ :gparent (v_pd 3.6389105947637725 1.088668690014196),
+ :parent 3652.954403367747,
+ :gchild (v_pd 4.342226465093722 1.9886873759158759),
+ :child 4291.81617187183}
+{:method "perturbReal",
+ :gparent (v_cos (v_stdev 0.5975875785798965)),
+ :parent 4999.5699034903655,
+ :gchild (v_cos (v_stdev 0.6415253309391925)),
+ :child 4999.5699034903655}
+{:method "perturbReal",
+ :gparent (v_cov 2.012929223006656 0.5975875785798965),
+ :parent 5641.275093840648,
+ :gchild (v_cov 2.7992189978864057 1.0241015705413512),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent
+ (v_plus
+  -0.7158856116090239
+  (v_pd -2.610985671346856 (v_mean -1.0099175931651472))),
+ :parent 4474.14152373615,
+ :gchild
+ (v_plus
+  -0.7158856116090239
+  (v_pd -2.610985671346856 (v_mean -1.0328961543873065))),
+ :child 4507.9650591685895}
+{:method "insert",
+ :gparent
+ (v_plus
+  -0.7158856116090239
+  (v_pd -2.610985671346856 (v_mean -1.0328961543873065))),
+ :parent 4507.9650591685895,
+ :gchild
+ (v_cov
+  n0
+  (v_plus
+   -0.7158856116090239
+   (v_pd -2.610985671346856 (v_mean -1.0328961543873065)))),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent (v_stdev 0.2959559163834912),
+ :parent 5641.275093840648,
+ :gchild (v_stdev 0.12309865338677192),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent (v_pd 3.6389105947637725 1.088668690014196),
+ :parent 3652.954403367747,
+ :gchild (v_pd 2.278670055606155 1.6836269614811274),
+ :child 4782.339320223886}
+{:method "insert",
+ :gparent (v_pd -2.610985671346856 (v_mean -1.0099175931651472)),
+ :parent 4064.218913817627,
+ :gchild
+ (v_sin (v_pd -2.610985671346856 (v_mean -1.0099175931651472))),
+ :child 5297.468484115826}
+{:method "perturbReal",
+ :gparent (v_cos (v_stdev 0.5975875785798965)),
+ :parent 4999.5699034903655,
+ :gchild (v_cos (v_stdev 0.7658315604302952)),
+ :child 4999.5699034903655}
+{:method "perturbReal",
+ :gparent
+ (v_cov
+  1.9351584564197517
+  (v_distance -0.7158856116090239 2.012929223006656)),
+ :parent 5641.275093840648,
+ :gchild
+ (v_cov
+  3.488745135993688
+  (v_distance -0.7529887247653676 2.012929223006656)),
+ :child 5641.275093840648}
+{:method "perturbExpr",
+ :gparent
+ (v_distance (v_stdev n0) (v_stdev (v_log 0.7718797258055871))),
+ :parent 3770.783024335916,
+ :gchild (v_distance -1.205468742422987 (v_stdev n0)),
+ :child 3151.4663236284264}
+{:method "perturbReal",
+ :gparent (v_stdev 0.5975875785798965),
+ :parent 5641.275093840648,
+ :gchild (v_stdev 0.22417563404561114),
+ :child 5641.275093840648}
+{:method "insert",
+ :gparent (v_stdev 0.22417563404561114),
+ :parent 5641.275093840648,
+ :gchild (v_dot (v_stdev 0.22417563404561114) n0),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent (v_pd 1.9351584564197517 0.2959559163834912),
+ :parent 2169.6868041632492,
+ :gchild (v_pd 1.9351584564197517 -0.962467398487207),
+ :child 7052.566378633532}
+{:method "insert",
+ :gparent (v_pd 1.9351584564197517 -0.962467398487207),
+ :parent 7052.566378633532,
+ :gchild
+ (v_cov
+  (v_pd 1.9351584564197517 -0.962467398487207)
+  0.38391430857814346),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent (v_plus n0 (v_mean 0.32094630356052006)),
+ :parent 2195.8869061476503,
+ :gchild (v_plus n0 (v_mean -0.02357163433738435)),
+ :child 2336.099326248297}
+{:method "perturbTerms",
+ :gparent (v_plus n0 (v_mean -0.02357163433738435)),
+ :parent 2336.099326248297,
+ :gchild (v_plus n0 (v_mean n0)),
+ :child 433.5555698415292}
+{:method "perturbTerms",
+ :gparent (v_distance 0.2959559163834912 -1.0099175931651472),
+ :parent 4811.277927090191,
+ :gchild (v_distance n0 -1.0099175931651472),
+ :child 8420.23769389638}
+{:method "insert",
+ :gparent (v_mult -2.610985671346856 (v_stdev 0.2959559163834912)),
+ :parent 5641.275093840648,
+ :gchild
+ (v_minus n0 (v_mult -2.610985671346856 (v_stdev 0.2959559163834912))),
+ :child 2326.3548030518314}
+{:method "suggestDepth",
+ :gparent
+ (v_distance (v_stdev n0) (v_stdev (v_log 0.7718797258055871))),
+ :parent 3770.783024335916,
+ :gchild (v_distance n0 (v_log 0.7718797258055871)),
+ :child 6103.323206616891}
+{:method "perturbReal",
+ :gparent
+ (v_distance (v_stdev n0) (v_stdev (v_log 0.7718797258055871))),
+ :parent 3770.783024335916,
+ :gchild
+ (v_distance (v_stdev n0) (v_stdev (v_log 1.1968053972073847))),
+ :child 3770.783024335916}
+{:method "perturbTerms",
+ :gparent
+ (v_distance (v_stdev n0) (v_stdev (v_log 1.1968053972073847))),
+ :parent 3770.783024335916,
+ :gchild (v_distance (v_stdev n0) (v_stdev (v_log n0))),
+ :child 4132.388518745001}
+{:method "perturbReal",
+ :gparent (v_plus 0.2959559163834912 (v_stdev 0.5975875785798965)),
+ :parent 5447.191325943666,
+ :gchild (v_plus 0.29804693698030016 (v_stdev 0.40473494360036355)),
+ :child 5445.832528205648}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_pd -2.613740440537673 (v_mean -1.0099175931651472))
+  (v_plus n0 (v_mean 0.32094630356052006))),
+ :parent 1250.5367424829587,
+ :gchild
+ (v_distance
+  (v_pd -3.02861097967856 (v_mean -2.177445049552415))
+  (v_plus n0 (v_mean 0.7930884590108864))),
+ :child 3963.297625055423}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  (v_pd -3.02861097967856 (v_mean -2.177445049552415))
+  (v_plus n0 (v_mean 0.7930884590108864))),
+ :parent 3963.297625055423,
+ :gchild
+ (v_distance
+  0.5050325213893941
+  (v_plus n0 (v_mean 0.7930884590108864))),
+ :child 6185.43128083519}
+{:method "perturbReal",
+ :gparent (v_pd 1.9351584564197517 0.2959559163834912),
+ :parent 2169.6868041632492,
+ :gchild (v_pd 2.5693717021767184 0.8932038654681353),
+ :child 3903.321839280552}
+{:method "suggestDepth",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 n0),
+ :child 969.6780649239447}
+{:method "perturbReal",
+ :gparent (v_pd 1.9351584564197517 0.2959559163834912),
+ :parent 2169.6868041632492,
+ :gchild (v_pd 2.2610769343328645 2.4315730080248104),
+ :child 5043.260711507306}
+{:method "insert",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 (v_plus n0 (v_mean n0))),
+ :child 794.4956585613551}
+{:method "perturbReal",
+ :gparent
+ (v_plus
+  (v_pd 3.6389105947637725 1.088668690014196)
+  (v_pd -2.613740440537673 (v_mean -1.0099175931651472))),
+ :parent 2420.404245135967,
+ :gchild
+ (v_plus
+  (v_pd 3.6057560584293844 0.9072879087705618)
+  (v_pd -2.5264624536853146 (v_mean -0.6938295916662985))),
+ :child 1761.9604361124877}
+{:method "perturbExpr",
+ :gparent
+ (v_plus
+  (v_pd 3.6057560584293844 0.9072879087705618)
+  (v_pd -2.5264624536853146 (v_mean -0.6938295916662985))),
+ :parent 1761.9604361124877,
+ :gchild (v_plus -0.21414801261211563 n0),
+ :child 2415.699909383963}
+{:method "suggestDepth",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 n0),
+ :child 969.6780649239447}
+{:method "perturbReal",
+ :gparent
+ (v_plus
+  (v_pd 3.6389105947637725 1.088668690014196)
+  (v_pd -2.613740440537673 (v_mean -1.0099175931651472))),
+ :parent 2420.404245135967,
+ :gchild
+ (v_plus
+  (v_pd 3.6389105947637725 1.187480079137993)
+  (v_pd -2.613740440537673 (v_mean -1.0099175931651472))),
+ :child 2540.014630484083}
+{:method "perturbTerms",
+ :gparent
+ (v_plus
+  (v_pd 3.6389105947637725 1.187480079137993)
+  (v_pd -2.613740440537673 (v_mean -1.0099175931651472))),
+ :parent 2540.014630484083,
+ :gchild
+ (v_plus
+  (v_pd 3.6389105947637725 n0)
+  (v_pd n0 (v_mean -1.0099175931651472))),
+ :child 10120.782489786608}
+{:method "perturbReal",
+ :gparent (v_pd 1.9351584564197517 0.2959559163834912),
+ :parent 2169.6868041632492,
+ :gchild (v_pd 3.141539355908655 0.861581671522937),
+ :child 3494.4370095329195}
+{:method "insert",
+ :gparent
+ (v_minus n0 (v_mult -2.610985671346856 (v_stdev 0.2959559163834912))),
+ :parent 2326.3548030518314,
+ :gchild
+ (v_plus
+  (v_minus n0 (v_mult -2.610985671346856 (v_stdev 0.2959559163834912)))
+  0.23694120147655004),
+ :child 2229.637738737038}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_pd -2.613740440537673 (v_mean -1.0099175931651472))
+  (v_plus n0 (v_mean 0.32094630356052006))),
+ :parent 1250.5367424829587,
+ :gchild
+ (v_distance
+  (v_pd -2.0751620471684724 (v_mean -0.5215076543730086))
+  (v_plus n0 (v_mean 0.36701719602980787))),
+ :child 291.2396170082741}
+{:method "insert",
+ :gparent
+ (v_distance
+  (v_pd -2.0751620471684724 (v_mean -0.5215076543730086))
+  (v_plus n0 (v_mean 0.36701719602980787))),
+ :parent 291.2396170082741,
+ :gchild
+ (v_stdev
+  (v_distance
+   (v_pd -2.0751620471684724 (v_mean -0.5215076543730086))
+   (v_plus n0 (v_mean 0.36701719602980787)))),
+ :child 5641.275093840648}
+{:method "suggestDepth",
+ :gparent
+ (v_distance (v_stdev n0) (v_stdev (v_log 0.7718797258055871))),
+ :parent 3770.783024335916,
+ :gchild (v_distance n0 (v_log 0.7718797258055871)),
+ :child 6103.323206616891}
+{:method "perturbReal",
+ :gparent (v_plus n0 (v_mean 0.32094630356052006)),
+ :parent 2195.8869061476503,
+ :gchild (v_plus n0 (v_mean 1.4959037029348343)),
+ :child 1753.4073811442265}
+{:method "perturbTerms",
+ :gparent (v_plus n0 (v_mean 1.4959037029348343)),
+ :parent 1753.4073811442265,
+ :gchild (v_plus -0.4716139863721673 (v_mean -0.24398362449519378)),
+ :child 6125.031345967425}
+{:method "perturbExpr",
+ :gparent
+ (v_minus n0 (v_mult -2.610985671346856 (v_stdev 0.2959559163834912))),
+ :parent 2326.3548030518314,
+ :gchild
+ (v_minus n0 (v_mult -2.610985671346856 (v_sin 0.9735927560444757))),
+ :child 1528.0492224494385}
+{:method "perturbExpr",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 (v_mult n0 -0.6321063160163297)),
+ :child 4194.044122195669}
+{:method "perturbReal",
+ :gparent (v_plus n0 (v_mean 0.32094630356052006)),
+ :parent 2195.8869061476503,
+ :gchild (v_plus n0 (v_mean 0.7445988996050144)),
+ :child 2029.9768946082213}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_pd -2.613740440537673 (v_mean -1.0099175931651472))
+  (v_plus n0 (v_mean 0.32094630356052006))),
+ :parent 1250.5367424829587,
+ :gchild
+ (v_distance
+  (v_pd -2.5238354186415046 (v_mean -1.5389235266419332))
+  (v_plus n0 (v_mean 1.0081113989213408))),
+ :child 3889.029359564873}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  (v_pd -2.5238354186415046 (v_mean -1.5389235266419332))
+  (v_plus n0 (v_mean 1.0081113989213408))),
+ :parent 3889.029359564873,
+ :gchild (v_distance -1.5975635848356002 -0.5266906113307762),
+ :child 4955.608267574328}
+{:method "insert",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_cov 0.3945344328518428 (v_plus n0 (v_mean n0))),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_pd -2.613740440537673 (v_mean -1.0099175931651472))
+  (v_plus n0 (v_mean 0.32094630356052006))),
+ :parent 1250.5367424829587,
+ :gchild
+ (v_distance
+  (v_pd -2.338973055550112 (v_mean -0.05551204722778713))
+  (v_plus n0 (v_mean 0.871413224817337))),
+ :child 387950.76068001596}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  (v_pd -2.338973055550112 (v_mean -0.05551204722778713))
+  (v_plus n0 (v_mean 0.871413224817337))),
+ :parent 387950.76068001596,
+ :gchild
+ (v_distance
+  (v_plus n0 (v_mean 0.871413224817337))
+  (v_pd -2.338973055550112 (v_mean -0.05551204722778713))),
+ :child 387950.76068001596}
+{:method "perturbTerms",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 (v_mean -0.41289891469422285)),
+ :child 2500.26243810151}
+{:method "perturbTerms",
+ :gparent (v_minus (v_plus n0 (v_mean n0)) n0),
+ :parent 2030.8590337826333,
+ :gchild
+ (v_minus
+  (v_plus -0.6286836462093662 (v_mean n0))
+  -0.5419326488014331),
+ :child 2065.451699645395}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_pd -2.613740440537673 (v_mean -1.0099175931651472))
+  (v_plus n0 (v_mean 0.32094630356052006))),
+ :parent 1250.5367424829587,
+ :gchild
+ (v_distance
+  (v_pd -3.5233398658142954 (v_mean 0.19155508756754558))
+  (v_plus n0 (v_mean 0.2375142338994659))),
+ :child 189253.39770804235}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  (v_pd -3.5233398658142954 (v_mean 0.19155508756754558))
+  (v_plus n0 (v_mean 0.2375142338994659))),
+ :parent 189253.39770804235,
+ :gchild
+ (v_distance (v_distance -0.18269174288279805 n0) 1.0937736435819156),
+ :child 5171.980498286038}
+{:method "insert",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_log (v_plus n0 (v_mean n0))),
+ :child 4086.794961213351}
+{:method "perturbOrder",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus (v_mean n0) n0),
+ :child 433.5555698415292}
+{:method "perturbTerms",
+ :gparent (v_plus n0 (v_plus n0 (v_mean n0))),
+ :parent 794.4956585613551,
+ :gchild (v_plus n0 (v_plus 0.7241691164090817 (v_mean n0))),
+ :child 336.6881637555553}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_pd -2.613740440537673 (v_mean -1.0099175931651472))
+  (v_plus n0 (v_mean 0.32094630356052006))),
+ :parent 1250.5367424829587,
+ :gchild
+ (v_distance
+  (v_pd -2.9506468808752917 (v_mean -0.6310405195883848))
+  (v_plus n0 (v_mean 1.9592688132229727))),
+ :child 821.6754329490313}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  (v_pd -2.9506468808752917 (v_mean -0.6310405195883848))
+  (v_plus n0 (v_mean 1.9592688132229727))),
+ :parent 821.6754329490313,
+ :gchild (v_distance (v_log 2.5931909701766735) (v_plus n0 n0)),
+ :child 42062.61840867396}
+{:method "perturbTerms",
+ :gparent (v_plus n0 n0),
+ :parent 969.6780649239447,
+ :gchild (v_plus n0 1.1377818747506472),
+ :child 1882.4226539664533}
+{:method "suggestDepth",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 n0),
+ :child 969.6780649239447}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_pd -2.613740440537673 (v_mean -1.0099175931651472))
+  (v_plus n0 (v_mean 0.32094630356052006))),
+ :parent 1250.5367424829587,
+ :gchild
+ (v_distance
+  (v_pd -2.157332110570277 (v_mean -0.9330086359003669))
+  (v_plus n0 (v_mean 0.03443160692189612))),
+ :child 1238.9732917116482}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  (v_pd -2.157332110570277 (v_mean -0.9330086359003669))
+  (v_plus n0 (v_mean 0.03443160692189612))),
+ :parent 1238.9732917116482,
+ :gchild
+ (v_distance
+  (v_plus n0 (v_mean 0.03443160692189612))
+  (v_pd -2.157332110570277 (v_mean -0.9330086359003669))),
+ :child 1238.9732917116482}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_pd -2.613740440537673 (v_mean -1.0099175931651472))
+  (v_plus n0 (v_mean 0.32094630356052006))),
+ :parent 1250.5367424829587,
+ :gchild
+ (v_distance
+  (v_pd -2.5187598818282635 (v_mean -1.0099175931651472))
+  (v_plus n0 (v_mean 0.0691155468101049))),
+ :child 1086.541821713419}
+{:method "insert",
+ :gparent
+ (v_distance
+  (v_pd -2.5187598818282635 (v_mean -1.0099175931651472))
+  (v_plus n0 (v_mean 0.0691155468101049))),
+ :parent 1086.541821713419,
+ :gchild
+ (v_stdev
+  (v_distance
+   (v_pd -2.5187598818282635 (v_mean -1.0099175931651472))
+   (v_plus n0 (v_mean 0.0691155468101049)))),
+ :child 5641.275093840648}
+{:method "suggestDepth",
+ :gparent (v_minus (v_plus n0 (v_mean n0)) n0),
+ :parent 2030.8590337826333,
+ :gchild (v_minus (v_mean n0) n0),
+ :child 5586.406050384669}
+{:method "insert",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_cov (v_plus n0 (v_mean n0)) n0),
+ :child 1177.95908713481}
+{:method "perturbTerms",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus 1.4551621622349076 (v_mean n0)),
+ :child 1495.47595881933}
+{:method "insert",
+ :gparent (v_cov (v_plus n0 (v_mean n0)) n0),
+ :parent 1177.95908713481,
+ :gchild (v_mean (v_cov (v_plus n0 (v_mean n0)) n0)),
+ :child 1177.95908713481}
+{:method "insert",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_sin (v_plus n0 (v_mean n0))),
+ :child 5617.5135000066075}
+{:method "perturbExpr",
+ :gparent (v_plus (v_mean n0) n0),
+ :parent 433.5555698415292,
+ :gchild (v_plus (v_cos (v_plus 0.40186177498779674 n0)) n0),
+ :child 2284.565332314207}
+{:method "perturbExpr",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 -0.5680767256932708),
+ :child 2567.38436527149}
+{:method "perturbExpr",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 1.8361064118952815),
+ :child 1635.5990032872444}
+{:method "insert",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_mean (v_plus n0 (v_mean n0))),
+ :child 225.65100375362596}
+{:method "insert",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_distance 1.7209231332215715 (v_plus n0 (v_mean n0))),
+ :child 28278.30648233783}
+{:method "suggestDepth",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 n0),
+ :child 969.6780649239447}
+{:method "suggestDepth",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 n0),
+ :child 969.6780649239447}
+{:method "insert",
+ :gparent (v_plus (v_mean n0) n0),
+ :parent 433.5555698415292,
+ :gchild (v_cos (v_plus (v_mean n0) n0)),
+ :child 5564.180614567766}
+{:method "perturbExpr",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 n0),
+ :child 969.6780649239447}
+{:method "perturbExpr",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 0.4670999016371114),
+ :child 2137.839366768552}
+{:method "insert",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_sin (v_plus n0 (v_mean n0))),
+ :child 5617.5135000066075}
+{:method "insert",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_stdev (v_plus n0 (v_mean n0))),
+ :child 3770.783024335916}
+{:method "perturbOrder",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus (v_mean n0) n0),
+ :child 433.5555698415292}
+{:method "suggestDepth",
+ :gparent (v_plus (v_mean n0) (v_plus n0 (v_mean n0))),
+ :parent 345.96436666023453,
+ :gchild (v_plus (v_mean n0) (v_mean n0)),
+ :child 225.65100375362593}
+{:method "perturbExpr",
+ :gparent (v_plus n0 (v_plus n0 (v_mean n0))),
+ :parent 794.4956585613551,
+ :gchild (v_plus n0 0.3739523849045087),
+ :child 2174.7358365465993}
+{:method "perturbExpr",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean n0),
+ :child 2030.8590337826333}
+{:method "insert",
+ :gparent (v_plus (v_mean n0) (v_plus n0 (v_mean n0))),
+ :parent 345.96436666023453,
+ :gchild (v_cos (v_plus (v_mean n0) (v_plus n0 (v_mean n0)))),
+ :child 5498.301090509864}
+{:method "perturbExpr",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 n0),
+ :child 969.6780649239447}
+{:method "insert",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_pd n0 (v_plus n0 (v_mean n0))),
+ :child 5344.126252513842}
+{:method "perturbOrder",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus (v_mean n0) n0),
+ :child 433.5555698415292}
+{:method "perturbExpr",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean 1.4630734454856305),
+ :child 4715.963479236839}
+{:method "perturbOrder",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean (v_plus (v_mean n0) n0)),
+ :child 225.65100375362596}
+{:method "insert",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_distance (v_mean (v_plus n0 (v_mean n0))) n0),
+ :child 5400.7062005237585}
+{:method "insert",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_distance n0 (v_plus n0 (v_mean n0))),
+ :child 3510.5160507640117}
+{:method "perturbTerms",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean (v_plus -0.3342556372187544 (v_mean n0))),
+ :child 2165.8007844337785}
+{:method "suggestDepth",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean (v_mean n0)),
+ :child 2030.8590337826333}
+{:method "perturbTerms",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean (v_plus -1.8018253542999705 (v_mean n0))),
+ :child 2811.156839357615}
+{:method "suggestDepth",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean (v_mean n0)),
+ :child 2030.8590337826333}
+{:method "insert",
+ :gparent (v_plus (v_mean n0) (v_mean n0)),
+ :parent 225.65100375362593,
+ :gchild
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :child 99.48112261034655}
+{:method "insert",
+ :gparent (v_plus (v_mean n0) (v_plus n0 (v_mean n0))),
+ :parent 345.96436666023453,
+ :gchild (v_plus (v_plus (v_mean n0) (v_plus n0 (v_mean n0))) n0),
+ :child 2424.5212822277726}
+{:method "perturbExpr",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean n0),
+ :child 2030.8590337826333}
+{:method "perturbExpr",
+ :gparent (v_mean (v_plus (v_mean n0) n0)),
+ :parent 225.65100375362596,
+ :gchild (v_mean (v_plus 0.2054147949014521 n0)),
+ :child 1950.148516965304}
+{:method "perturbExpr",
+ :gparent (v_plus n0 (v_mean n0)),
+ :parent 433.5555698415292,
+ :gchild (v_plus n0 n0),
+ :child 969.6780649239447}
+{:method "suggestDepth",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean (v_mean n0)),
+ :child 2030.8590337826333}
+{:method "suggestDepth",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean (v_mean n0)),
+ :child 2030.8590337826333}
+{:method "insert",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild
+ (v_distance 0.22481688535609187 (v_mean (v_plus n0 (v_mean n0)))),
+ :child 256.4143563761523}
+{:method "perturbExpr",
+ :gparent (v_plus (v_mean n0) (v_plus n0 (v_mean n0))),
+ :parent 345.96436666023453,
+ :gchild (v_plus (v_mean n0) 1.563791822543659),
+ :child 1458.9064317050413}
+{:method "perturbExpr",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean 0.14061428376849233),
+ :child 5548.625339969645}
+{:method "perturbExpr",
+ :gparent (v_plus (v_mean n0) (v_mean n0)),
+ :parent 225.65100375362593,
+ :gchild (v_plus (v_log 1.1248075840377154) 0.23499647469601395),
+ :child 5410.43890066335}
+{:method "perturbTerms",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean (v_plus n0 (v_mean 0.17002584595162124))),
+ :child 1963.9330186925336}
+{:method "insert",
+ :gparent (v_plus (v_mean n0) (v_mean n0)),
+ :parent 225.65100375362593,
+ :gchild (v_cos (v_plus (v_mean n0) (v_mean n0))),
+ :child 5614.528320201193}
+{:method "perturbTerms",
+ :gparent (v_plus (v_mean n0) (v_mean n0)),
+ :parent 225.65100375362593,
+ :gchild (v_plus (v_mean n0) (v_mean 1.1877283736738395)),
+ :child 1587.5173898234634}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -2.1269065499305215 (v_plus (v_mean n0) (v_mean n0))),
+ :child 34.64861250056517}
+{:method "insert",
+ :gparent
+ (v_distance -2.1269065499305215 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 34.64861250056517,
+ :gchild
+ (v_distance
+  0.6683702611509158
+  (v_distance -2.1269065499305215 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 75.17335934742479}
+{:method "perturbExpr",
+ :gparent (v_plus (v_mean n0) (v_plus n0 (v_mean n0))),
+ :parent 345.96436666023453,
+ :gchild (v_plus -1.0525711164934606 n0),
+ :child 2783.150032242}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.236619660976496 (v_plus (v_mean n0) (v_mean n0))),
+ :child 92.58003784042748}
+{:method "insert",
+ :gparent
+ (v_distance -1.236619660976496 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 92.58003784042748,
+ :gchild
+ (v_distance
+  0.8940370808644431
+  (v_distance -1.236619660976496 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 182.66052596080317}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.1872896661392964 (v_plus (v_mean n0) (v_mean n0))),
+ :child 96.71699187332379}
+{:method "perturbTerms",
+ :gparent
+ (v_distance -1.1872896661392964 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 96.71699187332379,
+ :gchild (v_distance n0 (v_plus (v_mean n0) (v_mean n0))),
+ :child 5400.7062005237585}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.1799250667142296 (v_plus (v_mean n0) (v_mean n0))),
+ :child 97.34295884099565}
+{:method "perturbTerms",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild (v_distance n0 (v_plus (v_mean n0) (v_mean n0))),
+ :child 5400.7062005237585}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -0.4432743352078242 (v_plus (v_mean n0) (v_mean n0))),
+ :child 170.917460807487}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -0.08049710025524859 (v_plus (v_mean n0) (v_mean n0))),
+ :child 215.12752960720712}
+{:method "perturbTerms",
+ :gparent
+ (v_distance -0.08049710025524859 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 215.12752960720712,
+ :gchild (v_distance n0 (v_plus (v_mean n0) (v_mean n0))),
+ :child 5400.7062005237585}
+{:method "perturbOrder",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean (v_plus (v_mean n0) n0)),
+ :child 225.65100375362596}
+{:method "perturbOrder",
+ :gparent (v_mean (v_plus n0 (v_mean n0))),
+ :parent 225.65100375362596,
+ :gchild (v_mean (v_plus (v_mean n0) n0)),
+ :child 225.65100375362596}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.8352295882086813 (v_plus (v_mean n0) (v_mean n0))),
+ :child 50.13616778193871}
+{:method "perturbTerms",
+ :gparent
+ (v_distance -1.8352295882086813 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 50.13616778193871,
+ :gchild
+ (v_distance n0 (v_plus (v_mean n0) (v_mean 1.0477410503343083))),
+ :child 290.75352906196497}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -0.9358811146332076 (v_plus (v_mean n0) (v_mean n0))),
+ :child 119.31299474744753}
+{:method "suggestDepth",
+ :gparent
+ (v_distance -0.9358811146332076 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 119.31299474744753,
+ :gchild (v_distance -0.9358811146332076 (v_mean n0)),
+ :child 1676.8100683350149}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -0.8825809695377477 (v_plus (v_mean n0) (v_mean n0))),
+ :child 124.42830541992728}
+{:method "perturbTerms",
+ :gparent
+ (v_distance -0.8825809695377477 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 124.42830541992728,
+ :gchild
+ (v_distance 0.36098374832402375 (v_plus (v_mean n0) (v_mean n0))),
+ :child 276.0301530643286}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance 0.15402968370640835 (v_plus (v_mean n0) (v_mean n0))),
+ :child 246.50995485818848}
+{:method "insert",
+ :gparent (v_plus (v_mean n0) (v_plus n0 (v_mean n0))),
+ :parent 345.96436666023453,
+ :gchild (v_minus (v_plus (v_mean n0) (v_plus n0 (v_mean n0))) n0),
+ :child 225.65100375362601}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.8269750013791253 (v_plus (v_mean n0) (v_mean n0))),
+ :child 50.62398865635453}
+{:method "insert",
+ :gparent
+ (v_distance -1.8269750013791253 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 50.62398865635453,
+ :gchild
+ (v_cov
+  0.1227301239338096
+  (v_distance -1.8269750013791253 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -0.39166194459003045 (v_plus (v_mean n0) (v_mean n0))),
+ :child 176.88603701084529}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -0.39166194459003045 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 176.88603701084529,
+ :gchild (v_distance -0.39166194459003045 0.004102450708974109),
+ :child 5382.528328447184}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.0933993554164432 (v_plus (v_mean n0) (v_mean n0))),
+ :child 104.859841041185}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -1.0933993554164432 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 104.859841041185,
+ :gchild (v_distance -1.0933993554164432 n0),
+ :child 8703.69588554639}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -0.9697675905987135 (v_plus (v_mean n0) (v_mean n0))),
+ :child 116.11993772260722}
+{:method "suggestDepth",
+ :gparent
+ (v_distance -0.9697675905987135 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 116.11993772260722,
+ :gchild (v_distance -0.9697675905987135 (v_plus n0 (v_mean n0))),
+ :child 48227.95332881637}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.4535378304397562 (v_plus (v_mean n0) (v_mean n0))),
+ :child 75.54374288952097}
+{:method "insert",
+ :gparent
+ (v_distance -1.4535378304397562 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 75.54374288952097,
+ :gchild
+ (v_sin
+  (v_distance -1.4535378304397562 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 5614.2331504527865}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -0.6423072253181727 (v_plus (v_mean n0) (v_mean n0))),
+ :child 148.89857022903982}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -0.6423072253181727 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 148.89857022903982,
+ :gchild (v_distance -0.6423072253181727 n0),
+ :child 7233.911627936528}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -2.5404015427907147 (v_plus (v_mean n0) (v_mean n0))),
+ :child 18.52442643819835}
+{:method "suggestDepth",
+ :gparent
+ (v_distance -2.5404015427907147 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 18.52442643819835,
+ :gchild (v_distance -2.5404015427907147 (v_plus n0 (v_mean n0))),
+ :child 62513.88191020722}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -2.2450279875988306 (v_plus (v_mean n0) (v_mean n0))),
+ :child 29.344682680507667}
+{:method "suggestDepth",
+ :gparent
+ (v_distance -2.2450279875988306 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 29.344682680507667,
+ :gchild (v_distance -2.2450279875988306 (v_plus n0 (v_mean n0))),
+ :child 59678.12263475185}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.1012309774494082 (v_plus (v_mean n0) (v_mean n0))),
+ :child 104.16714635695183}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.0766632550836481 (v_plus (v_mean n0) (v_mean n0))),
+ :child 106.34834622091616}
+{:method "insert",
+ :gparent
+ (v_distance -1.0766632550836481 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 106.34834622091616,
+ :gchild
+ (v_mean
+  (v_distance -1.0766632550836481 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 106.34834622091616}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -0.6388797396974683 (v_plus (v_mean n0) (v_mean n0))),
+ :child 149.26434223605352}
+{:method "perturbTerms",
+ :gparent
+ (v_distance -0.6388797396974683 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 149.26434223605352,
+ :gchild
+ (v_distance n0 (v_plus (v_mean 1.591127731857341) (v_mean n0))),
+ :child 221.99883990795104}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.986951128118989 (v_plus (v_mean n0) (v_mean n0))),
+ :child 41.6553245745554}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.499969066339582 (v_plus (v_mean n0) (v_mean n0))),
+ :child 72.14168444078486}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1799250667142296 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 97.34295884099565,
+ :gchild
+ (v_distance -0.5135210968770715 (v_plus (v_mean n0) (v_mean n0))),
+ :child 162.96516706079697}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -0.5135210968770715 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 162.96516706079697,
+ :gchild (v_distance -0.5135210968770715 0.6418739327222264),
+ :child 4903.44295933833}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.3634605279068366 (v_plus (v_mean n0) (v_mean n0))),
+ :child 82.3897143460876}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -1.3634605279068366 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 82.3897143460876,
+ :gchild (v_distance -1.3634605279068366 1.446060726546407),
+ :child 3940.0684909539896}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.6683702611509158
+  (v_distance -2.1269065499305215 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 75.17335934742479,
+ :gchild
+ (v_distance
+  0.9659027065735849
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 41.16971224530281}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  0.9659027065735849
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 41.16971224530281,
+ :gchild
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 9.982879920666}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.76074340562089 (v_plus (v_mean n0) (v_mean n0))),
+ :child 54.63674048749968}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -0.34763376131032653 (v_plus (v_mean n0) (v_mean n0))),
+ :child 182.06177555367435}
+{:method "insert",
+ :gparent
+ (v_distance -0.34763376131032653 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 182.06177555367435,
+ :gchild
+ (v_cos
+  (v_distance -0.34763376131032653 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 5618.044522921806}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.1573121116995262 (v_plus (v_mean n0) (v_mean n0))),
+ :child 99.27854399798974}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -1.1573121116995262 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.27854399798974,
+ :gchild (v_distance -1.1573121116995262 2.1485648238226567),
+ :child 3672.3356132026834}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.7549558421288736 (v_plus (v_mean n0) (v_mean n0))),
+ :child 54.99572599562575}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -2.2829111952911996 (v_plus (v_mean n0) (v_mean n0))),
+ :child 27.761836858752794}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -2.2829111952911996 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 27.761836858752794,
+ :gchild (v_distance -2.2829111952911996 n0),
+ :child 13314.320973714017}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -0.5427875957111178 (v_plus (v_mean n0) (v_mean n0))),
+ :child 159.7102973668235}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -1.7396221186718035 (v_plus (v_mean n0) (v_mean n0))),
+ :child 55.953309034411795}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -1.7396221186718035 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 55.953309034411795,
+ :gchild (v_distance -1.7396221186718035 1.1967390563141285),
+ :child 3870.7140026086972}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.1549591623880957 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 99.48112261034655,
+ :gchild
+ (v_distance -0.5394002719611682 (v_plus (v_mean n0) (v_mean n0))),
+ :child 160.08526489484976}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -0.5394002719611682 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 160.08526489484976,
+ :gchild (v_distance -0.5394002719611682 n0),
+ :child 6919.798256682992}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.986951128118989 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 41.6553245745554,
+ :gchild
+ (v_distance -2.136987956225465 (v_plus (v_mean n0) (v_mean n0))),
+ :child 34.17414978459307}
+{:method "suggestDepth",
+ :gparent
+ (v_distance -2.136987956225465 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 34.17414978459307,
+ :gchild (v_distance -2.136987956225465 (v_mean n0)),
+ :child 1273.7597708734272}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.76074340562089 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 54.63674048749968,
+ :gchild
+ (v_distance -2.7078741074699586 (v_plus (v_mean n0) (v_mean n0))),
+ :child 13.939777046148148}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -0.0018053858057055644
+  (v_distance -2.559205961320732 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 17.899685967926562}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  -0.0018053858057055644
+  (v_distance -2.559205961320732 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 17.899685967926562,
+ :gchild (v_distance -0.0018053858057055644 n0),
+ :child 5405.436379748211}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.76074340562089 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 54.63674048749968,
+ :gchild
+ (v_distance -1.6600660397081342 (v_plus (v_mean n0) (v_mean n0))),
+ :child 61.07252591764866}
+{:method "perturbTerms",
+ :gparent
+ (v_distance -1.6600660397081342 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 61.07252591764866,
+ :gchild
+ (v_distance 0.9786657112528674 (v_plus (v_mean n0) (v_mean n0))),
+ :child 374.32437139204234}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  1.270493689711823
+  (v_distance -4.382319628253936 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 7.4979421893046325}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  1.270493689711823
+  (v_distance -4.382319628253936 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 7.4979421893046325,
+ :gchild (v_distance 1.270493689711823 n0),
+ :child 2646.611968826315}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.986951128118989 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 41.6553245745554,
+ :gchild
+ (v_distance -1.6152500912149705 (v_plus (v_mean n0) (v_mean n0))),
+ :child 64.06778708288255}
+{:method "suggestDepth",
+ :gparent
+ (v_distance -1.6152500912149705 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 64.06778708288255,
+ :gchild (v_distance -1.6152500912149705 (v_plus n0 n0)),
+ :child 63038.60378825317}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -1.2121521279677492
+  (v_distance -4.045273163480912 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 82.68829701082103}
+{:method "insert",
+ :gparent
+ (v_distance
+  -1.2121521279677492
+  (v_distance -4.045273163480912 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 82.68829701082103,
+ :gchild
+ (v_mult
+  2.29708447619409
+  (v_distance
+   -1.2121521279677492
+   (v_distance -4.045273163480912 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 13569.37660917395}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -0.2890261249204346
+  (v_distance -1.958267042901925 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 29.248424719090117}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  -0.2890261249204346
+  (v_distance -1.958267042901925 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 29.248424719090117,
+ :gchild
+ (v_distance
+  (v_distance -1.958267042901925 (v_plus (v_mean n0) (v_mean n0)))
+  -0.2890261249204346),
+ :child 29.248424719090117}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.26321939419514584
+  (v_distance -3.590804532101545 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 6.731389336911665}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  0.26321939419514584
+  (v_distance -3.590804532101545 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.731389336911665,
+ :gchild (v_distance 0.26321939419514584 -3.590804532101545),
+ :child 3388.1174665652998}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.986951128118989 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 41.6553245745554,
+ :gchild
+ (v_distance -1.0367247361095524 (v_plus (v_mean n0) (v_mean n0))),
+ :child 109.94573955321076}
+{:method "perturbTerms",
+ :gparent
+ (v_distance -1.0367247361095524 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 109.94573955321076,
+ :gchild
+ (v_distance 0.7856662050391583 (v_plus (v_mean n0) (v_mean n0))),
+ :child 341.97231261988276}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.7239058326626171
+  (v_distance -2.815592687879252 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 36.338072022485406}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  0.7239058326626171
+  (v_distance -2.815592687879252 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 36.338072022485406,
+ :gchild
+ (v_distance
+  0.7239058326626171
+  (v_distance -2.815592687879252 (v_mean n0))),
+ :child 1287.9140825777695}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.986951128118989 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 41.6553245745554,
+ :gchild
+ (v_distance -0.7096818100647684 (v_plus (v_mean n0) (v_mean n0))),
+ :child 141.80394174095386}
+{:method "insert",
+ :gparent
+ (v_distance -0.7096818100647684 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 141.80394174095386,
+ :gchild
+ (v_plus
+  (v_distance -0.7096818100647684 (v_plus (v_mean n0) (v_mean n0)))
+  n0),
+ :child 438.6692609171971}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  1.0940848044904006
+  (v_distance -2.101277052492578 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 112.64686060561749}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  1.0940848044904006
+  (v_distance -2.101277052492578 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 112.64686060561749,
+ :gchild
+ (v_distance
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.101277052492578)
+  1.0940848044904006),
+ :child 112.64686060561749}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.36996321283494493
+  (v_distance -4.36129133649076 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 16.048500404521135}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  0.36996321283494493
+  (v_distance -4.36129133649076 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 16.048500404521135,
+ :gchild (v_distance 0.36996321283494493 0.44688233796648225),
+ :child 5590.49564054013}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -0.6540572524279327
+  (v_distance -2.7648022544377144 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 6.967594153056739}
+{:method "insert",
+ :gparent
+ (v_distance
+  -0.6540572524279327
+  (v_distance -2.7648022544377144 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.967594153056739,
+ :gchild
+ (v_plus
+  (v_distance
+   -0.6540572524279327
+   (v_distance -2.7648022544377144 (v_plus (v_mean n0) (v_mean n0))))
+  n0),
+ :child 977.8118930196565}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.986951128118989 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 41.6553245745554,
+ :gchild
+ (v_distance -1.5214744545915726 (v_plus (v_mean n0) (v_mean n0))),
+ :child 70.59518535539854}
+{:method "insert",
+ :gparent
+ (v_distance -1.5214744545915726 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 70.59518535539854,
+ :gchild
+ (v_cov
+  n0
+  (v_distance -1.5214744545915726 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.7549558421288736 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 54.99572599562575,
+ :gchild
+ (v_distance -1.4708936825649834 (v_plus (v_mean n0) (v_mean n0))),
+ :child 74.26197142047931}
+{:method "insert",
+ :gparent
+ (v_distance -1.4708936825649834 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 74.26197142047931,
+ :gchild
+ (v_log
+  (v_distance -1.4708936825649834 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 3995.898382155355}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.986951128118989 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 41.6553245745554,
+ :gchild
+ (v_distance -2.6651204599299407 (v_plus (v_mean n0) (v_mean n0))),
+ :child 15.0035368234945}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -2.6651204599299407 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 15.0035368234945,
+ :gchild (v_distance -2.6651204599299407 0.8855723820164405),
+ :child 3543.9116041421166}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.986951128118989 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 41.6553245745554,
+ :gchild
+ (v_distance -1.9378126437179537 (v_plus (v_mean n0) (v_mean n0))),
+ :child 44.30122374177452}
+{:method "insert",
+ :gparent
+ (v_distance -1.9378126437179537 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 44.30122374177452,
+ :gchild
+ (v_mult
+  (v_distance -1.9378126437179537 (v_plus (v_mean n0) (v_mean n0)))
+  n0),
+ :child 196736.31207563393}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.499969066339582 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 72.14168444078486,
+ :gchild
+ (v_distance -2.2319191311855247 (v_plus (v_mean n0) (v_mean n0))),
+ :child 29.90576920715376}
+{:method "suggestDepth",
+ :gparent
+ (v_distance -2.2319191311855247 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 29.90576920715376,
+ :gchild (v_distance -2.2319191311855247 (v_plus n0 (v_mean n0))),
+ :child 59553.87243108223}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.4206666475149862
+  (v_distance -4.089617247856102 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 9.322242831594027}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.4206666475149862
+  (v_distance -4.089617247856102 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.322242831594027,
+ :gchild
+ (v_distance
+  0.4206666475149862
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.089617247856102)),
+ :child 9.322242831594027}
+{:method "perturbReal",
+ :gparent
+ (v_distance -1.986951128118989 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 41.6553245745554,
+ :gchild
+ (v_distance -1.9762373044470682 (v_plus (v_mean n0) (v_mean n0))),
+ :child 42.22398508009477}
+{:method "suggestDepth",
+ :gparent
+ (v_distance -1.9762373044470682 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 42.22398508009477,
+ :gchild (v_distance -1.9762373044470682 (v_mean n0)),
+ :child 1324.3574224225113}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.6204210005483541
+  (v_distance -1.5831222809909549 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 116.78199205579602}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  0.6204210005483541
+  (v_distance -1.5831222809909549 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 116.78199205579602,
+ :gchild (v_distance 0.6204210005483541 -1.5831222809909549),
+ :child 4280.291127156934}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.23421405913950422
+  (v_distance -2.1711750868761595 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 44.347931101126115}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.23421405913950422
+  (v_distance -2.1711750868761595 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 44.347931101126115,
+ :gchild
+ (v_cos
+  (v_distance
+   0.23421405913950422
+   (v_distance -2.1711750868761595 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 5674.469872683633}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  1.0965713419431298
+  (v_distance -3.07180477452319 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 42.277503118939755}
+{:method "insert",
+ :gparent
+ (v_distance
+  1.0965713419431298
+  (v_distance -3.07180477452319 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 42.277503118939755,
+ :gchild
+ (v_sin
+  (v_distance
+   1.0965713419431298
+   (v_distance -3.07180477452319 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 5619.010114501982}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -0.09995180545054812
+  (v_distance -2.641285309880173 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 13.160456763924756}
+{:method "insert",
+ :gparent
+ (v_distance
+  -0.09995180545054812
+  (v_distance -2.641285309880173 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 13.160456763924756,
+ :gchild
+ (v_sin
+  (v_distance
+   -0.09995180545054812
+   (v_distance -2.641285309880173 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 5642.156974568784}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -0.4278190778512603
+  (v_distance -3.7857753104567573 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 23.107101782394103}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  -0.4278190778512603
+  (v_distance -3.7857753104567573 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 23.107101782394103,
+ :gchild
+ (v_distance
+  -0.4278190778512603
+  (v_distance -3.7857753104567573 (v_mean n0))),
+ :child 713.0522211017052}
+{:method "perturbReal",
+ :gparent
+ (v_distance -2.7078741074699586 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 13.939777046148148,
+ :gchild
+ (v_distance -2.1181129127697025 (v_plus (v_mean n0) (v_mean n0))),
+ :child 35.06578835292736}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -2.1181129127697025 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 35.06578835292736,
+ :gchild (v_distance -2.1181129127697025 (v_plus n0 (v_mean n0))),
+ :child 58480.900653920784}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.3244459399894351
+  (v_distance -1.8721792717531238 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 68.73193729743866}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  0.3244459399894351
+  (v_distance -1.8721792717531238 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 68.73193729743866,
+ :gchild (v_distance 0.3244459399894351 0.2313339765523837),
+ :child 5579.835821105348}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.6567590622971121
+  (v_distance -3.084448842543606 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 22.241571506002803}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  0.6567590622971121
+  (v_distance -3.084448842543606 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 22.241571506002803,
+ :gchild
+ (v_distance
+  0.6567590622971121
+  (v_distance -3.084448842543606 (v_mean n0))),
+ :child 1184.8836302752334}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.9380819244031648
+  (v_distance -2.6322245412834566 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 58.848795323565994}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  0.9380819244031648
+  (v_distance -2.6322245412834566 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 58.848795323565994,
+ :gchild
+ (v_distance
+  0.9380819244031648
+  (v_distance -2.6322245412834566 (v_plus n0 n0))),
+ :child 70519.92067650682}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.9646935702561976
+  (v_distance -2.490305063211389 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 70.29980363306653}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.9646935702561976
+  (v_distance -2.490305063211389 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 70.29980363306653,
+ :gchild
+ (v_distance
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.490305063211389)
+  0.9646935702561976),
+ :child 70.29980363306653}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  1.3698752590808037
+  (v_distance -2.680156630761827 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 86.58375232098781}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  1.3698752590808037
+  (v_distance -2.680156630761827 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 86.58375232098781,
+ :gchild (v_distance 1.3698752590808037 -1.8894218683788713),
+ :child 3697.0416230081514}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -0.16013981441881792
+  (v_distance -2.7200639930682367 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 10.3933214707182}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  -0.16013981441881792
+  (v_distance -2.7200639930682367 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 10.3933214707182,
+ :gchild
+ (v_distance
+  -0.16013981441881792
+  (v_distance -2.7200639930682367 (v_mean n0))),
+ :child 1053.2630280273936}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.12265053531222535
+  (v_distance -4.057824605743107 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 14.577881578264158}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.12265053531222535
+  (v_distance -4.057824605743107 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 14.577881578264158,
+ :gchild
+ (v_dot
+  (v_distance
+   0.12265053531222535
+   (v_distance -4.057824605743107 (v_plus (v_mean n0) (v_mean n0))))
+  -1.4526745096689178),
+ :child 35204.30499363163}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.6576104423974454
+  (v_distance -3.080729364973725 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 22.403036431628607}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.6576104423974454
+  (v_distance -3.080729364973725 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 22.403036431628607,
+ :gchild
+ (v_pd
+  n0
+  (v_distance
+   0.6576104423974454
+   (v_distance -3.080729364973725 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 5381.6042811263915}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  1.0698296693143512
+  (v_distance -3.3717521443445855 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 26.989135472317216}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  1.0698296693143512
+  (v_distance -3.3717521443445855 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 26.989135472317216,
+ :gchild
+ (v_distance
+  n0
+  (v_distance n0 (v_plus (v_mean 0.4397544478813025) (v_mean n0)))),
+ :child 10614.228796023608}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.2539714640903283
+  (v_distance -3.944109990128628 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 9.636687422451086}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.2539714640903283
+  (v_distance -3.944109990128628 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.636687422451086,
+ :gchild
+ (v_distance
+  (v_distance
+   0.2539714640903283
+   (v_distance -3.944109990128628 (v_plus (v_mean n0) (v_mean n0))))
+  1.145092207212356),
+ :child 18.382147283214085}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 6.756397550332444}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.28701100694081627
+  (v_distance -1.4846191530626665 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 95.8436039278525}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.28701100694081627
+  (v_distance -1.4846191530626665 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 95.8436039278525,
+ :gchild
+ (v_distance
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -1.4846191530626665)
+  0.28701100694081627),
+ :child 95.8436039278525}
+{:method "perturbReal",
+ :gparent
+ (v_distance -2.7078741074699586 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 13.939777046148148,
+ :gchild
+ (v_distance -2.7527357371664083 (v_plus (v_mean n0) (v_mean n0))),
+ :child 12.902179537942798}
+{:method "perturbTerms",
+ :gparent
+ (v_distance -2.7527357371664083 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 12.902179537942798,
+ :gchild
+ (v_distance
+  0.7679221985236038
+  (v_plus (v_mean n0) (v_mean 0.17665041918939267))),
+ :child 2272.599643299231}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.4206666475149862
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.089617247856102)),
+ :parent 9.322242831594027,
+ :gchild
+ (v_distance
+  1.2073956735954838
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.7538804383560955)),
+ :child 18.33825969878091}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  1.2073956735954838
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.7538804383560955)),
+ :parent 18.33825969878091,
+ :gchild
+ (v_distance 1.2073956735954838 (v_plus (v_mean n0) (v_mean n0))),
+ :child 414.59508681088926}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  1.8780871377887132
+  (v_distance -3.695671204693877 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 51.182278365151745}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  1.8780871377887132
+  (v_distance -3.695671204693877 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 51.182278365151745,
+ :gchild
+ (v_distance
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.695671204693877)
+  1.8780871377887132),
+ :child 51.182278365151745}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -0.11480850893795065
+  (v_distance -0.9316307281213958 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 109.06485038110091}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  -0.11480850893795065
+  (v_distance -0.9316307281213958 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 109.06485038110091,
+ :gchild
+ (v_distance
+  (v_distance -0.9316307281213958 (v_plus (v_mean n0) (v_mean n0)))
+  -0.11480850893795065),
+ :child 109.06485038110091}
+{:method "perturbReal",
+ :gparent
+ (v_distance -2.7078741074699586 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 13.939777046148148,
+ :gchild
+ (v_distance -3.8190871199714884 (v_plus (v_mean n0) (v_mean n0))),
+ :child 11.937578415258738}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -3.8190871199714884 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 11.937578415258738,
+ :gchild (v_distance -3.8190871199714884 -0.11827449261743592),
+ :child 3466.3484518622695}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.26969194203791297
+  (v_distance -2.156748487957275 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 47.13562971970439}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  0.26969194203791297
+  (v_distance -2.156748487957275 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 47.13562971970439,
+ :gchild
+ (v_distance
+  n0
+  (v_distance
+   1.5631561320752603
+   (v_plus (v_mean 0.22460389959438884) (v_mean n0)))),
+ :child 251.5992822089198}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.4206666475149862
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.089617247856102)),
+ :parent 9.322242831594027,
+ :gchild
+ (v_distance
+  -1.5060912839845313
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.505620208307166)),
+ :child 152.86836561709495}
+{:method "insert",
+ :gparent
+ (v_distance
+  -1.5060912839845313
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.505620208307166)),
+ :parent 152.86836561709495,
+ :gchild
+ (v_log
+  (v_distance
+   -1.5060912839845313
+   (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.505620208307166))),
+ :child 3849.445643656501}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  -0.3411797625730346
+  (v_distance -3.2255272514271214 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 8.05727350345159}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  -0.3411797625730346
+  (v_distance -3.2255272514271214 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 8.05727350345159,
+ :gchild
+ (v_distance
+  n0
+  (v_distance n0 (v_plus (v_mean -0.07078943639789838) (v_mean n0)))),
+ :child 10202.629180311464}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.8563306926812989
+  (v_distance -4.083583854629555 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 6.856229612621621}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.8563306926812989
+  (v_distance -4.083583854629555 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.856229612621621,
+ :gchild
+ (v_mean
+  (v_distance
+   0.8563306926812989
+   (v_distance -4.083583854629555 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 6.856229612621621}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.877081811953522
+  (v_distance -3.0460484433694393 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 32.6960331766439}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  0.877081811953522
+  (v_distance -3.0460484433694393 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 32.6960331766439,
+ :gchild
+ (v_distance
+  -0.2835142310770253
+  (v_distance n0 (v_plus (v_mean -0.1938020535558753) (v_mean n0)))),
+ :child 346.91286335655514}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  1.2853801800960287
+  (v_distance -2.128876917424091 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 128.2515048445861}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  1.2853801800960287
+  (v_distance -2.128876917424091 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 128.2515048445861,
+ :gchild
+ (v_distance 1.2853801800960287 (v_distance n0 0.016732859460494902)),
+ :child 4557.864061295408}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.10394605276931058
+  (v_distance -2.0331737362631506 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 44.773398541740725}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.10394605276931058
+  (v_distance -2.0331737362631506 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 44.773398541740725,
+ :gchild
+ (v_distance
+  -0.5746944659844975
+  (v_distance
+   0.10394605276931058
+   (v_distance -2.0331737362631506 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 19.671869858019704}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.2811924948841592
+  (v_distance -2.4266623741415767 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 33.778112840677124}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  0.2811924948841592
+  (v_distance -2.4266623741415767 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 33.778112840677124,
+ :gchild (v_distance 0.2811924948841592 -0.9375053415151907),
+ :child 4864.5608983554275}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.4206666475149862
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.089617247856102)),
+ :parent 9.322242831594027,
+ :gchild
+ (v_distance
+  -0.221298258232915
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.556415232609636)),
+ :child 12.359361658496377}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  -0.221298258232915
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.556415232609636)),
+ :parent 12.359361658496377,
+ :gchild
+ (v_distance
+  -0.221298258232915
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -0.7632842635395094)),
+ :child 114.73838560022419}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  1.9720050682538268
+  (v_distance -3.033451425483973 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 107.71145836765137}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  1.9720050682538268
+  (v_distance -3.033451425483973 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 107.71145836765137,
+ :gchild (v_distance 1.9720050682538268 -3.033451425483973),
+ :child 2830.2304460758564}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.4206666475149862
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.089617247856102)),
+ :parent 9.322242831594027,
+ :gchild
+ (v_distance
+  0.344453760992319
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.049776538003471)),
+ :child 9.873078696097949}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  0.344453760992319
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.049776538003471)),
+ :parent 9.873078696097949,
+ :gchild (v_distance 0.344453760992319 n0),
+ :child 4541.26877465054}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.4206666475149862
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.089617247856102)),
+ :parent 9.322242831594027,
+ :gchild
+ (v_distance
+  2.160484225119148
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.924453153089794)),
+ :child 136.21953323081482}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  2.160484225119148
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.924453153089794)),
+ :parent 136.21953323081482,
+ :gchild
+ (v_distance
+  2.160484225119148
+  (v_distance (v_mean n0) -2.924453153089794)),
+ :child 1739.2186812980153}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -0.9270905189553188
+  (v_distance -3.7348377059386335 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 43.358078544321536}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  -0.9270905189553188
+  (v_distance -3.7348377059386335 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 43.358078544321536,
+ :gchild
+ (v_distance
+  -0.9270905189553188
+  (v_distance n0 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 6020.594029536888}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -0.09783448853103262
+  (v_distance -2.151187843491737 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 29.175082689735913}
+{:method "insert",
+ :gparent
+ (v_distance
+  -0.09783448853103262
+  (v_distance -2.151187843491737 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 29.175082689735913,
+ :gchild
+ (v_mult
+  n0
+  (v_distance
+   -0.09783448853103262
+   (v_distance -2.151187843491737 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 205342.86700418498}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.33237024142647925
+  (v_distance -2.488679386551259 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 33.276195674831456}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.33237024142647925
+  (v_distance -2.488679386551259 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 33.276195674831456,
+ :gchild
+ (v_minus
+  1.7295270192361876
+  (v_distance
+   0.33237024142647925
+   (v_distance -2.488679386551259 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 18789.70126983184}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.48265353193877253
+  (v_distance -3.526444143331026 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 8.125820294075462}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance -3.526444143331026 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :child 8.125820294075462}
+{:method "perturbReal",
+ :gparent
+ (v_distance -2.7078741074699586 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 13.939777046148148,
+ :gchild
+ (v_distance -3.963259610021069 (v_plus (v_mean n0) (v_mean n0))),
+ :child 15.297647550797123}
+{:method "insert",
+ :gparent
+ (v_distance -3.963259610021069 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 15.297647550797123,
+ :gchild
+ (v_log
+  (v_distance -3.963259610021069 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 3910.268802120541}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.4814544665118303
+  (v_distance -2.138817724764012 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 61.25088909344672}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.4814544665118303
+  (v_distance -2.138817724764012 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 61.25088909344672,
+ :gchild
+ (v_distance
+  -0.12735445093693126
+  (v_distance
+   0.4814544665118303
+   (v_distance -2.138817724764012 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 53.16395548739012}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  -0.4799927429083667
+  (v_distance -3.6007600730436837 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 18.650810881236744}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  -0.4799927429083667
+  (v_distance -3.6007600730436837 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 18.650810881236744,
+ :gchild (v_distance -0.4799927429083667 n0),
+ :child 6742.025728353766}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.4206666475149862
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.089617247856102)),
+ :parent 9.322242831594027,
+ :gchild
+ (v_distance
+  1.0166973837414053
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.5846731786773174)),
+ :child 17.69241498056316}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  1.0166973837414053
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.5846731786773174)),
+ :parent 17.69241498056316,
+ :gchild
+ (v_distance
+  1.273674370534324
+  (v_distance
+   (v_plus (v_mean -0.3694625556375169) (v_mean -1.9086279521466771))
+   -3.5846731786773174)),
+ :child 5619.521159812277}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.4206666475149862
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.089617247856102)),
+ :parent 9.322242831594027,
+ :gchild
+ (v_distance
+  0.21701652758150974
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.9761702257704954)),
+ :child 10.7854316025619}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.21701652758150974
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.9761702257704954)),
+ :parent 10.7854316025619,
+ :gchild
+ (v_distance
+  0.21701652758150974
+  (v_distance -3.9761702257704954 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 10.7854316025619}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  1.5361604256984478
+  (v_distance -1.959404440319319 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 173.22116142000957}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  1.5361604256984478
+  (v_distance -1.959404440319319 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 173.22116142000957,
+ :gchild (v_distance 1.5361604256984478 -1.959404440319319),
+ :child 3572.6211534413583}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -1.4266416429634932
+  (v_distance -2.1785577548351776 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 8.484426957164906}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  -1.4266416429634932
+  (v_distance -2.1785577548351776 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 8.484426957164906,
+ :gchild
+ (v_distance
+  -1.4266416429634932
+  (v_distance -2.1785577548351776 (v_mean n0))),
+ :child 859.4607954777346}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  1.8444695199844108
+  (v_distance -3.72878952409458 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 47.2913759113078}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  1.8444695199844108
+  (v_distance -3.72878952409458 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 47.2913759113078,
+ :gchild
+ (v_distance
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.72878952409458)
+  1.8444695199844108),
+ :child 47.2913759113078}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.4206666475149862
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.089617247856102)),
+ :parent 9.322242831594027,
+ :gchild
+ (v_distance
+  -0.42955493966494224
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.903757240626619)),
+ :child 88.71930971109039}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  -0.42955493966494224
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.903757240626619)),
+ :parent 88.71930971109039,
+ :gchild
+ (v_distance
+  (v_distance -4.903757240626619 (v_plus (v_mean n0) (v_mean n0)))
+  -0.42955493966494224),
+ :child 88.71930971109039}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.16926442495716282
+  (v_distance -3.8162893413382637 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 9.015755266481207}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.13966994204953426
+  (v_distance -4.121937198628365 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 15.80267120198482}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  0.13966994204953426
+  (v_distance -4.121937198628365 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 15.80267120198482,
+ :gchild (v_distance 0.13966994204953426 -4.121937198628365),
+ :child 3184.5734380497915}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -0.9494648020364848
+  (v_distance -2.691774642143952 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 8.938089646260153}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  -0.9494648020364848
+  (v_distance -2.691774642143952 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 8.938089646260153,
+ :gchild (v_distance -0.9494648020364848 -0.2966259609478294),
+ :child 5217.812215278702}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  1.4018748042556668
+  (v_distance -2.1622768893283206 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 136.58282908413216}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.5044594476321779
+  (v_distance -3.291540413533103 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 12.162221750746212}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  0.5044594476321779
+  (v_distance -3.291540413533103 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 12.162221750746212,
+ :gchild
+ (v_distance
+  n0
+  (v_distance
+   -3.291540413533103
+   (v_plus (v_mean n0) (v_mean 0.5430704726361488)))),
+ :child 794.1394616557274}
+{:method "perturbReal",
+ :gparent
+ (v_distance -2.7078741074699586 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 13.939777046148148,
+ :gchild
+ (v_distance -1.5910507547904325 (v_plus (v_mean n0) (v_mean n0))),
+ :child 65.71854532889715}
+{:method "perturbExpr",
+ :gparent
+ (v_distance -1.5910507547904325 (v_plus (v_mean n0) (v_mean n0))),
+ :parent 65.71854532889715,
+ :gchild
+ (v_distance
+  -1.5910507547904325
+  (v_plus -0.5324075061908925 1.4954293357582982)),
+ :child 4081.6977435630724}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -0.8408831581531564
+  (v_distance -5.003489179076956 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 135.33446210028137}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  -0.8408831581531564
+  (v_distance -5.003489179076956 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 135.33446210028137,
+ :gchild (v_distance -0.8408831581531564 -5.003489179076956),
+ :child 3233.4028621206526}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance
+   0.057201800733395106
+   (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 10.971913753935105,
+ :gchild
+ (v_distance
+  0.49291999073367004
+  (v_distance
+   1.6370408184817118
+   (v_distance -2.9144113418177797 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 134.1432587164196}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  0.49291999073367004
+  (v_distance
+   1.6370408184817118
+   (v_distance -2.9144113418177797 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 134.1432587164196,
+ :gchild
+ (v_distance
+  -0.3103748703178552
+  (v_distance
+   n0
+   (v_distance
+    -0.3816526301352308
+    (v_plus (v_mean -0.9210603661297666) (v_mean n0))))),
+ :child 323.3997118249311}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.3514938049240952
+  (v_distance -1.649125780756464 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 87.59801593312407}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  0.3514938049240952
+  (v_distance -1.649125780756464 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 87.59801593312407,
+ :gchild (v_distance 0.3514938049240952 -0.49581474625700406),
+ :child 5094.9652633140295}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -1.3691802108339557
+  (v_distance -4.157944585843717 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 105.16774097953638}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  -1.3691802108339557
+  (v_distance -4.157944585843717 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 105.16774097953638,
+ :gchild
+ (v_distance
+  -0.505716873722606
+  (v_distance n0 (v_plus (v_mean -0.25809628443617694) (v_mean n0)))),
+ :child 324.3665930295214}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.474527894960417
+  (v_distance -5.342768054917661 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 55.378292510956534}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.474527894960417
+  (v_distance -5.342768054917661 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 55.378292510956534,
+ :gchild
+ (v_cos
+  (v_distance
+   0.474527894960417
+   (v_distance -5.342768054917661 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 5635.1657966079565}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  2.2700911685375194
+  (v_distance -2.2182835361485873 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 232.56096021940405}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  2.2700911685375194
+  (v_distance -2.2182835361485873 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 232.56096021940405,
+ :gchild
+ (v_distance
+  (v_distance -2.2182835361485873 (v_plus (v_mean n0) (v_mean n0)))
+  2.2700911685375194),
+ :child 232.56096021940405}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  -0.3927335189802704
+  (v_distance -3.9848083214165153 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 29.58002368889888}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  -0.3927335189802704
+  (v_distance -3.9848083214165153 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 29.58002368889888,
+ :gchild
+ (v_distance
+  (v_distance -3.9848083214165153 (v_plus (v_mean n0) (v_mean n0)))
+  -0.3927335189802704),
+ :child 29.58002368889888}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  0.6968259992372368
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -1.8715068164052882)),
+ :child 97.79002545307583}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  0.6968259992372368
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -1.8715068164052882)),
+ :parent 97.79002545307583,
+ :gchild (v_distance 0.6968259992372368 0.01463790930928716),
+ :child 5199.175305740969}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.4206666475149862
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.089617247856102)),
+ :parent 9.322242831594027,
+ :gchild
+ (v_distance
+  1.1493952135096122
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -5.560336260739658)),
+ :child 31.030505140156937}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  1.1493952135096122
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -5.560336260739658)),
+ :parent 31.030505140156937,
+ :gchild
+ (v_distance
+  1.1493952135096122
+  (v_distance -5.560336260739658 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 31.030505140156937}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.6449198442819558
+  (v_distance -3.282919360130092 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 15.716238310276902}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  0.6449198442819558
+  (v_distance -3.282919360130092 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 15.716238310276902,
+ :gchild (v_distance 0.6449198442819558 (v_mean n0)),
+ :child 2295.2255508863673}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  2.032934925082578
+  (v_distance -3.672646305065757 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 62.422965784293886}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  2.032934925082578
+  (v_distance -3.672646305065757 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 62.422965784293886,
+ :gchild
+ (v_distance
+  2.032934925082578
+  (v_distance -3.672646305065757 (v_mean n0))),
+ :child 1433.6287834887844}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.5715869574067216
+  (v_distance -4.738270374547126 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 21.452808993430892}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.5715869574067216
+  (v_distance -4.738270374547126 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 21.452808993430892,
+ :gchild
+ (v_distance
+  0.5715869574067216
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.738270374547126)),
+ :child 21.452808993430892}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  -0.23422725253341964
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.121019427174275)),
+ :child 6.7677808137891216}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  -0.23422725253341964
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.121019427174275)),
+ :parent 6.7677808137891216,
+ :gchild (v_distance -0.23422725253341964 -3.121019427174275),
+ :child 3897.7411096095675}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  0.01302564317362545
+  (v_distance -2.833230793491749 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 11.493268387622921}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  0.01302564317362545
+  (v_distance -2.833230793491749 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 11.493268387622921,
+ :gchild (v_distance 0.01302564317362545 -2.833230793491749),
+ :child 3919.9159506964506}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.21701652758150974
+  (v_distance -3.9761702257704954 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 10.7854316025619,
+ :gchild
+ (v_distance
+  -1.0582945048985302
+  (v_distance -4.870203172862034 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 144.0091611871211}
+{:method "insert",
+ :gparent
+ (v_distance
+  -1.0582945048985302
+  (v_distance -4.870203172862034 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 144.0091611871211,
+ :gchild
+ (v_distance
+  -1.0582945048985302
+  (v_distance
+   (v_minus -4.870203172862034 0.7622171453659761)
+   (v_plus (v_plus (v_mean n0) (v_mean n0)) n0))),
+ :child 200634.1280265103}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.09852313311109939
+  (v_distance -1.0905702141399085 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 114.04561145545944}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  0.09852313311109939
+  (v_distance -1.0905702141399085 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 114.04561145545944,
+ :gchild (v_distance 0.09852313311109939 (v_log -1.0587000738790544)),
+ :child 1746.7292839248494}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.16035476399376453
+  (v_distance -3.718024504981707 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 7.965576839676537}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  0.16035476399376453
+  (v_distance -3.718024504981707 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 7.965576839676537,
+ :gchild
+ (v_distance
+  1.1074708327024139
+  (v_distance n0 (v_plus (v_mean n0) (v_mean 1.2150804626654397)))),
+ :child 364.6098462065859}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.723574967663681
+  (v_distance -3.8957592367143516 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 7.095905374207223}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  0.723574967663681
+  (v_distance -3.8957592367143516 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 7.095905374207223,
+ :gchild
+ (v_distance
+  0.723574967663681
+  (v_distance n0 (v_plus (v_mean n0) (v_mean 1.4001015572154145)))),
+ :child 291.82909256812894}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.057201800733395106
+  (v_distance -2.962072228845398 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.982879920666,
+ :gchild
+ (v_distance
+  -0.1292855137654022
+  (v_distance -2.2909958292685597 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 22.503693983686233}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  -0.1292855137654022
+  (v_distance -2.2909958292685597 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 22.503693983686233,
+ :gchild
+ (v_distance
+  -0.1292855137654022
+  (v_mean (v_sin (v_mult n0 1.0036862989622692)))),
+ :child 5501.173280718391}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  0.6478996141284292
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.605503323690063)),
+ :child 15.150162999052629}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  0.6478996141284292
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.605503323690063)),
+ :parent 15.150162999052629,
+ :gchild (v_distance 0.6478996141284292 -0.18611231579108345),
+ :child 5103.316588983813}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  -0.4957047103418443
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.957901064525004)),
+ :child 7.145087386877937}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  -0.4957047103418443
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.957901064525004)),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :child 7.145087386877937}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.6105852843865515
+  (v_distance -4.445560264207691 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 12.267095868484969}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  0.6105852843865515
+  (v_distance -4.445560264207691 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 12.267095868484969,
+ :gchild
+ (v_distance
+  0.6105852843865515
+  (v_distance -4.445560264207691 (v_cos n0))),
+ :child 290.1591853261629}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  -2.204612112934285
+  (v_distance -5.09840913116384 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 325.8439770969744}
+{:method "insert",
+ :gparent
+ (v_distance
+  -2.204612112934285
+  (v_distance -5.09840913116384 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 325.8439770969744,
+ :gchild
+ (v_plus
+  -0.40977517211219094
+  (v_distance
+   -2.204612112934285
+   (v_distance -5.09840913116384 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 263.7284910936575}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  1.2542120803729384
+  (v_distance -3.493772173573519 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 29.577884420320267}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  1.2542120803729384
+  (v_distance -3.493772173573519 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 29.577884420320267,
+ :gchild
+ (v_distance n0 (v_distance n0 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 210297.7968935138}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  1.9318691962586874
+  (v_distance -3.227402437341253 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 87.76691734949229}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  1.9318691962586874
+  (v_distance -3.227402437341253 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 87.76691734949229,
+ :gchild (v_distance 1.9318691962586874 -3.227402437341253),
+ :child 2759.719951245965}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  -0.16050898941940195
+  (v_distance -3.3837540867462588 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 7.835564121915774}
+{:method "insert",
+ :gparent
+ (v_distance
+  -0.16050898941940195
+  (v_distance -3.3837540867462588 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 7.835564121915774,
+ :gchild
+ (v_minus
+  n0
+  (v_distance
+   -0.16050898941940195
+   (v_distance -3.3837540867462588 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 15118.548105279468}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -1.505661279513441 (v_plus (v_mean n0) (v_mean n0)))
+  -0.06548572992421603),
+ :child 67.09383606927929}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  (v_distance -1.505661279513441 (v_plus (v_mean n0) (v_mean n0)))
+  -0.06548572992421603),
+ :parent 67.09383606927929,
+ :gchild (v_distance -0.9482598575282294 -0.06548572992421603),
+ :child 5072.72467490547}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -2.478151720324569 (v_plus (v_mean n0) (v_mean n0)))
+  -0.20431367588924315),
+ :child 14.5631606693749}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  (v_distance -2.478151720324569 (v_plus (v_mean n0) (v_mean n0)))
+  -0.20431367588924315),
+ :parent 14.5631606693749,
+ :gchild
+ (v_distance
+  (v_distance 0.43104226760563996 (v_plus (v_mean n0) (v_mean n0)))
+  -0.20431367588924315),
+ :child 256.6846180275702}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -1.9211348213840147 (v_plus (v_mean n0) (v_mean n0)))
+  -0.760122558790062),
+ :child 14.593441503147314}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  (v_distance -1.9211348213840147 (v_plus (v_mean n0) (v_mean n0)))
+  -0.760122558790062),
+ :parent 14.593441503147314,
+ :gchild
+ (v_distance
+  (v_distance 2.1963109899831723 (v_plus (v_mean n0) (v_mean n0)))
+  1.2355311390324049),
+ :child 915.3753615698239}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -3.2994234836804646 (v_plus (v_mean n0) (v_mean n0)))
+  0.20596649617530433),
+ :child 7.649217473012965}
+{:method "insert",
+ :gparent
+ (v_distance
+  (v_distance -3.2994234836804646 (v_plus (v_mean n0) (v_mean n0)))
+  0.20596649617530433),
+ :parent 7.649217473012965,
+ :gchild
+ (v_cos
+  (v_distance
+   (v_distance -3.2994234836804646 (v_plus (v_mean n0) (v_mean n0)))
+   0.20596649617530433)),
+ :child 5691.867069139968}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -2.7657484365575327 (v_plus (v_mean n0) (v_mean n0)))
+  0.6197897511462032),
+ :child 33.755377260683055}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  (v_distance -2.7657484365575327 (v_plus (v_mean n0) (v_mean n0)))
+  0.6197897511462032),
+ :parent 33.755377260683055,
+ :gchild
+ (v_distance
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.7657484365575327)
+  0.6197897511462032),
+ :child 33.755377260683055}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -3.233918245784866 (v_plus (v_mean n0) (v_mean n0)))
+  -0.28975160033506764),
+ :child 7.64986219105487}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  1.106690048576918
+  (v_distance -2.3995326831996797 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 87.98370898438932}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.07213830989708858
+  (v_distance -4.798422412703091 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 46.924887783008245}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  0.07213830989708858
+  (v_distance -4.798422412703091 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 46.924887783008245,
+ :gchild (v_distance 0.07213830989708858 n0),
+ :child 5213.633439254353}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -2.5473946611347618 (v_plus (v_mean n0) (v_mean n0)))
+  -0.07189856197604566),
+ :child 16.22495936996138}
+{:method "insert",
+ :gparent
+ (v_distance
+  (v_distance -2.5473946611347618 (v_plus (v_mean n0) (v_mean n0)))
+  -0.07189856197604566),
+ :parent 16.22495936996138,
+ :gchild
+ (v_cos
+  (v_distance
+   (v_distance -2.5473946611347618 (v_plus (v_mean n0) (v_mean n0)))
+   -0.07189856197604566)),
+ :child 5692.312562418794}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  0.7242599188098676
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.2233327510511)),
+ :child 19.82841133906915}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  0.7242599188098676
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.2233327510511)),
+ :parent 19.82841133906915,
+ :gchild
+ (v_distance 0.7242599188098676 (v_plus (v_mean n0) (v_mean n0))),
+ :child 331.9913618413483}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  1.7084303554850506
+  (v_distance -5.151178534896486 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 7.084436413334197}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  1.7084303554850506
+  (v_distance -5.151178534896486 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 7.084436413334197,
+ :gchild (v_distance 1.7084303554850506 0.4230017586943032),
+ :child 4823.746853068478}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  1.8099713613535666
+  (v_distance -3.410720804048552 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 65.05413638307311}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  1.8099713613535666
+  (v_distance -3.410720804048552 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 65.05413638307311,
+ :gchild
+ (v_distance
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.410720804048552)
+  1.8099713613535666),
+ :child 65.05413638307311}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  -0.6542666051258658
+  (v_distance -4.565118427254599 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 79.75177280582375}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  -0.6542666051258658
+  (v_distance -4.565118427254599 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 79.75177280582375,
+ :gchild
+ (v_distance
+  -0.6542666051258658
+  (v_distance n0 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 5834.603637649415}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -2.581606031059724 (v_plus (v_mean n0) (v_mean n0)))
+  -0.3710391227042875),
+ :child 9.257147132896831}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  (v_distance -2.581606031059724 (v_plus (v_mean n0) (v_mean n0)))
+  -0.3710391227042875),
+ :parent 9.257147132896831,
+ :gchild
+ (v_distance (v_plus (v_mean n0) (v_mean n0)) -0.3710391227042875),
+ :child 179.30070170188077}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  1.820544163990774
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.341655839088031)),
+ :child 70.62112021311603}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.11044729448419738
+  (v_distance -4.019857697814703 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 13.94536676836393}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  0.11044729448419738
+  (v_distance -4.019857697814703 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 13.94536676836393,
+ :gchild (v_distance 0.11044729448419738 0.3032478613166557),
+ :child 5514.4413992365535}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  -0.7966458710527432
+  (v_distance -4.538059991488724 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 88.83222490315741}
+{:method "insert",
+ :gparent
+ (v_distance
+  -0.7966458710527432
+  (v_distance -4.538059991488724 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 88.83222490315741,
+ :gchild
+ (v_distance
+  -1.648299253546047
+  (v_distance
+   -0.7966458710527432
+   (v_distance -4.538059991488724 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 276.76006686817584}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  0.5870869933420209
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.1383161952268335)),
+ :child 7.902221637880122}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.5870869933420209
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.1383161952268335)),
+ :parent 7.902221637880122,
+ :gchild
+ (v_sin
+  (v_distance
+   0.5870869933420209
+   (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.1383161952268335))),
+ :child 5676.113556912468}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -2.688211109015345 (v_plus (v_mean n0) (v_mean n0)))
+  -0.46481837938643683),
+ :child 7.207707287658717}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  (v_distance -2.688211109015345 (v_plus (v_mean n0) (v_mean n0)))
+  -0.46481837938643683),
+ :parent 7.207707287658717,
+ :gchild
+ (v_distance
+  (v_distance
+   0.447857758873821
+   (v_plus (v_mean n0) (v_mean -1.377662731357315)))
+  -0.46481837938643683),
+ :child 2608.1194280316918}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.06043556376212633
+  (v_distance -3.423482848756301 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 6.78357580094519}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  0.06043556376212633
+  (v_distance -3.423482848756301 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.78357580094519,
+ :gchild
+ (v_distance
+  0.8357976468663324
+  (v_distance -3.423482848756301 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 17.11635201859007}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.7400937086573139
+  (v_distance -3.384356527701605 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 15.549034474851451}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.7400937086573139
+  (v_distance -3.384356527701605 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 15.549034474851451,
+ :gchild
+ (v_distance
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.384356527701605)
+  0.7400937086573139),
+ :child 15.549034474851451}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.27615789340787805
+  (v_distance -2.866896376797374 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 17.028501280122086}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.27615789340787805
+  (v_distance -2.866896376797374 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 17.028501280122086,
+ :gchild
+ (v_distance
+  0.27615789340787805
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.866896376797374)),
+ :child 17.028501280122086}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -3.145268110202313 (v_plus (v_mean n0) (v_mean n0)))
+  -0.2898551340923),
+ :child 7.044661774959191}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  (v_distance -3.145268110202313 (v_plus (v_mean n0) (v_mean n0)))
+  -0.2898551340923),
+ :parent 7.044661774959191,
+ :gchild (v_distance -3.145268110202313 -0.2898551340923),
+ :child 3914.9011722378527}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.6864620769588994
+  (v_distance -3.2196839086800746 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 18.746053856091155}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.6864620769588994
+  (v_distance -3.2196839086800746 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 18.746053856091155,
+ :gchild
+ (v_distance
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.2196839086800746)
+  0.6864620769588994),
+ :child 18.746053856091155}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.8173686597841581
+  (v_distance -3.766591373774221 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 9.306100618689635}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.8173686597841581
+  (v_distance -3.766591373774221 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.306100618689635,
+ :gchild
+ (v_distance
+  (v_cos 0.8173686597841581)
+  (v_distance
+   (v_mean -3.766591373774221)
+   (v_dot n0 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 7.161788358946618E7}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  0.4012661924744042
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.108112327205394)),
+ :child 9.89730364875145}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.4012661924744042
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.108112327205394)),
+ :parent 9.89730364875145,
+ :gchild
+ (v_pd
+  1.1649079619516645
+  (v_distance
+   0.4012661924744042
+   (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.108112327205394))),
+ :child 5596.129795442223}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  1.9391026154525157
+  (v_distance -2.780229560705628 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 128.48528143075004}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  1.9391026154525157
+  (v_distance -2.780229560705628 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 128.48528143075004,
+ :gchild
+ (v_distance
+  -0.7985953166061637
+  (v_distance n0 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 5932.6249579186215}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.8494116606998823
+  (v_distance -3.552873751403447 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 14.046169804296488}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  0.8494116606998823
+  (v_distance -3.552873751403447 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 14.046169804296488,
+ :gchild
+ (v_distance
+  0.2673612825293643
+  (v_distance -0.9642156577290266 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 143.1406927607402}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.19688867440002933
+  (v_distance -2.9319614258306412 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 13.30109574453726}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.19688867440002933
+  (v_distance -2.9319614258306412 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 13.30109574453726,
+ :gchild
+ (v_distance
+  (v_distance -2.9319614258306412 (v_plus (v_mean n0) (v_mean n0)))
+  0.19688867440002933),
+ :child 13.30109574453726}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  0.34832663775953
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.3793506998146245)),
+ :child 39.364345848927236}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.34832663775953
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.3793506998146245)),
+ :parent 39.364345848927236,
+ :gchild
+ (v_distance
+  0.34832663775953
+  (v_distance -2.3793506998146245 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 39.364345848927236}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.7504339039343675
+  (v_distance -3.8599508357937293 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 7.516216085341749}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.7504339039343675
+  (v_distance -3.8599508357937293 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 7.516216085341749,
+ :gchild
+ (v_distance
+  -0.6844579717377852
+  (v_distance
+   0.7504339039343675
+   (v_distance -3.8599508357937293 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 11.437337982336217}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -2.969710869323165 (v_plus (v_mean n0) (v_mean n0)))
+  0.6220534537952491),
+ :child 25.189491163459653}
+{:method "insert",
+ :gparent
+ (v_distance
+  (v_distance -2.969710869323165 (v_plus (v_mean n0) (v_mean n0)))
+  0.6220534537952491),
+ :parent 25.189491163459653,
+ :gchild
+ (v_dot
+  (v_distance
+   (v_distance -2.969710869323165 (v_plus (v_mean n0) (v_mean n0)))
+   0.6220534537952491)
+  0.19363656651096042),
+ :child 3778.8012861618413}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -2.6162003380437375 (v_plus (v_mean n0) (v_mean n0)))
+  -0.6651718871746797),
+ :child 6.738870782666423}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.710680652129616
+  (v_distance -3.8442741009997965 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 7.336151896659674}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.710680652129616
+  (v_distance -3.8442741009997965 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 7.336151896659674,
+ :gchild
+ (v_dot
+  (v_distance
+   0.710680652129616
+   (v_distance -3.8442741009997965 (v_plus (v_mean n0) (v_mean n0))))
+  -0.0987558831556098),
+ :child 6790.726119576766}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -2.032493016757421 (v_plus (v_mean n0) (v_mean n0)))
+  -0.1642416556438272),
+ :child 31.44572126215542}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.16913528606391193
+  (v_distance -2.897563076298882 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 13.454401825269024}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  0.16913528606391193
+  (v_distance -2.897563076298882 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 13.454401825269024,
+ :gchild
+ (v_distance
+  0.16913528606391193
+  (v_distance -2.897563076298882 (v_mean n0))),
+ :child 1096.4964997365037}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  -0.03255569178388873
+  (v_distance -2.5305645632860516 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 17.836717338277744}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  -0.03255569178388873
+  (v_distance -2.5305645632860516 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 17.836717338277744,
+ :gchild
+ (v_distance
+  -2.6398102772095373
+  (v_distance n0 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 7256.208423376617}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  -1.2509513564577412
+  (v_distance -2.9798514821712416 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 23.736017406745383}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  -1.2509513564577412
+  (v_distance -2.9798514821712416 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 23.736017406745383,
+ :gchild (v_distance -1.2509513564577412 n0),
+ :child 9252.895111676418}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  1.061555518843497
+  (v_distance -2.2310435918032905 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 98.23378522348108}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  1.061555518843497
+  (v_distance -2.2310435918032905 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 98.23378522348108,
+ :gchild (v_distance 1.061555518843497 n0),
+ :child 3022.1928130709393}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.9319614258306412 (v_plus (v_mean n0) (v_mean n0)))
+  0.19688867440002933),
+ :parent 13.30109574453726,
+ :gchild
+ (v_distance
+  (v_distance -2.5989577632447047 (v_plus (v_mean n0) (v_mean n0)))
+  1.5758213595746908),
+ :child 111.18423201496802}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  (v_distance -2.5989577632447047 (v_plus (v_mean n0) (v_mean n0)))
+  1.5758213595746908),
+ :parent 111.18423201496802,
+ :gchild
+ (v_distance
+  (v_distance n0 (v_plus (v_mean n0) (v_mean -0.5539563194257273)))
+  -0.16519207804281202),
+ :child 335.0953411895882}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -2.6500669588452723 (v_plus (v_mean n0) (v_mean n0)))
+  -0.632825988513489),
+ :child 6.737265303657705}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  (v_distance -2.6500669588452723 (v_plus (v_mean n0) (v_mean n0)))
+  -0.632825988513489),
+ :parent 6.737265303657705,
+ :gchild
+ (v_distance
+  (v_distance -2.6500669588452723 (v_mean n0))
+  -0.632825988513489),
+ :child 943.0223742800133}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.8405735651498449
+  (v_distance -3.820103388341632 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 8.888893337518326}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.8405735651498449
+  (v_distance -3.820103388341632 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 8.888893337518326,
+ :gchild
+ (v_distance
+  (v_distance -3.820103388341632 (v_plus (v_mean n0) (v_mean n0)))
+  0.8405735651498449),
+ :child 8.888893337518326}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  -0.6844579717377852
+  (v_distance
+   0.7504339039343675
+   (v_distance -3.8599508357937293 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 11.437337982336217,
+ :gchild
+ (v_distance
+  -2.0975683352270558
+  (v_distance
+   2.4268364490995795
+   (v_distance -3.572609605725971 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 6.809104561617601}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  -2.0975683352270558
+  (v_distance
+   2.4268364490995795
+   (v_distance -3.572609605725971 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 6.809104561617601,
+ :gchild
+ (v_distance
+  -2.0975683352270558
+  (v_distance
+   2.4268364490995795
+   (v_distance -3.572609605725971 (v_mean n0)))),
+ :child 953.5627748954829}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.13866840615463405
+  (v_distance -5.211897603433 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 69.00767518084095}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  0.13866840615463405
+  (v_distance -5.211897603433 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 69.00767518084095,
+ :gchild (v_distance 0.13866840615463405 -5.211897603433),
+ :child 2673.3489264437994}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.9319614258306412 (v_plus (v_mean n0) (v_mean n0)))
+  0.19688867440002933),
+ :parent 13.30109574453726,
+ :gchild
+ (v_distance
+  (v_distance -3.025738816693772 (v_plus (v_mean n0) (v_mean n0)))
+  -1.640254829329508),
+ :child 43.5784951052093}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  (v_distance -3.025738816693772 (v_plus (v_mean n0) (v_mean n0)))
+  -1.640254829329508),
+ :parent 43.5784951052093,
+ :gchild
+ (v_distance
+  -1.640254829329508
+  (v_distance -3.025738816693772 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 43.5784951052093}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  -0.6844579717377852
+  (v_distance
+   0.7504339039343675
+   (v_distance -3.8599508357937293 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 11.437337982336217,
+ :gchild
+ (v_distance
+  -0.4636821296035188
+  (v_distance
+   0.04484638953704845
+   (v_distance -4.178537849201937 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 39.94668894003647}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  -0.4636821296035188
+  (v_distance
+   0.04484638953704845
+   (v_distance -4.178537849201937 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 39.94668894003647,
+ :gchild
+ (v_distance
+  n0
+  (v_distance
+   n0
+   (v_distance
+    -1.4452210355384103
+    (v_plus
+     (v_mean 1.4215782639830126)
+     (v_mean -0.5372235560612798))))),
+ :child 80936.73213785246}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  -0.35588956704216995
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.285621732568273)),
+ :child 8.941709123149781}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  -0.35588956704216995
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.285621732568273)),
+ :parent 8.941709123149781,
+ :gchild (v_distance -0.35588956704216995 0.18158268999517732),
+ :child 5291.404440231451}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.6162003380437375 (v_plus (v_mean n0) (v_mean n0)))
+  -0.6651718871746797),
+ :parent 6.738870782666423,
+ :gchild
+ (v_distance
+  (v_distance -2.111104897619455 (v_plus (v_mean n0) (v_mean n0)))
+  -0.837766933175385),
+ :child 9.311146019794776}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  (v_distance -2.111104897619455 (v_plus (v_mean n0) (v_mean n0)))
+  -0.837766933175385),
+ :parent 9.311146019794776,
+ :gchild
+ (v_distance
+  (v_distance
+   -2.111104897619455
+   (v_plus (v_mean 2.0445824760375313) (v_mean -0.3916014378668793)))
+  -0.5703498476376647),
+ :child 3148.903109919679}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -3.786355901902505 (v_plus (v_mean n0) (v_mean n0)))
+  0.4234898206144447),
+ :child 6.783181278935022}
+{:method "insert",
+ :gparent
+ (v_distance
+  (v_distance -3.786355901902505 (v_plus (v_mean n0) (v_mean n0)))
+  0.4234898206144447),
+ :parent 6.783181278935022,
+ :gchild
+ (v_pd
+  -1.8710166545628057
+  (v_distance
+   (v_distance -3.786355901902505 (v_plus (v_mean n0) (v_mean n0)))
+   0.4234898206144447)),
+ :child 5715.745407336029}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.9319614258306412 (v_plus (v_mean n0) (v_mean n0)))
+  0.19688867440002933),
+ :parent 13.30109574453726,
+ :gchild
+ (v_distance
+  (v_distance -1.9344787502383265 (v_plus (v_mean n0) (v_mean n0)))
+  0.48474588235510807),
+ :child 75.82635885809862}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  (v_distance -1.9344787502383265 (v_plus (v_mean n0) (v_mean n0)))
+  0.48474588235510807),
+ :parent 75.82635885809862,
+ :gchild
+ (v_distance
+  (v_distance -1.9344787502383265 (v_mean n0))
+  0.48474588235510807),
+ :child 1497.3160835672159}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -0.37961554486762417 (v_plus (v_mean n0) (v_mean n0)))
+  -2.214017845922441),
+ :child 16.94555175973139}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  (v_distance -0.37961554486762417 (v_plus (v_mean n0) (v_mean n0)))
+  -2.214017845922441),
+ :parent 16.94555175973139,
+ :gchild (v_distance -0.37961554486762417 -2.214017845922441),
+ :child 4494.74220608448}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  1.600179590651067
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.0164549557925042)),
+ :child 78.33636993588989}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  1.600179590651067
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.0164549557925042)),
+ :parent 78.33636993588989,
+ :gchild
+ (v_distance
+  1.2588023332302458
+  (v_distance (v_plus (v_mean n0) (v_mean 0.5850831679736908)) n0)),
+ :child 502.34819011176955}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -3.714578971958876 (v_plus (v_mean n0) (v_mean n0)))
+  0.26608845556132626),
+ :child 7.115925872505482}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  (v_distance -3.714578971958876 (v_plus (v_mean n0) (v_mean n0)))
+  0.26608845556132626),
+ :parent 7.115925872505482,
+ :gchild
+ (v_distance
+  (v_distance -3.714578971958876 (v_plus n0 n0))
+  0.26608845556132626),
+ :child 83278.59954950033}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.6728129140652223
+  (v_distance -5.192698608382937 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 36.07197280357963}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.6728129140652223
+  (v_distance -5.192698608382937 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 36.07197280357963,
+ :gchild
+ (v_cov
+  n0
+  (v_distance
+   0.6728129140652223
+   (v_distance -5.192698608382937 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -1.6573504724883301 (v_plus (v_mean n0) (v_mean n0)))
+  -0.46636203713751057),
+ :child 34.79978213820287}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  (v_distance -1.6573504724883301 (v_plus (v_mean n0) (v_mean n0)))
+  -0.46636203713751057),
+ :parent 34.79978213820287,
+ :gchild (v_distance 0.35561712400096446 -0.46636203713751057),
+ :child 5110.880211382467}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  -0.257644617946442
+  (v_distance -3.769352979782564 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 17.0481544068488}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  -0.257644617946442
+  (v_distance -3.769352979782564 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 17.0481544068488,
+ :gchild
+ (v_distance
+  n0
+  (v_distance -3.769352979782564 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 20599.18640992852}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.9609568343684984
+  (v_distance -3.294782022132515 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 25.724955871726213}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  0.9609568343684984
+  (v_distance -3.294782022132515 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 25.724955871726213,
+ :gchild
+ (v_distance
+  n0
+  (v_distance
+   -0.25590594329985683
+   (v_plus (v_mean n0) (v_mean 0.5640395347901676)))),
+ :child 320.8734580237895}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  1.0559778016302084
+  (v_distance -4.719106224080512 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 9.23898252988897}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  1.0559778016302084
+  (v_distance -4.719106224080512 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 9.23898252988897,
+ :gchild (v_distance 1.0559778016302084 n0),
+ :child 3032.62715290864}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.9319614258306412 (v_plus (v_mean n0) (v_mean n0)))
+  0.19688867440002933),
+ :parent 13.30109574453726,
+ :gchild
+ (v_distance
+  (v_distance -2.617053849209054 (v_plus (v_mean n0) (v_mean n0)))
+  -0.8290955750687914),
+ :child 7.102928689178487}
+{:method "insert",
+ :gparent
+ (v_distance
+  (v_distance -2.617053849209054 (v_plus (v_mean n0) (v_mean n0)))
+  -0.8290955750687914),
+ :parent 7.102928689178487,
+ :gchild
+ (v_stdev
+  (v_distance
+   (v_distance -2.617053849209054 (v_plus (v_mean n0) (v_mean n0)))
+   -0.8290955750687914)),
+ :child 5641.275093840648}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.9319614258306412 (v_plus (v_mean n0) (v_mean n0)))
+  0.19688867440002933),
+ :parent 13.30109574453726,
+ :gchild
+ (v_distance
+  (v_distance -2.2964323531709976 (v_plus (v_mean n0) (v_mean n0)))
+  -0.5595512261829765),
+ :child 10.820016261675951}
+{:method "insert",
+ :gparent
+ (v_distance
+  (v_distance -2.2964323531709976 (v_plus (v_mean n0) (v_mean n0)))
+  -0.5595512261829765),
+ :parent 10.820016261675951,
+ :gchild
+ (v_minus
+  (v_distance
+   (v_distance -2.2964323531709976 (v_plus (v_mean n0) (v_mean n0)))
+   -0.5595512261829765)
+  n0),
+ :child 1138.2494141711575}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  1.8519303578757584
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.9446740252087302)),
+ :child 104.91794692422619}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  1.8519303578757584
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.9446740252087302)),
+ :parent 104.91794692422619,
+ :gchild
+ (v_distance
+  n0
+  (v_distance
+   (v_plus (v_mean -0.6716091798186339) (v_mean 0.3370084404907369))
+   -2.9446740252087302)),
+ :child 912.7483423145296}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.6162003380437375 (v_plus (v_mean n0) (v_mean n0)))
+  -0.6651718871746797),
+ :parent 6.738870782666423,
+ :gchild
+ (v_distance
+  (v_distance -2.073165181040066 (v_plus (v_mean n0) (v_mean n0)))
+  0.015595556308547809),
+ :child 38.021958927596046}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  0.33488929198754824
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.716734501402279)),
+ :child 29.764408862792493}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  0.33488929198754824
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -4.716734501402279)),
+ :parent 29.764408862792493,
+ :gchild
+ (v_distance
+  -0.6576354705257197
+  (v_distance
+   (v_plus (v_mean 0.3098580845317364) (v_mean 0.30714045241247295))
+   1.622359685785444)),
+ :child 4596.17275439108}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -2.5925181121346172 (v_plus (v_mean n0) (v_mean n0)))
+  -0.6578657097905856),
+ :child 6.791734430588396}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  (v_distance -2.5925181121346172 (v_plus (v_mean n0) (v_mean n0)))
+  -0.6578657097905856),
+ :parent 6.791734430588396,
+ :gchild (v_distance -2.5925181121346172 -0.6578657097905856),
+ :child 4435.963156043871}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.6162003380437375 (v_plus (v_mean n0) (v_mean n0)))
+  -0.6651718871746797),
+ :parent 6.738870782666423,
+ :gchild
+ (v_distance
+  (v_distance -0.8680458345694715 (v_plus (v_mean n0) (v_mean n0)))
+  -0.07141325778102814),
+ :child 118.97367997160816}
+{:method "insert",
+ :gparent
+ (v_distance
+  (v_distance -0.8680458345694715 (v_plus (v_mean n0) (v_mean n0)))
+  -0.07141325778102814),
+ :parent 118.97367997160816,
+ :gchild
+ (v_dot
+  (v_distance
+   (v_distance -0.8680458345694715 (v_plus (v_mean n0) (v_mean n0)))
+   -0.07141325778102814)
+  -0.5219652429184248),
+ :child 11800.982754780845}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.9319614258306412 (v_plus (v_mean n0) (v_mean n0)))
+  0.19688867440002933),
+ :parent 13.30109574453726,
+ :gchild
+ (v_distance
+  (v_distance -1.63145097161208 (v_plus (v_mean n0) (v_mean n0)))
+  -0.898903554980284),
+ :child 18.835139624055227}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  (v_distance -1.63145097161208 (v_plus (v_mean n0) (v_mean n0)))
+  -0.898903554980284),
+ :parent 18.835139624055227,
+ :gchild
+ (v_distance
+  -0.898903554980284
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -1.63145097161208)),
+ :child 18.835139624055227}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.957901064525004 (v_plus (v_mean n0) (v_mean n0)))
+  -0.4957047103418443),
+ :parent 7.145087386877937,
+ :gchild
+ (v_distance
+  (v_distance -3.9930072498660234 (v_plus (v_mean n0) (v_mean n0)))
+  -0.5465525192459846),
+ :child 37.03300947508171}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  (v_distance -3.9930072498660234 (v_plus (v_mean n0) (v_mean n0)))
+  -0.5465525192459846),
+ :parent 37.03300947508171,
+ :gchild (v_distance 0.13553831365265714 -0.5465525192459846),
+ :child 5199.237007507757}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  -1.7633855622532586
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.3703574860603984)),
+ :child 73.35247327703586}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  -1.7633855622532586
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.3703574860603984)),
+ :parent 73.35247327703586,
+ :gchild (v_distance -1.7633855622532586 0.8644544635600049),
+ :child 4040.530573375115}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  -0.6844579717377852
+  (v_distance
+   0.7504339039343675
+   (v_distance -3.8599508357937293 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 11.437337982336217,
+ :gchild
+ (v_distance
+  -1.8085599393247611
+  (v_distance
+   0.7293494481900837
+   (v_distance -4.45670204241031 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 105.94914398045485}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  -1.8085599393247611
+  (v_distance
+   0.7293494481900837
+   (v_distance -4.45670204241031 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 105.94914398045485,
+ :gchild (v_distance -1.8085599393247611 0.7293494481900837),
+ :child 4090.7469606680884}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  -0.6844579717377852
+  (v_distance
+   0.7504339039343675
+   (v_distance -3.8599508357937293 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 11.437337982336217,
+ :gchild
+ (v_distance
+  0.5244590321584799
+  (v_distance
+   0.5425485238185935
+   (v_distance -3.473298818735369 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 23.00467296582403}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.5244590321584799
+  (v_distance
+   0.5425485238185935
+   (v_distance -3.473298818735369 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 23.00467296582403,
+ :gchild
+ (v_distance
+  (v_distance
+   0.5425485238185935
+   (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.473298818735369))
+  0.5244590321584799),
+ :child 23.00467296582403}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.6162003380437375 (v_plus (v_mean n0) (v_mean n0)))
+  -0.6651718871746797),
+ :parent 6.738870782666423,
+ :gchild
+ (v_distance
+  (v_distance -2.14124506995052 (v_plus (v_mean n0) (v_mean n0)))
+  -0.6169666158310125),
+ :child 12.781040111973205}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  (v_distance -2.14124506995052 (v_plus (v_mean n0) (v_mean n0)))
+  -0.6169666158310125),
+ :parent 12.781040111973205,
+ :gchild (v_distance 1.2254623940225442 -0.6169666158310125),
+ :child 4490.021148295617}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  0.6476648945820027
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -5.419899351636374)),
+ :child 49.572976055298135}
+{:method "insert",
+ :gparent
+ (v_distance
+  0.6476648945820027
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -5.419899351636374)),
+ :parent 49.572976055298135,
+ :gchild
+ (v_cos
+  (v_distance
+   0.6476648945820027
+   (v_distance (v_plus (v_mean n0) (v_mean n0)) -5.419899351636374))),
+ :child 5638.174168284736}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  -0.6844579717377852
+  (v_distance
+   0.7504339039343675
+   (v_distance -3.8599508357937293 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 11.437337982336217,
+ :gchild
+ (v_distance
+  -0.878698761375653
+  (v_distance
+   -0.10707686526604343
+   (v_distance -3.81386567824702 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 51.1926242126094}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  -0.878698761375653
+  (v_distance
+   -0.10707686526604343
+   (v_distance -3.81386567824702 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 51.1926242126094,
+ :gchild (v_distance -0.878698761375653 n0),
+ :child 7985.223805814034}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  (v_distance -2.9319614258306412 (v_plus (v_mean n0) (v_mean n0)))
+  0.19688867440002933),
+ :parent 13.30109574453726,
+ :gchild
+ (v_distance
+  (v_distance -2.7016020426586174 (v_plus (v_mean n0) (v_mean n0)))
+  0.9469541276227452),
+ :child 55.01486334511292}
+{:method "perturbTerms",
+ :gparent
+ (v_distance
+  (v_distance -2.7016020426586174 (v_plus (v_mean n0) (v_mean n0)))
+  0.9469541276227452),
+ :parent 55.01486334511292,
+ :gchild
+ (v_distance
+  (v_distance -1.7764536860565825 (v_plus (v_mean n0) (v_mean n0)))
+  n0),
+ :child 11220.022212442656}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.5613970167978145
+  (v_distance -3.829752541019401 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 6.756397550332444,
+ :gchild
+ (v_distance
+  0.8535304918861946
+  (v_distance -3.3027383283570066 (v_plus (v_mean n0) (v_mean n0)))),
+ :child 21.49267675036199}
+{:method "perturbOrder",
+ :gparent
+ (v_distance
+  0.8535304918861946
+  (v_distance -3.3027383283570066 (v_plus (v_mean n0) (v_mean n0)))),
+ :parent 21.49267675036199,
+ :gchild
+ (v_distance
+  0.8535304918861946
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.3027383283570066)),
+ :child 21.49267675036199}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  -0.9309434213437031
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.7658675362719736)),
+ :child 9.739429200954007}
+{:method "suggestDepth",
+ :gparent
+ (v_distance
+  -0.9309434213437031
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.7658675362719736)),
+ :parent 9.739429200954007,
+ :gchild
+ (v_distance -0.9309434213437031 (v_plus (v_mean n0) (v_mean n0))),
+ :child 119.78209806337264}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  0.48265353193877253
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -3.526444143331026)),
+ :parent 8.125820294075462,
+ :gchild
+ (v_distance
+  1.7282590734153573
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.3403091453250693)),
+ :child 152.14376769673564}
+{:method "perturbExpr",
+ :gparent
+ (v_distance
+  1.7282590734153573
+  (v_distance (v_plus (v_mean n0) (v_mean n0)) -2.3403091453250693)),
+ :parent 152.14376769673564,
+ :gchild (v_distance 1.7282590734153573 n0),
+ :child 1925.9521227887067}
+{:method "perturbReal",
+ :gparent
+ (v_distance
+  -0.6844579717377852
+  (v_distance
+   0.7504339039343675
+   (v_distance -3.8599508357937293 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 11.437337982336217,
+ :gchild
+ (v_distance
+  -1.263128135029572
+  (v_distance
+   1.1339056853770555
+   (v_distance -4.505259663759782 (v_plus (v_mean n0) (v_mean n0))))),
+ :child 41.887319138303084}
+{:method "insert",
+ :gparent
+ (v_distance
+  -1.263128135029572
+  (v_distance
+   1.1339056853770555
+   (v_distance -4.505259663759782 (v_plus (v_mean n0) (v_mean n0))))),
+ :parent 41.887319138303084,
+ :gchild
+ (v_distance
+  (v_dot -1.263128135029572 n0)
+  (v_cov
+   (v_distance
+    1.1339056853770555
+    (v_distance -4.505259663759782 (v_plus (v_mean n0) (v_mean n0))))
+   -1.9822971942506746)),
+ :child 467670.0640229084}
