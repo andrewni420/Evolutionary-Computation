@@ -1,12 +1,9 @@
 (ns poker.headsup
   (:require [poker.utils :as utils]
-            [propeller.genome :as genome]
-            [propeller.push.interpreter :as interpreter]
-            [propeller.push.state :as state]
             [propeller.tools.math :as math]
-            [propeller.gp :as gp]
-            [propeller.push.instructions :as instructions]
-            [clojure.set :as set])
+            [clojure.set :as set]
+            [clojure.data.json :as json]
+            [clj-http.client :as client])
   (:gen-class))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -15,71 +12,41 @@
 ;;;   Multiple random decks played for each   ;;;
 ;;;              rotation of players          ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; repeatedly make deck and shuffle players -> for each rotation play game
-;;For betting, continue around until each player has put in either the same amount
-;;or has folded. Or is all-in
-;;each player :bet = amount or "fold"
 
 
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;          Agent Initialization             ;;;
+;;; Game Engine from single move to full game ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;             Agent Evaluation              ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;
+;;  Initialization   ;;
+;;;;;;;;;;;;;;;;;;;;;;;
 
-#_(defn make-move
-    "Makes a [type spent] move using the current bet and the agent's intended bet value and tolerance.
-   If the current bet is too high, agent checks or folds
-   If the current bet plus the reraise limit is too low, agent bets or raises
-   Otherwise the bet is good enough and the agent checks or calls
-   The value is the value of the bet for the next person
-   Amount spent is either bet or value"
-    [move bet min-raise]
-    (let [[value tolerance] move]
-      (cond
-        (> bet (+ value tolerance)) (if (= bet 0)
-                                      ["Checks" bet]
-                                      ["Fold" bet])
-        (< (+ bet min-raise) (- value tolerance)) (if (= bet 0)
-                                                    ["Bet" value]
-                                                    ["Raise" value])
-        :else (if (= bet 0)
-                ["Check" bet]
-                ["Call" bet]))))
-;;actions: fold, bet, check, call, raise, all-in
-;;Agent takes in action history and current gamestate and returns an action
-;;action history: [[1 sb] [2 bb] [3 [fold 0]] [4 [call 1]] [1 [raise 2]]]
-;;gamestate: community cards, hand, pot size, betsize (cost to call), minraise
-;;state: hands, bb/sb/button, pot size, bet value for each player, fold for each player, min raise, min bet, betting round, players, 
-;;In heads-up (1v1) poker, small blind acts first preflop then last for future rounds
-;;
 (defn init-game
   "Removes players with no money and initializes the poker game. In the context of this game, players are 
-   referenced by their index, not their id. In the history, players are referenced by their index.
-   Hands - two cards per person
-   Community - Five cards revealed as 3 in the flop, 1 at the turn, and 1 at the river
-   Visible - Cards already revealed
-   Bet-values - the amount which players have bet in this round. Resets every round.
-   Current-bet - the amount which players need to match to stay in the round. Resets every round.
-   Pot - the total pot size
-   Active-players - players who have not yet folded
-   Min-raise - The minimum amount by which people must raise
-   Min-bet - The minimum bet is 1bb
-   Betting-round - The round of betting currently happening
-   Players - the players in the game
-   Current-player - the player whose turn it is to act
-   num-players - the number of players
-   game-over - whether the game has terminated
-   prev-bettor - the index of the last person to bet"
-  [players]
+   referenced by their index, not their id. In the history, players are referenced by their index.\\
+   Hands - two cards per person\\
+   Community - Five cards revealed as 3 in the flop, 1 at the turn, and 1 at the river\\
+   Visible - Cards already revealed\\
+   Bet-values - the amount which players have bet in this round. Resets every round.\\
+   Current-bet - the amount which players need to match to stay in the round. Resets every round.\\
+   Pot - the total pot size\\
+   Active-players - players who have not yet folded\\
+   Min-raise - The minimum amount by which people must raise\\
+   Min-bet - The minimum bet is 1bb\\
+   Betting-round - The round of betting currently happening\\
+   Players - the players in the game\\
+   Current-player - the player whose turn it is to act\\
+   num-players - the number of players\\
+   game-over - whether the game has terminated\\"
+  ([players]
   (let [deal (utils/deal-hands 2)]
     {:hands (vec (:hands deal))
      :community (vec (:community deal))
      :visible []
+     :visible-hands []
      :bet-values [0.0 0.0]
      :current-bet 0.0
      :pot 0.0
@@ -91,11 +58,19 @@
      :current-player 0
      :num-players 2
      :game-over false
-     :prev-bettor -1
      :action-history [[]]}))
+  ([] (init-game [{:money 200.0 :id :p0 :agent (constantly ["Fold" 0.0])}
+                  {:money 200.0 :id :p0 :agent (constantly ["Fold" 0.0])}])))
 
+;;;;;;;;;;;;;;;;;;;;;;;
+;;    Single Move    ;;
+;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn pre-flop-bb? [game-state]
+(defn pre-flop-bb?
+  "Checks to see if action has been passed to the big blind in the preflop round.
+   Big blind gets to move after betting preflop
+   -> boolean"
+  [game-state]
   (let [{betting-round :betting-round
          current-player :current-player
          current-bet :current-bet} game-state]
@@ -104,58 +79,15 @@
          (= current-bet 1.0))))
 
 
-
-
-
-(defn next-player
-  "Returns the next player to take an action"
-  [game-state]
-  (let [{current-player :current-player
-         n :num-players} game-state]
-    (assoc game-state
-           :current-player (mod (inc current-player) n))))
-
-
-
-
-
-
-
-
-#_(defn round-over-checkall
-  "When all active players have contributed the same amount to the pot,
-   the round is over."
-  [game-state]
-  (let [{bet-values :bet-values
-         active-players :active-players} game-state]
-    (apply = (map #(nth bet-values %) active-players))))
-
-
-
-
-
-
-
-
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Game Engine from single move to full game ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;Single turn
 (defn legal-actions
-  "The possible actions and their conditions are as follows:
-   Fold - always possible, but not allowed when check is possible
-   Check - only possible when no one has betted
-   Call - Only possible when at least one person has betted
-   Raise - Must raise by at least the previous bet or amount by which bet was raised
-   Bet - Only possible when no one has betted. Must be at least 1bb
-   All-In - always possible
-   Returns a [type least most] vector."
+  "The possible actions and their conditions are as follows:\\
+   Fold - always possible, but not allowed when check is possible\\
+   Check - only possible when no one has betted\\
+   Call - Only possible when at least one person has betted\\
+   Raise - Must raise by at least the previous bet or amount by which bet was raised\\
+   Bet - Only possible when no one has betted. Must be at least 1bb\\
+   All-In - always possible\\
+   -> [[type least most] ...]"
   [game-state]
   (let [{min-bet :min-bet
          min-raise :min-raise
@@ -168,7 +100,7 @@
         call-cost (- current-bet (bet-values current-player))]
     (#(cond 
         (utils/in? % ["Check" 0.0 0.0]) %
-        (utils/in? % ["All-In" money money]) %
+        (utils/in? % ["All-In" 0.0 0.0]) %
         :else (concat % [["Fold" 0.0 0.0]])) 
      (concat [["All-In" money money]]
             (cond 
@@ -188,7 +120,12 @@
                         (when (>= money amount)
                           [["Raise" amount (dec money)]]))))))))
 
-(defn make-move [game-state game-history]
+#_(legal-actions (init-game [{:money 10.0} {:money 0.0}]))
+
+(defn make-move 
+  "Asks the current player for a move\\
+   -> [move-type amount]"
+  [game-state game-history]
   (let [{current-player :current-player
          players :players} game-state
         player (players current-player)]
@@ -198,7 +135,11 @@
                      (legal-actions game-state))))
 
 
-(defn check-active-players [game-state]
+(defn check-active-players 
+  "Checks to see if there is only one active player left in the game.
+   If so, awards that player the pot and ends the game\\
+   -> game-state"
+  [game-state]
   (let [{players :players
          active-players :active-players
          pot :pot} game-state
@@ -210,9 +151,20 @@
                :game-over true))
       game-state)))
 
+(defn next-player
+  "Passes action to the next player\\
+   -> game-state"
+  [game-state]
+  (let [{current-player :current-player
+         n :num-players} game-state]
+    (assoc game-state
+           :current-player (mod (inc current-player) n))))
+
 (defn parse-action
-  "Updates game state based on action. Does not check for legality of action"
-  [player-number action game-state]
+  "Updates game state based on action. Does not check for legality of action\\
+   action: [move-type amount]\\
+   -> game-state"
+  [action game-state]
   (let [{current-player :current-player
          active-players :active-players
          pot :pot
@@ -231,7 +183,7 @@
                          :players players)]
     (condp utils/in? type
       ["Fold"] (check-active-players (assoc new-state
-                                            :active-players (remove (partial = player-number)
+                                            :active-players (remove (partial = current-player)
                                                                     active-players)))
       ["Check"] new-state
       ["Raise"] (assoc new-state
@@ -242,10 +194,12 @@
       ["Bet" "All-In" "Call"] (assoc new-state
                                      :bet-values (update bet-values current-player (partial + amount))
                                      :pot (+ pot amount)
-                                     :current-bet (+ amount (bet-values current-player))
-                                     :min-raise (max min-raise amount)))))
+                                     :current-bet (max current-bet (+ amount (bet-values current-player)))
+                                     :min-raise (max min-raise (- (+ amount (bet-values current-player)) current-bet))))))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;
+;;    Single Round   ;;
+;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn blind
   "Pays blind or goes all in depending on money available. Assumes nonzero money
@@ -276,7 +230,6 @@
            :bet-values (assoc bet-values
                               sb (second sb-action)
                               bb (second bb-action))
-           :prev-bettor bb
            :current-bet 1.0)))
 
 
@@ -288,14 +241,24 @@
   (assoc game-state
          :current-player 1
          :current-bet 0.0
-         :prev-bettor -1
          :min-raise 1.0
          :bet-values [0.0 0.0]
          :action-history (conj (:action-history game-state) [])))
 
-(defn all-in? [game-state]
+(defn all-in? 
+  "Has someone gone all-in in a previous betting round?"
+  [game-state]
   (and (every? zero? (:bet-values game-state))
        (some zero? (map :money (:players game-state)))))
+
+#_(defn round-over-checkall
+    "When all active players have contributed the same amount to the pot,
+   the round is over."
+    [game-state]
+    (let [{bet-values :bet-values
+           active-players :active-players} game-state]
+      (apply = (map #(nth bet-values %) active-players))))
+
 
 (defn round-over-checkone
   "When betting goes back to the player who first made the bet,
@@ -306,55 +269,66 @@
          current-player :current-player
          current-bet :current-bet} game-state]
     (cond
+      (all-in? game-state) true
       (every? zero? bet-values) (= 1 current-player)
       (pre-flop-bb? game-state) false
-      (all-in? game-state) true
       :else (= (bet-values current-player) current-bet))))
 
 
 
-
-;;Single round
-#_(defn bet-round
-  "Runs betting for one round"
-  [game-state game-history]
-  (if (or (:game-over game-state)
-          (round-over-checkone game-state))
-    game-state
-    (let [{current-player :current-player} game-state
-          p1-move (make-move game-state
-                             game-history)
-          new-state (parse-action current-player
-                                  p1-move
-                                  game-state)]
-      (recur new-state
-             game-history))))
-
 (defn bet-round
   "Runs betting for one round"
   [game-state game-history]
-  (let [{current-player :current-player} game-state
-        p1-move (make-move game-state
-                           game-history)
-        new-state (parse-action current-player
-                                p1-move
-                                game-state)]
-    (println (:action-history new-state))
-    (if (or (:game-over new-state)
-            (round-over-checkone new-state))
-      new-state
-      (recur new-state
-             game-history))))
+  (if (or (:game-over game-state)
+          (all-in? game-state))
+    game-state
+    (let [p1-move (make-move game-state
+                             game-history)
+          new-state (parse-action p1-move
+                                  game-state)]
+      (if (or (:game-over new-state)
+              (round-over-checkone new-state))
+        new-state
+        (recur new-state
+               game-history)))))
+
+#_(bet-round (init-game [(utils/init-player random-agent :p0)
+                         (utils/init-player random-agent :p1)])
+             [])
+
+;;;;;;;;;;;;;;;;;;;;;;;
+;;    Single Game    ;;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn last-aggressor
+  "Given an action history, returns the id of the player who made
+   the last aggressive move
+   If everyone is all-in or checks, first player to the left of the button shows
+   players = [button/sb bb]"
+  [action-history players]
+  (let [actions (mapcat identity action-history)
+        last-round (take-last 2 action-history)]
+    (if (every? (partial contains? #{"All-In" "Check"})
+                (map #(first (second %)) last-round))
+      (:id (second players))
+      (loop [actions actions]
+        (if (empty? actions)
+          (:id (second players))
+          (if (contains? utils/aggressive-actions (first (second (last actions))))
+            (first (last actions))
+            (recur (drop-last actions))))))))
 
 (defn showdown
   "Heads-up showdown. Does not consider side pots.
-   Computes the people with the highest hands and divides the pot among them"
+   Computes the people with the highest hands and divides the pot among them
+   Visible hands are the last aggressor and the winning hands"
   [game-state]
   (let [{hands :hands
          community :community
          pot :pot
          players :players
-         active-players :active-players} game-state
+         active-players :active-players
+         action-history :action-history} game-state
         player-hands (map #(vector %
                                    (concat (nth hands %)
                                            community))
@@ -365,11 +339,16 @@
                                          (fn [p]
                                            (utils/add-money p (/ pot (count winners)))))
                                 players
-                                winners)]
+                                winners)
+        l (last-aggressor action-history players)
+        l-idx (first (keep-indexed #(if (= l (:id %2)) %1 nil) players))
+        visible-idx (set (conj (map first winners) l-idx))]
     (assoc game-state
            :game-over true
            :players updated-players
-           :betting-round "Showdown")))
+           :betting-round "Showdown"
+           :visible-hands (keep-indexed #(if (contains? visible-idx %1) (vector (:id (players %1)) %2) nil) 
+                                        hands))))
 
 (defn next-round
   "Checks to see if all players but one have folded, then runs showdown or
@@ -392,7 +371,7 @@
                       :visible community)
         "River" (showdown game-state)))))
 
-;;Single game
+
 (defn bet-game 
   "Runs betting from initialization of game until showdown"
   [game-state game-history]
@@ -404,24 +383,54 @@
           next-round
           (recur next-round game-history))))))
 
-(defn state-to-history [old-state new-state]
+#_(defn var-reduce 
+  "Subtracts expected value of hand from the money earned"
+  [net-gain game-state]
+  (let [{players :players
+         hands :hands} game-state
+        ids (zipmap (map :id players) [0 1])]
+    (into [] (map #(let [[p g] %
+                         {win :win 
+                          total :total} (utils/rollout (into #{} (hands (ids p))))]
+                     (vector p (- g (* 0 (:pot game-state) (/ win total))))) 
+                  net-gain))))
+
+(defn var-reduce [net-gain _game-state]
+  net-gain)
+
+(defn state-to-history 
+  "Summarizes end-of-game state into fields to put into game history.\\
+   hands: cards dealt to each player\\
+   visible-hands: cards shown at showdown\\
+   playerIDs: ids of each player\\
+   action-history: actions taken by each player\\
+   visible-cards: revealed community cards\\
+   net-gain: the net gain of each player in the game"
+  [old-state new-state]
   (let [{action-history :action-history
          hands :hands
          new-players :players
-         community :community} new-state
+         visible :visible
+         visible-hands :visible-hands} new-state
         {old-players :players} old-state]
     (assoc {}
            :hands (mapv #(vector (:id %1) %2) new-players hands)
            :playerIDs (mapv :id new-players)
            :action-history action-history
-           :community community
-           :net-gain (mapv #(vector (:id %2) (- (:money %1) (:money %2))) new-players old-players))))
+           :visible-cards visible
+           :visible-hands visible-hands
+           :net-gain (var-reduce 
+                      (mapv #(vector (:id %2) 
+                                     (- (:money %1) 
+                                        (:money %2))) 
+                            new-players 
+                            old-players)
+                      new-state))))
 
 
 (defn play-game 
-  "Initializes and plays a game of poker, returning the updated players
-   and updated game-history
-   NOT YET IMPLEMENTED"
+  "Initializes and plays a game of poker, updating players and game-history in the process.
+   -> [players game-history]"
   [players game-history]
   (let [game-state (init-game players)
         new-state (bet-game (pay-blinds game-state) game-history)]
@@ -429,61 +438,413 @@
      (conj game-history (state-to-history game-state new-state))]))
 
 
-(def always-fold (constantly ["Fold" 0]))
-(def loose-passive (fn [history state money id]
-                     (let [{bet-values :bet-values
-                            current-bet :current-bet} state
-                           diff (- current-bet (bet-values id))]
-                       (cond (= 0 current-bet) ["Check" 0]
-                             (> diff money) ["All-In" money]
-                             :else ["Call" diff]))))
-(defn random-agent [game-state game-history money actions]
-  (let [[type min max] (rand-nth actions)]
-    (if (< (rand) 0.0)
-    (let [types (map first actions)
-          type (cond (utils/in? types "Call") "Call"
-                     (utils/in? types "Check") "Check"
-                     (utils/in? types "Fold") "Fold")]
-    (into [] (take 2 (first (filter #(= type (first %)) actions)))))
-    (vector type min #_(+ min (math/round (rand (- max min))))))))
+#_(clojure.pprint/pprint (bet-game (pay-blinds (init-game [(utils/init-player random-agent :p0)
+                                    (utils/init-player random-agent :p1)]))
+            []))
 
-
+#_(clojure.pprint/pprint (second (play-game [(utils/init-player random-agent :p0)
+              (utils/init-player random-agent :p1)]
+             [])))
+;;visibleHands is a map from playerid to vector of hands
+;;;;;;;;;;;;;;;;;;;;;;;
+;;   Multiple Games  ;;
+;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn iterate-games
   "Plays num-games hands of poker with players switching from sb to bb every hand.
    An even number of hands ensures balanced play.
-   Returns the players and history after num-games are reached or a player has no more money"
+   Returns after num-games are reached or a player has no more money
+   -> [players game-history]"
   [players num-games game-history]
-  (if (or (zero? num-games)
+  (let [num-games (int num-games)]
+    (if (or (zero? num-games)
           (some zero? (map :money players)))
     [players game-history]
     (let [[players history] (play-game players game-history)]
-      (recur (into [] (reverse players)) (dec num-games) history))))
+      (recur (into [] (reverse players)) (dec num-games) history)))))
 
 
+(defn iterate-games-reset
+  "Plays num-games hands of poker with players switching from sb to bb every hand and resetting their money values
+   An even number of hands ensures balanced play.
+   Returns the total gain/loss of players and history after num-games are reached\\
+   list: Whether to keep a list of the gains to return as a mean and stdev or to simply return
+   the total gain over all games\\
+   -> [players net-gain game-history]"
+  [players num-games game-history & {:keys [list?] :or {list? false}}]
+  (loop [net-gain (zipmap (map :id players) (if list? [[] []] [0.0 0.0]))
+         n (int num-games)
+         players players
+         history game-history]
+    (if (zero? n)
+      [players
+       (into {}
+             (map #(vector (first %)
+                           (if list?
+                             {:mean (utils/mean (second %)) 
+                              :stdev (utils/stdev (second %))}
+                             (/ (second %) num-games)))
+                  net-gain))
+       history]
+      (let [[[p1 p2] h] (play-game players history)]
+        (recur (update (update net-gain
+                               (:id p1)
+                               #((if list? conj +) % (- (:money p1) (:money (first players)))))
+                       (:id p2)
+                       #((if list? conj +) % (- (:money p2) (:money (first players)))))
+               (dec n)
+               (into [] (reverse players))
+               h)))))
 
-
-
-(apply (fn [p h] (vector p (take 10 (filter #(and (not= 1 (count (:action-history %)))
-                                        (utils/in? (flatten (:action-history %)) "Bet")
-                                        (> (abs (second (first (:net-gain %)))) 10)
-                                        #_(not (utils/in? (flatten (:action-history %)) "Fold"))) h))))
- (iterate-games [(utils/init-player random-agent :p0) 
+;;Plays 1000 (or 1000000) games between a rule-based agent and a random agent
+;;Returns the players, the average net gain per hand, and the standard deviations of the wins per hand
+#_(clojure.pprint/pprint (take 2 (iterate-games-reset [(utils/init-player wait-and-bet :p0)
+                                                     (utils/init-player random-agent :p1)]
+                                                    10000 #_1000000
+                                                    []
+                                                    :list? true)))
+;;Plays up to 100 games until a player has no money and returns the history of the "interesting" ones
+#_(apply (fn [p h] (vector p (take 10 (filter #(and (not= 1 (count (:action-history %)))
+                                                  (utils/in? (flatten (:action-history %)) "Bet")
+                                                  (> (abs (second (first (:net-gain %)))) 10)
+                                                  #_(not (utils/in? (flatten (:action-history %)) "Fold"))) h))))
+       (iterate-games [(utils/init-player random-agent :p0)
                        (utils/init-player utils/rule-agent :p1)]
-             10 []))
+                      100 []))
+;;;;;;;;;;;;;;;;;;;;;;;
+;;    Game Agents    ;;
+;;;;;;;;;;;;;;;;;;;;;;;
 
- (iterate-games [(utils/init-player random-agent :p0)
-                 (utils/init-player utils/rule-agent :p1)]
-                10 [])
+(def always-fold 
+  "Agent that always folds"
+  (constantly ["Fold" 0]))
 
-(defn kek [& {:keys [this]
-              :or {this 1}}]
-  (if (= this 4)
-    this
-    (recur (inc this))))
-(kek)
+(defn calling-station 
+  "Calls all bets, including going all-in if the bet is larger than its stack. Otherwise, checks.\\
+   Prefers actions in the order [Call Check All-In]"
+  [_game-state _game-history _money actions]
+  (take 2 (utils/prefer-action ["Call" "Check" "All-In"] actions)))
 
-(loop [i 0] (let [state (bet-game (pay-blinds (init-game [(utils/init-player utils/rule-agent :p0) (utils/init-player random-agent :p1)])) [])]
+(defn wait-and-bet
+  "'Optimal' strategy against calling-station:\\
+   Check before river, and check/fold or call after depending on whether hand is better
+   than average"
+  [game-state _game-history _money actions]
+  (let [{betting-round :betting-round
+         current-player :current-player
+         hands :hands
+         community :community} game-state]
+    (if (= betting-round "River")
+      ;;not quite right - doesn't use community cards
+      (if (> (utils/preflop-win-chance (hands current-player)) 0.5)
+        (take 2 (utils/prefer-action ["All-In"] actions))
+        (take 2 (utils/prefer-action ["Check" "Fold"] 
+                                     actions)))
+      (take 2 (utils/prefer-action ["Check" "Call" "Fold"] 
+                                   actions)))))
+
+(defn random-agent 
+  "Agent that chooses randomly between available action types"
+  [_game-state _game-history _money actions]
+  (let [[type min max] (rand-nth actions)]
+    (if (< (rand) 0.0)
+      (let [types (map first actions)
+            type (cond (utils/in? types "Call") "Call"
+                       (utils/in? types "Check") "Check"
+                       (utils/in? types "Fold") "Fold")]
+        (into [] (take 2 (first (filter #(= type (first %)) actions)))))
+      (vector type min #_(+ min (math/round (rand (- max min))))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;          Slumbot HUNL interface           ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defn parse-winnings
+  "Takes a response from a finished game against slumbot, and performs final effects
+   such as updating the money of each player and revealing hands\\
+   w: how much money (in 0.01bb) the client has won\\
+   r: response from Slumbot\\
+   game-state: current game state\\
+   -> game-state"
+  [w r game-state]
+  (let [{hands :hands
+         players :players
+         action-history :action-history} game-state
+        client-pos (r "client_pos")
+        game-state (assoc game-state
+                          :hands (assoc hands
+                                        client-pos (map utils/parse-card
+                                                        (r "bot_hole_cards"))))
+        game-state (if (not= "Fold" (utils/fsecond (last (last action-history))))
+                     (showdown game-state)
+                     game-state)]
+    (assoc game-state
+           :players (assoc players
+                           client-pos (utils/set-money (players client-pos)
+                                                       (- utils/slumbot-start-bb
+                                                          (/ w utils/slumbot-bb)))
+                           (- 1 client-pos) (utils/set-money (players (- 1 client-pos))
+                                                             (+ utils/slumbot-start-bb
+                                                                (/ w utils/slumbot-bb))))
+           :game-over true)))
+
+
+(defn parse-incr-action
+  "Takes a response from slumbot, converts it into the incremental actions occurring
+   since the last update, parses these incremental actions, and applies them to the game-state.\\
+   If the game has ended, calls parse-winnings to return the final game-state.\\
+   r: response from Slumbot\\
+   game-state: current game state\\
+   -> game-state"
+  [r game-state]
+  (let [_ (if (r "error_msg") (clojure.pprint/pprint {:error "ERROR"
+                                                      :r r
+                                                      :game-state game-state}) nil)
+        old-action (r "old_action")
+        action (r "action")
+        incr (try (nth (re-find (re-pattern (str "(" old-action ")(.*)"))
+                                action)
+                       2)
+                  (catch Exception e (println (.toString e) r game-state)))
+        board (map utils/parse-card (r "board"))
+        client-hand (map utils/parse-card (r "hole_cards"))
+        client-pos (r "client_pos")]
+    (loop [[_ a rem] (utils/get-action+roundover incr)
+           game-state (assoc game-state
+                             :community board
+                             :visible board
+                             :hands (assoc [nil nil] (- 1 client-pos) client-hand)
+                             :r r)]
+      (if a
+        (recur (utils/get-action+roundover rem)
+               (if (= a "/")
+                 (next-round game-state)
+                 (parse-action (utils/decode-action a game-state)
+                               game-state)))
+        (if-let [w (r "winnings")]
+          (parse-winnings w r game-state)
+          game-state)))))
+
+
+(defn init-game-slumbot
+  "Initializes and plays a game of poker, returning the updated players
+   and updated game-history\\
+   token: Login token\\
+   agent: agent to play against slumbot\\
+   game-history: current history of games played against slumbot\\
+   -> [token game-state game-history]"
+  [token agent game-history]
+  (let [[token r] (utils/slumbot-new-hand token)
+        players [(utils/init-player agent :client)
+                 (utils/init-player :slumbot :bot)]
+        client-pos (- 1 (r "client_pos"))
+        game-state (pay-blinds (init-game (if (= 0 client-pos)
+                                            players
+                                            (into [] (reverse players)))))
+        game-state (assoc game-state
+                          :hands (assoc [nil nil]
+                                        client-pos
+                                        (map utils/parse-card
+                                             (r "hole_cards")))
+                          :community (map utils/parse-card (r "board"))
+                          :visible (map utils/parse-card (r "board"))
+                          :r r)
+        game-state (parse-incr-action r game-state)
+        #_(if (= 0 client-pos)
+                     game-state
+                     (parse-action (utils/decode-action (r "action") game-state)
+                                   game-state))]
+    [token game-state game-history]))
+
+
+
+#_(parse-incr-action {"old_action" "",
+                      "action" "",
+                      "client_pos" 0,
+                      "hole_cards" ["Ks" "4h"],
+                      "board" ["Ad", "7d", "5s", "9h", "Tc"],
+                      "bot_hole_cards" ["Qh", "Qd"],
+                      "winnings" -600}
+                     (pay-blinds (init-game [{:money 200 :id :p0} {:money 200 :id :p1}])))
+
+(defn remove-unneeded-r [r]
+  (remove #(contains? #{"session_total"
+                        "session_baseline_total"
+                        "old_action"
+                        "session_num_hands"
+                        "won_pot"} (first %)) r))
+
+(defn play-game-slumbot 
+  "Plays a game of poker from start to finish against Slumbot. When finished, summarizes the important features
+   of the game and appends it to game-history.\\
+   token: login token\\
+   agent: agent to play against slumbot\\
+   game-history: current history of agent vs slumbot games\\
+   -> [token agent game-history]"
+  [token agent game-history]
+  (let [[token game-state game-history] (init-game-slumbot token agent game-history)]
+    (loop [game-state game-state]
+      (if (:game-over game-state)
+        [token
+         agent
+         (conj game-history
+               (assoc (state-to-history {:players (map #(utils/set-money % utils/slumbot-start-bb)
+                                                (:players game-state))}
+                                 game-state)
+                      :r (into {}
+                          (remove-unneeded-r (utils/recursive-copy 
+                                   (:r game-state))))))]
+        (let [action (make-move game-state game-history)
+              r (utils/slumbot-send-action token
+                                           (utils/encode-action action
+                                                                game-state))]
+          (recur (parse-incr-action r game-state)))))))
+
+(defn iterate-games-slumbot
+  "Plays multiple games against Slumbot and appends the results of those games to game-history.\\
+   token: login token\\
+   agent: agent to play against slumbot\\
+   num-games: number of games to play\\
+   game-history: current history of games played against slumbot\\
+   -> [token game-history]"
+  ([token agent num-games game-history]
+   (loop [i num-games
+          token token
+          game-history game-history]
+     (if (zero? i)
+       [token game-history]
+              (let [[token _agent game-history] (play-game-slumbot token 
+                                                                   agent 
+                                                                   game-history)]
+                (recur (dec i)
+                       token
+                       game-history)))))
+  ([token agent num-games] (iterate-games-slumbot token agent num-games []))
+  ([agent num-games] (iterate-games-slumbot (utils/slumbot-login)
+                                            agent
+                                            num-games)))
+
+#_(iterate-games-slumbot random-agent 5)
+
+(defn slumbot-rollout
+  "Pits agent against slumbot num-samples*num-iter times and writes their match history to the file txt.\\
+   agent: agent to play against slumbot\\
+   txt: text file to output history to\\
+   num-samples: number of times to sample and print to file\\
+   num-iter: number of games played per sample\\
+   -> game-history"
+  [agent txt num-samples num-iter]
+  (loop [i 0
+         token (utils/slumbot-login)]
+    (if (= i num-samples)
+      nil
+      (let [[token history] (iterate-games-slumbot token agent num-iter)]
+        (spit txt
+              (with-out-str (clojure.pprint/pprint history))
+              :append true)
+        (println i)
+        (recur (inc i) token)))))
+
+
+      
+
+;;computing slumbot statistics
+#_(let [l (read-string (slurp "slumbot-history-random.txt"))
+      _ (println (count l))
+      bot-hands (map #(:bot (into {} (:hands %))) l)
+      bot-str (map #(let [{win :win total :total}
+                          (utils/rollout (into #{} %))]
+                      (try (float (/ win total))
+                           (catch Exception e (println %)))) 
+                   bot-hands)
+      net-gain (map #(:bot (into {} (:net-gain %))) l)
+      #_preflop-pot #_(map (fn [g]
+                         (+ 1.5 (transduce (map utils/ssecond)
+                                           +
+                                           (first (:action-history g)))))
+                       l)]
+  (utils/corr bot-str net-gain))
+
+;;calculating how representative my current slumbot history is
+#_(let [l (group-by #(into #{} (first %))
+                    (map #(vector
+                           ((:r %) "hole_cards")
+                           (/ ((:r %) "winnings") utils/slumbot-bb))
+                         (read-string (slurp "slumbot-history-random.txt"))))]
+    {:mean-games-per-hand (utils/mean (map #(count (second %)) l))})
+
+;;Slumbot rollout
+#_(loop [i 0]
+    (if (= i 10)
+      nil
+      (do
+        (time (slumbot-rollout random-agent
+                               "slumbot-history-random.txt"
+                               10
+                               240))
+        (utils/combine-vectors "slumbot-history-random.txt")
+        (flush)
+        (recur (inc i)))))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;         Runtime       ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;iterated versus competition
+#_(time (take 2
+            (iterate-games-reset [(utils/init-player utils/rule-agent :p0)
+                                  (utils/init-player random-agent :p1)]
+                                 10000
+                                 []
+                                 :list? true)))
+
+;;I gots to estimate the stdev, and then play enough games for it to be 
+;;statistically significant.
+;;computing statistically significant win results between two agents
+#_(time (let [[_ {{m0 :mean s0 :stdev} :p0}] (iterate-games-reset [(utils/init-player utils/rule-agent :p0)
+                                                       (utils/init-player random-agent :p1)]
+                                                      100
+                                                      []
+                                                      :list? true)]
+        (print (min 100000 (utils/square (* 2 (* s0 (* 0.5 m0))))))
+  (take 2 (iterate-games-reset [(utils/init-player utils/rule-agent :p0)
+                                (utils/init-player random-agent :p1)]
+                               (min 100000 (utils/square (* 2 (/ s0 1))))
+                               []
+                               :list? true))))
+
+;;statistics on mean and net gain?
+#_(clojure.pprint/pprint
+ (let [gains (map :net-gain (nth (iterate-games-reset [(utils/init-player random-agent :p0)
+                                             (utils/init-player random-agent :p1)]
+                                            1000
+                                            []
+                                            :list? true) 2))
+      gains [(map #(if (= :p0 (ffirst %)) (utils/sfirst %) (utils/ssecond %)) gains)
+             (map #(if (= :p1 (ffirst %)) (utils/sfirst %) (utils/ssecond %)) gains)]]
+  {:p0 {:mean (utils/mean (first gains)) 
+        :stdev (utils/stdev (first gains))}
+   :p1 {:mean (utils/mean (second gains))
+        :stdev (utils/stdev (second gains))}}))
+
+
+#_(loop [i 0
+       m {:p0 0 :p1 0}]
+  (if (= i 50)
+    {:p0 (/ (:p0 m) i) :p1 (/ (:p1 m) i)}
+    (let [g (iterate-games [(utils/init-player random-agent :p0)
+                            (utils/init-player utils/rule-agent :p1)]
+                           1000 [])
+          [p1 p2] (first g)
+          m1 (update m (:id p1) (partial + (:money p1)))
+          m2 (update m1 (:id p2) (partial + (:money p2)))]
+      (recur (inc i) m2))))
+
+
+#_(loop [i 0] (let [state (bet-game (pay-blinds (init-game [(utils/init-player utils/rule-agent :p0) (utils/init-player random-agent :p1)])) [])]
               (if (or (= 1 (count (:action-history state)))
                       (not (utils/in? (flatten (:action-history state)) "Bet"))
                       (utils/in? (flatten (:action-history state)) "Fold"))
@@ -491,97 +852,17 @@
                 (do (println i)
                   state))))
 
-(legal-actions (init-game [{:money 0} {:money 0}]))
-
-;;What follows b is the total bet for the round, not how much a person put in
-(def move-map {"Call" "c",
-               "Check" "k",
-               "Bet" "b",
-               "All-In" "b",
-               "Raise" "b"})
-
-(defn encode-round [round-history bet-values]
-  (let [round-history (map second round-history)]
-    (loop [s ""
-           bet-values bet-values
-           cur-player 0
-           round-history round-history]
-      (if (empty? round-history)
-        s
-        (let [new-bets (update bet-values cur-player (partial + (second (first round-history))))
-              m (move-map (ffirst round-history))]
-          (recur (if (= m "b")
-                   (str s m (int (* 100 (new-bets cur-player))))
-                   (str s m))
-                 new-bets
-                 (- 1 cur-player)
-                 (rest round-history)))))))
-
-(defn encode-action-history [action-history]
-  (clojure.string/join "/" (map-indexed #(encode-round %2 (if (= 0 %1) [0.5 1.0] [0.0 0.0])) action-history)))
-
-(defn decode-round 
-  "Not implemented yet"
-  [round-actions bet-values]
-  ())
-
-(defn decode-action-history [action-history]
-  (let [inverse-map (clojure.set/map-invert move-map)
-        round-actions (clojure.string/split action-history #"/")]
-    (map-indexed #(decode-round %2 (if (= 0 %1) [0.5 1.0] [0.0 0.0])) round-actions)))
-
-(encode-action-history [[[:p0 ["Call" 0.5]] [:p1 ["Check" 0.0]]]
-                        [[:p1 ["Check" 0.0]] [:p0 ["Check" 0.0]]]
-                        [[:p1 ["Check" 0.0]] [:p0 ["Check" 0.0]]]
-                        [[:p1 ["Check" 0.0]] [:p0 ["Bet" 1.0]] [:p1 ["All-In" 95.0]] [:p0 ["Call" 94.0]]]],
-)
-
-
-
-
-
-
-;; An individual is something which takes in the history, state, money and id and outputs a move
-;;takes game-state, current money, current options
-
-#_(defn choose-move-player
-    "Player chooses move based on agent, money, and legal bets
-   Returns [updated-player [move-type move-value]]"
-    [player bet min-raise]
-    (let [{money :money agent :agent} player
-          [value tolerance] (choose-move-agent agent)]
-      (if (or (= 0 money) (>= value money))
-        [(assoc player
-                :money 0
-                :bet "All-In") ["All-In" money]]
-        (let [move (make-move [value tolerance] bet min-raise)]
-          [(assoc player
-                  :money (- money (second move))
-                  :bet (second move)) move]))))
-
-
-#_(defn bet [hands players init]
-    (loop [pot 0
-           bet-size init
-           min-raise 0
-           players (map #(assoc % :bet 0) players)]
-      (let [p (first players)]
-        (if (or (= (:bet p) init) (= (:bet p) "All-In"))
-          [pot players]
-          (let [[p [movetype value]] (choose-move-player p bet-size min-raise)]
-            (recur (+ pot value)
-                   (max value bet-size)
-                   (max min-raise (- value bet-size))
-                   (if (= movetype "Fold")
-                     (rest players)
-                     (concat (rest players) [p]))))))))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;                 Mutation                  ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (defn -main
-;;   "I don't do a whole lot ... yet."
-;;   [& args]
-;;   (println "Hello, World!"))
-
-
+;;using :r to fill in missing values in game-history
+#_(let [l (read-string (slurp "slumbot-history-random.txt"))
+        bot-hands (map #(map utils/parse-card ((:r %) "bot_hole_cards")) l)
+        hands (map :hands l)
+        new-hands (map (fn [hand bot-hand]
+                         (mapv #(if (not= :bot (first %))
+                                  %
+                                  [:bot bot-hand]) hand))
+                       hands
+                       bot-hands)
+        new-l (mapv (fn [g h]
+                     (assoc g :hands h)) l new-hands)]
+    #_(spit "slumbot-history-random.txt" 
+          (with-out-str (clojure.pprint/pprint new-l))))
