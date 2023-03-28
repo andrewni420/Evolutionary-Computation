@@ -1,0 +1,1034 @@
+[{:max-initial-plushy-size 100,
+  :generations-per-report 1,
+  :training-data #function[poker.utils/rule-agent],
+  :max-games 20000,
+  :custom-report #function[poker.gp/custom-report],
+  :instructions
+  ([:num-cards-to-come 10]
+   [:my-stack 10]
+   [:SC-money-needed 10]
+   [:holecard-winrate 10]
+   [:hand-strength 10]
+   [:opp-stack 10]
+   [:SC-num-better 10]
+   [:in-position? 10]
+   [:SC-robustness 10]
+   [:betting-round 10]
+   [:cost-to-call 10]
+   [:prob-catch-outs 10]
+   [:pot 10]
+   [:boolean_dup_times 1]
+   [:boolean_shove 1]
+   [:exec_k 1]
+   [:boolean_xor 1]
+   [:integer_gte 1]
+   [:boolean_stack_depth 1]
+   [:integer_mod 1]
+   [:boolean_rot 1]
+   [:exec_do_times 1]
+   [:integer_lte 1]
+   [:integer_add 1]
+   [:integer_shove 1]
+   [:integer_rot 1]
+   [:integer_max 1]
+   [:integer_dup_times 1]
+   [:boolean_dup 1]
+   [:exec_while 1]
+   [:boolean_from_integer 1]
+   [:boolean_yank_dup 1]
+   [:exec_dup_times 1]
+   [:exec_eq 1]
+   [:integer_from_boolean 1]
+   [:integer_yank_dup 1]
+   [:integer_yank 1]
+   [:integer_min 1]
+   [:exec_swap 1]
+   [:integer_dup_items 1]
+   [:exec_deep_dup 1]
+   [:integer_quot 1]
+   [:exec_if 1]
+   [:boolean_invert_first_then_and 1]
+   [:boolean_eq 1]
+   [:exec_yank_dup 1]
+   [:integer_gt 1]
+   [:integer_flush 1]
+   [:boolean_deep_dup 1]
+   [:boolean_not 1]
+   [:exec_pop 1]
+   [:exec_s 1]
+   [:integer_lt 1]
+   [:exec_stack_depth 1]
+   [:integer_subtract 1]
+   [:integer_swap 1]
+   [:integer_dup 1]
+   [:exec_yank 1]
+   [:integer_pop 1]
+   [:integer_empty 1]
+   [:integer_dec 1]
+   [:exec_flush 1]
+   [:exec_when 1]
+   [:boolean_and 1]
+   [:boolean_invert_second_then_and 1]
+   [:exec_do_count 1]
+   [:exec_do_while 1]
+   [:integer_inc 1]
+   [:integer_deep_dup 1]
+   [:boolean_pop 1]
+   [:integer_mult 1]
+   [:boolean_swap 1]
+   [:exec_shove 1]
+   [:exec_y 1]
+   [:boolean_yank 1]
+   [:integer_eq 1]
+   [:exec_do_range 1]
+   [:boolean_or 1]
+   [:boolean_empty 1]
+   [:boolean_dup_items 1]
+   [:exec_empty 1]
+   [:exec_dup_items 1]
+   [:integer_stack_depth 1]
+   [:exec_rot 1]
+   [:exec_dup 1]
+   [:boolean_flush 1]
+   [#function[clojure.core/constantly/fn--5740] 30]
+   [#function[clojure.core/constantly/fn--5740] 30]
+   [#function[poker.gp/fn--31661] 30]
+   [#function[poker.gp/fn--31663] 30]
+   [#function[clojure.core/constantly/fn--5740] 30]
+   [:lte_prob 2]
+   [:gte_prob 2]
+   [:eq-epsilon-prob 2]
+   [:lte_money 2]
+   [:gte_money 2]
+   [:eq-epsilon-money 2]
+   [:sample-prob 2]
+   [:protected-add-prob 2]
+   [:protected-sub-prob 2]
+   [:mult-prob 2]
+   [:odds 2]
+   [:equity 2]
+   [:rev-equity 2]
+   [:add-money 2]
+   [:protected-sub-money 2]
+   [:bet 20]
+   [:raise 20]
+   [:call 20]
+   [:fold 20]
+   [:check 20]
+   [:all-in 20]
+   [:percent-of 20]
+   [:inc-log 20]
+   [:dec-log 20]
+   [:integer_gte 1]
+   [:integer_lte 1]
+   [:boolean_from_integer 1]
+   [:exec_while 1]
+   [close 1]
+   [:exec_if 1]
+   [close 100]
+   [:exec_if 20]
+   [:exec_when 20]
+   [:integer_gte 5]
+   [:integer_lte 5]
+   [:total-weight 20]),
+  :elitism true,
+  :variation {:umad 0.2, :crossover 0.02},
+  :max-generations 50,
+  :parent-selection :tournament,
+  :solution-error-threshold ##-Inf,
+  :umad-rate 0.2,
+  :tournament-size 5,
+  :testing-data #function[poker.utils/rule-agent],
+  :step-limit 200,
+  :generations-per-save 10,
+  :error-function #function[poker.gp/error-function],
+  :population-size 30}
+ ({:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :inc-log
+    :all-in
+    :all-in
+    :exec_when
+    :inc-log
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    close
+    4
+    :integer_from_boolean
+    :call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :integer_lte
+    :all-in
+    close
+    :holecard-winrate
+    :opp-stack
+    close
+    :call
+    :all-in
+    :num-cards-to-come
+    :raise
+    :exec_if),
+   :total-error -11.604550708723067,
+   :stdev 78.46155098235988}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :inc-log
+    :all-in
+    :all-in
+    :exec_when
+    :inc-log
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    close
+    4
+    :integer_from_boolean
+    :call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :integer_lte
+    :all-in
+    close
+    :holecard-winrate
+    :opp-stack
+    close
+    :call
+    :all-in
+    :num-cards-to-come
+    :raise
+    :exec_if),
+   :total-error -11.565670108664035,
+   :stdev 78.29137006197178}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :inc-log
+    :all-in
+    :all-in
+    :exec_when
+    :inc-log
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    close
+    4
+    :integer_from_boolean
+    :call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :integer_lte
+    :all-in
+    close
+    :holecard-winrate
+    :opp-stack
+    close
+    :call
+    :all-in
+    :num-cards-to-come
+    :raise
+    :exec_if),
+   :total-error -11.062400308597088,
+   :stdev 78.14229339957174}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :inc-log
+    :all-in
+    :all-in
+    :exec_when
+    :inc-log
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    close
+    4
+    :integer_from_boolean
+    :call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :integer_lte
+    :all-in
+    close
+    :holecard-winrate
+    :opp-stack
+    close
+    :call
+    :all-in
+    :num-cards-to-come
+    :raise
+    :exec_if),
+   :total-error -10.703564458960294,
+   :stdev 78.28965661414064}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -10.684597257703542,
+   :stdev 78.22853466762967}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    :prob-catch-outs
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    close
+    :opp-stack
+    :all-in
+    close
+    :raise),
+   :total-error -10.487786358094215,
+   :stdev 79.51085173459704}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -10.382972808015346,
+   :stdev 79.30697394525987}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -10.364901407670974,
+   :stdev 78.95739766272145}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :inc-log
+    :all-in
+    :all-in
+    :exec_when
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    close
+    4
+    :integer_from_boolean
+    :call
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    :holecard-winrate
+    :integer_lte
+    :all-in
+    close
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :num-cards-to-come
+    :raise),
+   :total-error -10.35154750778079,
+   :stdev 78.89540480799482}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -10.350389157480002,
+   :stdev 78.31963122435336}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -10.273287457317114,
+   :stdev 79.52218756684397}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -10.258765758019686,
+   :stdev 78.73503457506469}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :inc-log
+    :all-in
+    :all-in
+    :exec_when
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    close
+    4
+    :integer_from_boolean
+    :call
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    :holecard-winrate
+    :integer_lte
+    :all-in
+    close
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :num-cards-to-come
+    :raise),
+   :total-error -10.203865608036518,
+   :stdev 78.83856130849423}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -10.193871557593345,
+   :stdev 79.1786059921895}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -10.168358007925749,
+   :stdev 79.24082185311426}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    :prob-catch-outs
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    close
+    :opp-stack
+    :all-in
+    close
+    :raise),
+   :total-error -10.140979757857323,
+   :stdev 79.93072548934059}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -10.112907907491923,
+   :stdev 79.2609219862339}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -9.994737457746268,
+   :stdev 79.16129292188215}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -9.968674257749319,
+   :stdev 78.50240855285858}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :inc-log
+    :all-in
+    :all-in
+    :exec_when
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    close
+    4
+    :integer_from_boolean
+    :call
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    :holecard-winrate
+    :integer_lte
+    :all-in
+    close
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :num-cards-to-come
+    :raise),
+   :total-error -9.963579107487202,
+   :stdev 78.38094144868273}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -9.904138257014752,
+   :stdev 78.83707973564317}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    :prob-catch-outs
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    close
+    :opp-stack
+    :all-in
+    close
+    :raise),
+   :total-error -9.867858257728814,
+   :stdev 79.43349467806648}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    :raise
+    :exec_when
+    11
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    4
+    :call
+    3
+    :holecard-winrate
+    :integer_mod
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :raise),
+   :total-error -9.761752407830954,
+   :stdev 79.68481286005051}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :inc-log
+    :all-in
+    :all-in
+    :exec_when
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    close
+    4
+    :integer_from_boolean
+    :call
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    :holecard-winrate
+    :integer_lte
+    :all-in
+    close
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :num-cards-to-come
+    :raise),
+   :total-error -9.517389957362413,
+   :stdev 78.45903740301685}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :inc-log
+    :all-in
+    :all-in
+    :exec_when
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    close
+    4
+    :integer_from_boolean
+    :call
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    :holecard-winrate
+    :integer_lte
+    :all-in
+    close
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    :num-cards-to-come
+    :raise),
+   :total-error -8.800374456948042,
+   :stdev 78.75927039792063}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :inc-log
+    :exec_when
+    :inc-log
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    :cost-to-call
+    {:type :probability, :literal 0.9285437389044102}
+    close
+    :integer_from_boolean
+    1
+    :call
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    :integer_lte
+    :all-in
+    0
+    close
+    :boolean_rot
+    close
+    :opp-stack
+    :all-in
+    :num-cards-to-come
+    :raise),
+   :total-error -5.80619359832406,
+   :stdev 76.00394294169688}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    :inc-log
+    :all-in
+    :all-in
+    :exec_when
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    4
+    :integer_from_boolean
+    :call
+    close
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    13
+    :holecard-winrate
+    :integer_lte
+    close
+    :all-in
+    close
+    :percent-of
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :num-cards-to-come
+    :raise),
+   :total-error -5.440087097990513,
+   :stdev 75.6280918154358}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    :all-in
+    :all-in
+    13
+    :raise
+    :inc-log
+    :pot
+    close
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    :prob-catch-outs
+    :call
+    {:type :weight, :literal 0.023758307398480123}
+    3
+    :holecard-winrate
+    :integer_mod
+    close
+    :opp-stack
+    :all-in
+    close
+    :raise
+    :exec_if),
+   :total-error -3.0351856399536135,
+   :stdev 71.7784053758296}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    :inc-log
+    :all-in
+    :all-in
+    :exec_when
+    :inc-log
+    :SC-num-better
+    {:type :weight, :literal 0.023758307398480123}
+    close
+    close
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    close
+    4
+    :integer_from_boolean
+    :call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    :integer_lte
+    :all-in
+    close
+    :holecard-winrate
+    :fold
+    {:type :weight, :literal 0.023758307398480123}
+    :opp-stack
+    :bet
+    :all-in
+    :num-cards-to-come
+    :percent-of
+    :exec_if),
+   :total-error -0.8003896005630493,
+   :stdev 44.671528613002735}
+  {:plushy
+   ({:type :weight, :literal 0.023758307398480123}
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :money, :literal 1.07}
+    :inc-log
+    :all-in
+    :exec_when
+    :inc-log
+    close
+    close
+    :cost-to-call
+    {:type :weight, :literal 0.023758307398480123}
+    {:type :probability, :literal 0.9285437389044102}
+    close
+    4
+    :integer_from_boolean
+    :holecard-winrate
+    :integer_lte
+    :fold
+    :all-in
+    close
+    :holecard-winrate
+    close
+    :opp-stack
+    close
+    :all-in
+    close
+    :num-cards-to-come
+    :raise),
+   :total-error -0.43695,
+   :stdev 0.5746953084026512})]

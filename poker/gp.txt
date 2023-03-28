@@ -1,0 +1,491 @@
+28
+{:plushy (:exec_empty :prob-catch-outs close {:type :money, :literal 36.42} 13 :integer_mod :all-in :check :my-stack :percent-of {:type :probability, :literal 0.16578730627341742} :boolean_dup_items {:type :money, :literal 36.42} close {:type :weight, :literal 47.79823384558909} :check :fold :check close 2 :all-in {:type :weight, :literal 47.79823384558909} :prob-catch-outs :inc-log :raise close {:type :probability, :literal 0.16578730627341742} close :protected-sub-prob 10 close :equity :lte_money :integer_lte :call :total-weight :percent-of 2 close :boolean_not :SC-money-needed :all-in :SC-num-better :num-cards-to-come :check close :call :inc-log :percent-of {:type :weight, :literal 47.79823384558909} :exec_if 13 :boolean_pop :bet :exec_stack_depth :all-in :total-weight :boolean_from_integer :total-weight :opp-stack :total-weight :SC-robustness :pot :my-stack :check close :pot {:type :probability, :literal 0.16578730627341742} :betting-round :opp-stack :fold :integer_min close {:type :probability, :literal 0.16578730627341742} close {:type :probability, :literal 0.16578730627341742} :all-in 7 :bet 5 :integer_add {:type :money, :literal 36.42}), :total-error -8.846939074999877}
+{:generation 28,
+ :best-plushy
+ (:exec_empty
+  :prob-catch-outs
+  close
+  {:type :money, :literal 36.42}
+  13
+  :integer_mod
+  :all-in
+  :check
+  :my-stack
+  :percent-of
+  {:type :probability, :literal 0.16578730627341742}
+  :boolean_dup_items
+  {:type :money, :literal 36.42}
+  close
+  {:type :weight, :literal 47.79823384558909}
+  :check
+  :fold
+  :check
+  close
+  2
+  :all-in
+  {:type :weight, :literal 47.79823384558909}
+  :prob-catch-outs
+  :inc-log
+  :raise
+  close
+  {:type :probability, :literal 0.16578730627341742}
+  close
+  :protected-sub-prob
+  10
+  close
+  :equity
+  :lte_money
+  :integer_lte
+  :call
+  :total-weight
+  :percent-of
+  2
+  close
+  :boolean_not
+  :SC-money-needed
+  :all-in
+  :SC-num-better
+  :num-cards-to-come
+  :check
+  close
+  :call
+  :inc-log
+  :percent-of
+  {:type :weight, :literal 47.79823384558909}
+  :exec_if
+  13
+  :boolean_pop
+  :bet
+  :exec_stack_depth
+  :all-in
+  :total-weight
+  :boolean_from_integer
+  :total-weight
+  :opp-stack
+  :total-weight
+  :SC-robustness
+  :pot
+  :my-stack
+  :check
+  close
+  :pot
+  {:type :probability, :literal 0.16578730627341742}
+  :betting-round
+  :opp-stack
+  :fold
+  :integer_min
+  close
+  {:type :probability, :literal 0.16578730627341742}
+  close
+  {:type :probability, :literal 0.16578730627341742}
+  :all-in
+  7
+  :bet
+  5
+  :integer_add
+  {:type :money, :literal 36.42}),
+ :best-program
+ (:exec_empty
+  :prob-catch-outs
+  {:type :money, :literal 36.42}
+  13
+  :integer_mod
+  :all-in
+  :check
+  :my-stack
+  :percent-of
+  {:type :probability, :literal 0.16578730627341742}
+  :boolean_dup_items
+  {:type :money, :literal 36.42}
+  {:type :weight, :literal 47.79823384558909}
+  :check
+  :fold
+  :check
+  2
+  :all-in
+  {:type :weight, :literal 47.79823384558909}
+  :prob-catch-outs
+  :inc-log
+  :raise
+  {:type :probability, :literal 0.16578730627341742}
+  :protected-sub-prob
+  10
+  :equity
+  :lte_money
+  :integer_lte
+  :call
+  :total-weight
+  :percent-of
+  2
+  :boolean_not
+  :SC-money-needed
+  :all-in
+  :SC-num-better
+  :num-cards-to-come
+  :check
+  :call
+  :inc-log
+  :percent-of
+  {:type :weight, :literal 47.79823384558909}
+  :exec_if
+  (13
+   :boolean_pop
+   :bet
+   :exec_stack_depth
+   :all-in
+   :total-weight
+   :boolean_from_integer
+   :total-weight
+   :opp-stack
+   :total-weight
+   :SC-robustness
+   :pot
+   :my-stack
+   :check)
+  (:pot
+   {:type :probability, :literal 0.16578730627341742}
+   :betting-round
+   :opp-stack
+   :fold
+   :integer_min)
+  {:type :probability, :literal 0.16578730627341742}
+  {:type :probability, :literal 0.16578730627341742}
+  :all-in
+  7
+  :bet
+  5
+  :integer_add
+  {:type :money, :literal 36.42}),
+ :best-error -8.846939074999877,
+ :genotypic-diversity 0.1,
+ :behavioral-diversity 0.1,
+ :average-genome-length 82.0,
+ :average-total-error -7.4059134}
+ 
+ 29
+{:plushy (:exec_empty :prob-catch-outs close {:type :money, :literal 36.42} 13 :integer_mod :all-in :check :my-stack :percent-of {:type :probability, :literal 0.16578730627341742} :boolean_dup_items {:type :money, :literal 36.42} close {:type :weight, :literal 47.79823384558909} :check :fold :check close 2 :all-in {:type :weight, :literal 47.79823384558909} :prob-catch-outs :inc-log :raise close {:type :probability, :literal 0.16578730627341742} close :protected-sub-prob 10 close :equity :lte_money :integer_lte :call :total-weight :percent-of 2 close :boolean_not :SC-money-needed :all-in :SC-num-better :num-cards-to-come :check close :call :inc-log :percent-of {:type :weight, :literal 47.79823384558909} :exec_if 13 :boolean_pop :bet :exec_stack_depth :all-in :total-weight :boolean_from_integer :total-weight :opp-stack :total-weight :SC-robustness :pot :my-stack :check close :pot {:type :probability, :literal 0.16578730627341742} :betting-round :opp-stack :fold :integer_min close {:type :probability, :literal 0.16578730627341742} close {:type :probability, :literal 0.16578730627341742} :all-in 7 :bet 5 :integer_add {:type :money, :literal 36.42}), :total-error -7.8949742899998645}
+{:generation 29,
+ :best-plushy
+ (:exec_empty
+  :prob-catch-outs
+  close
+  {:type :money, :literal 36.42}
+  13
+  :integer_mod
+  :all-in
+  :check
+  :my-stack
+  :percent-of
+  {:type :probability, :literal 0.16578730627341742}
+  :boolean_dup_items
+  {:type :money, :literal 36.42}
+  close
+  {:type :weight, :literal 47.79823384558909}
+  :check
+  :fold
+  :check
+  close
+  2
+  :all-in
+  {:type :weight, :literal 47.79823384558909}
+  :prob-catch-outs
+  :inc-log
+  :raise
+  close
+  {:type :probability, :literal 0.16578730627341742}
+  close
+  :protected-sub-prob
+  10
+  close
+  :equity
+  :lte_money
+  :integer_lte
+  :call
+  :total-weight
+  :percent-of
+  2
+  close
+  :boolean_not
+  :SC-money-needed
+  :all-in
+  :SC-num-better
+  :num-cards-to-come
+  :check
+  close
+  :call
+  :inc-log
+  :percent-of
+  {:type :weight, :literal 47.79823384558909}
+  :exec_if
+  13
+  :boolean_pop
+  :bet
+  :exec_stack_depth
+  :all-in
+  :total-weight
+  :boolean_from_integer
+  :total-weight
+  :opp-stack
+  :total-weight
+  :SC-robustness
+  :pot
+  :my-stack
+  :check
+  close
+  :pot
+  {:type :probability, :literal 0.16578730627341742}
+  :betting-round
+  :opp-stack
+  :fold
+  :integer_min
+  close
+  {:type :probability, :literal 0.16578730627341742}
+  close
+  {:type :probability, :literal 0.16578730627341742}
+  :all-in
+  7
+  :bet
+  5
+  :integer_add
+  {:type :money, :literal 36.42}),
+ :best-program
+ (:exec_empty
+  :prob-catch-outs
+  {:type :money, :literal 36.42}
+  13
+  :integer_mod
+  :all-in
+  :check
+  :my-stack
+  :percent-of
+  {:type :probability, :literal 0.16578730627341742}
+  :boolean_dup_items
+  {:type :money, :literal 36.42}
+  {:type :weight, :literal 47.79823384558909}
+  :check
+  :fold
+  :check
+  2
+  :all-in
+  {:type :weight, :literal 47.79823384558909}
+  :prob-catch-outs
+  :inc-log
+  :raise
+  {:type :probability, :literal 0.16578730627341742}
+  :protected-sub-prob
+  10
+  :equity
+  :lte_money
+  :integer_lte
+  :call
+  :total-weight
+  :percent-of
+  2
+  :boolean_not
+  :SC-money-needed
+  :all-in
+  :SC-num-better
+  :num-cards-to-come
+  :check
+  :call
+  :inc-log
+  :percent-of
+  {:type :weight, :literal 47.79823384558909}
+  :exec_if
+  (13
+   :boolean_pop
+   :bet
+   :exec_stack_depth
+   :all-in
+   :total-weight
+   :boolean_from_integer
+   :total-weight
+   :opp-stack
+   :total-weight
+   :SC-robustness
+   :pot
+   :my-stack
+   :check)
+  (:pot
+   {:type :probability, :literal 0.16578730627341742}
+   :betting-round
+   :opp-stack
+   :fold
+   :integer_min)
+  {:type :probability, :literal 0.16578730627341742}
+  {:type :probability, :literal 0.16578730627341742}
+  :all-in
+  7
+  :bet
+  5
+  :integer_add
+  {:type :money, :literal 36.42}),
+ :best-error -7.8949742899998645,
+ :genotypic-diversity 0.3,
+ :behavioral-diversity 0.1,
+ :average-genome-length 81.5,
+ :average-total-error -4.3956866}
+
+30
+{:plushy (:exec_empty :prob-catch-outs close {:type :money, :literal 36.42} 13 :integer_mod :all-in :check :my-stack :percent-of {:type :probability, :literal 0.16578730627341742} :boolean_dup_items {:type :money, :literal 36.42} close {:type :weight, :literal 47.79823384558909} :check :fold :check close 2 :all-in {:type :weight, :literal 47.79823384558909} :prob-catch-outs :inc-log :raise close {:type :probability, :literal 0.16578730627341742} close :protected-sub-prob 10 close :equity :lte_money :integer_lte :call :total-weight :percent-of 2 close :boolean_not :SC-money-needed :all-in :SC-num-better :num-cards-to-come :check close :call :inc-log :percent-of {:type :weight, :literal 47.79823384558909} :exec_if 13 :boolean_pop :bet :exec_stack_depth :all-in :total-weight :boolean_from_integer :total-weight :opp-stack :total-weight :SC-robustness :pot :my-stack :check close :pot {:type :probability, :literal 0.16578730627341742} :betting-round :opp-stack :fold :integer_min close {:type :probability, :literal 0.16578730627341742} close {:type :probability, :literal 0.16578730627341742} :all-in 7 :bet 5 :integer_add {:type :money, :literal 36.42}), :total-error -6.680051969999836}
+{:generation 30,
+ :best-plushy
+ (:exec_empty
+  :prob-catch-outs
+  close
+  {:type :money, :literal 36.42}
+  13
+  :integer_mod
+  :all-in
+  :check
+  :my-stack
+  :percent-of
+  {:type :probability, :literal 0.16578730627341742}
+  :boolean_dup_items
+  {:type :money, :literal 36.42}
+  close
+  {:type :weight, :literal 47.79823384558909}
+  :check
+  :fold
+  :check
+  close
+  2
+  :all-in
+  {:type :weight, :literal 47.79823384558909}
+  :prob-catch-outs
+  :inc-log
+  :raise
+  close
+  {:type :probability, :literal 0.16578730627341742}
+  close
+  :protected-sub-prob
+  10
+  close
+  :equity
+  :lte_money
+  :integer_lte
+  :call
+  :total-weight
+  :percent-of
+  2
+  close
+  :boolean_not
+  :SC-money-needed
+  :all-in
+  :SC-num-better
+  :num-cards-to-come
+  :check
+  close
+  :call
+  :inc-log
+  :percent-of
+  {:type :weight, :literal 47.79823384558909}
+  :exec_if
+  13
+  :boolean_pop
+  :bet
+  :exec_stack_depth
+  :all-in
+  :total-weight
+  :boolean_from_integer
+  :total-weight
+  :opp-stack
+  :total-weight
+  :SC-robustness
+  :pot
+  :my-stack
+  :check
+  close
+  :pot
+  {:type :probability, :literal 0.16578730627341742}
+  :betting-round
+  :opp-stack
+  :fold
+  :integer_min
+  close
+  {:type :probability, :literal 0.16578730627341742}
+  close
+  {:type :probability, :literal 0.16578730627341742}
+  :all-in
+  7
+  :bet
+  5
+  :integer_add
+  {:type :money, :literal 36.42}),
+ :best-program
+ (:exec_empty
+  :prob-catch-outs
+  {:type :money, :literal 36.42}
+  13
+  :integer_mod
+  :all-in
+  :check
+  :my-stack
+  :percent-of
+  {:type :probability, :literal 0.16578730627341742}
+  :boolean_dup_items
+  {:type :money, :literal 36.42}
+  {:type :weight, :literal 47.79823384558909}
+  :check
+  :fold
+  :check
+  2
+  :all-in
+  {:type :weight, :literal 47.79823384558909}
+  :prob-catch-outs
+  :inc-log
+  :raise
+  {:type :probability, :literal 0.16578730627341742}
+  :protected-sub-prob
+  10
+  :equity
+  :lte_money
+  :integer_lte
+  :call
+  :total-weight
+  :percent-of
+  2
+  :boolean_not
+  :SC-money-needed
+  :all-in
+  :SC-num-better
+  :num-cards-to-come
+  :check
+  :call
+  :inc-log
+  :percent-of
+  {:type :weight, :literal 47.79823384558909}
+  :exec_if
+  (13
+   :boolean_pop
+   :bet
+   :exec_stack_depth
+   :all-in
+   :total-weight
+   :boolean_from_integer
+   :total-weight
+   :opp-stack
+   :total-weight
+   :SC-robustness
+   :pot
+   :my-stack
+   :check)
+  (:pot
+   {:type :probability, :literal 0.16578730627341742}
+   :betting-round
+   :opp-stack
+   :fold
+   :integer_min)
+  {:type :probability, :literal 0.16578730627341742}
+  {:type :probability, :literal 0.16578730627341742}
+  :all-in
+  7
+  :bet
+  5
+  :integer_add
+  {:type :money, :literal 36.42}),
+ :best-error -6.680051969999836,
+ :genotypic-diversity 0.3,
+ :behavioral-diversity 0.1,
+ :average-genome-length 81.9,
+ :average-total-error -3.7869053}

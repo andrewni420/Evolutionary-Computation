@@ -1,0 +1,2112 @@
+[{:max-initial-plushy-size 150,
+  :generations-per-report 5,
+  :training-data #function[poker.utils/rule-agent],
+  :max-games 20000,
+  :custom-report #function[poker.gp/custom-report],
+  :instructions
+  ([:num-cards-to-come 10]
+   [:my-stack 10]
+   [:SC-money-needed 10]
+   [:holecard-winrate 10]
+   [:hand-strength 10]
+   [:opp-stack 10]
+   [:SC-num-better 10]
+   [:in-position? 10]
+   [:SC-robustness 10]
+   [:betting-round 10]
+   [:cost-to-call 10]
+   [:prob-catch-outs 10]
+   [:pot 10]
+   [:boolean_dup_times 1]
+   [:boolean_shove 1]
+   [:exec_k 1]
+   [:boolean_xor 1]
+   [:integer_gte 1]
+   [:boolean_stack_depth 1]
+   [:integer_mod 1]
+   [:boolean_rot 1]
+   [:exec_do_times 1]
+   [:integer_lte 1]
+   [:integer_add 1]
+   [:integer_shove 1]
+   [:integer_rot 1]
+   [:integer_max 1]
+   [:integer_dup_times 1]
+   [:boolean_dup 1]
+   [:exec_while 1]
+   [:boolean_from_integer 1]
+   [:boolean_yank_dup 1]
+   [:exec_dup_times 1]
+   [:exec_eq 1]
+   [:integer_from_boolean 1]
+   [:integer_yank_dup 1]
+   [:integer_yank 1]
+   [:integer_min 1]
+   [:exec_swap 1]
+   [:integer_dup_items 1]
+   [:exec_deep_dup 1]
+   [:integer_quot 1]
+   [:exec_if 1]
+   [:boolean_invert_first_then_and 1]
+   [:boolean_eq 1]
+   [:exec_yank_dup 1]
+   [:integer_gt 1]
+   [:integer_flush 1]
+   [:boolean_deep_dup 1]
+   [:boolean_not 1]
+   [:exec_pop 1]
+   [:exec_s 1]
+   [:integer_lt 1]
+   [:exec_stack_depth 1]
+   [:integer_subtract 1]
+   [:integer_swap 1]
+   [:integer_dup 1]
+   [:exec_yank 1]
+   [:integer_pop 1]
+   [:integer_empty 1]
+   [:integer_dec 1]
+   [:exec_flush 1]
+   [:exec_when 1]
+   [:boolean_and 1]
+   [:boolean_invert_second_then_and 1]
+   [:exec_do_count 1]
+   [:exec_do_while 1]
+   [:integer_inc 1]
+   [:integer_deep_dup 1]
+   [:boolean_pop 1]
+   [:integer_mult 1]
+   [:boolean_swap 1]
+   [:exec_shove 1]
+   [:exec_y 1]
+   [:boolean_yank 1]
+   [:integer_eq 1]
+   [:exec_do_range 1]
+   [:boolean_or 1]
+   [:boolean_empty 1]
+   [:boolean_dup_items 1]
+   [:exec_empty 1]
+   [:exec_dup_items 1]
+   [:integer_stack_depth 1]
+   [:exec_rot 1]
+   [:exec_dup 1]
+   [:boolean_flush 1]
+   [#function[poker.gp/fn--33800] 30]
+   [#function[poker.gp/fn--33802] 30]
+   [#function[poker.gp/fn--33804] 30]
+   [#function[poker.gp/fn--33806] 30]
+   [#function[poker.gp/fn--33808] 30]
+   [:lte_prob 2]
+   [:gte_prob 2]
+   [:eq-epsilon-prob 2]
+   [:lte_money 2]
+   [:gte_money 2]
+   [:eq-epsilon-money 2]
+   [:sample-prob 2]
+   [:protected-add-prob 2]
+   [:protected-sub-prob 2]
+   [:mult-prob 2]
+   [:odds 2]
+   [:equity 2]
+   [:rev-equity 2]
+   [:add-money 2]
+   [:protected-sub-money 2]
+   [:bet 20]
+   [:raise 20]
+   [:call 20]
+   [:fold 20]
+   [:check 20]
+   [:all-in 20]
+   [:percent-of 20]
+   [:inc-log 20]
+   [:dec-log 20]
+   [:integer_gte 1]
+   [:integer_lte 1]
+   [:boolean_from_integer 1]
+   [:exec_while 1]
+   [close 1]
+   [:exec_if 1]
+   [close 100]
+   [:exec_if 40]
+   [:exec_when 40]
+   [:integer_gte 5]
+   [:integer_lte 5]
+   [:total-weight 20]),
+  :elitism true,
+  :variation {:umad 0.2, :crossover 0.02},
+  :max-generations 70,
+  :num-tournaments 2,
+  :parent-selection :single-elim,
+  :solution-error-threshold ##-Inf,
+  :umad-rate 0.2,
+  :tournament-size 5,
+  :testing-data #function[poker.utils/rule-agent],
+  :step-limit 300,
+  :generations-per-save 10,
+  :error-function #function[poker.gp/eval33978/fn--33979/fn--33982],
+  :population-size 30}
+ ({:plushy
+   (:hand-strength
+    0
+    :my-stack
+    :boolean_xor
+    :boolean_stack_depth
+    1
+    :all-in
+    :prob-catch-outs
+    {:weight 0.028055401760430972}
+    {:money 6.16}
+    :integer_lte
+    :all-in
+    :percent-of
+    52
+    :integer_swap
+    :my-stack
+    :integer_shove
+    :percent-of
+    :boolean_dup_times
+    {:probability 0.14732165556227084}
+    :raise
+    :SC-money-needed
+    :bet
+    :raise
+    18
+    3
+    close
+    :exec_if
+    {:probability 0.5372596236085191}
+    :exec_do_while
+    :SC-robustness
+    :prob-catch-outs
+    :exec_if
+    {:weight 7.63665506776944}
+    :SC-num-better
+    :inc-log
+    :integer_lte
+    :exec_while
+    :integer_dup_items
+    {:money 103.39}
+    :exec_yank_dup
+    :exec_if
+    {:money 1.25}
+    {:probability 0.08492991749125822}
+    :integer_lte
+    :exec_do_while
+    :SC-money-needed
+    :betting-round
+    :integer_lte
+    :exec_when
+    :betting-round
+    :eq-epsilon-prob
+    :pot
+    :integer_lte
+    :exec_swap
+    :odds
+    :call
+    :inc-log
+    :call
+    :fold
+    close
+    :gte_money
+    close
+    :all-in
+    :check
+    {:money 11.64}
+    13
+    :integer_gte
+    :exec_if
+    :integer_lte
+    :check
+    :cost-to-call
+    :raise
+    :all-in
+    14
+    :percent-of
+    {:weight 0.5485753799326853}
+    {:money 45.59}
+    close
+    :hand-strength
+    {:probability 0.0166842780094818}
+    3
+    :bet
+    :fold
+    :percent-of
+    :holecard-winrate
+    {:money 105.89}
+    close
+    {:money 1.84}
+    :cost-to-call
+    :exec_if
+    :raise
+    {:money 5.41}
+    close
+    close
+    close
+    close
+    :exec_when
+    {:money 2.52}
+    :opp-stack
+    :integer_add
+    :opp-stack
+    :exec_when
+    :percent-of
+    :my-stack
+    :call
+    :lte_money
+    :check
+    8
+    :all-in
+    :fold
+    :prob-catch-outs
+    close
+    :dec-log
+    :in-position?
+    :bet
+    0
+    :check
+    :bet
+    :betting-round
+    4
+    close
+    :fold
+    :my-stack
+    :total-weight
+    11
+    :total-weight
+    :boolean_deep_dup
+    :exec_if
+    :exec_when
+    {:weight 0.08514808597790621}
+    :call
+    :integer_rot
+    close
+    :raise
+    close
+    :call
+    :SC-money-needed
+    :total-weight
+    :boolean_invert_second_then_and
+    :call
+    :inc-log
+    :exec_when
+    close),
+   :total-error 1}
+  {:plushy
+   (:SC-money-needed
+    :check
+    :fold
+    :bet
+    :hand-strength
+    :bet
+    close
+    :exec_if
+    :integer_yank_dup),
+   :total-error 1}
+  {:plushy
+   (:boolean_shove
+    :exec_when
+    :exec_when
+    close
+    :inc-log
+    :exec_when
+    close
+    :fold
+    {:probability 0.6217592641122649}
+    :hand-strength
+    close
+    :hand-strength
+    close
+    {:probability 0.07541693305286568}
+    :exec_if
+    :exec_when
+    :exec_if
+    :exec_while
+    {:weight 0.09416839956175192}
+    {:weight 43.676775221220105}
+    :prob-catch-outs
+    close
+    :fold
+    1
+    1
+    close
+    close
+    close
+    :all-in
+    :integer_rot
+    :exec_when
+    :fold
+    :exec_when
+    :holecard-winrate
+    :dec-log
+    {:money 5.14}
+    close
+    :call
+    :dec-log
+    :num-cards-to-come
+    :num-cards-to-come
+    {:probability 0.862823750718551}
+    close
+    :SC-num-better
+    :opp-stack
+    :fold
+    :percent-of
+    :total-weight
+    :my-stack
+    :check
+    :bet
+    :exec_when
+    :my-stack
+    :my-stack
+    :all-in
+    close
+    :odds
+    :dec-log
+    {:probability 0.5414060850676995}
+    :inc-log
+    close
+    close
+    1
+    :exec_when
+    :SC-money-needed
+    close
+    close
+    :exec_if
+    :exec_do_range
+    :holecard-winrate
+    close
+    :exec_shove
+    :all-in
+    :all-in
+    :exec_if
+    :integer_inc
+    :SC-robustness
+    1
+    :bet
+    :prob-catch-outs
+    2
+    :prob-catch-outs
+    :call
+    :exec_if
+    17
+    close
+    close
+    :hand-strength
+    :add-money
+    :gte_prob
+    :exec_when
+    :call
+    :SC-robustness
+    :call
+    :call
+    :integer_gte
+    :total-weight
+    :lte_money
+    :fold
+    :cost-to-call
+    :exec_if
+    52
+    :my-stack
+    :total-weight
+    5
+    :exec_when
+    :my-stack
+    :fold
+    :exec_when
+    19
+    52
+    :SC-robustness
+    :SC-money-needed
+    :pot
+    :in-position?
+    2
+    :exec_if
+    {:money 25.49}
+    :dec-log
+    close
+    :prob-catch-outs
+    close
+    :pot
+    close
+    :raise
+    :call
+    {:probability 0.3273588868255993}
+    :exec_when
+    :my-stack
+    :fold
+    :integer_lt
+    {:money 18.46}),
+   :total-error 1}
+  {:plushy
+   (:check
+    {:probability 0.19389668345598188}
+    :SC-robustness
+    :exec_if
+    :pot
+    :total-weight
+    {:weight 0.030797694590050717}
+    close
+    :dec-log
+    :boolean_yank_dup
+    :inc-log
+    close
+    :exec_when
+    close
+    close
+    :all-in
+    :lte_money
+    :percent-of
+    :boolean_swap
+    {:money 5.29}
+    :SC-robustness
+    :exec_if
+    :opp-stack
+    :num-cards-to-come
+    :SC-num-better
+    :SC-num-better
+    12
+    close
+    {:money 66.86}
+    :dec-log
+    :exec_if
+    close
+    :my-stack
+    :call
+    :cost-to-call
+    :exec_when
+    :exec_if
+    :exec_when
+    :opp-stack
+    :opp-stack
+    :boolean_from_integer
+    close
+    {:probability 0.43580000229636984}
+    1
+    {:weight 8.079090346067419}
+    :betting-round
+    :exec_when
+    :SC-money-needed
+    close
+    :dec-log
+    close
+    {:weight 63.773853088759104}
+    1
+    19
+    {:money 45.93}
+    close
+    close
+    14
+    :prob-catch-outs
+    :exec_while
+    :pot
+    {:weight 0.03232135184545894}
+    52
+    2
+    {:weight 0.21278886019545984}
+    :exec_if
+    close
+    {:probability 0.4791261948874477}
+    :exec_when
+    :total-weight
+    :hand-strength
+    :my-stack
+    {:probability 0.7892385932962103}
+    {:probability 0.08882389616565356}
+    :lte_money
+    :integer_min
+    {:probability 0.7118736887949738}
+    :raise
+    :my-stack
+    :exec_when
+    close
+    :in-position?
+    :raise
+    :holecard-winrate
+    :inc-log
+    {:probability 0.5368159282802621}
+    :bet
+    close
+    :exec_when
+    :opp-stack
+    3
+    :integer_flush
+    :raise
+    :inc-log
+    :inc-log
+    :integer_subtract
+    :exec_when
+    :exec_when
+    close
+    :boolean_pop
+    :raise
+    :exec_if
+    :exec_if
+    5
+    :raise
+    :opp-stack
+    :SC-money-needed
+    close
+    :exec_swap
+    :integer_gt
+    close
+    :integer_lte
+    :call
+    close
+    :dec-log
+    :opp-stack
+    :boolean_shove
+    close
+    :exec_eq
+    :exec_if
+    {:weight 0.7231711205539478}
+    :in-position?
+    close
+    close
+    :my-stack
+    :fold
+    :exec_when
+    :percent-of
+    :pot
+    16
+    :dec-log
+    {:money 1.79}
+    :SC-robustness
+    {:probability 0.7671056918972647}
+    :bet
+    :all-in
+    close
+    :integer_gte
+    :boolean_or
+    5
+    :exec_if
+    4
+    :inc-log
+    :num-cards-to-come
+    close),
+   :total-error 1}
+  {:plushy
+   (8
+    close
+    :exec_when
+    :exec_empty
+    :fold
+    :inc-log
+    :check
+    {:probability 0.7606750101780395}
+    :inc-log
+    {:money 1.62}
+    :exec_if
+    :mult-prob
+    9
+    close
+    {:probability 0.37563521720198323}
+    {:probability 0.12018675657174172}
+    :all-in
+    close
+    {:probability 0.26539785892403256}
+    :exec_s
+    :integer_yank_dup
+    close
+    close
+    {:money 199.51}
+    2
+    :bet
+    {:probability 0.3061679591799912}
+    11
+    9
+    :SC-robustness
+    {:weight 7.286057645497745}
+    {:money 13.21}
+    :num-cards-to-come
+    {:probability 0.28759179781084665}
+    close
+    2
+    :call
+    {:money 1.3}
+    :boolean_and
+    {:money 14.88}
+    :rev-equity
+    :integer_gte
+    2
+    :lte_prob
+    :raise
+    :call
+    {:probability 0.7524678453516437}
+    :call
+    :check
+    :integer_empty
+    :lte_money
+    :integer_gte
+    {:money 1.13}
+    :exec_if
+    {:probability 0.4057046990493637}
+    :percent-of
+    :dec-log
+    :all-in
+    :dec-log
+    16
+    :holecard-winrate
+    :dec-log
+    :call
+    {:weight 0.010824159852493352}
+    :cost-to-call
+    :fold
+    :check
+    :SC-num-better
+    :protected-sub-money
+    :cost-to-call
+    close
+    :SC-num-better
+    {:weight 0.013953255094696297}
+    :fold
+    52
+    :exec_when
+    close
+    3
+    :exec_if
+    close
+    close
+    :exec_while
+    close
+    :dec-log
+    :hand-strength
+    0
+    {:probability 0.97519705963025}
+    close
+    :integer_quot
+    :exec_if),
+   :total-error 1}
+  {:plushy
+   (:raise
+    :in-position?
+    :exec_swap
+    :exec_when
+    8
+    :dec-log
+    :hand-strength
+    :raise
+    5
+    1
+    :exec_if
+    :call
+    :gte_prob
+    :check
+    :call
+    :sample-prob
+    :bet
+    :prob-catch-outs
+    {:probability 0.3612517353644129}
+    :holecard-winrate
+    :pot
+    :in-position?
+    :call
+    :inc-log
+    :exec_if
+    close
+    {:money 151.88}
+    :holecard-winrate
+    :SC-money-needed
+    :bet
+    :exec_y
+    :total-weight
+    :raise
+    :call
+    :call
+    19
+    9
+    :hand-strength
+    :integer_dup_times
+    close
+    :exec_when
+    :SC-money-needed
+    :check
+    :exec_empty
+    :raise
+    :sample-prob
+    :exec_when
+    close
+    :my-stack
+    :integer_lte
+    17
+    :all-in
+    :check
+    :check
+    :exec_if
+    :SC-robustness
+    :cost-to-call
+    :percent-of
+    :betting-round
+    :integer_gte
+    :percent-of
+    :prob-catch-outs
+    :exec_if
+    :pot
+    :exec_empty
+    :bet
+    :integer_gte
+    :hand-strength
+    :exec_if
+    {:weight 43.51685340060115}
+    :exec_when
+    :hand-strength
+    :integer_yank
+    :inc-log
+    {:probability 0.07694740970300207}
+    :exec_if
+    :exec_when
+    :percent-of
+    :total-weight
+    :check
+    :hand-strength
+    :cost-to-call
+    :exec_when
+    {:weight 0.05060467598202962}
+    :exec_when
+    :holecard-winrate
+    :raise
+    :all-in
+    3
+    :SC-robustness
+    :dec-log
+    :fold
+    close
+    :raise
+    :holecard-winrate
+    :total-weight
+    :dec-log
+    :exec_k
+    :integer_rot
+    {:probability 0.5404736841861582}
+    :raise
+    :cost-to-call
+    close
+    :raise
+    :integer_max
+    :exec_when
+    :exec_when
+    :exec_when
+    :bet
+    close
+    close
+    close
+    :total-weight
+    :raise
+    :all-in
+    :fold),
+   :total-error 1}
+  {:plushy
+   (:integer_max
+    :boolean_dup
+    {:probability 0.2649066674340578}
+    5
+    close
+    :raise
+    :pot
+    :boolean_and
+    {:weight 0.10319775222769197}
+    :pot
+    :bet
+    close
+    {:probability 0.025728377640799382}
+    :fold
+    :exec_eq),
+   :total-error 1}
+  {:plushy
+   (:exec_when
+    :total-weight
+    :dec-log
+    :SC-robustness
+    :integer_yank
+    :percent-of
+    {:money 8.62}
+    :integer_quot
+    :bet
+    :holecard-winrate
+    :dec-log
+    close
+    :inc-log
+    {:money 7.93}
+    :betting-round
+    close
+    :raise
+    :exec_if
+    :exec_when
+    :integer_dup_items
+    :opp-stack
+    :gte_money
+    :cost-to-call
+    close
+    :protected-sub-money
+    :bet
+    :total-weight
+    :opp-stack
+    :betting-round
+    :pot
+    :exec_if
+    :holecard-winrate
+    :bet
+    {:weight 0.40609196443226775}
+    :SC-num-better
+    :percent-of
+    :exec_while
+    :rev-equity
+    {:money 51.7}
+    close
+    :prob-catch-outs
+    close
+    :exec_if
+    close),
+   :total-error 1}
+  {:plushy (), :total-error 1}
+  {:plushy
+   ({:probability 0.3601236227413659}
+    close
+    :bet
+    :bet
+    :betting-round
+    close
+    13
+    :cost-to-call
+    {:money 6.02}
+    2
+    :all-in
+    :raise
+    {:weight 1.3398993608825895}
+    close
+    {:money 6.7}
+    close
+    :total-weight
+    :exec_empty
+    13
+    close
+    close
+    close
+    :hand-strength
+    :call
+    :SC-robustness
+    :holecard-winrate
+    :dec-log
+    :check
+    :SC-num-better
+    close
+    close
+    :raise
+    :gte_money
+    close
+    :exec_when
+    :lte_money
+    :integer_mult
+    :hand-strength
+    :prob-catch-outs
+    :integer_shove
+    :total-weight
+    :SC-money-needed
+    :integer_mult
+    :hand-strength
+    :eq-epsilon-money
+    close
+    close
+    :prob-catch-outs
+    :SC-num-better
+    :all-in
+    3
+    :hand-strength
+    close
+    {:probability 0.08448975154469873}
+    :exec_while
+    16
+    :bet
+    close
+    :hand-strength
+    close
+    close
+    close
+    :integer_stack_depth
+    :fold
+    :exec_dup_times
+    :fold
+    :raise
+    :check
+    :exec_when
+    :raise
+    {:money 10.19}
+    :boolean_flush
+    {:probability 0.7075314758271662}
+    :fold
+    {:weight 0.1785099437099252}
+    close
+    :hand-strength
+    close
+    {:probability 0.3465657899472948}
+    :eq-epsilon-money
+    :total-weight
+    :call
+    :exec_do_count
+    :total-weight
+    :exec_when
+    close
+    :my-stack
+    3
+    close
+    :exec_if
+    :opp-stack
+    :num-cards-to-come
+    {:probability 0.19447869966214681}
+    :prob-catch-outs
+    :in-position?
+    :pot
+    11
+    {:probability 0.9294107053729826}
+    {:money 6.86}
+    :integer_lte
+    :inc-log
+    :exec_if
+    :num-cards-to-come
+    {:probability 0.34955285745708364}
+    :exec_if
+    close
+    52
+    :pot
+    :call
+    :exec_if),
+   :total-error 1}
+  {:plushy
+   (:percent-of
+    close
+    :in-position?
+    close
+    :lte_prob
+    {:probability 0.777223743944967}
+    :SC-num-better
+    {:weight 0.055921850266835355}
+    :exec_if
+    :opp-stack
+    close
+    :exec_if
+    :exec_when
+    close
+    :in-position?
+    {:weight 5.0664869039085705}
+    :exec_if
+    :integer_gt
+    :integer_lte
+    close
+    {:probability 0.6325090803746143}
+    10
+    :SC-num-better
+    13
+    {:money 178.58}
+    :percent-of
+    :call
+    :protected-sub-money
+    :cost-to-call
+    13
+    :integer_gte
+    :fold
+    :percent-of
+    :all-in
+    {:money 1.19}
+    {:probability 0.48251900204543574}
+    :call
+    :all-in
+    :SC-robustness
+    close
+    :total-weight
+    close
+    :num-cards-to-come
+    :hand-strength
+    close
+    :hand-strength
+    :exec_if
+    :integer_flush
+    :percent-of
+    :num-cards-to-come
+    :my-stack
+    :percent-of
+    :all-in
+    :exec_if
+    :mult-prob
+    4),
+   :total-error 1}
+  {:plushy
+   (:num-cards-to-come
+    :raise
+    {:weight 4.463856592797949}
+    :exec_if
+    3
+    :check
+    :exec_when
+    {:probability 0.6846467041146947}
+    :call
+    {:probability 0.30521917363814466}
+    close
+    close
+    :integer_lte
+    :SC-money-needed
+    :percent-of
+    :integer_gte
+    {:money 16.98}
+    :exec_when
+    :equity
+    5
+    {:money 33.67}
+    :integer_max
+    :inc-log
+    :SC-robustness
+    :call
+    :exec_if
+    :my-stack
+    :percent-of
+    :holecard-winrate
+    close
+    :exec_when
+    :check
+    :in-position?
+    :prob-catch-outs
+    close
+    :integer_lte
+    :call
+    :inc-log
+    :SC-money-needed
+    :betting-round
+    close
+    {:weight 0.396001537820503}
+    :SC-robustness
+    :fold
+    1
+    :all-in
+    :total-weight
+    close
+    9
+    4
+    2
+    close
+    :exec_yank_dup
+    close
+    {:money 97.43}
+    close
+    :pot
+    :holecard-winrate
+    :inc-log
+    :prob-catch-outs
+    close
+    :inc-log
+    :raise
+    1),
+   :total-error 1}
+  {:plushy
+   (:check
+    close
+    :num-cards-to-come
+    :fold
+    :SC-robustness
+    :SC-num-better
+    {:weight 0.34398375020761957}
+    close
+    close
+    :sample-prob
+    :exec_s
+    3
+    {:weight 17.66207447735771}
+    :exec_if
+    :in-position?
+    :eq-epsilon-prob
+    :opp-stack
+    :cost-to-call
+    :exec_if
+    :call
+    close
+    close
+    1
+    :holecard-winrate
+    :check
+    0
+    :boolean_deep_dup
+    :integer_gte
+    close
+    close
+    :check
+    :hand-strength
+    :dec-log
+    :percent-of
+    :boolean_xor
+    :integer_deep_dup
+    :in-position?
+    :total-weight
+    :hand-strength
+    close
+    :fold
+    :num-cards-to-come
+    :in-position?
+    :holecard-winrate
+    :boolean_from_integer
+    :opp-stack
+    :fold
+    :raise
+    :prob-catch-outs
+    5
+    :my-stack
+    {:weight 24.502102781587865}
+    close
+    :check
+    :dec-log
+    :holecard-winrate
+    :integer_lte
+    :bet
+    :exec_when
+    {:probability 0.40640690352733666}
+    :check
+    :SC-money-needed
+    :odds
+    :percent-of
+    :inc-log
+    :fold
+    :inc-log
+    :inc-log
+    close
+    close
+    close
+    :SC-robustness
+    :percent-of
+    :equity),
+   :total-error 1}
+  {:plushy
+   (:boolean_from_integer
+    :equity
+    {:money 140.48}
+    :fold
+    :gte_money
+    {:probability 0.5342030444478726}
+    :fold
+    2
+    close
+    :boolean_dup
+    :prob-catch-outs
+    :holecard-winrate
+    :hand-strength
+    close
+    :exec_dup
+    :check
+    :fold
+    :SC-robustness
+    :all-in
+    :exec_when
+    {:probability 0.8729707770543788}
+    {:money 1.13}
+    :exec_when
+    :exec_when
+    :all-in
+    :percent-of
+    4
+    :integer_eq
+    :exec_pop
+    2
+    :raise
+    {:probability 0.2197350971191807}
+    :integer_swap
+    :dec-log
+    :exec_if
+    {:money 103.72}
+    close
+    close
+    :dec-log
+    :fold
+    :percent-of
+    {:probability 0.06862525783176199}
+    :dec-log
+    :cost-to-call
+    :rev-equity
+    :integer_deep_dup
+    :fold
+    :holecard-winrate
+    close
+    :rev-equity
+    :dec-log
+    0
+    :exec_if),
+   :total-error 1}
+  {:plushy (:add-money 2 :check :call :integer_dup_items),
+   :total-error 1}
+  {:plushy
+   ({:weight 0.011440132714830964}
+    {:weight 0.7411217212011496}
+    {:weight 0.8245288810295388}
+    :num-cards-to-come
+    :bet
+    15
+    :total-weight
+    :all-in
+    {:weight 5.359274300779965}
+    :exec_if
+    {:probability 0.1968694413195592}
+    :percent-of
+    :my-stack
+    1
+    :call
+    13
+    :prob-catch-outs
+    {:weight 0.48824737144211744}
+    :SC-money-needed
+    :all-in
+    12
+    :bet
+    close
+    :inc-log
+    :all-in
+    close
+    close
+    :lte_money
+    :fold
+    :betting-round
+    :fold
+    :total-weight
+    :integer_dec
+    :exec_when
+    :prob-catch-outs
+    {:weight 0.4078904829249303}),
+   :total-error 1}
+  {:plushy
+   (:SC-num-better
+    {:weight 0.0754866014062791}
+    :boolean_invert_second_then_and
+    :exec_if
+    :fold
+    :total-weight
+    :prob-catch-outs
+    :in-position?
+    :inc-log
+    :my-stack
+    close
+    :percent-of
+    :in-position?
+    close
+    :total-weight
+    {:money 38.4}
+    {:weight 27.917054961673777}
+    :call
+    :exec_when
+    :exec_flush
+    :my-stack
+    {:weight 0.2496377027731625}
+    :cost-to-call
+    :exec_if
+    close
+    close
+    close
+    close
+    close
+    :total-weight
+    :all-in
+    :prob-catch-outs
+    :exec_flush
+    :in-position?
+    :dec-log
+    :raise
+    5
+    :exec_while
+    :percent-of
+    :integer_add
+    close
+    close),
+   :total-error 1}
+  {:plushy
+   (:exec_if
+    :integer_gte
+    :exec_if
+    :bet
+    close
+    :pot
+    close
+    :opp-stack
+    {:money 13.49}
+    close
+    1
+    :bet
+    :SC-num-better
+    1
+    :check
+    13
+    :call
+    {:money 76.42}
+    close
+    :dec-log
+    :boolean_not
+    :exec_if
+    :call
+    close
+    :SC-num-better
+    :bet
+    {:weight 67.99476516541746}
+    :check
+    4
+    :call
+    {:money 1.47}
+    {:probability 0.6109475000409746}
+    close
+    :percent-of
+    :integer_lte
+    :holecard-winrate
+    :fold
+    :integer_gte
+    {:probability 0.9236716859678945}
+    :raise
+    :exec_if
+    :exec_stack_depth
+    :percent-of
+    :exec_do_times
+    close
+    :opp-stack
+    :bet
+    :percent-of
+    :all-in
+    :check
+    :num-cards-to-come
+    :total-weight
+    :bet
+    :SC-money-needed
+    close
+    :raise
+    :check
+    :dec-log
+    :call
+    2
+    {:probability 0.6072511378411881}
+    :call
+    5
+    :SC-money-needed
+    2
+    :call
+    :integer_stack_depth
+    :holecard-winrate
+    3
+    :inc-log
+    close
+    :gte_prob
+    :all-in
+    :exec_if
+    :gte_prob
+    :holecard-winrate
+    :cost-to-call
+    close
+    :all-in
+    2
+    {:weight 0.9213933550139298}
+    :call
+    :holecard-winrate
+    :bet
+    :hand-strength
+    :call
+    :all-in
+    :hand-strength
+    :raise
+    :call
+    :equity
+    :inc-log
+    :total-weight
+    :integer_lte
+    :exec_while),
+   :total-error 1}
+  {:plushy
+   (:exec_when
+    close
+    :exec_when
+    :exec_if
+    :exec_if
+    :hand-strength
+    close
+    {:money 8.15}
+    :exec_if
+    :all-in
+    :SC-num-better
+    close),
+   :total-error 1}
+  {:plushy
+   (:num-cards-to-come
+    4
+    :percent-of
+    close
+    :exec_if
+    :betting-round
+    :bet
+    :protected-sub-prob
+    :SC-robustness
+    :pot
+    :fold
+    :boolean_and
+    {:money 2.87}
+    {:weight 0.011971310888284075}
+    {:weight 0.02928429636841333}
+    :inc-log
+    :num-cards-to-come
+    {:weight 0.38578405033449237}
+    14
+    :bet
+    :exec_if
+    :fold
+    :SC-money-needed
+    5
+    :dec-log
+    :dec-log
+    {:weight 1.7484879686143182}
+    close
+    close
+    {:weight 0.4656995851165111}
+    :pot
+    :integer_lte
+    close
+    close
+    :total-weight
+    :exec_if
+    1
+    {:money 9.64}
+    :call
+    :SC-robustness
+    close
+    :pot
+    :total-weight
+    :dec-log
+    :fold
+    :opp-stack
+    :num-cards-to-come
+    3
+    {:money 10.78}
+    {:probability 0.553884840058846}
+    :num-cards-to-come
+    :exec_when
+    :dec-log
+    {:money 4.36}
+    :inc-log
+    close
+    close
+    :inc-log
+    :exec_if
+    :holecard-winrate
+    :fold
+    :check
+    :in-position?
+    :cost-to-call
+    :cost-to-call
+    {:weight 42.24240000252111}
+    :fold
+    :exec_when
+    :inc-log
+    :exec_when
+    1
+    {:probability 0.041238781247252665}
+    :inc-log
+    {:weight 51.06324752231574}
+    :call
+    3
+    :check
+    :percent-of
+    {:money 68.8}
+    :boolean_yank
+    :exec_when
+    :boolean_yank_dup
+    :SC-num-better
+    :integer_subtract
+    {:money 1.37}
+    :cost-to-call
+    close
+    :dec-log
+    :dec-log
+    close
+    :percent-of
+    :check),
+   :total-error 1}
+  {:plushy
+   (:exec_y
+    :in-position?
+    {:money 1.65}
+    :prob-catch-outs
+    close
+    :exec_if
+    :percent-of
+    :check
+    :bet
+    :exec_when
+    :percent-of
+    :all-in
+    :cost-to-call
+    :exec_when
+    {:probability 0.716794327181017}
+    {:money 1.4}
+    {:money 1.78}
+    {:probability 0.5598313638709908}
+    :lte_money
+    :exec_rot
+    :pot
+    close
+    :gte_prob
+    :exec_when
+    {:money 26.34}
+    :in-position?
+    {:money 1.28}
+    4
+    :bet
+    :call
+    :fold
+    close
+    close
+    :raise
+    :my-stack
+    :exec_if
+    :rev-equity
+    close
+    :protected-sub-money
+    :eq-epsilon-money
+    close
+    :boolean_rot
+    :exec_when
+    :sample-prob
+    {:weight 0.018971188424461154}
+    :integer_eq
+    :percent-of
+    {:money 6.67}
+    {:probability 0.5154728569340586}
+    :integer_gte
+    :boolean_from_integer
+    52
+    :exec_when
+    {:probability 0.2810587068294871}
+    :all-in
+    {:weight 27.75863581033404}
+    :inc-log
+    10
+    :add-money
+    {:probability 0.6562543676563529}
+    :eq-epsilon-money
+    :exec_if
+    :num-cards-to-come
+    close
+    :all-in
+    :exec_yank
+    :fold
+    :cost-to-call
+    :my-stack
+    close
+    close
+    :prob-catch-outs
+    close
+    :all-in
+    :prob-catch-outs
+    :fold
+    :call
+    :integer_lte
+    close
+    :exec_when
+    {:probability 0.5454234418060866}
+    :integer_from_boolean
+    :check
+    :dec-log
+    :bet
+    :exec_if
+    :percent-of
+    :exec_if
+    :integer_max
+    {:weight 13.947021233843104}
+    :check
+    {:weight 0.16760589106143461}
+    :dec-log
+    :exec_when
+    {:money 21.33}
+    :percent-of
+    :eq-epsilon-prob
+    :rev-equity
+    :exec_do_range
+    :percent-of
+    11
+    :exec_swap
+    4
+    {:weight 0.07338616857870335}
+    close
+    close
+    close
+    :integer_swap
+    :inc-log
+    :bet
+    :inc-log
+    :integer_yank_dup
+    :raise
+    :my-stack
+    close
+    :fold),
+   :total-error 1}
+  {:plushy
+   (:percent-of
+    :exec_if
+    :all-in
+    :odds
+    :opp-stack
+    2
+    :all-in
+    :my-stack
+    :check
+    0
+    :integer_lte
+    :all-in
+    13
+    close
+    close
+    :boolean_flush
+    18
+    :boolean_not),
+   :total-error 1}
+  {:plushy
+   (5
+    52
+    :total-weight
+    close
+    {:probability 0.2846385168378913}
+    :exec_when
+    :fold
+    :boolean_yank_dup
+    close
+    :percent-of
+    :dec-log
+    :my-stack
+    :opp-stack
+    :dec-log
+    {:weight 25.379841112733324}
+    17
+    {:weight 37.472325866547436}
+    :odds
+    close
+    :call
+    :prob-catch-outs
+    :integer_lte
+    18
+    :rev-equity
+    3
+    4
+    :exec_if),
+   :total-error 1}
+  {:plushy
+   (:check
+    :exec_when
+    :check
+    close
+    close
+    3
+    :num-cards-to-come
+    close
+    :call
+    :call
+    :check
+    {:money 89.51}
+    :dec-log
+    :exec_if
+    :exec_rot
+    :exec_if
+    {:money 4.0}
+    :num-cards-to-come
+    close
+    {:probability 0.19997168908070562}
+    :my-stack
+    :integer_lte
+    :cost-to-call
+    :call
+    4
+    {:weight 1.2696227160864555}
+    18
+    close
+    :opp-stack
+    {:money 104.72}
+    :exec_if
+    :betting-round
+    :mult-prob
+    :call
+    :prob-catch-outs
+    :exec_when
+    close
+    :dec-log
+    :pot
+    :exec_if
+    :sample-prob
+    :SC-money-needed
+    :raise
+    5
+    :protected-add-prob
+    close
+    :holecard-winrate
+    :raise
+    close
+    :SC-robustness
+    {:weight 11.586576325639703}
+    {:money 160.85}
+    :SC-num-better
+    :exec_if
+    :fold
+    :cost-to-call
+    close
+    2
+    :percent-of
+    :call
+    :exec_when
+    16
+    :exec_if
+    {:weight 0.1159995491691197}
+    :boolean_and
+    :exec_when
+    {:money 5.69}
+    :SC-num-better
+    {:money 78.67}
+    1
+    :exec_when
+    :integer_gte
+    close
+    :opp-stack
+    :check
+    :exec_if
+    :exec_yank
+    :SC-money-needed
+    :check
+    :SC-num-better
+    :exec_if
+    :raise
+    :exec_if
+    13
+    :boolean_yank_dup
+    :total-weight
+    :all-in
+    :SC-num-better
+    :call
+    {:money 53.07}
+    :exec_if
+    :total-weight
+    close
+    {:probability 0.7855178364968249}
+    {:weight 5.8922790313929445}
+    {:weight 0.12667163108129315}
+    :opp-stack
+    :total-weight
+    close
+    close
+    :SC-robustness
+    :exec_when
+    :betting-round
+    8
+    close
+    {:money 29.08}
+    close
+    {:weight 0.08880494349778573}
+    :exec_rot
+    :integer_empty
+    {:probability 0.16414638252968572}
+    :exec_when
+    :exec_if
+    :raise
+    :fold
+    :betting-round
+    close
+    :fold
+    {:probability 0.23536250737672992}
+    1
+    3
+    :boolean_deep_dup
+    {:money 16.09}),
+   :total-error 1}
+  {:plushy
+   (13
+    :integer_deep_dup
+    :in-position?
+    :raise
+    {:probability 0.36084016448283607}),
+   :total-error 1}
+  {:plushy
+   (close
+    :lte_prob
+    :bet
+    :integer_lte
+    close
+    17
+    close
+    close
+    {:probability 0.3474912767707259}
+    :hand-strength
+    :my-stack
+    2
+    :integer_quot
+    {:weight 2.2126060793258095}
+    :boolean_yank
+    close
+    :SC-num-better
+    {:weight 0.025182532031091838}
+    :prob-catch-outs
+    {:weight 27.396714919993247}
+    :cost-to-call
+    :all-in
+    :cost-to-call
+    :exec_if
+    close
+    {:probability 0.4888263541337514}
+    :boolean_dup_times
+    close
+    :SC-robustness
+    :hand-strength
+    close
+    :boolean_eq
+    8
+    close
+    :raise
+    :integer_from_boolean
+    :exec_if
+    close
+    :exec_if
+    :in-position?
+    :exec_when
+    :exec_when
+    :integer_mod
+    :boolean_dup
+    :rev-equity
+    15
+    :betting-round
+    :total-weight
+    :prob-catch-outs
+    13
+    :exec_do_count
+    :prob-catch-outs
+    {:money 2.22}
+    {:money 2.81}
+    {:money 2.91}
+    :gte_money
+    :fold
+    :exec_when
+    close
+    {:probability 0.38447559661231523}
+    :cost-to-call
+    :exec_when
+    :exec_if
+    close
+    2
+    :SC-robustness
+    4
+    close
+    :bet
+    close
+    close
+    :exec_when
+    :call
+    :raise
+    close
+    :call
+    close
+    :cost-to-call
+    :exec_if
+    :exec_if
+    :integer_max
+    {:probability 0.07215761553995081}
+    :in-position?
+    3
+    :exec_if
+    {:weight 17.155679067731274}
+    close
+    :cost-to-call
+    17
+    52
+    :exec_when
+    :SC-robustness
+    :bet
+    close
+    :exec_when
+    :exec_do_range
+    :prob-catch-outs
+    close
+    :exec_when
+    :cost-to-call
+    close
+    :boolean_and
+    :opp-stack
+    17
+    :total-weight
+    :boolean_shove),
+   :total-error 1}
+  {:plushy
+   (:hand-strength
+    :exec_when
+    :boolean_flush
+    :inc-log
+    close
+    {:money 1.41}
+    :integer_deep_dup
+    5
+    :percent-of
+    :percent-of
+    :percent-of
+    13
+    :integer_gte
+    :in-position?
+    :call
+    :my-stack
+    close
+    :check
+    :fold
+    :fold
+    {:money 6.41}
+    12
+    :all-in
+    :prob-catch-outs
+    :SC-robustness
+    :integer_add
+    {:money 23.01}
+    :inc-log
+    :SC-money-needed
+    :pot
+    close
+    close
+    :percent-of
+    :inc-log
+    :cost-to-call
+    :integer_lte
+    12
+    :boolean_rot
+    close
+    :percent-of
+    :total-weight
+    :dec-log
+    :SC-money-needed
+    :call
+    :exec_yank_dup
+    :hand-strength
+    close
+    :check
+    :boolean_rot
+    :SC-money-needed
+    :SC-robustness
+    :dec-log
+    close
+    close
+    8
+    :SC-num-better
+    close
+    :inc-log
+    :all-in
+    :all-in
+    close
+    :call
+    close
+    :SC-money-needed
+    :SC-robustness
+    :call
+    1
+    1
+    :check
+    :exec_when
+    :raise
+    :check
+    :num-cards-to-come
+    :cost-to-call
+    close
+    :SC-robustness
+    :eq-epsilon-prob
+    :exec_if
+    :integer_gte
+    close
+    :SC-robustness
+    :exec_if
+    :boolean_dup_times
+    :fold
+    :inc-log
+    {:money 58.57}
+    :exec_when
+    :exec_if
+    :in-position?
+    :prob-catch-outs
+    11
+    :total-weight
+    :bet
+    :exec_when
+    close
+    :hand-strength
+    close
+    close
+    :opp-stack
+    :opp-stack
+    close
+    :all-in
+    :check
+    {:probability 0.7952501449861771}
+    close
+    {:weight 86.07976220504912}
+    :SC-num-better
+    :fold
+    :num-cards-to-come
+    8
+    :exec_when
+    :holecard-winrate
+    :exec_when
+    {:weight 0.026470852243107072}
+    :total-weight
+    {:probability 0.39912430030504165}
+    :prob-catch-outs
+    close
+    :exec_if
+    :integer_lte
+    :bet
+    :boolean_flush),
+   :total-error 1}
+  {:plushy
+   (:exec_if
+    :exec_do_while
+    :pot
+    close
+    :exec_if
+    4
+    6
+    :inc-log
+    :inc-log
+    :inc-log
+    {:probability 0.1286025861970499}
+    :odds
+    :SC-money-needed
+    :boolean_swap
+    :prob-catch-outs
+    {:weight 0.8589419908272679}
+    :boolean_and
+    :bet
+    12
+    :call
+    :raise
+    5
+    {:probability 0.21306732512626492}
+    :check
+    :inc-log
+    {:weight 6.424642135776308}
+    close
+    :SC-robustness
+    :percent-of
+    :exec_if
+    {:weight 5.704145973584698}
+    :all-in
+    :bet
+    :bet
+    close
+    1
+    :exec_when
+    {:weight 1.6022091986444}
+    :integer_lte
+    :total-weight
+    :percent-of
+    :inc-log
+    :integer_mult
+    :my-stack
+    :integer_lte
+    :all-in
+    :exec_when),
+   :total-error 1}
+  {:plushy (), :total-error 1}
+  {:plushy
+   (:holecard-winrate
+    :check
+    3
+    {:probability 0.032159370140070864}
+    :total-weight
+    close
+    :SC-money-needed
+    :all-in
+    :exec_if
+    {:weight 10.621958611069738}
+    close
+    {:weight 19.547002730257592}
+    :all-in
+    :exec_if
+    :total-weight),
+   :total-error 1})]
