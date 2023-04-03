@@ -1,5 +1,6 @@
 (ns poker.utils
   (:require [clojure.set :as set]
+            [clojure.core.matrix :as matrix]
             [libpython-clj2.require :refer [require-python]]
             [libpython-clj2.python :as py :refer [py. py.. py.-]]
             [propeller.selection :as selection] :reload))
@@ -13,6 +14,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Math and Auxiliary ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn make-consumer [f]
+  (reify java.util.function.Consumer
+    (accept [_ x] (f x))))
+
+(defn make-supplier [f]
+  (reify java.util.function.Supplier
+    (get [_] (f))))
+
+(defn make-function [f]
+  (reify java.util.function.Function
+    (apply [_ x] (f x))))
 
 (defn choose
   "Returns number of ways to choose k objects from n distinct objects
@@ -295,6 +308,17 @@
   (let [samples (read-string (str "[" (slurp txt) "]"))]
     (spit txt (with-out-str (clojure.pprint/pprint (into [] (mapcat identity samples)))))))
 
+(defn shape
+  [arr]
+  (loop [s []
+         arr arr]
+    (if (coll? arr)
+      (if (empty? arr)
+        (conj s 0)
+        (recur
+         (conj s (count arr))
+         (first arr)))
+      s)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;     Constants     ;;

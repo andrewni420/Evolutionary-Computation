@@ -130,6 +130,21 @@ import torch.distributed as dist
 import torch.multiprocessing as mp
 from torch.nn.parallel import DistributedDataParallel as DDP
 
+#%%
+batch = 32
+dim_in = 10
+dim_h = 50
+dim_out = 10
+input_X = torch.randn(batch, dim_in)
+output_Y = torch.randn(batch, dim_out)
+model = nn.Sequential(nn.Linear(dim_in, dim_h),
+                      nn.ReLU(),
+                      nn.Linear(dim_h, dim_out))
+loss_fn = nn.MSELoss()
+pred_y = model(input_X)
+loss = loss_fn(pred_y, output_Y)
+loss.backward()
+print(loss)
 
 # Set to False to skip notebook execution (e.g. for debugging)
 warnings.filterwarnings("ignore")

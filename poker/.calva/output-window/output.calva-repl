@@ -10,7 +10,7 @@
 ;   - See https://calva.io/connect-sequences/
 ; 
 ; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:53799 ...
+; Using host:port 127.0.0.1:58321 ...
 ; Hooking up nREPL sessions ...
 ; Connected session: clj
 ; TIPS:
@@ -23,2476 +23,1535 @@
 clj꞉poker.core꞉>  ; Use `alt+enter` to evaluate
 ; Jack-in done.
 clj꞉poker.core꞉> 
-; Syntax error macroexpanding clojure.core/ns at (src/poker/transformer.clj:1:1).
-; ((:require [[clojure.core.matrix :as matrix]])) - failed: Extra input spec: :clojure.core.specs.alpha/ns-form
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-tensor([1, 2, 3])
-clj꞉poker.transformer꞉> 
-tensor([[1, 2, 3],
-        [1, 2, 3]])
-clj꞉poker.transformer꞉> 
-Module()
-clj꞉poker.transformer꞉> 
-; Syntax error compiling at (src/poker/transformer.clj:11:1).
-; Unable to resolve symbol: torch in this context
-clj꞉poker.transformer꞉> 
-{'__name__': 'builtins', '__doc__': "Built-in functions, exceptions, and other objects.\n\nNoteworthy: None is the `nil' object; Ellipsis represents `...' in slices.", '__package__': '', '__loader__': <class '_frozen_importlib.BuiltinImporter'>, '__spec__': ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>, origin='built-in'), '__build_class__': <built-in function __build_class__>, '__import__': <built-in function __import__>, 'abs': <built-in function abs>, 'all': <built-in function all>, 'any': <built-in function any>, 'ascii': <built-in function ascii>, 'bin': <built-in function bin>, 'breakpoint': <built-in function breakpoint>, 'callable': <built-in function callable>, 'chr': <built-in function chr>, 'compile': <built-in function compile>, 'delattr': <built-in function delattr>, 'dir': <built-in function dir>, 'divmod': <built-in function divmod>, 'eval': <built-in function eval>, 'exec': <built-in function exec>, 'format': <built-in function format>, 'getattr': <built-in function getattr>, 'globals': <built-in function globals>, 'hasattr': <built-in function hasattr>, 'hash': <built-in function hash>, 'hex': <built-in function hex>, 'id': <built-in function id>, 'input': <built-in function input>, 'isinstance': <built-in function isinstance>, 'issubclass': <built-in function issubclass>, 'iter': <built-in function iter>, 'len': <built-in function len>, 'locals': <built-in function locals>, 'max': <built-in function max>, 'min': <built-in function min>, 'next': <built-in function next>, 'oct': <built-in function oct>, 'ord': <built-in function ord>, 'pow': <built-in function pow>, 'print': <built-in function print>, 'repr': <built-in function repr>, 'round': <built-in function round>, 'setattr': <built-in function setattr>, 'sorted': <built-in function sorted>, 'sum': <built-in function sum>, 'vars': <built-in function vars>, 'None': None, 'Ellipsis': Ellipsis, 'NotImplemented': NotImplemented, 'False': False, 'True': True, 'bool': <class 'bool'>, 'memoryview': <class 'memoryview'>, 'bytearray': <class 'bytearray'>, 'bytes': <class 'bytes'>, 'classmethod': <class 'classmethod'>, 'complex': <class 'complex'>, 'dict': <class 'dict'>, 'enumerate': <class 'enumerate'>, 'filter': <class 'filter'>, 'float': <class 'float'>, 'frozenset': <class 'frozenset'>, 'property': <class 'property'>, 'int': <class 'int'>, 'list': <class 'list'>, 'map': <class 'map'>, 'object': <class 'object'>, 'range': <class 'range'>, 'reversed': <class 'reversed'>, 'set': <class 'set'>, 'slice': <class 'slice'>, 'staticmethod': <class 'staticmethod'>, 'str': <class 'str'>, 'super': <class 'super'>, 'tuple': <class 'tuple'>, 'type': <class 'type'>, 'zip': <class 'zip'>, '__debug__': True, 'BaseException': <class 'BaseException'>, 'Exception': <class 'Exception'>, 'TypeError': <class 'TypeError'>, 'StopAsyncIteration': <class 'StopAsyncIteration'>, 'StopIteration': <class 'StopIteration'>, 'GeneratorExit': <class 'GeneratorExit'>, 'SystemExit': <class 'SystemExit'>, 'KeyboardInterrupt': <class 'KeyboardInterrupt'>, 'ImportError': <class 'ImportError'>, 'ModuleNotFoundError': <class 'ModuleNotFoundError'>, 'OSError': <class 'OSError'>, 'EnvironmentError': <class 'OSError'>, 'IOError': <class 'OSError'>, 'EOFError': <class 'EOFError'>, 'RuntimeError': <class 'RuntimeError'>, 'RecursionError': <class 'RecursionError'>, 'NotImplementedError': <class 'NotImplementedError'>, 'NameError': <class 'NameError'>, 'UnboundLocalError': <class 'UnboundLocalError'>, 'AttributeError': <class 'AttributeError'>, 'SyntaxError': <class 'SyntaxError'>, 'IndentationError': <class 'IndentationError'>, 'TabError': <class 'TabError'>, 'LookupError': <class 'LookupError'>, 'IndexError': <class 'IndexError'>, 'KeyError': <class 'KeyError'>, 'ValueError': <class 'ValueError'>, 'UnicodeError': <class 'UnicodeError'>, 'UnicodeEncodeError': <class 'UnicodeEncodeError'>, 'UnicodeDecodeError': <class 'UnicodeDecodeError'>, 'UnicodeTranslateError': <class 'UnicodeTranslateError'>, 'AssertionError': <class 'AssertionError'>, 'ArithmeticError': <class 'ArithmeticError'>, 'FloatingPointError': <class 'FloatingPointError'>, 'OverflowError': <class 'OverflowError'>, 'ZeroDivisionError': <class 'ZeroDivisionError'>, 'SystemError': <class 'SystemError'>, 'ReferenceError': <class 'ReferenceError'>, 'MemoryError': <class 'MemoryError'>, 'BufferError': <class 'BufferError'>, 'Warning': <class 'Warning'>, 'UserWarning': <class 'UserWarning'>, 'DeprecationWarning': <class 'DeprecationWarning'>, 'PendingDeprecationWarning': <class 'PendingDeprecationWarning'>, 'SyntaxWarning': <class 'SyntaxWarning'>, 'RuntimeWarning': <class 'RuntimeWarning'>, 'FutureWarning': <class 'FutureWarning'>, 'ImportWarning': <class 'ImportWarning'>, 'UnicodeWarning': <class 'UnicodeWarning'>, 'BytesWarning': <class 'BytesWarning'>, 'ResourceWarning': <class 'ResourceWarning'>, 'ConnectionError': <class 'ConnectionError'>, 'BlockingIOError': <class 'BlockingIOError'>, 'BrokenPipeError': <class 'BrokenPipeError'>, 'ChildProcessError': <class 'ChildProcessError'>, 'ConnectionAbortedError': <class 'ConnectionAbortedError'>, 'ConnectionRefusedError': <class 'ConnectionRefusedError'>, 'ConnectionResetError': <class 'ConnectionResetError'>, 'FileExistsError': <class 'FileExistsError'>, 'FileNotFoundError': <class 'FileNotFoundError'>, 'IsADirectoryError': <class 'IsADirectoryError'>, 'NotADirectoryError': <class 'NotADirectoryError'>, 'InterruptedError': <class 'InterruptedError'>, 'PermissionError': <class 'PermissionError'>, 'ProcessLookupError': <class 'ProcessLookupError'>, 'TimeoutError': <class 'TimeoutError'>, 'open': <built-in function open>, 'quit': Use quit() or Ctrl-D (i.e. EOF) to exit, 'exit': Use exit() or Ctrl-D (i.e. EOF) to exit, 'copyright': Copyright (c) 2001-2022 Python Software Foundation.
-All Rights Reserved.
-
-Copyright (c) 2000 BeOpen.com.
-All Rights Reserved.
-
-Copyright (c) 1995-2001 Corporation for National Research Initiatives.
-All Rights Reserved.
-
-Copyright (c) 1991-1995 Stichting Mathematisch Centrum, Amsterdam.
-All Rights Reserved., 'credits':     Thanks to CWI, CNRI, BeOpen.com, Zope Corporation and a cast of thousands
-    for supporting Python development.  See www.python.org for more information., 'license': Type license() to see the full license text, 'help': Type help() for interactive help, or help(object) for help about object., '__pybind11_internals_v4_clang_libcpp_cxxabi1002__': <capsule object NULL at 0x7fe513eeac60>}
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; Traceback (most recent call last):
-;   File "/Users/andrewni/opt/anaconda3/envs/poker/lib/python3.9/site-packages/torch/nn/modules/transformer.py", line 363, in __init__
-;     self.self_attn = MultiheadAttention(d_model, nhead, dropout=dropout, batch_first=batch_first,
-;   File "/Users/andrewni/opt/anaconda3/envs/poker/lib/python3.9/site-packages/torch/nn/modules/activation.py", line 956, in __init__
-;     assert self.head_dim * num_heads == self.embed_dim, "embed_dim must be divisible by num_heads"
-; AssertionError: embed_dim must be divisible by num_heads
-; 
-clj꞉poker.transformer꞉> 
-TransformerEncoderLayer(
-  (self_attn): MultiheadAttention(
-    (out_proj): NonDynamicallyQuantizableLinear(in_features=9, out_features=9, bias=True)
-  )
-  (linear1): Linear(in_features=9, out_features=2048, bias=True)
-  (dropout): Dropout(p=0.1, inplace=False)
-  (linear2): Linear(in_features=2048, out_features=9, bias=True)
-  (norm1): LayerNorm((9,), eps=1e-05, elementwise_affine=True)
-  (norm2): LayerNorm((9,), eps=1e-05, elementwise_affine=True)
-  (dropout1): Dropout(p=0.1, inplace=False)
-  (dropout2): Dropout(p=0.1, inplace=False)
-)
-clj꞉poker.transformer꞉> 
-Transformer(
-  (encoder): TransformerEncoder(
-    (layers): ModuleList(
-      (0): TransformerEncoderLayer(
-        (self_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (linear1): Linear(in_features=512, out_features=2048, bias=True)
-        (dropout): Dropout(p=0.1, inplace=False)
-        (linear2): Linear(in_features=2048, out_features=512, bias=True)
-        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (dropout1): Dropout(p=0.1, inplace=False)
-        (dropout2): Dropout(p=0.1, inplace=False)
-      )
-      (1): TransformerEncoderLayer(
-        (self_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (linear1): Linear(in_features=512, out_features=2048, bias=True)
-        (dropout): Dropout(p=0.1, inplace=False)
-        (linear2): Linear(in_features=2048, out_features=512, bias=True)
-        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (dropout1): Dropout(p=0.1, inplace=False)
-        (dropout2): Dropout(p=0.1, inplace=False)
-      )
-      (2): TransformerEncoderLayer(
-        (self_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (linear1): Linear(in_features=512, out_features=2048, bias=True)
-        (dropout): Dropout(p=0.1, inplace=False)
-        (linear2): Linear(in_features=2048, out_features=512, bias=True)
-        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (dropout1): Dropout(p=0.1, inplace=False)
-        (dropout2): Dropout(p=0.1, inplace=False)
-      )
-      (3): TransformerEncoderLayer(
-        (self_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (linear1): Linear(in_features=512, out_features=2048, bias=True)
-        (dropout): Dropout(p=0.1, inplace=False)
-        (linear2): Linear(in_features=2048, out_features=512, bias=True)
-        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (dropout1): Dropout(p=0.1, inplace=False)
-        (dropout2): Dropout(p=0.1, inplace=False)
-      )
-      (4): TransformerEncoderLayer(
-        (self_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (linear1): Linear(in_features=512, out_features=2048, bias=True)
-        (dropout): Dropout(p=0.1, inplace=False)
-        (linear2): Linear(in_features=2048, out_features=512, bias=True)
-        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (dropout1): Dropout(p=0.1, inplace=False)
-        (dropout2): Dropout(p=0.1, inplace=False)
-      )
-      (5): TransformerEncoderLayer(
-        (self_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (linear1): Linear(in_features=512, out_features=2048, bias=True)
-        (dropout): Dropout(p=0.1, inplace=False)
-        (linear2): Linear(in_features=2048, out_features=512, bias=True)
-        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (dropout1): Dropout(p=0.1, inplace=False)
-        (dropout2): Dropout(p=0.1, inplace=False)
-      )
-    )
-    (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-  )
-  (decoder): TransformerDecoder(
-    (layers): ModuleList(
-      (0): TransformerDecoderLayer(
-        (self_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (multihead_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (linear1): Linear(in_features=512, out_features=2048, bias=True)
-        (dropout): Dropout(p=0.1, inplace=False)
-        (linear2): Linear(in_features=2048, out_features=512, bias=True)
-        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm3): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (dropout1): Dropout(p=0.1, inplace=False)
-        (dropout2): Dropout(p=0.1, inplace=False)
-        (dropout3): Dropout(p=0.1, inplace=False)
-      )
-      (1): TransformerDecoderLayer(
-        (self_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (multihead_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (linear1): Linear(in_features=512, out_features=2048, bias=True)
-        (dropout): Dropout(p=0.1, inplace=False)
-        (linear2): Linear(in_features=2048, out_features=512, bias=True)
-        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm3): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (dropout1): Dropout(p=0.1, inplace=False)
-        (dropout2): Dropout(p=0.1, inplace=False)
-        (dropout3): Dropout(p=0.1, inplace=False)
-      )
-      (2): TransformerDecoderLayer(
-        (self_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (multihead_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (linear1): Linear(in_features=512, out_features=2048, bias=True)
-        (dropout): Dropout(p=0.1, inplace=False)
-        (linear2): Linear(in_features=2048, out_features=512, bias=True)
-        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm3): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (dropout1): Dropout(p=0.1, inplace=False)
-        (dropout2): Dropout(p=0.1, inplace=False)
-        (dropout3): Dropout(p=0.1, inplace=False)
-      )
-      (3): TransformerDecoderLayer(
-        (self_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (multihead_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (linear1): Linear(in_features=512, out_features=2048, bias=True)
-        (dropout): Dropout(p=0.1, inplace=False)
-        (linear2): Linear(in_features=2048, out_features=512, bias=True)
-        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm3): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (dropout1): Dropout(p=0.1, inplace=False)
-        (dropout2): Dropout(p=0.1, inplace=False)
-        (dropout3): Dropout(p=0.1, inplace=False)
-      )
-      (4): TransformerDecoderLayer(
-        (self_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (multihead_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (linear1): Linear(in_features=512, out_features=2048, bias=True)
-        (dropout): Dropout(p=0.1, inplace=False)
-        (linear2): Linear(in_features=2048, out_features=512, bias=True)
-        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm3): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (dropout1): Dropout(p=0.1, inplace=False)
-        (dropout2): Dropout(p=0.1, inplace=False)
-        (dropout3): Dropout(p=0.1, inplace=False)
-      )
-      (5): TransformerDecoderLayer(
-        (self_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (multihead_attn): MultiheadAttention(
-          (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-        )
-        (linear1): Linear(in_features=512, out_features=2048, bias=True)
-        (dropout): Dropout(p=0.1, inplace=False)
-        (linear2): Linear(in_features=2048, out_features=512, bias=True)
-        (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (norm3): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-        (dropout1): Dropout(p=0.1, inplace=False)
-        (dropout2): Dropout(p=0.1, inplace=False)
-        (dropout3): Dropout(p=0.1, inplace=False)
-      )
-    )
-    (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-  )
-)
-clj꞉poker.transformer꞉> 
-TransformerEncoder(
-  (layers): ModuleList(
-    (0): TransformerEncoderLayer(
-      (self_attn): MultiheadAttention(
-        (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-      )
-      (linear1): Linear(in_features=512, out_features=2048, bias=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-      (linear2): Linear(in_features=2048, out_features=512, bias=True)
-      (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (dropout1): Dropout(p=0.1, inplace=False)
-      (dropout2): Dropout(p=0.1, inplace=False)
-    )
-    (1): TransformerEncoderLayer(
-      (self_attn): MultiheadAttention(
-        (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-      )
-      (linear1): Linear(in_features=512, out_features=2048, bias=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-      (linear2): Linear(in_features=2048, out_features=512, bias=True)
-      (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (dropout1): Dropout(p=0.1, inplace=False)
-      (dropout2): Dropout(p=0.1, inplace=False)
-    )
-    (2): TransformerEncoderLayer(
-      (self_attn): MultiheadAttention(
-        (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-      )
-      (linear1): Linear(in_features=512, out_features=2048, bias=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-      (linear2): Linear(in_features=2048, out_features=512, bias=True)
-      (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (dropout1): Dropout(p=0.1, inplace=False)
-      (dropout2): Dropout(p=0.1, inplace=False)
-    )
-    (3): TransformerEncoderLayer(
-      (self_attn): MultiheadAttention(
-        (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-      )
-      (linear1): Linear(in_features=512, out_features=2048, bias=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-      (linear2): Linear(in_features=2048, out_features=512, bias=True)
-      (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (dropout1): Dropout(p=0.1, inplace=False)
-      (dropout2): Dropout(p=0.1, inplace=False)
-    )
-    (4): TransformerEncoderLayer(
-      (self_attn): MultiheadAttention(
-        (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-      )
-      (linear1): Linear(in_features=512, out_features=2048, bias=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-      (linear2): Linear(in_features=2048, out_features=512, bias=True)
-      (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (dropout1): Dropout(p=0.1, inplace=False)
-      (dropout2): Dropout(p=0.1, inplace=False)
-    )
-    (5): TransformerEncoderLayer(
-      (self_attn): MultiheadAttention(
-        (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-      )
-      (linear1): Linear(in_features=512, out_features=2048, bias=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-      (linear2): Linear(in_features=2048, out_features=512, bias=True)
-      (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (dropout1): Dropout(p=0.1, inplace=False)
-      (dropout2): Dropout(p=0.1, inplace=False)
-    )
-  )
-  (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-)
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; AttributeError: 'Tensor' object has no attribute '__items__'
-; 
-clj꞉poker.transformer꞉> 
-{}
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; AttributeError: 'Tensor' object has no attribute 'items'
-; 
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; AttributeError: 'Tensor' object has no attribute 'items'
-; 
-clj꞉poker.transformer꞉> 
-; Execution error (AbstractMethodError) at poker.transformer/eval37740 (form-init4075619647977642399.clj:9).
-; Receiver class libpython_clj2.python.bridge_as_jvm$generic_python_as_map$reify__12543 does not define or inherit an implementation of the resolved method 'abstract java.lang.Object invoke()' of interface clojure.lang.IFn.
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; AttributeError: 'Tensor' object has no attribute 'vars'
-; 
-clj꞉poker.transformer꞉> 
-; Execution error (ArityException) at nrepl.middleware.interruptible-eval/evaluate$fn$fn (interruptible_eval.clj:87).
-; Wrong number of args (2) passed to: libpython-clj2.python/py*
-clj꞉poker.transformer꞉> 
-tensor([[1, 2, 3],
-        [1, 2, 3]])
-clj꞉poker.transformer꞉> 
-tensor([[1, 2, 3],
-        [1, 2, 3]])
-clj꞉poker.transformer꞉> 
-#object[tech.v3.datatype.ffi.Pointer 0x3f5d86f5 "{:address 0x00007FE513F08B80 }"]
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; SystemError: /var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_f7pmos_scq/croot/python-split_1678271120867/work/Objects/moduleobject.c:461: bad argument to internal function
-; 
-clj꞉poker.transformer꞉> 
-; Syntax error compiling at (src/poker/transformer.clj:11:1).
-; Unable to resolve symbol: torch in this context
-clj꞉poker.transformer꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/transformer.clj:11:1).
-; torch.nn
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; SystemError: /var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_f7pmos_scq/croot/python-split_1678271120867/work/Objects/moduleobject.c:461: bad argument to internal function
-; 
-clj꞉poker.transformer꞉> 
-tensor([[1, 2, 3],
-        [1, 2, 3]])
-clj꞉poker.transformer꞉> 
-TransformerEncoderLayer(
-  (self_attn): MultiheadAttention(
-    (out_proj): NonDynamicallyQuantizableLinear(in_features=9, out_features=9, bias=True)
-  )
-  (linear1): Linear(in_features=9, out_features=2048, bias=True)
-  (dropout): Dropout(p=0.1, inplace=False)
-  (linear2): Linear(in_features=2048, out_features=9, bias=True)
-  (norm1): LayerNorm((9,), eps=1e-05, elementwise_affine=True)
-  (norm2): LayerNorm((9,), eps=1e-05, elementwise_affine=True)
-  (dropout1): Dropout(p=0.1, inplace=False)
-  (dropout2): Dropout(p=0.1, inplace=False)
-)
-clj꞉poker.transformer꞉> 
-Linear(in_features=9, out_features=2048, bias=True)
-clj꞉poker.transformer꞉> 
-{'training': True, '_parameters': OrderedDict([('weight', Parameter containing:
-tensor([[-0.2768,  0.0563,  0.0439,  ...,  0.2462, -0.0175, -0.0029],
-        [ 0.0205,  0.2234, -0.0724,  ...,  0.0139,  0.2457,  0.1709],
-        [-0.0483, -0.1547,  0.2012,  ..., -0.0447,  0.0911,  0.2638],
-        ...,
-        [-0.1548,  0.2719, -0.1141,  ...,  0.2428,  0.1727,  0.1029],
-        [ 0.0925, -0.1751, -0.1775,  ...,  0.2037,  0.1143, -0.0879],
-        [-0.2380,  0.0083,  0.2099,  ..., -0.0942, -0.2053,  0.3147]],
-       requires_grad=True)), ('bias', Parameter containing:
-tensor([ 0.0953,  0.0524, -0.0765,  ...,  0.1194,  0.0845,  0.0911],
-       requires_grad=True))]), '_buffers': OrderedDict(), '_non_persistent_buffers_set': set(), '_backward_hooks': OrderedDict(), '_is_full_backward_hook': None, '_forward_hooks': OrderedDict(), '_forward_pre_hooks': OrderedDict(), '_state_dict_hooks': OrderedDict(), '_load_state_dict_pre_hooks': OrderedDict(), '_load_state_dict_post_hooks': OrderedDict(), '_modules': OrderedDict(), 'in_features': 9, 'out_features': 2048}
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; Traceback (most recent call last):
-;   File "/Users/andrewni/opt/anaconda3/envs/poker/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
-;     return forward_call(*input, **kwargs)
-; TypeError: forward() missing 1 required positional argument: 'input'
-; 
-clj꞉poker.transformer꞉> 
-OrderedDict([('weight', Parameter containing:
-tensor([[ 0.1137, -0.1648,  0.3176,  ...,  0.3088, -0.1620, -0.2588],
-        [-0.1261, -0.0413,  0.0418,  ..., -0.0148,  0.1421, -0.2855],
-        [-0.0960, -0.1230, -0.1681,  ..., -0.1550, -0.1251,  0.1699],
-        ...,
-        [-0.3088,  0.0235, -0.1232,  ..., -0.2176, -0.2064, -0.0755],
-        [-0.1466, -0.0288,  0.0316,  ...,  0.2568, -0.1624, -0.2650],
-        [-0.1338, -0.2329, -0.1109,  ..., -0.3295, -0.0699, -0.3209]],
-       requires_grad=True)), ('bias', Parameter containing:
-tensor([ 0.2801,  0.2368,  0.0123,  ..., -0.1006,  0.1834, -0.1826],
-       requires_grad=True))])
-clj꞉poker.transformer꞉> 
-; Syntax error compiling at (src/poker/transformer.clj:18:1).
-; Unable to resolve symbol: torch in this context
-clj꞉poker.transformer꞉> 
-; Execution error (IllegalArgumentException) at libpython-clj2.python.protocols/eval11433$fn$G (protocols.clj:57).
-; No implementation of method: :get-attr of protocol: #'libpython-clj2.python.protocols/PPyAttr found for class: java.lang.String
-clj꞉poker.transformer꞉> 
-; Execution error at tech.v3.datatype.ffi.ptr-value/unchecked-ptr-value (ptr_value.clj:17).
-; Item nn is not convertible to a C pointer
-clj꞉poker.transformer꞉> 
-; Execution error at tech.v3.datatype.ffi.ptr-value/unchecked-ptr-value (ptr_value.clj:17).
-; Item torch.nn is not convertible to a C pointer
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-; Syntax error compiling at (src/poker/transformer.clj:19:1).
-; Unable to resolve symbol: np in this context
-clj꞉poker.transformer꞉> 
-; Execution error at tech.v3.datatype.ffi.ptr-value/unchecked-ptr-value (ptr_value.clj:17).
-; Item np is not convertible to a C pointer
-clj꞉poker.transformer꞉> 
-; Execution error at tech.v3.datatype.ffi.ptr-value/unchecked-ptr-value (ptr_value.clj:17).
-; Item np is not convertible to a C pointer
-clj꞉poker.transformer꞉> 
-; Syntax error compiling at (src/poker/transformer.clj:19:1).
-; Unable to resolve symbol: np in this context
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; Traceback (most recent call last):
-;   File "/Users/andrewni/opt/anaconda3/envs/poker/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
-;     return forward_call(*input, **kwargs)
-; TypeError: forward() missing 1 required positional argument: 'tgt'
-; 
-clj꞉poker.transformer꞉> 
-TransformerEncoder(
-  (layers): ModuleList(
-    (0): TransformerEncoderLayer(
-      (self_attn): MultiheadAttention(
-        (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-      )
-      (linear1): Linear(in_features=512, out_features=2048, bias=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-      (linear2): Linear(in_features=2048, out_features=512, bias=True)
-      (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (dropout1): Dropout(p=0.1, inplace=False)
-      (dropout2): Dropout(p=0.1, inplace=False)
-    )
-    (1): TransformerEncoderLayer(
-      (self_attn): MultiheadAttention(
-        (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-      )
-      (linear1): Linear(in_features=512, out_features=2048, bias=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-      (linear2): Linear(in_features=2048, out_features=512, bias=True)
-      (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (dropout1): Dropout(p=0.1, inplace=False)
-      (dropout2): Dropout(p=0.1, inplace=False)
-    )
-    (2): TransformerEncoderLayer(
-      (self_attn): MultiheadAttention(
-        (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-      )
-      (linear1): Linear(in_features=512, out_features=2048, bias=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-      (linear2): Linear(in_features=2048, out_features=512, bias=True)
-      (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (dropout1): Dropout(p=0.1, inplace=False)
-      (dropout2): Dropout(p=0.1, inplace=False)
-    )
-    (3): TransformerEncoderLayer(
-      (self_attn): MultiheadAttention(
-        (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-      )
-      (linear1): Linear(in_features=512, out_features=2048, bias=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-      (linear2): Linear(in_features=2048, out_features=512, bias=True)
-      (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (dropout1): Dropout(p=0.1, inplace=False)
-      (dropout2): Dropout(p=0.1, inplace=False)
-    )
-    (4): TransformerEncoderLayer(
-      (self_attn): MultiheadAttention(
-        (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-      )
-      (linear1): Linear(in_features=512, out_features=2048, bias=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-      (linear2): Linear(in_features=2048, out_features=512, bias=True)
-      (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (dropout1): Dropout(p=0.1, inplace=False)
-      (dropout2): Dropout(p=0.1, inplace=False)
-    )
-    (5): TransformerEncoderLayer(
-      (self_attn): MultiheadAttention(
-        (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
-      )
-      (linear1): Linear(in_features=512, out_features=2048, bias=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-      (linear2): Linear(in_features=2048, out_features=512, bias=True)
-      (norm1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (norm2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-      (dropout1): Dropout(p=0.1, inplace=False)
-      (dropout2): Dropout(p=0.1, inplace=False)
-    )
-  )
-  (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
-)
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; SystemError: /var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_f7pmos_scq/croot/python-split_1678271120867/work/Objects/moduleobject.c:461: bad argument to internal function
-; 
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; TypeError: tensor() missing 1 required positional arguments: "data"
-; 
-clj꞉poker.transformer꞉> 
-tensor([])
-clj꞉poker.transformer꞉> 
-Module()
-clj꞉poker.transformer꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/transformer.clj:14:1).
-; torch.Tensor
-clj꞉poker.transformer꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/transformer.clj:14:1).
-; torch.Tensor
-clj꞉poker.transformer꞉> 
-; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
-; torch.Tensor
-clj꞉poker.transformer꞉> 
-tensor([])
-clj꞉poker.transformer꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/transformer.clj:12:1).
-; torch.amp
-clj꞉poker.transformer꞉> 
-OrderedDict([('weight', Parameter containing:
-tensor([[-0.2638,  0.1143, -0.1509,  ..., -0.1669, -0.3010,  0.1092],
-        [-0.2510,  0.1493,  0.1694,  ...,  0.0739, -0.1534, -0.1313],
-        [ 0.0922,  0.1019, -0.2375,  ...,  0.2704,  0.1696,  0.2664],
-        ...,
-        [-0.1688, -0.0075, -0.1049,  ..., -0.2039, -0.0959,  0.2941],
-        [-0.2096, -0.1468,  0.0864,  ..., -0.2957,  0.2402,  0.3324],
-        [-0.3180,  0.2111,  0.0952,  ...,  0.0087,  0.2257,  0.0557]],
-       requires_grad=True)), ('bias', Parameter containing:
-tensor([ 0.1080,  0.1945, -0.1241,  ...,  0.2468,  0.0010,  0.2575],
-       requires_grad=True))])
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; AttributeError: 'collections.OrderedDict' object has no attribute 'weight'
-; 
-clj꞉poker.transformer꞉> 
-; Execution error (ClassCastException) at poker.transformer/eval37804 (form-init4075619647977642399.clj:13).
-; class libpython_clj2.python.bridge_as_jvm$generic_pyobject$reify__12728 cannot be cast to class clojure.lang.IFn (libpython_clj2.python.bridge_as_jvm$generic_pyobject$reify__12728 is in unnamed module of loader clojure.lang.DynamicClassLoader @3c9163df; clojure.lang.IFn is in unnamed module of loader 'app')
-clj꞉poker.transformer꞉> 
-Parameter containing:
-tensor([[-0.0094,  0.0724,  0.1553,  ..., -0.2624,  0.2014, -0.0353],
-        [ 0.2022,  0.1421,  0.1509,  ...,  0.1285, -0.1070,  0.3020],
-        [-0.1092,  0.3234,  0.1263,  ...,  0.0292,  0.0562,  0.0670],
-        ...,
-        [ 0.3157,  0.0130,  0.2861,  ..., -0.2113,  0.2212,  0.3256],
-        [-0.2830, -0.0301,  0.1277,  ..., -0.0950, -0.1685, -0.1980],
-        [ 0.1309,  0.0573, -0.2637,  ..., -0.2770, -0.1872,  0.2869]],
-       requires_grad=True)
-clj꞉poker.transformer꞉> 
-#'poker.transformer/t
-clj꞉poker.transformer꞉> 
-; Syntax error compiling at (src/poker/transformer.clj:1:7971).
-; Unable to resolve symbol: v in this context
-clj꞉poker.transformer꞉> 
-tensor([1, 2, 3])
-clj꞉poker.transformer꞉> 
-tensor([4, 2, 3])
-clj꞉poker.transformer꞉> 
-tensor([4, 2, 3])
-clj꞉poker.transformer꞉> 
-; Execution error (ClassCastException) at nrepl.middleware.interruptible-eval/evaluate$fn$fn (interruptible_eval.clj:87).
-; class libpython_clj2.python.bridge_as_jvm$generic_pyobject$reify__12728 cannot be cast to class clojure.lang.IFn (libpython_clj2.python.bridge_as_jvm$generic_pyobject$reify__12728 is in unnamed module of loader clojure.lang.DynamicClassLoader @3c9163df; clojure.lang.IFn is in unnamed module of loader 'app')
-clj꞉poker.transformer꞉> 
-Linear(in_features=2, out_features=2, bias=True)
-clj꞉poker.transformer꞉> 
-OrderedDict([('weight', Parameter containing:
-tensor([[-0.4087, -0.6041],
-        [ 0.4655, -0.4419]], requires_grad=True)), ('bias', Parameter containing:
-tensor([0.1573, 0.2317], requires_grad=True))])
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; KeyError: 'weights'
-; 
-clj꞉poker.transformer꞉> 
-Parameter containing:
-tensor([[-0.1926,  0.5524],
-        [-0.6966, -0.0808]], requires_grad=True)
-clj꞉poker.transformer꞉> 
-OrderedDict([('weight', tensor([[1, 1],
-        [2, 2]])), ('bias', Parameter containing:
-tensor([ 0.0298, -0.5851], requires_grad=True))])
-clj꞉poker.transformer꞉> 
-Linear(in_features=2, out_features=2, bias=True)
-clj꞉poker.transformer꞉> 
-OrderedDict([('weight', tensor([[1, 1],
-        [2, 2]])), ('bias', Parameter containing:
-tensor([0.3571, 0.3131], requires_grad=True))])
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; ModuleNotFoundError: No module named 'transformer'
-; 
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; ModuleNotFoundError: No module named 'transformer'
-; 
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; ModuleNotFoundError: No module named 'transformer'
-; 
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; ModuleNotFoundError: No module named 'transformer'
-; 
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; ModuleNotFoundError: No module named 'transformer'
-; 
-clj꞉poker.transformer꞉> 
-; Syntax error reading source at (REPL:10:89).
-; Invalid token: /Users/andrewni/Evolutionary-Computation/poker/src/poker/transformer.py
-clj꞉poker.transformer꞉> 
-; Execution error (ClassCastException) at libpython-clj2.require/require-python$fn (require.clj:266).
-; class java.lang.String cannot be cast to class java.lang.Throwable (java.lang.String and java.lang.Throwable are in module java.base of loader 'bootstrap')
-clj꞉poker.transformer꞉> 
-; Execution error (IllegalArgumentException) at libpython-clj2.require/do-require-python (require.clj:108).
-; Don't know how to create ISeq from: clojure.lang.Symbol
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-MSELoss()
-clj꞉poker.transformer꞉> 
-MSELoss()
-clj꞉poker.transformer꞉> 
-; Syntax error compiling at (src/poker/transformer.clj:31:1).
-; Unable to resolve symbol: nn in this context
-clj꞉poker.transformer꞉> 
-; Execution error at tech.v3.datatype.ffi.ptr-value/unchecked-ptr-value (ptr_value.clj:17).
-; Item nn is not convertible to a C pointer
-clj꞉poker.transformer꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/transformer.clj:31:1).
-; torch.nn
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; Traceback (most recent call last):
-;   File "/Users/andrewni/opt/anaconda3/envs/poker/lib/python3.9/site-packages/torch/nn/modules/loss.py", line 527, in __init__
-;     super(MSELoss, self).__init__(size_average, reduce, reduction)
-; TypeError: super(type, obj): obj must be an instance or subtype of type
-; 
-clj꞉poker.transformer꞉> 
-; Execution error (ArityException) at nrepl.middleware.interruptible-eval/evaluate$fn$fn (interruptible_eval.clj:87).
-; Wrong number of args (2) passed to: libpython-clj2.python/py*
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; TypeError: __init__() missing 1 required positional argument: 'self'
-; 
-clj꞉poker.transformer꞉> 
-; /Users/andrewni/opt/anaconda3/envs/poker/lib/python3.9/site-packages/torch/nn/_reduction.py:42: UserWarning: size_average and reduce args will be deprecated, please use reduction='mean' instead.
-;   warnings.warn(warning.format(ret))
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; Traceback (most recent call last):
-;   File "/Users/andrewni/opt/anaconda3/envs/poker/lib/python3.9/site-packages/torch/nn/modules/loss.py", line 527, in __init__
-;     super(MSELoss, self).__init__(size_average, reduce, reduction)
-;   File "/Users/andrewni/opt/anaconda3/envs/poker/lib/python3.9/site-packages/torch/nn/modules/loss.py", line 18, in __init__
-;     self.reduction: str = _Reduction.legacy_get_string(size_average, reduce)
-; AttributeError: 'NoneType' object has no attribute 'reduction'
-; 
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; Traceback (most recent call last):
-;   File "/Users/andrewni/opt/anaconda3/envs/poker/lib/python3.9/site-packages/torch/nn/modules/loss.py", line 527, in __init__
-;     super(MSELoss, self).__init__(size_average, reduce, reduction)
-;   File "/Users/andrewni/opt/anaconda3/envs/poker/lib/python3.9/site-packages/torch/nn/modules/loss.py", line 18, in __init__
-;     self.reduction: str = _Reduction.legacy_get_string(size_average, reduce)
-; AttributeError: 'NoneType' object has no attribute 'reduction'
-; 
-clj꞉poker.transformer꞉> 
-tensor([])
-clj꞉poker.transformer꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/transformer.clj:30:1).
-; torch.float64
-clj꞉poker.transformer꞉> 
-tensor([], dtype=torch.float64)
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; TypeError: tensor() got an unexpected keyword argument 'requires-grad'
-; 
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; TypeError: tensor() got an unexpected keyword argument 'requires-grad'
-; 
-clj꞉poker.transformer꞉> 
-tensor([])
-clj꞉poker.transformer꞉> 
-false
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; AttributeError: 'Tensor' object has no attribute 'requires-grad'
-; 
-clj꞉poker.transformer꞉> 
-false
-clj꞉poker.transformer꞉> 
-{}
-clj꞉poker.transformer꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; AttributeError: 'Tensor' object has no attribute '__items__'
-; 
-clj꞉poker.transformer꞉> 
-; Syntax error compiling at (src/poker/transformer.clj:28:13).
-; No such namespace: optim
-clj꞉poker.transformer꞉> 
-"hi"
-clj꞉poker.transformer꞉> 
-<generator object Module.parameters at 0x7fe4f18183c0>
-clj꞉poker.transformer꞉> 
-<bound method Module.parameters of Sequential(
-  (0): Linear(in_features=2000, out_features=200, bias=True)
-  (1): ReLU()
-  (2): Linear(in_features=200, out_features=20, bias=True)
-)>
-clj꞉poker.transformer꞉> 
-<generator object Module.parameters at 0x7fe4f194beb0>
-clj꞉poker.transformer꞉> 
-; nREPL Connection was closed
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:52669 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-nil
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-; nREPL Connection was closed
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:52718 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-nil
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-tensor(2698.9365, grad_fn=<MseLossBackward0>)
-clj꞉poker.transformer꞉> 
-#'poker.transformer/l
-clj꞉poker.transformer꞉> 
-tensor(2666.7886, grad_fn=<MseLossBackward0>)
-clj꞉poker.transformer꞉> 
-<bound method Tensor.backward of tensor(2666.7886, grad_fn=<MseLossBackward0>)>
-clj꞉poker.transformer꞉> 
-; nREPL Connection was closed
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:52854 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-; Syntax error compiling at (src/poker/transformer.clj:51:13).
-; No such namespace: torch
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-tensor(2.0841, grad_fn=<MseLossBackward0>)
-clj꞉poker.transformer꞉> 
-<bound method Tensor.backward of tensor(1.9546, grad_fn=<MseLossBackward0>)>
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-tensor(2.0182, grad_fn=<MseLossBackward0>)
-tensor(2.0182, grad_fn=<MseLossBackward0>)
-clj꞉poker.transformer꞉> 
-tensor(3.4175, grad_fn=<MseLossBackward0>)
-{:output tensor(3.4175, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.9122,  0.9710, -1.8049,  0.3068, -0.2482],
-        [ 0.0638, -1.4114,  0.9114, -0.2377,  0.2180],
-        [-0.9019, -1.1240,  1.7384,  1.2864,  1.2764]], requires_grad=True),
- :target tensor([[-1.6919, -0.4879, -0.8994,  0.6665, -0.8005],
-        [ 0.0629,  0.3568, -1.9706,  2.3540, -0.5705],
-        [ 0.1973,  0.7543, -1.0222, -0.4803, -1.3407]])}
-nil
-clj꞉poker.transformer꞉> 
-; nREPL Connection was closed
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:53081 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-nil
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-{:output tensor(1.9371, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.0968, -1.6228,  1.2115,  1.3317, -0.5468],
-        [ 0.3576,  1.3953,  0.2322,  0.3235,  0.2598],
-        [ 0.0536, -0.1582, -1.7190, -0.1061, -0.6314]], requires_grad=True),
- :target tensor([[ 1.2812, -1.0473, -0.9346,  0.6426,  1.5116],
-        [-0.5182,  0.3149, -1.6839,  0.4282, -0.5813],
-        [ 0.5153, -1.0830,  1.1708, -1.0592,  0.5320]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(1.8819, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.6169, -1.3705,  0.3977,  0.5036,  0.6676],
-        [-1.3496,  0.2844,  0.1059, -1.3161, -0.7433],
-        [ 0.9514, -0.1744, -1.6031, -1.0173,  0.4427]], requires_grad=True),
- :target tensor([[ 0.4849,  0.1818, -0.0794,  0.3340,  0.8494],
-        [-0.1108, -0.5686,  0.3931, -0.8536,  1.3147],
-        [-0.4519,  2.0488,  1.0058,  1.0664, -0.3681]])}
-{:output tensor(1.8819, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.6169, -1.3705,  0.3977,  0.5036,  0.6676],
-        [-1.3496,  0.2844,  0.1059, -1.3161, -0.7433],
-        [ 0.9514, -0.1744, -1.6031, -1.0173,  0.4427]], requires_grad=True),
- :target tensor([[ 0.4849,  0.1818, -0.0794,  0.3340,  0.8494],
-        [-0.1108, -0.5686,  0.3931, -0.8536,  1.3147],
-        [-0.4519,  2.0488,  1.0058,  1.0664, -0.3681]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(4.4992, grad_fn=<MseLossBackward0>),
- :input tensor([[ 2.6802, -0.7514, -3.4188, -1.4396, -0.0050],
-        [-0.0730,  0.4046, -0.3719, -0.6105, -0.5691],
-        [ 1.1696,  1.0331,  0.7591,  1.8032,  0.1955]], requires_grad=True),
- :target tensor([[ 0.3567, -1.9765,  0.6294,  1.1952, -0.6567],
-        [-0.4365, -0.6223,  2.2227, -1.1405, -0.1956],
-        [-2.2389, -0.6572, -2.4863, -0.0179, -0.2168]])}
-{:output tensor(4.4992, grad_fn=<MseLossBackward0>),
- :input tensor([[ 2.6802, -0.7514, -3.4188, -1.4396, -0.0050],
-        [-0.0730,  0.4046, -0.3719, -0.6105, -0.5691],
-        [ 1.1696,  1.0331,  0.7591,  1.8032,  0.1955]], requires_grad=True),
- :target tensor([[ 0.3567, -1.9765,  0.6294,  1.1952, -0.6567],
-        [-0.4365, -0.6223,  2.2227, -1.1405, -0.1956],
-        [-2.2389, -0.6572, -2.4863, -0.0179, -0.2168]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(2.0760, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.0244,  0.3416, -0.1551,  0.6757, -0.3586],
-        [ 0.0335,  1.1990,  0.7609, -0.0241, -0.4957],
-        [-1.5781,  0.4657,  1.3928,  1.6522,  0.4159]], requires_grad=True),
- :target tensor([[-1.3083,  2.0762, -1.2886,  0.3632, -0.5073],
-        [-0.5787, -1.0667,  0.8568, -0.1321,  1.0572],
-        [ 0.8706,  1.7850, -0.4961, -0.7242,  0.6581]])}
-{:output tensor(2.0760, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.0244,  0.3416, -0.1551,  0.6757, -0.3586],
-        [ 0.0335,  1.1990,  0.7609, -0.0241, -0.4957],
-        [-1.5781,  0.4657,  1.3928,  1.6522,  0.4159]], requires_grad=True),
- :target tensor([[-1.3083,  2.0762, -1.2886,  0.3632, -0.5073],
-        [-0.5787, -1.0667,  0.8568, -0.1321,  1.0572],
-        [ 0.8706,  1.7850, -0.4961, -0.7242,  0.6581]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(1.6658, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.2617,  0.8943, -0.0182,  0.2572, -0.3543],
-        [ 1.2253,  0.2258,  1.6165, -0.9123,  0.9721],
-        [-0.8659, -1.9201,  0.0974,  0.2839, -0.6889]], requires_grad=True),
- :target tensor([[ 0.4184,  1.1106,  1.0694,  0.2355,  1.3230],
-        [-0.3081, -1.5029, -0.7638, -1.7452, -0.2703],
-        [-1.3018,  0.0608, -0.5403, -0.9738,  0.5656]])}
-{:output tensor(1.6658, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.2617,  0.8943, -0.0182,  0.2572, -0.3543],
-        [ 1.2253,  0.2258,  1.6165, -0.9123,  0.9721],
-        [-0.8659, -1.9201,  0.0974,  0.2839, -0.6889]], requires_grad=True),
- :target tensor([[ 0.4184,  1.1106,  1.0694,  0.2355,  1.3230],
-        [-0.3081, -1.5029, -0.7638, -1.7452, -0.2703],
-        [-1.3018,  0.0608, -0.5403, -0.9738,  0.5656]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(2.4332, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.8015, -1.1107, -0.9398,  0.2698, -0.5800],
-        [-1.7523, -0.6725, -1.2990,  0.9156, -3.1356],
-        [ 0.7205,  0.8421, -0.2356,  2.4296, -0.7569]], requires_grad=True),
- :target tensor([[ 0.1303, -2.3928, -0.9268, -0.2557, -0.8674],
-        [-0.3274, -1.6917,  0.2065,  0.4133,  0.4529],
-        [-0.0072, -1.6008, -0.7098, -0.1210,  0.6335]])}
-{:output tensor(2.4332, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.8015, -1.1107, -0.9398,  0.2698, -0.5800],
-        [-1.7523, -0.6725, -1.2990,  0.9156, -3.1356],
-        [ 0.7205,  0.8421, -0.2356,  2.4296, -0.7569]], requires_grad=True),
- :target tensor([[ 0.1303, -2.3928, -0.9268, -0.2557, -0.8674],
-        [-0.3274, -1.6917,  0.2065,  0.4133,  0.4529],
-        [-0.0072, -1.6008, -0.7098, -0.1210,  0.6335]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(1.4107, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.6910,  0.4798, -0.8395, -0.3646,  1.4461],
-        [-0.0609,  1.6936, -0.4206, -0.3059,  0.7580],
-        [-0.2417,  0.2598,  0.3728, -1.7484, -0.3929]], requires_grad=True),
- :target tensor([[ 1.6049, -0.9692,  0.5389, -0.7098,  0.8827],
-        [ 1.6862,  0.5822,  0.2052,  0.0953, -1.9802],
-        [-0.1288,  0.4108, -0.0474,  0.0714, -0.2267]])}
-{:output tensor(1.4107, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.6910,  0.4798, -0.8395, -0.3646,  1.4461],
-        [-0.0609,  1.6936, -0.4206, -0.3059,  0.7580],
-        [-0.2417,  0.2598,  0.3728, -1.7484, -0.3929]], requires_grad=True),
- :target tensor([[ 1.6049, -0.9692,  0.5389, -0.7098,  0.8827],
-        [ 1.6862,  0.5822,  0.2052,  0.0953, -1.9802],
-        [-0.1288,  0.4108, -0.0474,  0.0714, -0.2267]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(1.3604, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.6815, -0.8636,  0.7043,  1.9513, -1.2776],
-        [ 0.9054, -1.0426,  1.5889,  0.4056, -0.6417],
-        [-2.1490,  0.9452,  0.3946,  0.0170, -0.9606]], requires_grad=True),
- :target tensor([[ 0.3292,  0.6283, -0.4649, -0.6071, -0.9015],
-        [ 1.1403, -0.1435,  0.9892, -0.1236, -2.4929],
-        [-0.5253,  1.5512, -0.3367, -0.6809, -1.3469]])}
-{:output tensor(1.3604, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.6815, -0.8636,  0.7043,  1.9513, -1.2776],
-        [ 0.9054, -1.0426,  1.5889,  0.4056, -0.6417],
-        [-2.1490,  0.9452,  0.3946,  0.0170, -0.9606]], requires_grad=True),
- :target tensor([[ 0.3292,  0.6283, -0.4649, -0.6071, -0.9015],
-        [ 1.1403, -0.1435,  0.9892, -0.1236, -2.4929],
-        [-0.5253,  1.5512, -0.3367, -0.6809, -1.3469]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(1.0080, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.2251, -0.3524, -0.1732,  0.0276, -0.8109],
-        [-0.5439,  0.8376, -0.4830, -1.1582,  0.8218],
-        [ 0.0634, -0.4188,  1.1995,  0.5163,  0.8336]], requires_grad=True),
- :target tensor([[ 0.1793, -0.9194, -1.1894, -0.2797,  0.1138],
-        [-0.8806,  0.1709, -1.9728,  0.2708,  1.9511],
-        [ 0.0991, -0.1730, -0.9284, -0.6260,  1.6489]])}
-{:output tensor(1.0080, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.2251, -0.3524, -0.1732,  0.0276, -0.8109],
-        [-0.5439,  0.8376, -0.4830, -1.1582,  0.8218],
-        [ 0.0634, -0.4188,  1.1995,  0.5163,  0.8336]], requires_grad=True),
- :target tensor([[ 0.1793, -0.9194, -1.1894, -0.2797,  0.1138],
-        [-0.8806,  0.1709, -1.9728,  0.2708,  1.9511],
-        [ 0.0991, -0.1730, -0.9284, -0.6260,  1.6489]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(2.8673, grad_fn=<MseLossBackward0>),
- :input tensor([[-1.7652, -1.2504, -2.2381,  0.7835,  0.9608],
-        [-1.0427, -0.2061,  0.6156,  0.2713, -2.7753],
-        [-0.5547,  3.4995,  1.5192,  1.8405,  0.4396]], requires_grad=True),
- :target tensor([[ 0.0056, -0.6082, -1.8837,  0.0619,  0.4137],
-        [-0.2747, -0.8239, -1.0269,  0.3515,  0.0668],
-        [-0.0458, -0.1639, -0.1693, -0.8990, -1.2116]])}
-{:output tensor(2.8673, grad_fn=<MseLossBackward0>),
- :input tensor([[-1.7652, -1.2504, -2.2381,  0.7835,  0.9608],
-        [-1.0427, -0.2061,  0.6156,  0.2713, -2.7753],
-        [-0.5547,  3.4995,  1.5192,  1.8405,  0.4396]], requires_grad=True),
- :target tensor([[ 0.0056, -0.6082, -1.8837,  0.0619,  0.4137],
-        [-0.2747, -0.8239, -1.0269,  0.3515,  0.0668],
-        [-0.0458, -0.1639, -0.1693, -0.8990, -1.2116]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(2.2451, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.5149, -0.6649, -0.5341,  0.7342, -0.3020],
-        [ 0.0624,  1.7110,  1.7139,  0.4715, -1.4454],
-        [ 0.2630, -1.2270,  1.4832, -0.7224, -0.0365]], requires_grad=True),
- :target tensor([[ 1.2693,  1.1392,  0.6790,  1.1789,  0.7632],
-        [ 0.2954,  2.3471, -0.4702,  0.5846,  1.9630],
-        [-0.7120,  0.5533, -0.2891, -0.2403, -0.3216]])}
-{:output tensor(2.2451, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.5149, -0.6649, -0.5341,  0.7342, -0.3020],
-        [ 0.0624,  1.7110,  1.7139,  0.4715, -1.4454],
-        [ 0.2630, -1.2270,  1.4832, -0.7224, -0.0365]], requires_grad=True),
- :target tensor([[ 1.2693,  1.1392,  0.6790,  1.1789,  0.7632],
-        [ 0.2954,  2.3471, -0.4702,  0.5846,  1.9630],
-        [-0.7120,  0.5533, -0.2891, -0.2403, -0.3216]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(2.4483, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.0495,  0.1157,  1.0840, -1.6280, -1.0774],
-        [-1.5325, -0.5302, -0.3544,  0.4448, -0.1821],
-        [ 0.2688, -0.7946,  0.4416, -1.0583,  0.2903]], requires_grad=True),
- :target tensor([[ 1.3886,  0.3477, -0.9139,  0.1465,  0.4397],
-        [ 1.9084, -1.7631, -0.9509,  0.9208, -1.9546],
-        [ 0.7530,  0.7684,  1.2935, -0.3410, -1.7490]])}
-{:output tensor(2.4483, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.0495,  0.1157,  1.0840, -1.6280, -1.0774],
-        [-1.5325, -0.5302, -0.3544,  0.4448, -0.1821],
-        [ 0.2688, -0.7946,  0.4416, -1.0583,  0.2903]], requires_grad=True),
- :target tensor([[ 1.3886,  0.3477, -0.9139,  0.1465,  0.4397],
-        [ 1.9084, -1.7631, -0.9509,  0.9208, -1.9546],
-        [ 0.7530,  0.7684,  1.2935, -0.3410, -1.7490]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(2.0655, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.4178, -2.6340,  0.8770,  0.4630,  0.1990],
-        [ 0.6867, -0.5201, -1.2107,  1.1043, -1.0068],
-        [-1.5207, -0.4538, -0.5327, -1.8315, -1.5653]], requires_grad=True),
- :target tensor([[-0.2576,  0.7291,  1.3816,  0.6946, -0.0317],
-        [ 0.8990, -1.7616,  0.8296,  1.5993,  0.6528],
-        [ 0.8731, -0.0952,  1.1038, -0.4263, -1.4109]])}
-{:output tensor(2.0655, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.4178, -2.6340,  0.8770,  0.4630,  0.1990],
-        [ 0.6867, -0.5201, -1.2107,  1.1043, -1.0068],
-        [-1.5207, -0.4538, -0.5327, -1.8315, -1.5653]], requires_grad=True),
- :target tensor([[-0.2576,  0.7291,  1.3816,  0.6946, -0.0317],
-        [ 0.8990, -1.7616,  0.8296,  1.5993,  0.6528],
-        [ 0.8731, -0.0952,  1.1038, -0.4263, -1.4109]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(1.4785, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.5072,  0.0026, -1.7031,  1.2319,  0.2146],
-        [-0.2670, -1.4926, -0.9687, -0.0839,  0.1341],
-        [ 0.4148, -1.0407, -1.1819, -0.2581,  0.3375]], requires_grad=True),
- :target tensor([[ 0.4782, -2.0880, -0.2407, -0.2906,  0.6219],
-        [-1.8789,  0.5214,  0.2958,  0.2471, -0.1184],
-        [ 1.2037, -1.3519,  0.1353,  0.2131, -0.7164]])}
-{:output tensor(1.4785, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.5072,  0.0026, -1.7031,  1.2319,  0.2146],
-        [-0.2670, -1.4926, -0.9687, -0.0839,  0.1341],
-        [ 0.4148, -1.0407, -1.1819, -0.2581,  0.3375]], requires_grad=True),
- :target tensor([[ 0.4782, -2.0880, -0.2407, -0.2906,  0.6219],
-        [-1.8789,  0.5214,  0.2958,  0.2471, -0.1184],
-        [ 1.2037, -1.3519,  0.1353,  0.2131, -0.7164]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(1.5582, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.2720,  2.0423,  0.7130, -1.4400,  0.2741],
-        [-0.5343,  0.0823,  1.2899,  0.1708, -0.5721],
-        [-0.2633,  0.1963,  1.6481,  1.3751, -0.5300]], requires_grad=True),
- :target tensor([[ 1.9372,  1.8060, -0.9734,  1.4288,  1.0400],
-        [-0.7723,  1.0703, -0.0024, -1.3207, -1.1657],
-        [-0.1603,  0.1348,  1.1358,  0.2802, -0.6701]])}
-{:output tensor(1.5582, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.2720,  2.0423,  0.7130, -1.4400,  0.2741],
-        [-0.5343,  0.0823,  1.2899,  0.1708, -0.5721],
-        [-0.2633,  0.1963,  1.6481,  1.3751, -0.5300]], requires_grad=True),
- :target tensor([[ 1.9372,  1.8060, -0.9734,  1.4288,  1.0400],
-        [-0.7723,  1.0703, -0.0024, -1.3207, -1.1657],
-        [-0.1603,  0.1348,  1.1358,  0.2802, -0.6701]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(1.4753, grad_fn=<MseLossBackward0>),
- :input tensor([[ 1.0766, -0.6625,  0.7653,  0.8570,  0.4119],
-        [-0.7218, -1.2382, -1.6741,  0.0567,  0.7530],
-        [-0.1405, -1.3734, -1.9292,  1.2599,  0.1153]], requires_grad=True),
- :target tensor([[ 0.6826,  0.8026,  1.7075, -0.0763, -1.1820],
-        [-1.3474,  1.3878, -1.3494,  0.6849,  0.5340],
-        [-0.6893,  0.0577,  0.1557,  1.2571, -0.8830]])}
-{:output tensor(1.4753, grad_fn=<MseLossBackward0>),
- :input tensor([[ 1.0766, -0.6625,  0.7653,  0.8570,  0.4119],
-        [-0.7218, -1.2382, -1.6741,  0.0567,  0.7530],
-        [-0.1405, -1.3734, -1.9292,  1.2599,  0.1153]], requires_grad=True),
- :target tensor([[ 0.6826,  0.8026,  1.7075, -0.0763, -1.1820],
-        [-1.3474,  1.3878, -1.3494,  0.6849,  0.5340],
-        [-0.6893,  0.0577,  0.1557,  1.2571, -0.8830]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(1.9449, grad_fn=<MseLossBackward0>),
- :input tensor([[-1.0664, -0.1574,  0.9660,  0.0087, -0.4173],
-        [-1.5112, -0.6415,  0.3481,  0.5379,  1.3961],
-        [-0.0954, -0.1294,  0.3765,  1.4410,  0.4876]], requires_grad=True),
- :target tensor([[ 0.4042,  0.6556,  1.0720,  0.4248,  0.1954],
-        [-1.0083,  0.8889, -1.0462, -1.3613, -1.2922],
-        [-2.2647, -0.4913, -1.0295,  0.5689, -1.1983]])}
-{:output tensor(1.9449, grad_fn=<MseLossBackward0>),
- :input tensor([[-1.0664, -0.1574,  0.9660,  0.0087, -0.4173],
-        [-1.5112, -0.6415,  0.3481,  0.5379,  1.3961],
-        [-0.0954, -0.1294,  0.3765,  1.4410,  0.4876]], requires_grad=True),
- :target tensor([[ 0.4042,  0.6556,  1.0720,  0.4248,  0.1954],
-        [-1.0083,  0.8889, -1.0462, -1.3613, -1.2922],
-        [-2.2647, -0.4913, -1.0295,  0.5689, -1.1983]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(2.5753, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.6854, -0.9530,  1.2294, -0.6139,  0.2820],
-        [-3.0800, -1.3479,  0.5146, -1.3884, -1.7368],
-        [-0.1618, -1.7890, -0.8194, -1.0928,  1.3133]], requires_grad=True),
- :target tensor([[-0.1198, -0.2215,  1.0378,  0.4103,  0.0515],
-        [ 1.6916, -0.2814, -0.8376, -1.5483, -0.5354],
-        [ 0.2808, -0.3437, -0.0833,  0.3218, -0.7545]])}
-{:output tensor(2.5753, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.6854, -0.9530,  1.2294, -0.6139,  0.2820],
-        [-3.0800, -1.3479,  0.5146, -1.3884, -1.7368],
-        [-0.1618, -1.7890, -0.8194, -1.0928,  1.3133]], requires_grad=True),
- :target tensor([[-0.1198, -0.2215,  1.0378,  0.4103,  0.0515],
-        [ 1.6916, -0.2814, -0.8376, -1.5483, -0.5354],
-        [ 0.2808, -0.3437, -0.0833,  0.3218, -0.7545]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(2.2389, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.3872,  0.2101, -0.6988, -0.8176, -0.8286],
-        [ 0.3516, -1.9337,  1.1820, -0.3184, -0.5223],
-        [-0.7692,  0.0673,  0.5621, -0.5930, -0.5668]], requires_grad=True),
- :target tensor([[ 1.5352, -0.9955,  1.3872, -0.6444, -0.4074],
-        [-0.5623,  1.0701,  1.7832, -2.3845,  0.2954],
-        [-1.0750,  1.6644,  0.7429, -1.3027,  1.7866]])}
-{:output tensor(2.2389, grad_fn=<MseLossBackward0>),
- :input tensor([[-0.3872,  0.2101, -0.6988, -0.8176, -0.8286],
-        [ 0.3516, -1.9337,  1.1820, -0.3184, -0.5223],
-        [-0.7692,  0.0673,  0.5621, -0.5930, -0.5668]], requires_grad=True),
- :target tensor([[ 1.5352, -0.9955,  1.3872, -0.6444, -0.4074],
-        [-0.5623,  1.0701,  1.7832, -2.3845,  0.2954],
-        [-1.0750,  1.6644,  0.7429, -1.3027,  1.7866]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(1.6007, grad_fn=<MseLossBackward0>),
- :input
- tensor([[ 1.0930e+00, -9.8981e-01, -1.1454e+00,  1.0010e+00,  1.2660e+00],
-        [ 1.5009e+00, -9.1088e-01,  6.2651e-01, -8.7427e-01, -3.9685e-01],
-        [ 1.4811e+00, -1.4561e-01, -1.2264e+00,  1.3138e-03, -3.7578e-01]],
-       requires_grad=True),
- :target
- tensor([[-1.1880e+00,  1.4810e+00, -6.0854e-01, -4.4543e-01,  1.8635e+00],
-        [ 1.8869e+00,  1.3386e+00,  1.8344e+00, -2.6536e-01, -7.7359e-01],
-        [ 6.5453e-01, -6.5859e-01,  6.8631e-02,  1.6576e-03,  2.4215e-02]])}
-{:output tensor(1.6007, grad_fn=<MseLossBackward0>),
- :input
- tensor([[ 1.0930e+00, -9.8981e-01, -1.1454e+00,  1.0010e+00,  1.2660e+00],
-        [ 1.5009e+00, -9.1088e-01,  6.2651e-01, -8.7427e-01, -3.9685e-01],
-        [ 1.4811e+00, -1.4561e-01, -1.2264e+00,  1.3138e-03, -3.7578e-01]],
-       requires_grad=True),
- :target
- tensor([[-1.1880e+00,  1.4810e+00, -6.0854e-01, -4.4543e-01,  1.8635e+00],
-        [ 1.8869e+00,  1.3386e+00,  1.8344e+00, -2.6536e-01, -7.7359e-01],
-        [ 6.5453e-01, -6.5859e-01,  6.8631e-02,  1.6576e-03,  2.4215e-02]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(1.9519, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.0277,  2.0913,  0.7199,  0.6031, -1.4678],
-        [ 0.5993, -0.5991, -0.8729, -0.4524,  1.5926],
-        [ 0.1441,  0.9436, -0.8556,  0.6063,  0.2331]], requires_grad=True),
- :target tensor([[-0.8586, -1.0802,  0.4906,  0.2092,  1.0686],
-        [-0.1511,  0.1174,  0.0944,  0.5470,  0.4038],
-        [-0.4888, -0.9175,  0.2816, -0.8157, -0.2023]])}
-{:output tensor(1.9519, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.0277,  2.0913,  0.7199,  0.6031, -1.4678],
-        [ 0.5993, -0.5991, -0.8729, -0.4524,  1.5926],
-        [ 0.1441,  0.9436, -0.8556,  0.6063,  0.2331]], requires_grad=True),
- :target tensor([[-0.8586, -1.0802,  0.4906,  0.2092,  1.0686],
-        [-0.1511,  0.1174,  0.0944,  0.5470,  0.4038],
-        [-0.4888, -0.9175,  0.2816, -0.8157, -0.2023]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(2.5957, grad_fn=<MseLossBackward0>),
- :input tensor([[ 2.5610,  0.6182, -1.4385, -1.1707, -2.1540],
-        [ 0.2504,  0.2615, -0.2629,  0.2253,  2.3768],
-        [ 1.3810,  0.6797,  0.6456, -2.1067, -0.8312]], requires_grad=True),
- :target tensor([[ 1.5121, -0.2997,  1.3852,  0.0917, -1.6956],
-        [ 1.8105, -1.6517,  0.3209, -2.3744, -0.8781],
-        [ 1.2701,  0.3941,  1.3961, -0.5809, -0.1660]])}
-{:output tensor(2.5957, grad_fn=<MseLossBackward0>),
- :input tensor([[ 2.5610,  0.6182, -1.4385, -1.1707, -2.1540],
-        [ 0.2504,  0.2615, -0.2629,  0.2253,  2.3768],
-        [ 1.3810,  0.6797,  0.6456, -2.1067, -0.8312]], requires_grad=True),
- :target tensor([[ 1.5121, -0.2997,  1.3852,  0.0917, -1.6956],
-        [ 1.8105, -1.6517,  0.3209, -2.3744, -0.8781],
-        [ 1.2701,  0.3941,  1.3961, -0.5809, -0.1660]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(2.1936, grad_fn=<MseLossBackward0>),
- :input tensor([[ 1.0780,  0.3231,  2.1129, -0.4598,  0.0797],
-        [-0.1455,  0.0637, -0.0085,  0.0264, -0.6198],
-        [-2.2506,  0.8573,  0.2976, -0.0357,  0.7868]], requires_grad=True),
- :target tensor([[-0.6077,  0.1236,  0.6477, -0.7879,  2.0965],
-        [-0.1629, -2.0047, -1.5225,  2.4187, -0.2109],
-        [ 0.7592,  0.6304,  0.7850, -1.3668,  1.1326]])}
-{:output tensor(2.1936, grad_fn=<MseLossBackward0>),
- :input tensor([[ 1.0780,  0.3231,  2.1129, -0.4598,  0.0797],
-        [-0.1455,  0.0637, -0.0085,  0.0264, -0.6198],
-        [-2.2506,  0.8573,  0.2976, -0.0357,  0.7868]], requires_grad=True),
- :target tensor([[-0.6077,  0.1236,  0.6477, -0.7879,  2.0965],
-        [-0.1629, -2.0047, -1.5225,  2.4187, -0.2109],
-        [ 0.7592,  0.6304,  0.7850, -1.3668,  1.1326]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(3.0773, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.6106,  0.6340,  0.7788, -1.1308, -0.5485],
-        [ 0.9581, -0.8407,  1.1479, -0.5987, -0.4870],
-        [-1.1110,  1.2471, -1.1401,  0.9006, -2.5287]], requires_grad=True),
- :target tensor([[ 1.5732, -0.2583, -0.5025,  1.0302, -1.3879],
-        [-1.5210,  1.7041, -0.4883,  0.6180,  0.4850],
-        [ 0.1120,  1.6646,  1.6489, -0.6294,  0.2832]])}
-{:output tensor(3.0773, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.6106,  0.6340,  0.7788, -1.1308, -0.5485],
-        [ 0.9581, -0.8407,  1.1479, -0.5987, -0.4870],
-        [-1.1110,  1.2471, -1.1401,  0.9006, -2.5287]], requires_grad=True),
- :target tensor([[ 1.5732, -0.2583, -0.5025,  1.0302, -1.3879],
-        [-1.5210,  1.7041, -0.4883,  0.6180,  0.4850],
-        [ 0.1120,  1.6646,  1.6489, -0.6294,  0.2832]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(1.3884, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.2073, -1.1994, -0.0928,  1.5009, -0.2983],
-        [-0.1566, -0.5516, -0.5415, -1.1846, -0.1367],
-        [ 0.5248,  0.7980,  0.5670, -2.0428,  0.5791]], requires_grad=True),
- :target tensor([[-0.8604,  1.8352,  0.3448,  0.6059, -1.3116],
-        [-0.9586, -0.8514,  1.3593, -0.4818,  0.6587],
-        [ 0.1457, -0.0761,  0.3577, -0.6182,  0.5180]])}
-{:output tensor(1.3884, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.2073, -1.1994, -0.0928,  1.5009, -0.2983],
-        [-0.1566, -0.5516, -0.5415, -1.1846, -0.1367],
-        [ 0.5248,  0.7980,  0.5670, -2.0428,  0.5791]], requires_grad=True),
- :target tensor([[-0.8604,  1.8352,  0.3448,  0.6059, -1.3116],
-        [-0.9586, -0.8514,  1.3593, -0.4818,  0.6587],
-        [ 0.1457, -0.0761,  0.3577, -0.6182,  0.5180]])}
-nil
-clj꞉poker.transformer꞉> 
-{:output tensor(2.6593, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.4522,  0.2058, -1.5514, -0.0596,  1.6280],
-        [ 0.2550,  0.2604, -0.9564, -0.9970,  1.3590],
-        [-0.5928,  1.0289, -1.1583, -1.3362, -0.2340]], requires_grad=True),
- :target tensor([[ 0.6709, -0.2868,  0.1343, -0.5905, -0.7618],
-        [-1.3310,  2.0577,  0.1661,  0.1914, -2.1036],
-        [-0.9967,  0.5492,  0.1137,  0.6038,  1.9067]])}
-{:output tensor(2.6593, grad_fn=<MseLossBackward0>),
- :input tensor([[ 0.4522,  0.2058, -1.5514, -0.0596,  1.6280],
-        [ 0.2550,  0.2604, -0.9564, -0.9970,  1.3590],
-        [-0.5928,  1.0289, -1.1583, -1.3362, -0.2340]], requires_grad=True),
- :target tensor([[ 0.6709, -0.2868,  0.1343, -0.5905, -0.7618],
-        [-1.3310,  2.0577,  0.1661,  0.1914, -2.1036],
-        [-0.9967,  0.5492,  0.1137,  0.6038,  1.9067]])}
-nil
-clj꞉poker.transformer꞉> 
-; nREPL Connection was closed
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:53179 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-nil
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-; nREPL Connection was closed
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:54975 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-nil
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-; nREPL Connection was closed
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:55116 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-nil
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-#'poker.transformer/l
-clj꞉poker.transformer꞉> 
-#'poker.transformer/l
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-#'poker.transformer/l
-clj꞉poker.transformer꞉> 
-tensor([[-0.1973,  0.4328, -0.0074,  ..., -0.1364, -0.1401,  0.3769],
-        [-0.1879,  0.1073,  0.0611,  ...,  0.3101,  0.0711,  0.1197],
-        [ 0.2087,  0.4399, -0.0329,  ..., -0.0591, -0.3048,  0.2033],
-        ...,
-        [ 0.1918,  0.0044,  0.3372,  ..., -0.1867,  0.0591,  0.1576],
-        [ 0.0154, -0.2813,  0.1430,  ...,  0.3676, -0.2837, -0.1323],
-        [-0.1954, -0.2675, -0.2534,  ..., -0.1052, -0.2175,  0.4951]],
-       grad_fn=<AddmmBackward0>)
-clj꞉poker.transformer꞉> 
-true
-clj꞉poker.transformer꞉> 
-; nREPL Connection was closed
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:55291 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-nil
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-tensor([[ 1.3745, -2.1757, -0.1778, -1.9120, -1.7695],
-        [ 0.8617,  0.4095, -2.8808, -1.1979, -4.7504],
-        [-3.0832,  0.2357,  2.0707,  2.2893,  5.4381]])
-clj꞉poker.transformer꞉> 
-tensor([[ 0.2692,  0.9216, -0.2969,  0.8906,  0.5886],
-        [-0.3003, -1.0839,  0.4954, -0.4563, -0.1339],
-        [ 1.2175, -0.3758, -0.1533, -2.0818, -2.2213]], requires_grad=True)
-clj꞉poker.transformer꞉> 
-tensor([[ 0.0119,  1.4438,  0.4784,  0.9199,  0.2971],
-        [-0.0223,  0.1307, -0.7745, -1.6700, -0.4871],
-        [-0.0884,  1.5901, -0.5785,  2.1882,  0.6425]], requires_grad=True)
-tensor([[-0.6274,  1.4013,  1.2749,  2.4756, -1.1089],
-        [ 3.2438, -0.8570,  0.2740, -0.8106, -4.2647],
-        [-0.8606,  3.6859, -2.0564,  8.9553,  2.4613]])
-nil
-clj꞉poker.transformer꞉> 
-{}
-tensor([[-6.1734,  3.1768,  0.9296,  0.1429, -1.6548],
-        [ 2.9684, -0.8153,  4.6480, -0.7826, -5.2970],
-        [ 2.0972,  1.4151,  0.7903, -3.2094,  2.7084]])
-nil
-clj꞉poker.transformer꞉> 
-; nREPL Connection was closed
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:55353 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-nil
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-Sequential(
-  (0): Linear(in_features=5, out_features=5, bias=True)
-  (1): ReLU()
-  (2): Linear(in_features=5, out_features=5, bias=True)
-)
-clj꞉poker.transformer꞉> 
-{'training': True, '_parameters': OrderedDict(), '_buffers': OrderedDict(), '_non_persistent_buffers_set': set(), '_backward_hooks': OrderedDict(), '_is_full_backward_hook': None, '_forward_hooks': OrderedDict(), '_forward_pre_hooks': OrderedDict(), '_state_dict_hooks': OrderedDict(), '_load_state_dict_pre_hooks': OrderedDict(), '_load_state_dict_post_hooks': OrderedDict(), '_modules': OrderedDict([('0', Linear(in_features=5, out_features=5, bias=True)), ('1', ReLU()), ('2', Linear(in_features=5, out_features=5, bias=True))])}
-clj꞉poker.transformer꞉> 
-<bound method Sequential.forward of Sequential(
-  (0): Linear(in_features=5, out_features=5, bias=True)
-  (1): ReLU()
-  (2): Linear(in_features=5, out_features=5, bias=True)
-)>
-clj꞉poker.transformer꞉> 
-; nREPL Connection was closed
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:55392 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-; Syntax error compiling at (src/poker/transformer.clj:6:1).
-; Unable to resolve symbol: require-python in this context
-clj꞉poker.transformer꞉> 
-nil
-clj꞉poker.transformer꞉> 
-:ok
-clj꞉poker.transformer꞉> 
-<bound method Sequential.forward of Sequential(
-  (0): Linear(in_features=5, out_features=5, bias=True)
-  (1): ReLU()
-  (2): Linear(in_features=5, out_features=5, bias=True)
-)>
-clj꞉poker.transformer꞉> 
-; nREPL Connection was closed
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:55582 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-; Execution error (FileNotFoundException) at gigasquid.pytorch-mnist/eval24463$loading (form-init9488883952888452139.clj:3).
-; Could not locate libpython_clj/python__init.class, libpython_clj/python.clj or libpython_clj/python.cljc on classpath. Please check that namespaces with dashes use underscores in the Clojure file name.
-clj꞉gigasquid.pytorch-mnist꞉> 
-; Execution error (IllegalAccessError) at gigasquid.pytorch-mnist/eval24714$loading (form-init9488883952888452139.clj:3).
-; $. does not exist
-clj꞉gigasquid.pytorch-mnist꞉> 
-; Execution error (IllegalAccessError) at gigasquid.pytorch-mnist/eval24720$loading (form-init9488883952888452139.clj:3).
-; att-type-map does not exist
-clj꞉gigasquid.pytorch-mnist꞉> 
-; Execution error (IllegalAccessError) at gigasquid.pytorch-mnist/eval24726$loading (form-init9488883952888452139.clj:3).
-; call does not exist
-clj꞉gigasquid.pytorch-mnist꞉> 
-nil
-clj꞉gigasquid.pytorch-mnist꞉> 
-; Execution error at libpython-clj2.python.ffi/check-error-throw (ffi.clj:708).
-; ModuleNotFoundError: No module named 'torchvision'
-; 
-clj꞉gigasquid.pytorch-mnist꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Using host:port 127.0.0.1:55675 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-; Execution error (FileNotFoundException) at poker.temp/eval26467$loading (form-init556563754434690254.clj:1).
-; Could not locate clj_djl__init.class, clj_djl.clj or clj_djl.cljc on classpath. Please check that namespaces with dashes use underscores in the Clojure file name.
-clj꞉poker.temp꞉> 
 nil
 ; WARNING: abs already refers to: #'clojure.core/abs in namespace: clj-djl.ndarray, being replaced by: #'clj-djl.ndarray/abs
 clj꞉poker.temp꞉> 
+#'poker.temp/m
+clj꞉poker.temp꞉> 
+#'poker.temp/d
+clj꞉poker.temp꞉> 
 nil
 clj꞉poker.temp꞉> 
-#object[ai.djl.nn.SequentialBlock 0x2cff16bd "Sequential(\n\tLinear(Uninitialized)\n)"]
-clj꞉poker.temp꞉> 
-#object[ai.djl.nn.SequentialBlock 0x73401f56 "Sequential(\n\tLinear(Uninitialized)\n)"]
+#object[poker.TransformerDecoderBlock 0x623fdcde TransformerDecoderBlock {
+	selfAttention(2, 3, 10) {
+		keyProjection(-1, 10) -> (-1, 10)
+		queryProjection(-1, 10) -> (-1, 10)
+		valueProjection(-1, 10) -> (-1, 10)
+		resultProjection(-1, 10) -> (-1, 10)
+		probabilityDropout(-1, 10) -> (-1, 10)
+	} -> (2, 3, 10)
+	attentionNorm(2, 3, 10) -> (2, 3, 10)
+	outputBlock(2, 3, 10) {
+		Linear(2, 3, 10) -> (2, 3, 20)
+		LambdaBlock(2, 3, 20) -> (2, 3, 20)
+		Linear(2, 3, 20) -> (2, 3, 10)
+	} -> (2, 3, 10)
+	outputNorm(2, 3, 10) -> (2, 3, 10)
+}]
 nil
 clj꞉poker.temp꞉> 
-; Execution error at poker.temp/eval38112 (form-init556563754434690254.clj:6).
-; Unable to convert: class ai.djl.nn.SequentialBlock to Object[]
+#'poker.temp/get-array
 clj꞉poker.temp꞉> 
-#object[ai.djl.nn.SequentialBlock 0x1a60d44a "Sequential(\n\tLinear(Uninitialized)\n)"]
+#object[ai.djl.nn.ParameterList 0x6fce8a16 ai.djl.nn.ParameterList@6fce8a16]
+nil
 clj꞉poker.temp꞉> 
-#object[ai.djl.nn.SequentialBlock 0xb26d819 "Sequential(\n)"]
+#object[java.util.ArrayList 0x1a91c835 [01selfAttention_01keyProjection_weight, 01selfAttention_01keyProjection_bias, 01selfAttention_02queryProjection_weight, 01selfAttention_02queryProjection_bias, 01selfAttention_03valueProjection_weight, 01selfAttention_03valueProjection_bias, 01selfAttention_04resultProjection_weight, 01selfAttention_04resultProjection_bias, 02attentionNorm_gamma, 02attentionNorm_beta, 02attentionNorm_runningMean, 02attentionNorm_runningVar, 03outputBlock_01Linear_weight, 03outputBlock_01Linear_bias, 03outputBlock_03Linear_weight, 03outputBlock_03Linear_bias, 04outputNorm_gamma, 04outputNorm_beta, 04outputNorm_runningMean, 04outputNorm_runningVar]]
+nil
 clj꞉poker.temp꞉> 
-#function[clj-djl.nn/linear-builder]
+20
+nil
 clj꞉poker.temp꞉> 
-#object[ai.djl.nn.core.Linear$Builder 0x4050ab7d "ai.djl.nn.core.Linear$Builder@4050ab7d"]
+#'poker.temp/o
+clj꞉poker.temp꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0xddd6928 "ND: (2, 2) cpu() float32\n[[1., 1.],\n [1., 1.],\n]\n"]
+clj꞉poker.temp꞉> 
+ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.temp꞉> 
+; Error printing return value (IllegalArgumentException) at clojure.lang.RT/seqFrom (RT.java:557).
+; Don't know how to create ISeq from: ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.temp꞉> 
+; Execution error at poker.temp/eval48796 (form-init9294421832384377947.clj:54).
+; Unable to convert: class ai.djl.mxnet.engine.MxNDArray to Object[]
+clj꞉poker.temp꞉> 
+[1.0, 1.0, 1.0, 1.0]
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at poker.temp/eval48800 (form-init9294421832384377947.clj:55).
+; No matching field found: shape for class ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.temp꞉> 
+#object[ai.djl.ndarray.types.Shape 0x5f79bc21 "(2, 2)"]
+clj꞉poker.temp꞉> 
+[1.0, 1.0, 1.0, 1.0]
+clj꞉poker.temp꞉> 
+(2.0 2.0 2.0 2.0)
+clj꞉poker.temp꞉> 
+#'poker.temp/add-gaussian-noise
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at poker.temp/add-gaussian-noise (form-init9294421832384377947.clj:60).
+; No matching method set found taking 1 args for class ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.temp꞉> 
+#'poker.temp/add-gaussian-noise
+clj꞉poker.temp꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0xddd6928 "ND: (2, 2) cpu() float32\n[[1.9686, 1.9686],\n [1.9686, 1.9686],\n]\n"]
+clj꞉poker.temp꞉> 
+#'poker.temp/o
+clj꞉poker.temp꞉> 
+#'poker.temp/add-gaussian-noise
+clj꞉poker.temp꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x5f56054c ND: (2, 2) cpu() float32
+[[1.0847, 1.0847],
+ [1.0847, 1.0847],
+]
+]
+nil
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at poker.temp/eval48817 (form-init9294421832384377947.clj:62).
+; No matching method set found taking 1 args for class ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x5f56054c "ND: (2, 2) cpu() float32\n[[0.1, 0.1],\n [0.2, 0.3],\n]\n"]
+clj꞉poker.temp꞉> 
+#'poker.temp/add-gaussian-noise
+clj꞉poker.temp꞉> 
+(0.18336422683726106 0.18336422683726106 0.2833642283273772 0.3833642372680739)
+#object[ai.djl.mxnet.engine.MxNDArray 0x5f56054c ND: (2, 2) cpu() float32
+[[0.1834, 0.1834],
+ [0.2834, 0.3834],
+]
+]
+nil
+clj꞉poker.temp꞉> 
+#'poker.temp/o
+clj꞉poker.temp꞉> 
+#'poker.temp/add-gaussian-noise
+clj꞉poker.temp꞉> 
+#'poker.temp/add-gaussian-noise
+clj꞉poker.temp꞉> 
+#'poker.temp/o
+clj꞉poker.temp꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x4d6811c4 ND: (2, 2) cpu() float32
+[[0.9562, 0.0523],
+ [0.7406, 2.6199],
+]
+]
+nil
+clj꞉poker.temp꞉> 
+#'poker.temp/add-gaussian-noise
+clj꞉poker.temp꞉> 
+#'poker.temp/o
+clj꞉poker.temp꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x5c5676c0 ND: (2, 2) cpu() float32
+[[ 0.4325,  1.1667],
+ [ 1.1885, -0.1353],
+]
+]
+nil
+clj꞉poker.temp꞉> 
+#'poker.temp/o
+clj꞉poker.temp꞉> 
+#'poker.temp/z
+clj꞉poker.temp꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x48954e3e ND: (2, 2) cpu() float32
+[[1., 1.],
+ [1., 1.],
+]
+]
+nil
+clj꞉poker.temp꞉> 
+#'poker.temp/o
+clj꞉poker.temp꞉> 
+#'poker.temp/s
+clj꞉poker.temp꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x3cba118d ND: (2, 2) cpu() float32
+[[ 1.001 ,  2.2827],
+ [11.368 ,  1.0012],
+]
+]
+nil
+clj꞉poker.temp꞉> 
+#object[java.util.ArrayList 0x4fec118 [01selfAttention_01keyProjection_weight, 01selfAttention_01keyProjection_bias, 01selfAttention_02queryProjection_weight, 01selfAttention_02queryProjection_bias, 01selfAttention_03valueProjection_weight, 01selfAttention_03valueProjection_bias, 01selfAttention_04resultProjection_weight, 01selfAttention_04resultProjection_bias, 02attentionNorm_gamma, 02attentionNorm_beta, 02attentionNorm_runningMean, 02attentionNorm_runningVar, 03outputBlock_01Linear_weight, 03outputBlock_01Linear_bias, 03outputBlock_03Linear_weight, 03outputBlock_03Linear_bias, 04outputNorm_gamma, 04outputNorm_beta, 04outputNorm_runningMean, 04outputNorm_runningVar]]
+nil
+clj꞉poker.temp꞉> 
+#'poker.temp/initialize-stdevs
+clj꞉poker.temp꞉> 
+(#object[ai.djl.nn.Parameter 0x4347ad0 "ai.djl.nn.Parameter@4347ad0"]
+ #object[ai.djl.nn.Parameter 0x6001e3aa "ai.djl.nn.Parameter@6001e3aa"]
+ #object[ai.djl.nn.Parameter 0x47970dd8 "ai.djl.nn.Parameter@47970dd8"]
+ #object[ai.djl.nn.Parameter 0x1373364a "ai.djl.nn.Parameter@1373364a"]
+ #object[ai.djl.nn.Parameter 0x13ffa7dc "ai.djl.nn.Parameter@13ffa7dc"]
+ #object[ai.djl.nn.Parameter 0x414f4f86 "ai.djl.nn.Parameter@414f4f86"]
+ #object[ai.djl.nn.Parameter 0x3e4973ba "ai.djl.nn.Parameter@3e4973ba"]
+ #object[ai.djl.nn.Parameter 0x3402c35f "ai.djl.nn.Parameter@3402c35f"]
+ #object[ai.djl.nn.Parameter 0x5aad4344 "ai.djl.nn.Parameter@5aad4344"]
+ #object[ai.djl.nn.Parameter 0x61a504e8 "ai.djl.nn.Parameter@61a504e8"]
+ #object[ai.djl.nn.Parameter 0x14847fc5 "ai.djl.nn.Parameter@14847fc5"]
+ #object[ai.djl.nn.Parameter 0x36be4e31 "ai.djl.nn.Parameter@36be4e31"]
+ #object[ai.djl.nn.Parameter 0x6398cc1 "ai.djl.nn.Parameter@6398cc1"]
+ #object[ai.djl.nn.Parameter 0x4ff25aaa "ai.djl.nn.Parameter@4ff25aaa"]
+ #object[ai.djl.nn.Parameter 0x783f6ec6 "ai.djl.nn.Parameter@783f6ec6"]
+ #object[ai.djl.nn.Parameter 0x3cb46836 "ai.djl.nn.Parameter@3cb46836"]
+ #object[ai.djl.nn.Parameter 0x76a1b4e5 "ai.djl.nn.Parameter@76a1b4e5"]
+ #object[ai.djl.nn.Parameter 0x2bdb9791 "ai.djl.nn.Parameter@2bdb9791"]
+ #object[ai.djl.nn.Parameter 0x28118572 "ai.djl.nn.Parameter@28118572"]
+ #object[ai.djl.nn.Parameter 0x377bbd9e "ai.djl.nn.Parameter@377bbd9e"])
+clj꞉poker.temp꞉> 
+#'poker.temp/initialize-stdevs
+clj꞉poker.temp꞉> 
+#'poker.temp/initialize-stdevs
+clj꞉poker.temp꞉> 
+{"01selfAttention_04resultProjection_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x7f97f845 "ND: (10, 10) cpu() float32\n[[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n]\n"],
+ "01selfAttention_04resultProjection_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x643b7003 "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "01selfAttention_03valueProjection_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x21caeb14 "ND: (10, 10) cpu() float32\n[[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n]\n"],
+ "01selfAttention_02queryProjection_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x262f88d2 "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "02attentionNorm_runningVar"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x4a59a40b "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "04outputNorm_beta"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x3e24103f "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "03outputBlock_01Linear_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x691ffd96 "ND: (20, 10) cpu() float32\n[ Exceed max print size ]"],
+ "04outputNorm_runningMean"
+ #object[ai.djl.mxnet.engine.MxNDArray 0xe5eeda8 "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "03outputBlock_01Linear_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x3ddba583 "ND: (20) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "04outputNorm_runningVar"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x34c3a43e "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "01selfAttention_01keyProjection_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0xa240b62 "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "01selfAttention_02queryProjection_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x234c3dba "ND: (10, 10) cpu() float32\n[[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n]\n"],
+ "03outputBlock_03Linear_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x47943abd "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "02attentionNorm_beta"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x3b1ba979 "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "02attentionNorm_gamma"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x4e8fa023 "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "04outputNorm_gamma"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x7751888a "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "01selfAttention_01keyProjection_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x559765f9 "ND: (10, 10) cpu() float32\n[[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n [1., 1., 1., 1., 1., 1., 1., 1., 1., 1.],\n]\n"],
+ "01selfAttention_03valueProjection_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x615b5d73 "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "02attentionNorm_runningMean"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x1747ae19 "ND: (10) cpu() float32\n[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]\n"],
+ "03outputBlock_03Linear_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0xb8ff04 "ND: (10, 20) cpu() float32\n[ Exceed max print size ]"]}
+clj꞉poker.temp꞉> 
+#'poker.temp/d-stdev
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+; Syntax error compiling at (src/clojure/poker/temp.clj:1:7971).
+; Unable to resolve symbol: d-stdec in this context
+clj꞉poker.temp꞉> 
+{"01selfAttention_04resultProjection_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x29d59c20 "This array is already closed"],
+ "01selfAttention_04resultProjection_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x244a324 "This array is already closed"],
+ "01selfAttention_03valueProjection_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x3e5f8820 "This array is already closed"],
+ "01selfAttention_02queryProjection_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x6973af8 "This array is already closed"],
+ "02attentionNorm_runningVar" #object[ai.djl.mxnet.engine.MxNDArray 0x75616dd5 "This array is already closed"],
+ "04outputNorm_beta" #object[ai.djl.mxnet.engine.MxNDArray 0x68a69aa4 "This array is already closed"],
+ "03outputBlock_01Linear_weight" #object[ai.djl.mxnet.engine.MxNDArray 0x34f96f5a "This array is already closed"],
+ "04outputNorm_runningMean" #object[ai.djl.mxnet.engine.MxNDArray 0x6b739e8a "This array is already closed"],
+ "03outputBlock_01Linear_bias" #object[ai.djl.mxnet.engine.MxNDArray 0x60d3ebe7 "This array is already closed"],
+ "04outputNorm_runningVar" #object[ai.djl.mxnet.engine.MxNDArray 0x1d4039ac "This array is already closed"],
+ "01selfAttention_01keyProjection_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x25a5ca48 "This array is already closed"],
+ "01selfAttention_02queryProjection_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x7c2da53f "This array is already closed"],
+ "03outputBlock_03Linear_bias" #object[ai.djl.mxnet.engine.MxNDArray 0x6e176019 "This array is already closed"],
+ "02attentionNorm_beta" #object[ai.djl.mxnet.engine.MxNDArray 0x2ed4fec9 "This array is already closed"],
+ "02attentionNorm_gamma" #object[ai.djl.mxnet.engine.MxNDArray 0x7f2f6463 "This array is already closed"],
+ "04outputNorm_gamma" #object[ai.djl.mxnet.engine.MxNDArray 0x69d5372d "This array is already closed"],
+ "01selfAttention_01keyProjection_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x435e075c "This array is already closed"],
+ "01selfAttention_03valueProjection_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x4b19ed26 "This array is already closed"],
+ "02attentionNorm_runningMean" #object[ai.djl.mxnet.engine.MxNDArray 0x320c3675 "This array is already closed"],
+ "03outputBlock_03Linear_weight" #object[ai.djl.mxnet.engine.MxNDArray 0x4f20cb74 "This array is already closed"]}
+clj꞉poker.temp꞉> 
+; Syntax error compiling at (src/clojure/poker/temp.clj:21:8).
+; No such namespace: nd
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+#'poker.temp/m
+clj꞉poker.temp꞉> 
+#'poker.temp/o
+clj꞉poker.temp꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x36e25096 "ND: (4) cpu() float32\n[1., 1., 1., 1.]\n"]
+clj꞉poker.temp꞉> 
+[1.0, 1.0, 1.0, 1.0]
+clj꞉poker.temp꞉> 
+java.lang.Long
+clj꞉poker.ERL꞉> 
+; Syntax error reading source at (REPL:61:9).
+; Invalid number: 1f
+clj꞉poker.ERL꞉> 
+java.lang.Double
+clj꞉poker.ERL꞉> 
+; Syntax error reading source at (REPL:61:10).
+; Invalid number: 1.f
+clj꞉poker.ERL꞉> 
+#'poker.ERL/self-attention-reference
+clj꞉poker.ERL꞉> 
+"E = embedding size\\\n   B = batch size\\\n   N = number of attention heads\\\n   F = \"from\" sequence length (key/value sequence), the input sequence\n   T = \"to\" sequence length (query sequence), e.g. the length of the output sequence\\\n   S = a sequence length, either F or T\\\n   H = Attention head size (= E / N)\\\n   In many use cases F=T. For self attention, the input is equal to the output.\n\n\n   This block can process input in four forms:\\\n   size 1: [Values] = [(B, F, E)], only input is used as key, query and value \n       (unmasked self attention), e.g. BERT\\\n   size 2: [Values, Mask] = [(B, F, E), (B, F, F)], first input is used as \n       key, query and value, masked self attention\\\n   size 3: [Keys, Queries, Values] = [(B, F, E), (B, T, E), (B, F, E)], \n       inputs are interpreted as keys, queries and values, unmasked attention\\\n   size 4: [Keys, Queries, Values, Mask] = [(B, F, E), (B, T, E), (B, F, E), (B, T, F)], \n       inputs are interpreted as keys, queries, values and an attention mask, full masked attention.\\\n   Attention masks must contain a 1 for positions to keep and a 0 for positions to mask."
+clj꞉poker.ERL꞉> 
+#'poker.ERL/self-attention-reference
+clj꞉poker.ERL꞉> 
+1
+clj꞉poker.ERL꞉> 
+0
+clj꞉poker.ERL꞉> 
+#'poker.ERL/shape
+clj꞉poker.ERL꞉> 
+[3 2]
+clj꞉poker.ERL꞉> 
+#'poker.utils/shape
+clj꞉poker.utils꞉> 
+; Syntax error compiling at (src/clojure/poker/ERL.clj:136:3).
+; No such namespace: nd
+clj꞉poker.ERL꞉> 
+; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
+; ai.djl.ndarray.types.NDArray
+clj꞉poker.ERL꞉> 
+nil
+clj꞉poker.ERL꞉> 
+#'poker.ERL/shape
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at java.lang.reflect.Array/set (Array.java:-2).
+; array element type mismatch
+clj꞉poker.ERL꞉> 
+#'poker.ERL/shape
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.types.Shape 0x74fc6ab8 "(3, 2)"]
+clj꞉poker.ERL꞉> 
+; Syntax error compiling at (src/clojure/poker/ERL.clj:143:1).
+; Unable to resolve symbol: INT in this context
+clj꞉poker.ERL꞉> 
+; Execution error (ClassCastException) at poker.ERL/eval49320 (form-init9294421832384377947.clj:143).
+; class clojure.lang.PersistentVector cannot be cast to class java.lang.Character (clojure.lang.PersistentVector is in unnamed module of loader 'app'; java.lang.Character is in module java.base of loader 'bootstrap')
+clj꞉poker.ERL꞉> 
+[1, 2, 3]
+clj꞉poker.ERL꞉> 
+[1, 2, 3]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/ndlist
+clj꞉poker.ERL꞉> 
+#'poker.ERL/m
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/ndlist$fn (form-init9294421832384377947.clj:141).
+; No matching method create found taking 2 args for class ai.djl.mxnet.engine.MxNDManager
+clj꞉poker.ERL꞉> 
+#'poker.ERL/shape
+clj꞉poker.ERL꞉> 
+#'poker.ERL/ndlist
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/ndlist$fn (form-init9294421832384377947.clj:141).
+; No matching method create found taking 2 args for class ai.djl.mxnet.engine.MxNDManager
+clj꞉poker.ERL꞉> 
+#'poker.ERL/ndlist
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/ndlist (form-init9294421832384377947.clj:142).
+; No method in multimethod 'ndlist' for dispatch value: class [Lai.djl.ndarray.NDArray;
+clj꞉poker.ERL꞉> 
+#'poker.ERL/ndlist
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x27676705 "ND: (1, 2) cpu() int64\n[[ 1,  2],\n]\n"] #object[ai.djl.mxnet.engine.MxNDArray 0x46bc9608 "ND: (2) cpu() int64\n[ 1,  2]\n"] #object[ai.djl.mxnet.engine.MxNDArray 0x71c5d7e2 "ND: (3, 2) cpu() int64\n[[ 1,  2],\n [ 1,  2],\n [ 1,  2],\n]\n"]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/ndlist
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x7308f4f8 "ND: (1, 2) cpu() int64\n[[ 1,  2],\n]\n"] #object[ai.djl.mxnet.engine.MxNDArray 0x267d3c58 "ND: (2) cpu() int64\n[ 1,  2]\n"] #object[ai.djl.mxnet.engine.MxNDArray 0x47c7661f "ND: (3, 2) cpu() int64\n[[ 1,  2],\n [ 1,  2],\n [ 1,  2],\n]\n"]]
+clj꞉poker.ERL꞉> 
+nil
+clj꞉poker.ERL꞉> 
+#'poker.ERL/concat-ndlist
+clj꞉poker.ERL꞉> 
+nil
+clj꞉poker.ERL꞉> 
+#'poker.ERL/m
+clj꞉poker.ERL꞉> 
+#'poker.ERL/ndarray
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x6fd717b2 "ND: (2, 2) cpu() int64\n[[ 1,  2],\n [ 1,  2],\n]\n"]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/concat-ndlist
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x7f3134d9 "ND: (2, 4) cpu() int64\n[[ 1,  2,  3,  4],\n [ 1,  2,  3,  4],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x72376c0a "ND: (2, 4) cpu() int64\n[[ 1,  2,  3,  4],\n [ 1,  2,  4,  3],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x350cbefe "ND: (4, 2) cpu() int64\n[[ 1,  2],\n [ 1,  2],\n [ 3,  4],\n [ 4,  3],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x465acaab "ND: (4, 2) cpu() int64\n[[ 1,  2],\n [ 1,  2],\n [ 3,  4],\n [ 4,  3],\n]\n"]
+clj꞉poker.ERL꞉> 
+[1, 2, 1, 2, 3, 4, 4, 3]
+clj꞉poker.ERL꞉> 
+[1, 2]
+clj꞉poker.ERL꞉> 
+; Syntax error compiling at (src/clojure/poker/utils.clj:323:1).
+; No such namespace: matrix
+clj꞉poker.utils꞉> 
+nil
+clj꞉poker.utils꞉> 
+[[1 2] [3 4]]
+clj꞉poker.utils꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x66e4b8a0 "ND: (2, 2, 2) cpu() int64\n[[[ 1,  2],\n  [ 3,  4],\n ],\n [[ 5,  6],\n  [ 7,  8],\n ],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x74ca8d94 ND: (2, 2, 2) cpu() int64
+[[[ 1,  2],
+  [ 3,  4],
+ ],
+ [[ 5,  6],
+  [ 7,  8],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x287f8350 ND: (4, 2) cpu() int64
+[[ 1,  2],
+ [ 3,  4],
+ [ 5,  6],
+ [ 7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0xbbf93e6 ND: (4, 2) cpu() int64
+[[ 1,  5],
+ [ 2,  6],
+ [ 3,  7],
+ [ 4,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x245df2b0 ND: (4, 2) cpu() int64
+[[ 1,  2],
+ [ 5,  6],
+ [ 3,  4],
+ [ 7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x3572676c ND: (4, 2) cpu() int64
+[[ 1,  2],
+ [ 3,  4],
+ [ 5,  6],
+ [ 7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: TBlob.get_with_shape: Check failed: this->shape_.Size() == static_cast<size_t>(shape.Size()) (6 vs. 4) : new and old shape do not match total elements
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/include/mxnet/./tensor_blob.h", line 310
+; 
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: TBlob.get_with_shape: Check failed: this->shape_.Size() == static_cast<size_t>(shape.Size()) (6 vs. 4) : new and old shape do not match total elements
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/include/mxnet/./tensor_blob.h", line 310
+; 
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: TBlob.get_with_shape: Check failed: this->shape_.Size() == static_cast<size_t>(shape.Size()) (6 vs. 4) : new and old shape do not match total elements
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/include/mxnet/./tensor_blob.h", line 310
+; 
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: src.Size() == dst->Size() (8 vs. 10) : Cannot reshape array of size 8 into shape [5,2]
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/operator/numpy/np_matrix_op.cc", line 144
+; 
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: src.Size() == dst->Size() (8 vs. 10) : Cannot reshape array of size 8 into shape [5,2]
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/operator/numpy/np_matrix_op.cc", line 144
+; 
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: src.Size() == dst->Size() (8 vs. 10) : Cannot reshape array of size 8 into shape [5,2]
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/operator/numpy/np_matrix_op.cc", line 144
+; 
+clj꞉poker.ERL꞉> 
+; Error printing return value (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: TBlob.get_with_shape: Check failed: this->shape_.Size() == static_cast<size_t>(shape.Size()) (6 vs. 4) : new and old shape do not match total elements
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/include/mxnet/./tensor_blob.h", line 310
+; 
+clj꞉poker.ERL꞉> 
+; Error printing return value (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: TBlob.get_with_shape: Check failed: this->shape_.Size() == static_cast<size_t>(shape.Size()) (6 vs. 4) : new and old shape do not match total elements
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/include/mxnet/./tensor_blob.h", line 310
+; 
+clj꞉poker.ERL꞉> 
+; Error printing return value (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: TBlob.get_with_shape: Check failed: this->shape_.Size() == static_cast<size_t>(shape.Size()) (6 vs. 4) : new and old shape do not match total elements
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/include/mxnet/./tensor_blob.h", line 310
+; 
+clj꞉poker.ERL꞉> 
+; Error printing return value (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: TBlob.get_with_shape: Check failed: this->shape_.Size() == static_cast<size_t>(shape.Size()) (6 vs. 4) : new and old shape do not match total elements
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/include/mxnet/./tensor_blob.h", line 310
+; 
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at clj_djl.ndarray$eval35837$fn__35839/doInvoke (ndarray.clj:268).
+; Unexpected param type, expected: int, given: ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at clj_djl.ndarray$eval35837$fn__35839/doInvoke (ndarray.clj:268).
+; Unexpected param type, expected: int, given: ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: shape_assign(&(*in_shape)[i], dshape): Incompatible input shape: expected [-1,2,2], got [2,2]
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/operator/numpy/np_matrix_op.cc", line 653
+; 
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x44730c35 "ND: (2, 1, 2) cpu() int64\n[[[ 1,  2],\n ],\n [[ 3,  4],\n ],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x29fdbc0e "ND: (4, 1, 2) cpu() int64\n[[[ 1,  2],\n ],\n [[ 3,  4],\n ],\n [[ 1,  2],\n ],\n [[ 3,  4],\n ],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x6564e5c3 "ND: (2, 2, 2) cpu() int64\n[[[ 1,  2],\n  [ 1,  2],\n ],\n [[ 3,  4],\n  [ 3,  4],\n ],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x3f1b0d9d "ND: (4, 2) cpu() int64\n[[ 1,  2],\n [ 5,  6],\n [ 3,  4],\n [ 7,  8],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x16e5259e "ND: (4, 2) cpu() int64\n[[ 1,  2],\n [ 3,  4],\n [ 5,  6],\n [ 7,  8],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x52757604 "ND: (4, 2) cpu() int64\n[[ 1,  5],\n [ 2,  6],\n [ 3,  7],\n [ 4,  8],\n]\n"]
+clj꞉poker.ERL꞉> 
+#'poker.temp/datapoints
+clj꞉poker.temp꞉> 
+#'poker.temp/load-array
+clj꞉poker.temp꞉> 
+#'poker.temp/linreg
+clj꞉poker.temp꞉> 
+#'poker.temp/squaredLoss
+clj꞉poker.temp꞉> 
+#'poker.temp/sgd
+clj꞉poker.temp꞉> 
+#'poker.temp/process-batch
+clj꞉poker.temp꞉> 
+Epoch  1 , loss  0.79705274
+Epoch  2 , loss  0.038647465
+Epoch  3 , loss  0.0019224166
+nil
+clj꞉poker.temp꞉> 
+epoch  1
+epoch  2
+epoch  3
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: TBlob.get_with_shape: Check failed: this->shape_.Size() == static_cast<size_t>(shape.Size()) (6 vs. 4) : new and old shape do not match total elements
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/include/mxnet/./tensor_blob.h", line 310
+; 
+clj꞉poker.temp꞉> 
+ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942)
+ai.djl.mxnet.jna.JnaUtils/waitAll (JnaUtils.java:484)
+ai.djl.mxnet.engine.MxModel/close (MxModel.java:202)
+poker.temp/eval50567 (form-init9294421832384377947.clj:187)
+poker.temp/eval50567 (form-init9294421832384377947.clj:128)
+clojure.lang.Compiler/eval (Compiler.java:7194)
+clojure.core/eval (core.clj:3215)
+clojure.core/eval (core.clj:3211)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:87)
+clojure.core/apply (core.clj:667)
+clojure.core/with-bindings* (core.clj:1990)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:87)
+clojure.main/repl (main.clj:437)
+clojure.main/repl (main.clj:458)
+clojure.main/repl (main.clj:368)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:84)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:56)
+nrepl.middleware.interruptible-eval/interruptible-eval (interruptible_eval.clj:152)
+nrepl.middleware.session/session-exec (session.clj:218)
+nrepl.middleware.session/session-exec (session.clj:217)
+java.lang.Thread/run (Thread.java:1589)
+clj꞉poker.temp꞉> 
+epoch  1
+epoch  2
+epoch  3
+nil
+clj꞉poker.temp꞉> 
+epoch  1
+epoch  2
+epoch  3
+nil
+clj꞉poker.temp꞉> 
+epoch  1
+; Execution error (IllegalStateException) at ai.djl.util.NativeResource/getHandle (NativeResource.java:64).
+; Native resource has been released already.
+clj꞉poker.temp꞉> 
+epoch  1
+; Execution error (IllegalStateException) at ai.djl.util.NativeResource/getHandle (NativeResource.java:64).
+; Native resource has been released already.
+clj꞉poker.temp꞉> 
+epoch  1
+; Execution error (IllegalStateException) at ai.djl.util.NativeResource/getHandle (NativeResource.java:64).
+; Native resource has been released already.
+clj꞉poker.temp꞉> 
+epoch  1
+; Execution error (IllegalStateException) at ai.djl.util.NativeResource/getHandle (NativeResource.java:64).
+; Native resource has been released already.
+clj꞉poker.temp꞉> 
+epoch  1
+; Execution error (IllegalArgumentException) at poker.temp/eval50620$fn (form-init9294421832384377947.clj:174).
+; No matching field found: close for class ai.djl.training.dataset.BulkDataIterable
+clj꞉poker.temp꞉> 
+epoch  1
+; Execution error (IllegalArgumentException) at poker.temp/eval50629$fn (form-init9294421832384377947.clj:174).
+; No matching field found: close for class ai.djl.training.dataset.BulkDataIterable
+clj꞉poker.temp꞉> 
+epoch  1
+epoch  2
+epoch  3
+nil
+clj꞉poker.temp꞉> 
+0
+1
+2
+3
+4
+(nil)
+clj꞉poker.ERL꞉> 
+0
+1
+2
+3
+4
+(nil nil nil nil nil)
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.NDList 0x65148d1f NDList size: 0
+]
+#object[ai.djl.ndarray.NDList 0x75ff9b3d NDList size: 0
+]
+#object[ai.djl.ndarray.NDList 0x6e7edb23 NDList size: 0
+]
+nil
+clj꞉poker.ERL꞉> 
+[]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.NDList 0x2081883d NDList size: 1
+0 : (1, 2) int64
+]
+#object[ai.djl.ndarray.NDList 0x2748ba8f NDList size: 1
+0 : (1, 1, 2) int64
+]
+#object[ai.djl.ndarray.NDList 0x76e32033 NDList size: 1
+0 : (2) int64
+]
+nil
+clj꞉poker.ERL꞉> 
+; Execution error (ArityException) at poker.ERL/eval50809 (form-init9294421832384377947.clj:195).
+; Wrong number of args (1) passed to: poker.ERL/eval50809/fn--50810
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.NDList 0x2e4b97c3 NDList size: 1
+0 : (1, 2) int64
+]
+#object[ai.djl.ndarray.NDList 0x6fe72113 NDList size: 1
+0 : (1, 1, 2) int64
+]
+#object[ai.djl.ndarray.NDList 0x7459c969 NDList size: 1
+0 : (2) int64
+]
+(nil nil nil)
+clj꞉poker.ERL꞉> 
+clojure.lang.PersistentVector
+clj꞉poker.ERL꞉> 
+; Execution error (ArityException) at poker.ERL/eval50821 (form-init9294421832384377947.clj:203).
+; Wrong number of args (1) passed to: poker.ERL/ndarray
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x1947eeca ND: (2, 2, 2) cpu() int64
+[[[ 1,  2],
+  [ 3,  4],
+ ],
+ [[ 5,  6],
+  [ 7,  8],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x35ee1dcc ND: (2, 2, 2) cpu() int64
+[[[ 1,  2],
+  [ 3,  4],
+ ],
+ [[ 5,  6],
+  [ 7,  8],
+ ],
+]
+]
+; Execution error (UnsupportedOperationException) at ai.djl.mxnet.engine.MxNDArray/flatten (MxNDArray.java:1134).
+; Not implemented yet.
+clj꞉poker.ERL꞉> 
+ai.djl.mxnet.engine.MxNDArray/flatten (MxNDArray.java:1134)
+jdk.internal.reflect.DirectMethodHandleAccessor/invoke (DirectMethodHandleAccessor.java:104)
+java.lang.reflect.Method/invoke (Method.java:578)
+clojure.lang.Reflector/invokeMatchingMethod (Reflector.java:167)
+clojure.lang.Reflector/invokeInstanceMethod (Reflector.java:102)
+poker.ERL/eval50825 (form-init9294421832384377947.clj:205)
+poker.ERL/eval50825 (form-init9294421832384377947.clj:203)
+clojure.lang.Compiler/eval (Compiler.java:7194)
+clojure.core/eval (core.clj:3215)
+clojure.core/eval (core.clj:3211)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:87)
+clojure.core/apply (core.clj:667)
+clojure.core/with-bindings* (core.clj:1990)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:87)
+clojure.main/repl (main.clj:437)
+clojure.main/repl (main.clj:458)
+clojure.main/repl (main.clj:368)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:84)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:56)
+nrepl.middleware.interruptible-eval/interruptible-eval (interruptible_eval.clj:152)
+nrepl.middleware.session/session-exec (session.clj:218)
+nrepl.middleware.session/session-exec (session.clj:217)
+java.lang.Thread/run (Thread.java:1589)
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x5644cd58 ND: (2, 2, 2) cpu() int64
+[[[ 1,  2],
+  [ 3,  4],
+ ],
+ [[ 5,  6],
+  [ 7,  8],
+ ],
+]
+]
+; Execution error (UnsupportedOperationException) at ai.djl.mxnet.engine.MxNDArray/flatten (MxNDArray.java:1134).
+; Not implemented yet.
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x34e81dba "ND: (4, 2) cpu() int64\n[[ 1,  5],\n [ 2,  6],\n [ 3,  7],\n [ 4,  8],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x540564c0 ND: (4, 2) cpu() int64
+[[ 1,  5],
+ [ 2,  6],
+ [ 3,  7],
+ [ 4,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x53beff50 ND: (2, 4) cpu() int64
+[[ 1,  5,  2,  6],
+ [ 3,  7,  4,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x6b6b192f ND: (2, 4) cpu() int64
+[[ 1,  2,  3,  4],
+ [ 5,  6,  7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x6491e171 ND: (2, 4) cpu() int64
+[[ 1,  2,  5,  6],
+ [ 3,  4,  7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: shape_assign(&(*in_shape)[i], dshape): Incompatible input shape: expected [3,-1,2], got [2,1,2]
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/operator/numpy/np_matrix_op.cc", line 653
+; 
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: shape_assign(&(*in_shape)[i], dshape): Incompatible input shape: expected [3,-1,2], got [2,1,2]
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/operator/numpy/np_matrix_op.cc", line 653
+; 
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: shape_assign(&(*in_shape)[i], dshape): Incompatible input shape: expected [3,-1,2], got [2,1,2]
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/operator/numpy/np_matrix_op.cc", line 653
+; 
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x61c62d0b "ND: (3, 1, 2) cpu() int64\n[[[ 1,  2],\n ],\n [[ 3,  4],\n ],\n [[ 9, 10],\n ],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x5679f3a2 "ND: (2, 1, 2) cpu() int64\n[[[ 5,  6],\n ],\n [[ 7,  8],\n ],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x369c7845 ND: (2, 4) cpu() int64
+[[ 1,  2,  5,  6],
+ [ 3,  4,  7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x404000fd ND: (4, 2) cpu() int64
+[[ 1,  2],
+ [ 5,  6],
+ [ 3,  4],
+ [ 7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#'poker.ERL/interleave-ndlist
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x201e8324 "ND: (4, 2) cpu() int64\n[[ 1,  2],\n [ 3,  4],\n [ 5,  6],\n [ 7,  8],\n]\n"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x3e80033f ND: (4, 2) cpu() int64
+[[ 1,  2],
+ [ 3,  4],
+ [ 5,  6],
+ [ 7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: src.Size() == dst->Size() (12 vs. 8) : Cannot reshape array of size 12 into shape [4,2]
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/operator/numpy/np_matrix_op.cc", line 144
+; 
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x60d71a54 ND: (6, 2) cpu() int64
+[[ 1,  2],
+ [ 3,  4],
+ [ 5,  6],
+ [ 7,  8],
+ [ 9, 10],
+ [11, 12],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x64b184d6 ND: (6, 2) cpu() int64
+[[ 1,  2],
+ [ 5,  6],
+ [ 9, 10],
+ [ 3,  4],
+ [ 7,  8],
+ [11, 12],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x41fbdcb2 ND: (6, 2) cpu() int64
+[[ 1,  5],
+ [ 9,  2],
+ [ 6, 10],
+ [ 3,  7],
+ [11,  4],
+ [ 8, 12],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x115c2b33 ND: (4, 3) cpu() int64
+[[ 1,  5,  9],
+ [ 2,  6, 10],
+ [ 3,  7, 11],
+ [ 4,  8, 12],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x14732d99 ND: (2, 3, 2) cpu() int64
+[[[ 1,  2],
+  [ 5,  6],
+  [ 9, 10],
+ ],
+ [[ 3,  4],
+  [ 7,  8],
+  [11, 12],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#'poker.ERL/interleave-ndlist
+clj꞉poker.ERL꞉> 
+#'poker.ERL/interleave-ndlist
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.NDList 0x1e076753 NDList size: 1
+0 : (2, 6, 2) int64
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x14d6534d ND: (2, 6, 2) cpu() int64
+[[[  1,   2],
+  [  3,   4],
+  [  5,   6],
+  [  7,   8],
+  [  9,  10],
+  [ 11,  12],
+ ],
+ [[ 11,  21],
+  [ 31,  41],
+  [ 51,  61],
+  [ 71,  81],
+  [ 91, 101],
+  [111, 121],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x7e47cec0 ND: (2, 6, 2) cpu() int64
+[[[  1,   2],
+  [  5,   6],
+  [  9,  10],
+  [  3,   4],
+  [  7,   8],
+  [ 11,  12],
+ ],
+ [[ 11,  21],
+  [ 51,  61],
+  [ 91, 101],
+  [ 31,  41],
+  [ 71,  81],
+  [111, 121],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x5f601d10 ND: (6, 2) cpu() int64
+[[ 1,  2],
+ [ 1,  2],
+ [ 3,  4],
+ [ 3,  4],
+ [ 5,  6],
+ [ 5,  6],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x5b834aac ND: (6, 2) cpu() int64
+[[ 1,  2],
+ [ 3,  4],
+ [ 5,  6],
+ [ 1,  2],
+ [ 3,  4],
+ [ 5,  6],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x2e9eff3e ND: (4, 2) cpu() int64
+[[ 1,  2],
+ [ 5,  6],
+ [ 3,  4],
+ [ 7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x44d570bb ND: (2, 4) cpu() int64
+[[ 1,  2,  5,  6],
+ [ 3,  4,  7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: src.Size() == dst->Size() (8 vs. 12) : Cannot reshape array of size 8 into shape [2,3,2]
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/operator/numpy/np_matrix_op.cc", line 144
+; 
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x36f04f75 ND: (2, 4) cpu() int64
+[[ 1,  2,  5,  6],
+ [ 3,  4,  7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x71c88539 ND: (2, 2, 2) cpu() int64
+[[[ 1,  2],
+  [ 5,  6],
+ ],
+ [[ 3,  4],
+  [ 7,  8],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x18120dd6 ND: (2, 4) cpu() int64
+[[ 1,  2,  5,  6],
+ [ 3,  4,  7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+ #object[ai.djl.mxnet.engine.MxNDArray 0x2de1b3af ND: (4, 2) cpu() int64
+[[ 1,  2],
+ [ 5,  6],
+ [ 3,  4],
+ [ 7,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x221c65a1 ND: (4, 2) cpu() int64
+[[ 1,  5],
+ [ 2,  6],
+ [ 3,  7],
+ [ 4,  8],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#'poker.ERL/interleave-ndlist
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x2e06391f ND: (2, 2, 6) cpu() int64
+[[[  1,   5,   9,   2,   6,  10],
+  [  3,   7,  11,   4,   8,  12],
+ ],
+ [[ 11,  51,  91,  21,  61, 101],
+  [ 31,  71, 111,  41,  81, 121],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x5a3dc61d ND: (2, 6, 2) cpu() int64
+[[[  1,   2],
+  [  5,   6],
+  [  9,  10],
+  [  3,   4],
+  [  7,   8],
+  [ 11,  12],
+ ],
+ [[ 11,  21],
+  [ 51,  61],
+  [ 91, 101],
+  [ 31,  41],
+  [ 71,  81],
+  [111, 121],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x4440235e ND: (6, 2, 2) cpu() int64
+[[[  1,   2],
+  [  3,   4],
+ ],
+ [[  5,   6],
+  [  7,   8],
+ ],
+ [[  9,  10],
+  [ 11,  12],
+ ],
+ [[ 11,  21],
+  [ 31,  41],
+ ],
+ [[ 51,  61],
+  [ 71,  81],
+ ],
+ [[ 91, 101],
+  [111, 121],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: axis >= 0 && axis <= indim: axis must be in the range [-3, 3] (4 provided)
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/operator/tensor/./matrix_op-inl.h", line 525
+; 
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x23e41445 ND: (2, 2, 6) cpu() int64
+[[[  1,   5,   9,   2,   6,  10],
+  [  3,   7,  11,   4,   8,  12],
+ ],
+ [[ 11,  51,  91,  21,  61, 101],
+  [ 31,  71, 111,  41,  81, 121],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x1ba9c412 ND: (2, 6, 2) cpu() int64
+[[[  1,   2],
+  [  5,   6],
+  [  9,  10],
+  [  3,   4],
+  [  7,   8],
+  [ 11,  12],
+ ],
+ [[ 11,  21],
+  [ 51,  61],
+  [ 91, 101],
+  [ 31,  41],
+  [ 71,  81],
+  [111, 121],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+; Execution error (ArityException) at nrepl.middleware.interruptible-eval/evaluate$fn$fn (interruptible_eval.clj:87).
+; Wrong number of args (2) passed to: clj-djl.nn/sequential
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at poker.temp/fn (form-init9294421832384377947.clj:31).
+; No matching method add found taking 1 args for class ai.djl.nn.SequentialBlock
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at poker.temp/fn (form-init9294421832384377947.clj:31).
+; No matching method add found taking 1 args for class ai.djl.nn.SequentialBlock
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at poker.temp/fn (form-init9294421832384377947.clj:31).
+; No matching method addAll found taking 1 args for class ai.djl.nn.SequentialBlock
+clj꞉poker.temp꞉> 
+#'poker.temp/transformer
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x20951c38 ND: (2, 3, 10) cpu() float32
+[[[  5.3709, -13.2945,   5.0087,   7.0148,  -2.2316,  -7.2374,   4.3028,  -8.9044,  -6.1695,  -2.6537],
+  [  5.1684, -15.137 ,   4.4471,   6.4533,  -3.2706,  -9.4297,   2.7266,  -9.5476,  -9.9894,  -2.6936],
+  [  2.4887,  -7.7739,   1.4481,   3.6105,  -1.7872,  -4.0483,   1.2848,  -5.0731,  -4.8518,  -1.4719],
+ ],
+ [[  7.2068,  -1.9201,  -0.8794,  -3.4264,  -7.6292,  -7.1596,  -5.359 ,  -3.1159,  -6.7221,  -6.5929],
+  [  7.359 ,   1.9226,   2.6527,  -6.127 ,  -9.3856,  -5.7714,  -4.6041,   1.6022,  -4.7446,  -5.3365],
+  [  4.3734,  -1.2075,   1.7881,  -4.5463,  -5.0725,   0.5006,  -0.7404,  -0.3531,  -1.0536,  -3.7194],
+ ],
+]
+]
+nil
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+; Execution error (IllegalStateException) at ai.djl.ndarray.BaseNDManager/attachUncappedInternal (BaseNDManager.java:317).
+; NDManager has been closed already.
+clj꞉poker.temp꞉> 
+#object[ai.djl.nn.ParameterList 0x44fb1eed "ai.djl.nn.ParameterList@44fb1eed"]
+clj꞉poker.temp꞉> 
+; Syntax error compiling at (src/clojure/poker/ERL.clj:51:1).
+; Unable to resolve symbol: Float32 in this context
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/eval51114 (form-init9294421832384377947.clj:51).
+; No matching method _ found taking 1 args for class java.lang.Class
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/eval51116 (form-init9294421832384377947.clj:51).
+; No matching method _ found taking 1 args for class java.lang.Class
+clj꞉poker.ERL꞉> 
+#'poker.ERL/get-djl-type
+clj꞉poker.ERL꞉> 
+; Syntax error compiling at (src/clojure/poker/ERL.clj:1:7971).
+; Unable to find static field: class in class ai.djl.ndarray.types.Shape
+clj꞉poker.ERL꞉> 
+; Syntax error compiling at (src/clojure/poker/ERL.clj:1:7971).
+; Unable to find static field: class in class java.lang.Long
+clj꞉poker.ERL꞉> 
+; Syntax error (ClassNotFoundException) compiling at (src/clojure/poker/ERL.clj:1:7971).
+; Long.class
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/eval51121 (form-init9294421832384377947.clj:99).
+; No matching field found: class for class java.lang.Class
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/eval51123 (form-init9294421832384377947.clj:99).
+; No matching field found: class for class java.lang.Class
+clj꞉poker.ERL꞉> 
+true
+clj꞉poker.ERL꞉> 
+clojure.lang.PersistentVector
+clj꞉poker.ERL꞉> 
+[J
+clj꞉poker.ERL꞉> 
+; Syntax error reading source at (REPL:102:29).
+; Unmatched delimiter: )
+clj꞉poker.ERL꞉> 
+; Syntax error reading source at (REPL:102:30).
+; Unmatched delimiter: )
+clj꞉poker.ERL꞉> 
+; Syntax error reading source at (REPL:102:30).
+; Unmatched delimiter: )
+clj꞉poker.ERL꞉> 
+; Execution error (ArityException) at poker.ERL/eval51131 (form-init9294421832384377947.clj:102).
+; Wrong number of args (3) passed to: clojure.core/instance?--5469
+clj꞉poker.ERL꞉> 
+; Execution error (ArityException) at poker.ERL/eval51133 (form-init9294421832384377947.clj:102).
+; Wrong number of args (3) passed to: clojure.core/instance?--5469
+clj꞉poker.ERL꞉> 
+false
+clj꞉poker.ERL꞉> 
+true
+clj꞉poker.ERL꞉> 
+clojure.lang.PersistentVector
+clj꞉poker.ERL꞉> 
+[J
+clj꞉poker.ERL꞉> 
+false
+clj꞉poker.ERL꞉> 
+true
+clj꞉poker.ERL꞉> 
+java.lang.Class
+clj꞉poker.ERL꞉> 
+; Execution error (ClassCastException) at poker.ERL/eval51149 (form-init9294421832384377947.clj:105).
+; class java.lang.String cannot be cast to class clojure.lang.IFn (java.lang.String is in module java.base of loader 'bootstrap'; clojure.lang.IFn is in unnamed module of loader 'app')
+clj꞉poker.ERL꞉> 
+[J
+clj꞉poker.ERL꞉> 
+; Syntax error compiling at (src/clojure/poker/temp.clj:23:46).
+; Unable to find static field: relu in class ai.djl.nn.Activation
+clj꞉poker.temp꞉> 
+; Syntax error (ClassNotFoundException) compiling at (src/clojure/poker/temp.clj:23:46).
+; ai.djl.nn.Activation.relu
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.ERL꞉> 
+#'poker.temp/f
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+#'poker.temp/m
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at poker.temp/eval51275 (form-init9294421832384377947.clj:35).
+; No matching method forward found taking 2 args for class ai.djl.nn.transformer.PointwiseFeedForwardBlock
+clj꞉poker.temp꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: assign(&dattr, vec.at(i)): Incompatible attr in node  at 1-th input: expected int64, got float32
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/io/../operator/elemwise_op_common.h", line 134
+; 
+clj꞉poker.temp꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: assign(&dattr, vec.at(i)): Incompatible attr in node  at 1-th input: expected float64, got float32
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/io/../operator/elemwise_op_common.h", line 134
+; 
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+; Execution error (EngineException) at ai.djl.mxnet.jna.JnaUtils/checkCall (JnaUtils.java:1942).
+; MXNet engine call failed: MXNetError: Check failed: assign(&dattr, vec.at(i)): Incompatible attr in node  at 1-th input: expected float64, got float32
+; Stack trace:
+;   File "/Users/runner/work/djl/djl/src/io/../operator/elemwise_op_common.h", line 134
+; 
+clj꞉poker.temp꞉> 
+#'poker.temp/f
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x90b214e "ND: (1, 1, 2) cpu() float64\n[[[-0.1554,  2.1112],\n ],\n]\n"]]
+clj꞉poker.temp꞉> 
+#object[ai.djl.nn.ParameterList 0x487e14c2 "ai.djl.nn.ParameterList@487e14c2"]
+clj꞉poker.temp꞉> 
+["01Linear_weight" "01Linear_bias"]
+clj꞉poker.temp꞉> 
+#object[ai.djl.nn.Parameter 0x30044c52 ai.djl.nn.Parameter@30044c52]
+(nil#object[ai.djl.nn.Parameter 0x35225750 ai.djl.nn.Parameter@35225750]
+ nil)
+clj꞉poker.temp꞉> 
+; Error printing return value (IllegalArgumentException) at clojure.lang.Reflector/getInstanceField (Reflector.java:397).
+; No matching field found: toArray for class ai.djl.nn.Parameter
+clj꞉poker.temp꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0xaf3c38b weight: (2, 2) cpu() float64 hasGradient
+[[-1.0015,  0.846 ],
+ [ 0.2271,  1.8841],
+]
+]
+(nil#object[ai.djl.mxnet.engine.MxNDArray 0x6a7546f6 bias: (2) cpu() float64 hasGradient
+[0., 0.]
+]
+ nil)
+clj꞉poker.temp꞉> 
+; Syntax error compiling at (src/clojure/poker/temp.clj:47:4).
+; No such namespace: matrix
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+; Execution error (ClassCastException) at poker.temp/eval51352 (form-init9294421832384377947.clj:47).
+; class clojure.lang.PersistentVector cannot be cast to class java.lang.Number (clojure.lang.PersistentVector is in unnamed module of loader 'app'; java.lang.Number is in module java.base of loader 'bootstrap')
+clj꞉poker.temp꞉> 
+[-0.7744000000000001 2.7301]
+clj꞉poker.temp꞉> 
+[-0.15550000000000008 2.1112]
+clj꞉poker.temp꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0xaf3c38b weight: (2, 2) cpu() float64 hasGradient
+[[-1.0015,  0.846 ],
+ [ 0.2271,  1.8841],
+]
+]
+(nil#object[ai.djl.mxnet.engine.MxNDArray 0x6a7546f6 bias: (2) cpu() float64 hasGradient
+[0., 0.]
+]
+ nil)
+clj꞉poker.temp꞉> 
+01Linear_weight #object[ai.djl.mxnet.engine.MxNDArray 0xaf3c38b weight: (2, 2) cpu() float64 hasGradient
+[[-1.0015,  0.846 ],
+ [ 0.2271,  1.8841],
+]
+]
+(nil01Linear_bias #object[ai.djl.mxnet.engine.MxNDArray 0x6a7546f6 bias: (2) cpu() float64 hasGradient
+[0., 0.]
+]
+ nil)
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at ai.djl.ndarray.BaseNDManager/validateBuffer (BaseNDManager.java:446).
+; The input data type: int64 does not match target array data type: float64
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at ai.djl.ndarray.BaseNDManager/validateBuffer (BaseNDManager.java:446).
+; The input data type: float32 does not match target array data type: float64
+clj꞉poker.temp꞉> 
+; Syntax error compiling at (src/clojure/poker/temp.clj:48:7).
+; Unable to resolve symbol: Float64 in this context
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at poker.temp/eval51395 (form-init9294421832384377947.clj:47).
+; No matching method set found taking 1 args for class ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at poker.temp/eval51397 (form-init9294421832384377947.clj:47).
+; No matching method set found taking 1 args for class ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.temp꞉> 
+; Execution error (ClassCastException) at poker.temp/eval51399 (form-init9294421832384377947.clj:48).
+; class clojure.core$double cannot be cast to class java.lang.Class (clojure.core$double is in unnamed module of loader 'app'; java.lang.Class is in module java.base of loader 'bootstrap')
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at poker.temp/eval51401 (form-init9294421832384377947.clj:47).
+; No matching method set found taking 1 args for class ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.temp꞉> 
+; Execution error (ClassCastException) at poker.temp/eval51403 (form-init9294421832384377947.clj:48).
+; class ai.djl.ndarray.types.DataType cannot be cast to class java.lang.Class (ai.djl.ndarray.types.DataType is in unnamed module of loader 'app'; java.lang.Class is in module java.base of loader 'bootstrap')
+clj꞉poker.temp꞉> 
+#'poker.temp/f
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+#'poker.ERL/ndarray
+clj꞉poker.ERL꞉> 
+#'poker.ERL/ndlist
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at java.lang.reflect.Array/set (Array.java:-2).
+; array element type mismatch
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at java.lang.reflect.Array/set (Array.java:-2).
+; array element type mismatch
+clj꞉poker.temp꞉> 
+#'poker.ERL/ndarray
+clj꞉poker.ERL꞉> 
+#'poker.ERL/ndlist
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x2751cea0 "ND: (1, 1, 2) cpu() float32\n[[[ 1.8868, -1.0237],\n ],\n]\n"]]
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+01Linear_weight #object[ai.djl.mxnet.engine.MxNDArray 0x15934d5 weight: (2, 2) cpu() float32 hasGradient
+[[1., 1.],
+ [1., 1.],
+]
+]
+(nil01Linear_bias #object[ai.djl.mxnet.engine.MxNDArray 0x691a759 bias: (2) cpu() float32 hasGradient
+[0., 0.]
+]
+ nil)
+clj꞉poker.temp꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x6fe7d170 "ND: (1, 1, 2) cpu() float32\n[[[2., 2.],\n ],\n]\n"]]
+clj꞉poker.temp꞉> 
+#'poker.temp/parblock
+clj꞉poker.temp꞉> 
+#'poker.temp/parblock
+clj꞉poker.temp꞉> 
+; Execution error (ClassCastException) at ai.djl.nn.ParallelBlock/forwardInternal (ParallelBlock.java:160).
+; class ai.djl.mxnet.engine.MxNDArray cannot be cast to class ai.djl.ndarray.NDList (ai.djl.mxnet.engine.MxNDArray and ai.djl.ndarray.NDList are in unnamed module of loader 'app')
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at poker.temp/eval51460 (form-init9294421832384377947.clj:42).
+; No matching method forward found taking 4 args for class ai.djl.nn.ParallelBlock
+clj꞉poker.temp꞉> 
+; Execution error (ClassCastException) at ai.djl.nn.ParallelBlock/forwardInternal (ParallelBlock.java:160).
+; class ai.djl.mxnet.engine.MxNDArray cannot be cast to class ai.djl.ndarray.NDList (ai.djl.mxnet.engine.MxNDArray and ai.djl.ndarray.NDList are in unnamed module of loader 'app')
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+; Execution error (ClassCastException) at ai.djl.nn.ParallelBlock/forwardInternal (ParallelBlock.java:160).
+; class ai.djl.mxnet.engine.MxNDArray cannot be cast to class ai.djl.ndarray.NDList (ai.djl.mxnet.engine.MxNDArray and ai.djl.ndarray.NDList are in unnamed module of loader 'app')
+clj꞉poker.temp꞉> 
+; Execution error (IndexOutOfBoundsException) at ai.djl.ndarray.NDList/singletonOrThrow (NDList.java:246).
+; Incorrect number of elements in NDList.singletonOrThrow: Expected 1 and was 2
+clj꞉poker.temp꞉> 
+; Execution error (ClassCastException) at ai.djl.nn.ParallelBlock/forwardInternal (ParallelBlock.java:160).
+; class ai.djl.mxnet.engine.MxNDArray cannot be cast to class ai.djl.ndarray.NDList (ai.djl.mxnet.engine.MxNDArray and ai.djl.ndarray.NDList are in unnamed module of loader 'app')
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+#'poker.temp/m
+clj꞉poker.temp꞉> 
+#'poker.temp/f
+clj꞉poker.temp꞉> 
+#'poker.temp/parblock
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+; Execution error (ClassCastException) at ai.djl.nn.ParallelBlock/forwardInternal (ParallelBlock.java:160).
+; class ai.djl.mxnet.engine.MxNDArray cannot be cast to class ai.djl.ndarray.NDList (ai.djl.mxnet.engine.MxNDArray and ai.djl.ndarray.NDList are in unnamed module of loader 'app')
+clj꞉poker.temp꞉> 
+; Execution error (IndexOutOfBoundsException) at ai.djl.ndarray.NDList/singletonOrThrow (NDList.java:246).
+; Incorrect number of elements in NDList.singletonOrThrow: Expected 1 and was 0
+clj꞉poker.ERL꞉> 
+; Execution error (IndexOutOfBoundsException) at ai.djl.ndarray.NDList/singletonOrThrow (NDList.java:246).
+; Incorrect number of elements in NDList.singletonOrThrow: Expected 1 and was 0
+clj꞉poker.ERL꞉> 
+#'poker.ERL/concat-ndlist
+clj꞉poker.ERL꞉> 
+; Execution error (IndexOutOfBoundsException) at ai.djl.ndarray.NDList/singletonOrThrow (NDList.java:246).
+; Incorrect number of elements in NDList.singletonOrThrow: Expected 1 and was 0
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x41eb901c "ND: (4, 2) cpu() float32\n[[1., 2.],\n [1., 2.],\n [3., 4.],\n [4., 3.],\n]\n"]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/concat-ndlist
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x523c06ce "ND: (4, 2) cpu() float32\n[[1., 2.],\n [1., 2.],\n [3., 4.],\n [4., 3.],\n]\n"]]
+clj꞉poker.ERL꞉> 
+ai.djl.ndarray.NDList
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x36f34e59 "ND: (1, 1, 4) cpu() float32\n[[[ 1.9781, -2.2961,  1.9781, -2.2961],\n ],\n]\n"]]
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+#'poker.temp/m
+clj꞉poker.temp꞉> 
+#'poker.temp/parblock
+clj꞉poker.temp꞉> 
+#'poker.temp/f
+clj꞉poker.temp꞉> 
+#'poker.temp/parblock
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at ai.djl.util.Preconditions/checkArgument (Preconditions.java:31).
+; Linear block only support 1 input
+clj꞉poker.temp꞉> 
+#'poker.temp/mulblock
+clj꞉poker.temp꞉> 
+; Error printing return value (UninitializedParameterException) at ai.djl.nn.Parameter/getArray (Parameter.java:133).
+; The array for parameter "weight" has not been initialized
+clj꞉poker.temp꞉> 
+; Execution error (IllegalArgumentException) at poker.temp/eval51530 (form-init9294421832384377947.clj:39).
+; No matching method initializeChildBlocks found taking 3 args for class ai.djl.nn.core.Multiplication
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+weight #object[ai.djl.mxnet.engine.MxNDArray 0x5a7c3210 weight: (2, 1, 1, 2) cpu() float32 hasGradient
+[[[[-1.4352, -0.4587],
+  ],
+ ],
+ [[[-0.5077, -0.4238],
+  ],
+ ],
+]
+]
+(nil)
+clj꞉poker.temp꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x5420e661 "ND: (2, 1, 1, 2) cpu() float32\n[[[[-1.4352, -0.4587],\n  ],\n ],\n [[[-0.5077, -0.4238],\n  ],\n ],\n]\n"]]
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+#'poker.temp/m
+clj꞉poker.temp꞉> 
+#'poker.temp/mulblock
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+#'poker.temp/m
+clj꞉poker.temp꞉> 
+#'poker.temp/mulblock
+clj꞉poker.temp꞉> 
+nil
+clj꞉poker.temp꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x720892a2 "ND: (1, 1, 1, 2) cpu() float32\n[[[[-0.091 , -1.4684],\n  ],\n ],\n]\n"]]
 clj꞉poker.temp꞉> 
 ; Execution error (IllegalArgumentException) at ai.djl.util.Preconditions/checkArgument (Preconditions.java:31).
 ; You must specify unit
 clj꞉poker.temp꞉> 
-#object[ai.djl.nn.core.Linear 0x7c8bad3 "Linear(Uninitialized)"]
+weight #object[ai.djl.mxnet.engine.MxNDArray 0x6ec2c87b weight: (1, 1, 1, 2) cpu() float32 hasGradient
+[[[[-0.091 , -1.4684],
+  ],
+ ],
+]
+]
+nil
 clj꞉poker.temp꞉> 
-#'poker.temp/l
+; Execution error (ArityException) at poker.temp/eval51568 (form-init9294421832384377947.clj:37).
+; Wrong number of args (1) passed to: poker.ERL/ndarray
 clj꞉poker.temp꞉> 
-#object[ai.djl.nn.core.Linear 0x486b0403 "Linear(Uninitialized)"]
+; Execution error (UnsupportedOperationException) at ai.djl.mxnet.engine.MxNDArray/flatten (MxNDArray.java:1134).
+; Not implemented yet.
 clj꞉poker.temp꞉> 
-#function[clj-djl.nn/linear]
+#object[ai.djl.mxnet.engine.MxNDArray 0x53645b2e "ND: (1, 2) cpu() float32\n[[1., 2.],\n]\n"]
 clj꞉poker.temp꞉> 
-; Execution error (ArityException) at poker.temp/eval38124 (form-init556563754434690254.clj:12).
-; Wrong number of args (0) passed to: clj-djl.nn/linear
+#'poker.temp/squeeze
 clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38126 (form-init556563754434690254.clj:12).
-; No matching field found: bias for class ai.djl.nn.core.Linear
+#'poker.temp/mask-block
 clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38128 (form-init556563754434690254.clj:12).
-; No matching field found: parameters for class ai.djl.nn.core.Linear
+; Execution error (IllegalArgumentException) at poker.temp/fn (form-init9294421832384377947.clj:30).
+; No matching method squeeze found taking 1 args for class ai.djl.ndarray.NDList
 clj꞉poker.temp꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/temp.clj:1:7970).
-; l.parameters
+#'poker.temp/squeeze
 clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38130 (form-init556563754434690254.clj:11).
-; No matching field found: parameters for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38132 (form-init556563754434690254.clj:11).
-; No matching field found: parameter for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-#object[ai.djl.nn.core.Linear 0x486b0403 "Linear(Uninitialized)"]
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at clj-djl.nn/build (nn.clj:169).
-; No matching field found: build for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38138 (form-init556563754434690254.clj:11).
-; No matching field found: children for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-clojure.lang.Reflector/invokeNoArgInstanceMember (Reflector.java:434)
-poker.temp/eval38138 (form-init556563754434690254.clj:11)
-clojure.lang.Compiler/eval (Compiler.java:7194)
-clojure.core/eval (core.clj:3215)
-clojure.core/eval (core.clj:3211)
-nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:87)
-clojure.core/apply (core.clj:667)
-clojure.core/with-bindings* (core.clj:1990)
-nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:87)
-clojure.main/repl (main.clj:437)
-clojure.main/repl (main.clj:458)
-clojure.main/repl (main.clj:368)
-nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:84)
-nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:56)
-nrepl.middleware.interruptible-eval/interruptible-eval (interruptible_eval.clj:152)
-nrepl.middleware.session/session-exec (session.clj:218)
-nrepl.middleware.session/session-exec (session.clj:217)
-java.lang.Thread/run (Thread.java:1589)
-clj꞉poker.temp꞉> 
-#object[ai.djl.util.PairList 0x61490970 "ai.djl.util.PairList@61490970"]
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38142 (form-init556563754434690254.clj:11).
-; No matching field found: input for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-{:children #object[ai.djl.nn.BlockList 0x426e6019 "ai.djl.nn.BlockList@426e6019"],
- :class ai.djl.nn.core.Linear,
- :directParameters #object[ai.djl.nn.ParameterList 0x16b633bc "ai.djl.nn.ParameterList@16b633bc"],
- :initialized false,
- :parameters #object[ai.djl.nn.ParameterList 0xf4a6550 "ai.djl.nn.ParameterList@f4a6550"]}
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38146 (form-init556563754434690254.clj:12).
-; No matching field found: children for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38148 (form-init556563754434690254.clj:12).
-; No matching field found: children for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-#object[java.awt.Color 0x6d2b41de "java.awt.Color[r=0,g=0,b=0]"]
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38150 (form-init556563754434690254.clj:13).
-; No matching field found: RGB for class java.awt.Color
-clj꞉poker.temp꞉> 
-{:RGB -16777216,
- :alpha 255,
- :blue 0,
- :class java.awt.Color,
- :colorSpace #object[java.awt.color.ICC_ColorSpace 0x7844fde0 "java.awt.color.ICC_ColorSpace@7844fde0"],
- :green 0,
- :red 0,
- :transparency 1}
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38154 (form-init556563754434690254.clj:13).
-; No matching field found: _COLON_alpha for class java.awt.Color
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38156 (form-init556563754434690254.clj:13).
-; No matching field found: alpha for class java.awt.Color
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38158 (form-init556563754434690254.clj:13).
-; No matching field found: alpha for class java.awt.Color
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38160 (form-init556563754434690254.clj:13).
-; No matching field found: .alpha for class java.awt.Color
-clj꞉poker.temp꞉> 
-; Syntax error compiling at (src/poker/temp.clj:13:1).
-; Unable to resolve symbol: alpha in this context
-clj꞉poker.temp꞉> 
-; Syntax error (IllegalArgumentException) compiling . at (src/poker/temp.clj:13:1).
-; Malformed member expression
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38164 (form-init556563754434690254.clj:13).
-; No matching field found: alpha for class java.awt.Color
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38166 (form-init556563754434690254.clj:13).
-; No matching field found: RGB for class java.awt.Color
-clj꞉poker.temp꞉> 
-; Syntax error (IllegalArgumentException) compiling . at (src/poker/temp.clj:13:1).
-; Malformed member expression
-clj꞉poker.temp꞉> 
-{:children #object[ai.djl.nn.BlockList 0x22d97705 "ai.djl.nn.BlockList@22d97705"],
- :class ai.djl.nn.core.Linear,
- :directParameters #object[ai.djl.nn.ParameterList 0x5dd21744 "ai.djl.nn.ParameterList@5dd21744"],
- :initialized false,
- :parameters #object[ai.djl.nn.ParameterList 0x4bdb1ba4 "ai.djl.nn.ParameterList@4bdb1ba4"]}
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38171 (form-init556563754434690254.clj:13).
-; No matching field found: class for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38173 (form-init556563754434690254.clj:13).
-; No matching field found: children for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-; Syntax error (IllegalArgumentException) compiling . at (src/poker/temp.clj:13:1).
-; Malformed member expression
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38176 (form-init556563754434690254.clj:13).
-; No matching field found: .children for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-"ABC"
-clj꞉poker.temp꞉> 
-; Syntax error (ArityException) compiling int at (src/poker/temp.clj:15:1).
-; Wrong number of args (2) passed to: clojure.core/int--inliner--5589
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38181 (form-init556563754434690254.clj:15).
-; No matching field found: int for class clojure.lang.PersistentVector
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at nrepl.middleware.interruptible-eval/evaluate$fn$fn (interruptible_eval.clj:87).
-; Malformed member expression, expecting (.member target ...)
-clj꞉poker.temp꞉> 
-; Syntax error compiling at (src/poker/temp.clj:1:7970).
-; Unable to resolve symbol: .int in this context
-clj꞉poker.temp꞉> 
-[]
-clj꞉poker.temp꞉> 
-; Syntax error compiling at (src/poker/temp.clj:15:1).
-; Unable to resolve symbol: .int in this context
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38186 (form-init556563754434690254.clj:15).
-; No matching field found: int for class clojure.lang.PersistentVector
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38188 (form-init556563754434690254.clj:15).
-; No matching field found: int for class clojure.lang.PersistentVector
-clj꞉poker.temp꞉> 
-[]
-clj꞉poker.temp꞉> 
-[]
-clj꞉poker.temp꞉> 
-; Execution error (ClassNotFoundException) at java.lang.Class/forName0 (Class.java:-2).
-; [[L
-clj꞉poker.temp꞉> 
-[[J
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38198 (form-init556563754434690254.clj:17).
-; No matching method append found taking 1 args for class java.lang.Class
-clj꞉poker.temp꞉> 
-; Syntax error (IllegalArgumentException) compiling new at (src/poker/temp.clj:17:1).
-; Unable to resolve classname: (Class/forName "[[J")
-clj꞉poker.temp꞉> 
-[[J
-clj꞉poker.temp꞉> 
-; Syntax error (IllegalArgumentException) compiling new at (src/poker/temp.clj:23:1).
-; No matching ctor found for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/temp.clj:1:7970).
-; ai.djl.nn.core.Linear.
-clj꞉poker.temp꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/temp.clj:1:7970).
-; ai.djl.nn.core.Linear.Block.
-clj꞉poker.temp꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/temp.clj:1:7970).
-; ai.djl.nn.core.Linear.Builder
-clj꞉poker.temp꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/temp.clj:1:7970).
-; ai.djl.nn.core.Linear.Builder.
-clj꞉poker.temp꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/temp.clj:1:7970).
-; ai.djl.nn.Block.
-clj꞉poker.temp꞉> 
-; Syntax error (IllegalArgumentException) compiling new at (src/poker/temp.clj:23:1).
-; No matching ctor found for interface ai.djl.nn.Block
-clj꞉poker.temp꞉> 
-; Execution error (ClassCastException) at poker.temp/eval38205 (form-init556563754434690254.clj:23).
-; class java.lang.Class cannot be cast to class clojure.lang.IFn (java.lang.Class is in module java.base of loader 'bootstrap'; clojure.lang.IFn is in unnamed module of loader 'app')
-clj꞉poker.temp꞉> 
-#object[ai.djl.nn.core.Linear$Builder 0x11a3059d "ai.djl.nn.core.Linear$Builder@11a3059d"]
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38209 (form-init556563754434690254.clj:23).
-; No matching field found: builder for class java.lang.Class
-clj꞉poker.temp꞉> 
-#object[ai.djl.nn.core.Linear$Builder 0x6b2b8a3f "ai.djl.nn.core.Linear$Builder@6b2b8a3f"]
-clj꞉poker.temp꞉> 
-#object[ai.djl.nn.core.Linear 0x4fe69289 "Linear(Uninitialized)"]
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38215 (form-init556563754434690254.clj:23).
-; No matching field found: parameters for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38217 (form-init556563754434690254.clj:23).
-; No matching field found: children for class ai.djl.nn.core.Linear
-clj꞉poker.temp꞉> 
-; Syntax error (IllegalArgumentException) compiling . at (src/poker/temp.clj:23:1).
-; Malformed member expression, expecting (. target member ...)
-clj꞉poker.temp꞉> 
-#object[ai.djl.nn.core.Linear 0x3b689752 "Linear(Uninitialized)"]
-clj꞉poker.temp꞉> 
-(. ai.djl.nn.core.Linear builder)
-clj꞉poker.temp꞉> 
-#object[ai.djl.nn.core.Linear 0x12737a7e "Linear(Uninitialized)"]
-clj꞉poker.temp꞉> 
-#object[ai.djl.nn.core.Linear 0xb00347c "Linear(Uninitialized)"]
-clj꞉poker.temp꞉> 
-#object[ai.djl.nn.ParameterList 0x75a54eae "ai.djl.nn.ParameterList@75a54eae"]
-clj꞉poker.temp꞉> 
--16777216
-clj꞉poker.temp꞉> 
-#object[ai.djl.nn.ParameterList 0x5e50e01f "ai.djl.nn.ParameterList@5e50e01f"]
-clj꞉poker.temp꞉> 
-["weight" "bias"]
-clj꞉poker.temp꞉> 
-; Execution error (IllegalArgumentException) at poker.temp/eval38236 (form-init556563754434690254.clj:15).
-; No matching method _ found taking 1 args for class ai.djl.nn.ParameterList
-clj꞉poker.temp꞉> 
-; Execution error (ClassCastException) at poker.temp/eval38238 (form-init556563754434690254.clj:15).
-; class ai.djl.nn.ParameterList cannot be cast to class clojure.lang.IFn (ai.djl.nn.ParameterList and clojure.lang.IFn are in unnamed module of loader 'app')
-clj꞉poker.temp꞉> 
-; Execution error (ClassCastException) at poker.temp/eval38240 (form-init556563754434690254.clj:15).
-; class ai.djl.nn.ParameterList cannot be cast to class clojure.lang.IFn (ai.djl.nn.ParameterList and clojure.lang.IFn are in unnamed module of loader 'app')
-clj꞉poker.temp꞉> 
-#object[ai.djl.nn.Parameter 0x6b9bb127 "ai.djl.nn.Parameter@6b9bb127"]
-clj꞉poker.temp꞉> 
-; Execution error (IllegalStateException) at ai.djl.nn.Parameter/getArray (Parameter.java:122).
-; The array has not been initialized
-clj꞉poker.temp꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Using host:port 127.0.0.1:56881 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-; WARNING: abs already refers to: #'clojure.core/abs in namespace: clj-djl.ndarray, being replaced by: #'clj-djl.ndarray/abs
-; 
-; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
-; tech.v3.datatype.PrimitiveList
-clj꞉poker.temp꞉> 
-clojure.lang.Compiler/load (Compiler.java:7665)
-clojure.lang.RT/loadResourceScript (RT.java:381)
-clojure.lang.RT/load (RT.java:459)
-clojure.core/load (core.clj:6161)
-clojure.core/load (core.clj:6160)
-clojure.core/load (core.clj:6144)
-clojure.core/load-one (core.clj:5933)
-clojure.core/load-one (core.clj:5928)
-clojure.core/load-lib (core.clj:5975)
-clojure.core/load-lib (core.clj:5974)
-clojure.core/load-lib (core.clj:5953)
-clojure.core/apply (core.clj:669)
-clojure.core/load-libs (core.clj:6016)
-clojure.core/load-libs (core.clj:6000)
-clojure.core/apply (core.clj:669)
-clojure.core/require (core.clj:6038)
-tech.v3.dataset.string-table/eval38637 (string_table.clj:1)
-clojure.lang.Compiler/eval (Compiler.java:7194)
-clojure.lang.Compiler/load (Compiler.java:7653)
-clojure.lang.RT/loadResourceScript (RT.java:381)
-clojure.lang.RT/load (RT.java:459)
-clojure.core/load (core.clj:6161)
-clojure.core/load (core.clj:6160)
-clojure.core/load (core.clj:6144)
-clojure.core/load-one (core.clj:5933)
-clojure.core/load-one (core.clj:5928)
-clojure.core/load-lib (core.clj:5975)
-clojure.core/load-lib (core.clj:5974)
-clojure.core/load-lib (core.clj:5953)
-clojure.core/apply (core.clj:669)
-clojure.core/load-libs (core.clj:6016)
-clojure.core/load-libs (core.clj:6000)
-clojure.core/apply (core.clj:669)
-clojure.core/require (core.clj:6038)
-tech.v3.dataset.impl.column-base/eval38631 (column_base.clj:1)
-clojure.lang.Compiler/eval (Compiler.java:7194)
-clojure.lang.Compiler/load (Compiler.java:7653)
-clojure.lang.RT/loadResourceScript (RT.java:381)
-clojure.lang.RT/load (RT.java:459)
-clojure.core/load (core.clj:6161)
-clojure.core/load (core.clj:6160)
-clojure.core/load (core.clj:6144)
-clojure.core/load-one (core.clj:5933)
-clojure.core/load-one (core.clj:5928)
-clojure.core/load-lib (core.clj:5975)
-clojure.core/load-lib (core.clj:5974)
-clojure.core/load-lib (core.clj:5953)
-clojure.core/apply (core.clj:669)
-clojure.core/load-libs (core.clj:6016)
-clojure.core/load-libs (core.clj:6000)
-clojure.core/apply (core.clj:669)
-clojure.core/require (core.clj:6038)
-tech.v3.dataset.impl.column/eval37374 (column.clj:1)
-clojure.lang.Compiler/eval (Compiler.java:7194)
-clojure.lang.Compiler/load (Compiler.java:7653)
-clojure.lang.RT/loadResourceScript (RT.java:381)
-clojure.lang.RT/load (RT.java:459)
-clojure.core/load (core.clj:6161)
-clojure.core/load (core.clj:6160)
-clojure.core/load (core.clj:6144)
-clojure.core/load-one (core.clj:5933)
-clojure.core/load-one (core.clj:5928)
-clojure.core/load-lib (core.clj:5975)
-clojure.core/load-lib (core.clj:5974)
-clojure.core/load-lib (core.clj:5953)
-clojure.core/apply (core.clj:669)
-clojure.core/load-libs (core.clj:6016)
-clojure.core/load-libs (core.clj:6000)
-clojure.core/apply (core.clj:669)
-clojure.core/require (core.clj:6038)
-tech.v3.dataset.column/eval37152 (column.clj:1)
-clojure.lang.Compiler/eval (Compiler.java:7194)
-clojure.lang.Compiler/load (Compiler.java:7653)
-clojure.lang.RT/loadResourceScript (RT.java:381)
-clojure.lang.RT/load (RT.java:459)
-clojure.core/load (core.clj:6161)
-clojure.core/load (core.clj:6160)
-clojure.core/load (core.clj:6144)
-clojure.core/load-one (core.clj:5933)
-clojure.core/load-one (core.clj:5928)
-clojure.core/load-lib (core.clj:5975)
-clojure.core/load-lib (core.clj:5974)
-clojure.core/load-lib (core.clj:5953)
-clojure.core/apply (core.clj:669)
-clojure.core/load-libs (core.clj:6016)
-clojure.core/load-libs (core.clj:6000)
-clojure.core/apply (core.clj:669)
-clojure.core/require (core.clj:6038)
-tech.v3.dataset/eval36307 (dataset.clj:1)
-clojure.lang.Compiler/eval (Compiler.java:7194)
-clojure.lang.Compiler/load (Compiler.java:7653)
-clojure.lang.RT/loadResourceScript (RT.java:381)
-clojure.lang.RT/load (RT.java:459)
-clojure.core/load (core.clj:6161)
-clojure.core/load (core.clj:6160)
-clojure.core/load (core.clj:6144)
-clojure.core/load-one (core.clj:5933)
-clojure.core/load-one (core.clj:5928)
-clojure.core/load-lib (core.clj:5975)
-clojure.core/load-lib (core.clj:5974)
-clojure.core/load-lib (core.clj:5953)
-clojure.core/apply (core.clj:669)
-clojure.core/load-libs (core.clj:6016)
-clojure.core/load-libs (core.clj:6000)
-clojure.core/apply (core.clj:669)
-clojure.core/require (core.clj:6038)
-clj-djl.dataframe/eval36299 (dataframe.clj:1)
-clojure.lang.Compiler/eval (Compiler.java:7194)
-clojure.lang.Compiler/load (Compiler.java:7653)
-clojure.lang.RT/loadResourceScript (RT.java:381)
-clojure.lang.RT/load (RT.java:459)
-clojure.core/load (core.clj:6161)
-clojure.core/load (core.clj:6160)
-clojure.core/load (core.clj:6144)
-clojure.core/load-one (core.clj:5933)
-clojure.core/load-one (core.clj:5928)
-clojure.core/load-lib (core.clj:5975)
-clojure.core/load-lib (core.clj:5974)
-clojure.core/load-lib (core.clj:5953)
-clojure.core/apply (core.clj:669)
-clojure.core/load-libs (core.clj:6016)
-clojure.core/load-libs (core.clj:6000)
-clojure.core/apply (core.clj:669)
-clojure.core/require (core.clj:6038)
-poker.temp/eval24464 (form-init14270999719210928210.clj:1)
-clojure.lang.Compiler/eval (Compiler.java:7194)
-clojure.core/eval (core.clj:3215)
-clojure.core/eval (core.clj:3211)
-nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:87)
-clojure.core/apply (core.clj:667)
-clojure.core/with-bindings* (core.clj:1990)
-nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:87)
-clojure.main/repl (main.clj:437)
-clojure.main/repl (main.clj:458)
-clojure.main/repl (main.clj:368)
-nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:84)
-nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:56)
-nrepl.middleware.interruptible-eval/interruptible-eval (interruptible_eval.clj:152)
-nrepl.middleware.session/session-exec (session.clj:218)
-nrepl.middleware.session/session-exec (session.clj:217)
-java.lang.Thread/run (Thread.java:1589)
-clj꞉poker.temp꞉> 
-; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
-; tech.v3.datatype.PrimitiveList
+#'poker.temp/mask-block
 clj꞉poker.temp꞉> 
 nil
 clj꞉poker.temp꞉> 
-; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
-; tech.v3.datatype.PrimitiveList
+[#object[ai.djl.mxnet.engine.MxNDArray 0x13fd6aab "ND: (1, 1, 2) cpu() float32\n[[[-0.091 , -1.4684],\n ],\n]\n"]]
 clj꞉poker.temp꞉> 
-; Execution error (FileNotFoundException) at poker.temp/eval41086$loading (form-init14270999719210928210.clj:1).
-; Could not locate dataframe__init.class, dataframe.clj or dataframe.cljc on classpath.
-clj꞉poker.temp꞉> 
-; Syntax error macroexpanding clojure.core/ns at (src/poker/temp.clj:1:1).
-; ((:require [clj-djl.ndarray :as nd] [clj-djl.model :as m] [clj-djl.nn :as nn] [clj-djl.nn.parameter :as param] [clj-djl/dataframe :as df])) - failed: Extra input spec: :clojure.core.specs.alpha/ns-form
-clj꞉poker.temp꞉> 
-; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
-; tech.v3.datatype.PrimitiveList
-clj꞉poker.temp꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Using host:port 127.0.0.1:57184 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-; WARNING: abs already refers to: #'clojure.core/abs in namespace: clj-djl.ndarray, being replaced by: #'clj-djl.ndarray/abs
-; 
-; Execution error (FileNotFoundException) at tech.v3.dataset.dynamic-int-list/eval38808$loading (dynamic_int_list.clj:1).
-; Could not locate com/github/ztellman/primitive_math__init.class, com/github/ztellman/primitive_math.clj or com/github/ztellman/primitive_math.cljc on classpath. Please check that namespaces with dashes use underscores in the Clojure file name.
-clj꞉poker.temp꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Using host:port 127.0.0.1:57243 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-; WARNING: abs already refers to: #'clojure.core/abs in namespace: clj-djl.ndarray, being replaced by: #'clj-djl.ndarray/abs
-; 
-; Execution error (ExceptionInfo) at clj-djl.dataframe/eval46488 (dataframe.clj:11).
-; Failed to find symbol 'select-rows-by-index' in namespace 'tech.v3.dataset'
-clj꞉poker.temp꞉> 
-; Syntax error compiling at (src/poker/temp.clj:1:1).
-; namespace 'clj-djl.dataframe' not found
-clj꞉poker.temp꞉> 
-; Syntax error compiling at (src/poker/temp.clj:1:1).
-; namespace 'clj-djl.dataframe' not found
-clj꞉poker.temp꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Using host:port 127.0.0.1:57265 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-; WARNING: abs already refers to: #'clojure.core/abs in namespace: clj-djl.ndarray, being replaced by: #'clj-djl.ndarray/abs
-; 
-; Execution error (ExceptionInfo) at clj-djl.dataframe/eval46488 (dataframe.clj:11).
-; Failed to find symbol 'select-rows-by-index' in namespace 'tech.v3.dataset'
-clj꞉poker.temp꞉> 
-; Syntax error compiling at (src/poker/temp.clj:1:1).
-; namespace 'clj-djl.dataframe' not found
-clj꞉poker.temp꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Using host:port 127.0.0.1:57280 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-; WARNING: abs already refers to: #'clojure.core/abs in namespace: clj-djl.ndarray, being replaced by: #'clj-djl.ndarray/abs
-; 
-; Execution error (ExceptionInfo) at clj-djl.dataframe/eval46488 (dataframe.clj:11).
-; Failed to find symbol 'select-rows-by-index' in namespace 'tech.v3.dataset'
-clj꞉poker.temp꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Using host:port 127.0.0.1:57316 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-; WARNING: abs already refers to: #'clojure.core/abs in namespace: clj-djl.ndarray, being replaced by: #'clj-djl.ndarray/abs
-; 
-; Execution error (ExceptionInfo) at clj-djl.dataframe/eval46484 (dataframe.clj:11).
-; Failed to find symbol 'select-rows-by-index' in namespace 'tech.v3.dataset'
+01Multiplication_weight #object[ai.djl.mxnet.engine.MxNDArray 0x6ec2c87b weight: (1, 1, 1, 2) cpu() float32 hasGradient
+[[[[-0.091 , -1.4684],
+  ],
+ ],
+]
+]
+nil
 clj꞉poker.temp꞉> 
 nil
 clj꞉poker.temp꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Using host:port 127.0.0.1:57384 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-; WARNING: abs already refers to: #'clojure.core/abs in namespace: clj-djl.ndarray, being replaced by: #'clj-djl.ndarray/abs
-; 
-; Execution error (FileNotFoundException) at tech.v3.dataset.dynamic-int-list/eval38538$loading (dynamic_int_list.clj:1).
-; Could not locate com/github/ztellman/primitive_math__init.class, com/github/ztellman/primitive_math.clj or com/github/ztellman/primitive_math.cljc on classpath. Please check that namespaces with dashes use underscores in the Clojure file name.
-clj꞉poker.temp꞉> 
-; Execution error (FileNotFoundException) at tech.v3.dataset.dynamic-int-list/eval40604$loading (dynamic_int_list.clj:1).
-; Could not locate com/github/ztellman/primitive_math__init.class, com/github/ztellman/primitive_math.clj or com/github/ztellman/primitive_math.cljc on classpath. Please check that namespaces with dashes use underscores in the Clojure file name.
-clj꞉poker.temp꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Using host:port 127.0.0.1:57429 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
+01Multiplication_weight #object[ai.djl.mxnet.engine.MxNDArray 0x6ec2c87b weight: (1, 1, 1, 2) cpu() float32 hasGradient
+[[[[1., 0.],
+  ],
+ ],
+]
+]
 nil
-; WARNING: abs already refers to: #'clojure.core/abs in namespace: clj-djl.ndarray, being replaced by: #'clj-djl.ndarray/abs
 clj꞉poker.temp꞉> 
-#'poker.temp/train-ds-url
+[#object[ai.djl.mxnet.engine.MxNDArray 0x42a7b1dc "ND: (1, 1, 2) cpu() float32\n[[[1., 0.],\n ],\n]\n"]]
 clj꞉poker.temp꞉> 
-#'poker.temp/test-ds-url
+#'poker.ERL/get-pnames
+clj꞉poker.ERL꞉> 
+; Execution error (ArityException) at poker.temp/eval51628 (form-init9294421832384377947.clj:69).
+; Wrong number of args (1) passed to: poker.ERL/get-pnames
 clj꞉poker.temp꞉> 
-; Syntax error compiling at (src/poker/temp.clj:25:17).
-; No such var: df/->dataframe
+#'poker.ERL/get-pnames
+clj꞉poker.ERL꞉> 
+["01Multiplication_weight"]
 clj꞉poker.temp꞉> 
-#'poker.temp/train-data
+; Syntax error compiling at (src/clojure/poker/temp.clj:71:1).
+; No such var: poker.ERL/set-parameter!
 clj꞉poker.temp꞉> 
-; Syntax error (ClassNotFoundException) compiling at (src/poker/temp.clj:27:1).
-; train-data.
+#'poker.ERL/set-parameter!
+clj꞉poker.ERL꞉> 
+#object[ai.djl.nn.SequentialBlock 0x38123725 "SequentialBlock(1, 1, 2) {\n\tMultiplication(1, 1, 2) -> (1, 1, 1, 2)\n\tLambdaBlock(1, 1, 1, 2) -> (1, 1, 2)\n} -> (1, 1, 2)"]
 clj꞉poker.temp꞉> 
-tech.v3.dataset.impl.dataset.Dataset
-clj꞉poker.temp꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Using host:port 127.0.0.1:57487 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-; WARNING: abs already refers to: #'clojure.core/abs in namespace: clj-djl.ndarray, being replaced by: #'clj-djl.ndarray/abs
-; 
-; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
-; transformer.java
-clj꞉poker.temp꞉> 
-; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
-; poker.transformer
-clj꞉poker.temp꞉> 
-; Syntax error macroexpanding clojure.core/ns at (src/poker/temp.clj:1:1).
-; () - failed: Insufficient input at: [:ns-clauses :import :classes :package-list :classes] spec: :clojure.core.specs.alpha/package-list
-; [poker.transformer] - failed: simple-symbol? at: [:ns-clauses :import :classes :class] spec: :clojure.core.specs.alpha/import-list
-; :import - failed: #{:refer-clojure} at: [:ns-clauses :refer-clojure :clause] spec: :clojure.core.specs.alpha/ns-refer-clojure
-; :import - failed: #{:require} at: [:ns-clauses :require :clause] spec: :clojure.core.specs.alpha/ns-require
-; :import - failed: #{:use} at: [:ns-clauses :use :clause] spec: :clojure.core.specs.alpha/ns-use
-; :import - failed: #{:refer} at: [:ns-clauses :refer :clause] spec: :clojure.core.specs.alpha/ns-refer
-; :import - failed: #{:load} at: [:ns-clauses :load :clause] spec: :clojure.core.specs.alpha/ns-load
-; :import - failed: #{:gen-class} at: [:ns-clauses :gen-class :clause] spec: :clojure.core.specs.alpha/ns-gen-class
-clj꞉poker.temp꞉> 
-; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
-; poker.transformer.java
-clj꞉poker.temp꞉> 
-; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
-; poker.transformer
-clj꞉poker.temp꞉> 
-; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
-; poker
-clj꞉poker.temp꞉> 
-; Syntax error compiling at (src/poker/temp.clj:17:1).
-; No such namespace: poker
-clj꞉poker.temp꞉> 
-; Syntax error (IllegalArgumentException) compiling new at (src/poker/temp.clj:19:1).
-; Unable to resolve classname: transformer
-clj꞉poker.temp꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Using host:port 127.0.0.1:62281 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
+01Multiplication_weight #object[ai.djl.mxnet.engine.MxNDArray 0x6ec2c87b weight: (1, 1, 1, 2) cpu() float32 hasGradient
+[[[[0., 1.],
+  ],
+ ],
+]
+]
 nil
-clj꞉poker.utils꞉> 
-#'poker.utils/choose
-clj꞉poker.utils꞉> 
-[:betting-round
- :betting-round
- :betting-round
- 0
- :integer_eq
- 3
- :integer_eq
- :exec_if
- :hand-strength
- 3
- :integer_gte
- :exec_if
- :my-stack
- {:type :probability, :literal 0.1}
- :equity
- :all-in
- :total-weight
- :inc-log
- :call
- :total-weight
- :inc-log
- :bet
- close
- :fold
- :total-weight
- :inc-log
- :call
- close
- close
- :exec_if
- :holecard-winrate
- {:type :probability, :literal 0.5}
- :probability_gte
- :exec_if
- :pot
- :check
- :total-weight
- :inc-log
- :call
- :total-weight
- :inc-log
- :bet
- close
- :fold
- :total-weight
- :inc-log
- :check
- close
- :exec_if
- :hand-strength
- ...]
-clj꞉poker.utils꞉> 
-#'poker.headsup/slumbot-rollout
-clj꞉poker.headsup꞉> 
-; Syntax error compiling at (src/clojure/poker/headsup.clj:695:3).
-; Unable to resolve symbol: random-agent in this context
-clj꞉poker.headsup꞉> 
-{:r
- {"old_action" "",
-  "action" "",
-  "client_pos" 0,
-  "hole_cards" ["Ks" "4h"],
-  "board" ["Ad" "7d" "5s" "9h" "Tc"],
-  "bot_hole_cards" ["Qh" "Qd"],
-  "winnings" -600},
- :num-players 2,
- :community ([14 "Diamonds"] [7 "Diamonds"] [5 "Spades"] [9 "Hearts"] [10 "Clubs"]),
- :bet-values [0.5 1.0],
- :current-bet 1.0,
- :hands [([12 "Hearts"] [12 "Diamonds"]) ([13 "Spades"] [4 "Hearts"])],
- :action-history [[]],
- :betting-round "Showdown",
- :active-players [0 1],
- :min-bet 1.0,
- :players [{:money 206.0, :id :p0} {:money 194.0, :id :p1}],
- :game-over true,
- :visible ([14 "Diamonds"] [7 "Diamonds"] [5 "Spades"] [9 "Hearts"] [10 "Clubs"]),
- :min-raise 1.0,
- :visible-hands ([:p0 ([12 "Hearts"] [12 "Diamonds"])] [:p1 ([13 "Spades"] [4 "Hearts"])]),
- :pot 1.5,
- :current-player 0}
-clj꞉poker.headsup꞉> 
-; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
-; poker.transformer
 clj꞉poker.temp꞉> 
-; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
-; poker.transformer
+#'poker.ERL/get-parameters
+clj꞉poker.ERL꞉> 
+{"01Multiplication_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x6ec2c87b "weight: (1, 1, 1, 2) cpu() float32 hasGradient\n[[[[0., 1.],\n  ],\n ],\n]\n"]}
 clj꞉poker.temp꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Using host:port 127.0.0.1:62410 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
-nil
-; WARNING: abs already refers to: #'clojure.core/abs in namespace: clj-djl.ndarray, being replaced by: #'clj-djl.ndarray/abs
-clj꞉poker.temp꞉> 
-poker.transformer
-clj꞉poker.temp꞉> 
-#object[poker.transformer 0x66b88dc7 "poker.transformer@66b88dc7"]
-clj꞉poker.temp꞉> 
-true
-clj꞉poker.temp꞉> 
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; nREPL Connection was closed
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Jacking in...
-; Connecting using "Leiningen" project type.
-; You can make Calva auto-select this.
-;   - See https://calva.io/connect-sequences/
-; 
-; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Using host:port 127.0.0.1:62684 ...
-; Hooking up nREPL sessions ...
-; Connected session: clj
-; TIPS:
-;   - You can edit the contents here. Use it as a REPL if you like.
-;   - `alt+enter` evaluates the current top level form.
-;   - `ctrl+enter` evaluates the current form.
-;   - `alt+up` and `alt+down` traverse up and down the REPL command history
-;      when the cursor is after the last contents at the prompt
-;   - Clojure lines in stack traces are peekable and clickable.
-clj꞉poker.core꞉> 
-; Jack-in done.
-clj꞉poker.core꞉> 
