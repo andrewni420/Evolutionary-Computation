@@ -12,3 +12,11 @@ pom.xml.asc
 .hgignore
 .hg/
 /.calva*
+/lib/
+/target/
+.lein-deps-sum
+.lein-repl-history
+.lein-plugins/
+.lein-failures
+.nrepl-port
+.cpcache/
