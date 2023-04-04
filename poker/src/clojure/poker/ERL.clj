@@ -80,8 +80,70 @@
          "uint8" DataType/UINT8
          DataType/UNKNOWN))
 
+(defn new-default-manager 
+  "Defines m as a new base manager"
+  [] 
+  (def m (nd/new-base-manager)))
 
+(defn close-default-manager 
+  "Closes the manager m"
+  [] 
+  (when m (.close m)))
 
+(defn shape
+  "Turns a vector into a Shape object\\
+   -> Shape"
+  [arr]
+  (nd/new-shape (utils/shape arr)))
+
+#_(shape [[1 2] [3 4] [5 6]])
+
+(defn ndarray
+  "Given a manager, a function, and a vector array, creates an NDArray object\\
+   Applies the function to the vector array\\
+   NDManager, arr -> NDArray"
+  [manager arrfn arr]
+  (nd/create manager
+             (arrfn (flatten arr))
+             (utils/shape arr)))
+
+#_(with-open [m (nd/new-base-manager)]
+    (ndarray int-array [[1 2] [3 4]]))
+
+(defn process-shape 
+  "Turns a vector/Shape/[Shape into a Shape or [Shape\\
+   -> Shape or [Shape"
+  [s & {:keys [array?]
+        :or {array? false}}]
+  (if array?
+    (if (instance? (Class/forName "[Lai.djl.ndarray.types.Shape;") s)
+      s
+      (into-array Shape [(process-shape s false)]))
+    (if (instance? Shape s)
+      s
+      (nd/new-shape (vec s)))))
+
+#_(process-shape [1 2] :array true)
+
+(defn process-activation 
+  "Turns an activation iFn/Function into a java Function\\
+   -> Function"
+  [a]
+  (if (ifn? a)
+    (utils/make-function a)
+    a))
+
+#_(process-activation #(Activation/relu %))
+
+(defn process-datatype
+  "Turns a string or DataType into a DataType\\
+   -> DataType"
+  [d]
+  (if (string? d) 
+    (get-djl-type d)
+    d))
+
+#_(process-datatype "float")
 
 (defn transformer-decoder-block
   "Creates and initializes transformer decoder block.\\
@@ -102,13 +164,9 @@
       :or {activation-function (utils/make-function #(Activation/relu %))
            dropout-probability 0.1
            datatype DataType/FLOAT32}}]
-  (let [input-shape (cond (instance? (Class/forName "[Shape") input-shape) input-shape
-                          (instance? Shape input-shape) (into-array Shape [input-shape])
-                          :else (nd/new-shape (vec input-shape)))
-        activation-function (if (ifn? activation-function)
-                              (utils/make-function activation-function)
-                              activation-function)
-        datatype (if (string? datatype) (get-djl-type datatype) datatype)
+  (let [input-shape (process-shape input-shape :array? true)
+        activation-function (process-activation activation-function)
+        datatype (process-datatype datatype)
         b (TransformerDecoderBlock. embedding-size
                                     head-count
                                     hidden-size
@@ -160,38 +218,45 @@
      {:manager (.newSubManager manager)})))
 
 
-(defn error-function [individual]
+(defn error-function 
+  "NOT FINISHED\\
+   -> individual"
+  [individual]
   (assoc individual :error 0))
 
 
 (defn add-gaussian-noise!
-  ([ndarray mean stdev]
+  "Adds gaussian noise to an ndarray\\
+   Either uses a common mean and stdev or a mean of 0 and an ndarray of the same size as the stdev\\
+   -> ndarray"
+  ([ndarray mean stdev arrfn]
    (let [v (nd/to-array ndarray)
          newv (map #(+ % (utils/rand-normal mean stdev))
                    v)]
-     (.set ndarray (to-array newv))
+     (.set ndarray (arrfn newv))
      ndarray))
-  ([value-array stdev-array]
+  ([value-array stdev-array arrfn]
    (let [v (nd/to-array value-array)
          s (nd/to-array stdev-array)
          new-s (map (partial utils/rand-normal 0) s)]
-     (.set value-array (to-array (map + v new-s)))
+     (println (into-array (map + v new-s)))
+     (.set value-array (arrfn (map + v new-s)))
      value-array)))
 
-(defn close-individual [individual]
-  (.close (:manager individual)))
+#_(with-open [m (nd/new-base-manager)]
+    (println (add-gaussian-noise!
+              (ndarray m float-array [[1 2] [3 4]])
+              (ndarray m float-array [[0 0.001] [0.01 0.1]])
+              float-array)))
 
-(defn shape [arr]
-  (nd/new-shape (utils/shape arr)))
+(defn close-individual 
+  "Closes the manager of the individual\\
+   -> individual"
+  [individual]
+  (.close (:manager individual))
+  individual)
 
-(defn ndarray 
-  "Given a manager, a function, and a vector array, creates an NDArray object\\
-   Applies the function to the vector array\\
-   NDManager, arr -> NDArray"
-  [manager arrfn arr]
-  (nd/create manager 
-             (arrfn (flatten arr))
-             (utils/shape arr)))
+
 
 (defn ndlist 
   "Given a manager, a function, and any number of vector arrays, creates an NDList object
@@ -202,11 +267,18 @@
   (let [ndarrays (map (partial ndarray manager arrfn) arrs)]
     (apply nd/ndlist ndarrays)))
 
+#_(with-open [m (nd/new-base-manager)]
+    (ndlist int-array [[1 2] [3 4]] [[5 6] [7 8]]))
+
 (defn ndarray-to-vector 
-  [arr]
-  (let [s (nd/to-array (.getShape arr))
-        f (nd/to-array arr)]
-    ))
+  "Given an nd-array, converts it into a clojure nested vector of the same dimensions."
+  [ndarr]
+  (matrix/reshape (nd/to-array ndarr)
+                  (nd/to-array (nd/shape ndarr))))
+
+#_(with-open [m (nd/new-base-manager)]
+    (ndarray-to-vector (ndarray m int-array [[1 2] [3 4]])))
+
 
 (defn concat-ndlist
   "Given an list of singleton NDLists, concatenates the NDArray 
@@ -227,9 +299,10 @@
                (inc i))))))
 
 
-#_(class (concat-ndlist [(ndlist m float-array [[1 2] [1 2]] )
-                (ndlist m float-array [[3 4] [4 3]])] 
-               0))
+#_(with-open [m (nd/new-base-manager)]
+    (concat-ndlist [(ndlist m float-array [[1 2] [3 4]])
+                    (ndlist m float-array [[5 6] [7 8]])]
+                   0))
 
 (defn interleave-ndlist
   "Given a list of singleton NDLists where each NDArray has the same shape, 
@@ -256,69 +329,231 @@
                         extra-axis)
                (inc i))))))
 
+;;(2 2 2)x3 -> (2 6 2)
+#_(with-open [m (nd/new-base-manager)]
+    (println (.head (interleave-ndlist [(ndlist m int-array [[[1 2] [3 4]] [[11 21] [31 41]]])
+                                        (ndlist m int-array [[[5 6] [7 8]] [[51 61] [71 81]]])
+                                        (ndlist m int-array [[[9 10] [11 12]] [[91 101] [111 121]]])]
+                                       1))))
+
 (defn set-parameter!
   "Given a block, the name of a parameter, and an array of the values in the parameter,
    sets the values of that parameter to the values in the array.\\
-   -> block"
+   Block, String, java array -> Block"
   [block pname pvalues]
   (.set (.getArray (.get (.getParameters block) pname)) pvalues)
   block)
 
 (defn get-pnames
-  "Given a block, the name of a parameter, and an array of the values in the parameter,
-   sets the values of that parameter to the values in the array.\\
-   -> block"
+  "Given a block, returns a vector of the names of the parameters in the block\\
+   -> [names ...]"
   [block]
   (into [] (.keys (.getParameters block))))
 
-(defn get-parameters [block]
+#_(with-open [m (nd/new-base-manager)]
+    (get-pnames (transformer-decoder-block m 2 1 3 [1 2 2])))
+
+(defn get-parameters 
+  "Given a block, returns a map from the name of a parameter to the value, either as an NDArray or as a nested vector, of that parameter\\
+   -> {pname pvalue}"
+  [block & {:keys [as-array?]
+            :or {as-array? false}}]
   (let [p (.getParameters block)
         k (.keys p)]
     (zipmap k
           (for [n k] 
-            (.getArray (.get p n))))))
+            ((if as-array?
+               ()
+               identity)
+             (.getArray (.get p n)))))))
+
+#_(with-open [m (nd/new-base-manager)]
+    (clojure.pprint/pprint
+     (get-parameters (transformer-decoder-block m 2 1 3 [1 2 2]))))
+
+(defn identical-array
+  "Creates a vector array with a shape populated by only the given value\\
+  vector value -> vector"
+  [shape value]
+  ((apply comp 
+          (map #(fn [v] (into [] (repeat % v))) 
+               shape)) 
+   value))
+
+#_(identical-array [3 3] 2)
+
+(defn mask-2d 
+  "Given an mxn array and a length m vector, sets everything in the mxn array 
+   that exceeds the sequence lengths in the seq-length vector to a given value\\
+   [[... n]... m] [... m]-> [[... n]... m]"
+  [array & {:keys [seq-length value]
+            :or {seq-length nil
+                 value 0}}]
+  (let [m (count array)
+        n (count (first array))
+        seq-length (if seq-length
+                     seq-length
+                     (range 1 (inc m)))]
+    (into [] 
+          (map #(into [] 
+                      (concat (take %2 %1) 
+                              (repeat (- n %2) value))) 
+               array 
+               seq-length))))
+
+#_(mask-2d [[1 2 3 4] [1 2 3 4] [1 2 3 4] [1 2 3 4]]
+         :seq-length [4 2 3 2]
+         :value 0)
+
+(defn causal-mask
+  "Given a shape and an axis, constructs a mask for that axis.\\
+   axis: start dimension for mask - for a nd shape, (axis-1)d [2d mask] (n-axis-1)d\\
+   vector, integer -> vector of 0s and 1s"
+  [shape axis]
+  (let [shape (vec shape)
+        axis (if (< axis 0)
+               (+ axis (count shape))
+               axis)]
+    (assert (<= 2 (count shape)) (str "Shape dimension is too small: shape = " shape))
+    (assert (<= axis (- (count shape) 2)) (str "Axis is too large: axis = " axis))
+    (let [first-identical (take axis shape)
+          second-identical (drop (+ 2 axis) shape)
+          m (shape axis)
+          n (shape (inc axis))]
+
+      (identical-array first-identical
+                       (mask-2d (identical-array [m n] (identical-array second-identical 1))
+                                :value (identical-array second-identical 0))))))
+
+#_(causal-mask [3 3 3] 0)
+
+(defn parallel-mask
+  "Sets everything to 0 except every nth item of an array\\
+   axis: axis to apply parallel mask to\\
+   n: every nth item is nonzero\\
+   i: every i (mod n) item is nonzero\\
+   vector, int, int, int -> vector"
+  [shape axis n i]
+  (let [shape (vec shape)
+        axis (if (< axis 0)
+               (+ axis (count shape))
+               axis)
+        m (shape axis)
+        i (mod i n)
+        first-identical (take axis shape)
+        second-identical (drop (inc axis) shape)
+        get-value #(if (= i (mod % n))
+                     (identical-array second-identical 1)
+                     (identical-array second-identical 0))]
+    (identical-array first-identical
+                     (into [] (map get-value (range m))))))
+
+#_(parallel-mask [3 6 3] 1 3 1)
 
 
-;;(2 2 2)x3 -> (2 6 2)
-#_(println (.head (interleave-ndlist [(ndlist m [[[1 2] [3 4]] [[11 21] [31 41]]])
-                                    (ndlist m [[[5 6] [7 8]] [[51 61] [71 81]]])
-                                    (ndlist m [[[9 10] [11 12]] [[91 101] [111 121]]])]
-                                   1)))
+(defn mul-block
+  "Builds and returns a multiplication block\\
+   units: the extra leftmost dimension returned\\
+   A mul-block with units 2 will turn a (1,2) shape into a (2,1,2) shape\\
+   -> MultiplicationBlock"
+  [& {:keys [units]
+      :or {units 1}}]
+  (.build
+   (.setUnits
+    (ai.djl.nn.core.Multiplication/builder)
+    units)))
 
-(let [a (ndarray m [[[1 2] [3 4]] [[5 6] [7 8]]])]
-  (println a)
-  (println (.flatten a 0 -1)))
-
-(doall (map #(println %)  
-            (java.util.ArrayList. [(ndlist m [[1 2]])
-                                                  (ndlist m [[[1 2]]])
-                                                  (ndlist m [1 2])])))
-
-(class [])
-(println (nd/ (nd/stack (ndarray m [[1 2] [3 4]])
-                               (ndarray m [[5 6] [7 8]])
-                               (ndarray m [[5 6] [7 8]])
-                               1)
-                     (nd/shape [5 2])))
-
-(println (nd/reshape (nd/concat (.expandDims (ndarray m [[1 2] [3 4]]) -1)
-                       (.expandDims (ndarray m [[5 6] [7 8]]) -1)
-                       -1)
-            (nd/shape [4 2])))
+(defn squeeze-block
+  "Builds and returns a block that squeezes an axis (default 0) out of an ndarray\\ 
+   -> LambdaBlock"
+  [& {:keys [axis]
+      :or {axis 0}}]
+  (ai.djl.nn.LambdaBlock.
+   (utils/make-function #(nd/ndlist (.squeeze (.singletonOrThrow %) axis)))))
 
 
+(defn mask-block
+  "Creates and initializes a mul-squeeze block for masking\\
+   input-shape: [B F1 F2] or higher dimension\\
+   creates a [1 1 F1 F2] lower triangular masking block\\
+   -> Block"
+  [manager input-shape & {:keys [datatype]
+                          :or {datatype DataType/FLOAT32}}]
+  (assert (>= (count input-shape) 3) (str "Shape size too small. Must be at least [B F E]. Shape: " input-shape))
+  (let [s (ai.djl.nn.SequentialBlock.)]
+    (.add s (mul-block))
+    (.add s (squeeze-block))
+    (.initializeChildBlocks s
+                            manager
+                            (process-datatype datatype)
+                            (process-shape input-shape :array? true))
+    s))
 
-(println (.head (interleave-ndlist [(ndlist m [[1 2] [3 4] [5 6]])
-                                    (ndlist m [[1 2] [3 4] [5 6]])]
-                                   0
-                                   (nd/shape [6 2]))))
-;;B f1 E -> B F E
-[1 2 3]
-[1 3 3] -> [1 5 3]
+#_(with-open [m (nd/new-base-manager)]
+    (clojure.pprint/pprint (get-parameters (mask-block m [2 3 3]))))
 
-[[[1 2 3] [1 2 3]]]
-[[[4 5 6] [4 5 6] [4 5 6]]]
+(defn causal-mask-block
+  "Creates and initializes a masking block\\
+   input-shape: [B F1 F2] or higher dimension\\
+   creates a [1 1 F1 F2] lower triangular masking block\\
+   -> Block"
+  [manager input-shape & {:keys [datatype axis arrfn]
+                          :or {datatype DataType/FLOAT32
+                               axis -2
+                               arrfn float-array}}]
+  (assert (>= (count input-shape) 3) (str "Shape size too small. Must be at least [B F E]. Shape: " input-shape))
+  (let [m (mask-block manager input-shape :datatype datatype)]
+    (set-parameter! m
+                    "01Multiplication_weight"
+                    (arrfn
+                     (flatten
+                      (causal-mask (drop 1 input-shape)
+                                 axis))))
+    m))
 
+#_(with-open [m (nd/new-base-manager)]
+    (clojure.pprint/pprint (get-parameters (causal-mask-block m [2 3 3]))))
+
+(defn parallel-mask-block
+  "Creates a parallel mask to zero out every nth item starting from an i<n\\
+   input-shape: [B F] or higher dimension\\
+   creates a [1 1 F] or more parallel masking block\\
+   -> Block"
+  [manager input-shape & {:keys [datatype axis arrfn n i]
+                          :or {datatype DataType/FLOAT32
+                               axis -2
+                               n 3
+                               i 0
+                               arrfn float-array}}]
+  (let [m (mask-block manager input-shape :datatype datatype)]
+  (assert (>= (count input-shape) 2) (str "Shape size too small. Must be at least [B F]. Shape: " input-shape))
+    (set-parameter! m
+                    "01Multiplication_weight"
+                    (arrfn
+                     (flatten
+                      (parallel-mask (drop 1 input-shape) axis n i))))
+    m))
+
+#_(with-open [m (nd/new-base-manager)]
+    (clojure.pprint/pprint (get-parameters (parallel-mask-block m [2 6 3]))))
+
+(defn mlp-block
+  [manager input-shape ])
+
+(def mlp (ai.djl.basicmodelzoo.basic.Mlp. 2 2 (int-array [4])))
+
+mlp
+
+(.initializeChildBlocks mlp m
+ai.djl.ndarray.types.DataType/FLOAT32
+(into-array ai.djl.ndarray.types.Shape [(nd/new-shape [2 1 2])]))
+
+(.forward
+ mlp
+ (ai.djl.training.ParameterStore.)
+ (poker.ERL/ndlist m float-array [[[1 1]][[1 1]]])
+ false
+ nil)
 
 
 

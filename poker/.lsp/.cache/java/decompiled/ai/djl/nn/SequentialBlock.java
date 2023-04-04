@@ -3,12 +3,10 @@
  * 
  * Could not load the following classes:
  *  ai.djl.MalformedModelException
- *  ai.djl.ndarray.NDArray
  *  ai.djl.ndarray.NDManager
  *  ai.djl.nn.AbstractBlock
  *  ai.djl.nn.Block
  *  ai.djl.nn.LambdaBlock
- *  ai.djl.training.ParameterStore
  *  ai.djl.util.PairList
  *  java.io.DataInputStream
  *  java.io.DataOutputStream

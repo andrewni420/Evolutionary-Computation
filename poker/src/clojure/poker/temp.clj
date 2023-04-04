@@ -44,7 +44,7 @@
 (.squeeze (poker.ERL/ndarray m float-array [[[1 2]]])
           0)
 
-(.initialize 
+(.initializeChildBlocks
  mask-block
  m 
  ai.djl.ndarray.types.DataType/FLOAT32
@@ -117,11 +117,13 @@
 (def s (.create m (float-array (flatten [[0.001 1] [10 0.001]]))
                 (nd/new-shape [2 2])))
 
+(nd/to-array (nd/shape (poker.ERL/ndarray m float-array [[1 2] [3 4]])))
 
+(matrix/reshape (nd/to-array (poker.ERL/ndarray m float-array [[1 2] [3 4]]))
+                (nd/to-array (nd/shape (poker.ERL/ndarray m float-array [[1 2] [3 4]]))))
 
 (def e (ai.djl.nn.transformer.TransformerEncoderBlock. 10 5 20 0.2 (reify java.util.function.Function
                                                                      (apply [_ x] (ai.djl.nn.Activation/relu x)))))
-
 
 
 

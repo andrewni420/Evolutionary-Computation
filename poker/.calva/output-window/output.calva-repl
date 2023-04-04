@@ -1555,3 +1555,896 @@ clj꞉poker.ERL꞉> 
 {"01Multiplication_weight"
  #object[ai.djl.mxnet.engine.MxNDArray 0x6ec2c87b "weight: (1, 1, 1, 2) cpu() float32 hasGradient\n[[[[0., 1.],\n  ],\n ],\n]\n"]}
 clj꞉poker.temp꞉> 
+; Execution error (ArityException) at poker.temp/eval51675 (form-init9294421832384377947.clj:120).
+; Wrong number of args (1) passed to: poker.ERL/ndarray
+clj꞉poker.temp꞉> 
+[1.0, 2.0, 3.0, 4.0]
+clj꞉poker.temp꞉> 
+[1.0 2.0 3.0 4.0]
+clj꞉poker.temp꞉> 
+#object[ai.djl.ndarray.types.Shape 0x189a1779 "(2, 2)"]
+clj꞉poker.temp꞉> 
+[2, 2]
+clj꞉poker.temp꞉> 
+[[1.0 2.0] [3.0 4.0]]
+clj꞉poker.temp꞉> 
+#'poker.ERL/ndarray-to-vector
+clj꞉poker.ERL꞉> 
+[[1.0 2.0] [3.0 4.0]]
+clj꞉poker.ERL꞉> 
+[[1 2] [3 4]]
+clj꞉poker.ERL꞉> 
+[[1 2] [3 4]]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDManager 0x6abb3d66 "Name: f7b48de7-6c2c-49d0-8837-a9a3f8d48582 Parent Name: df0234e8-add2-4070-a44d-7b7e19b87e45 isOpen: true Resource size: 393"]
+clj꞉poker.ERL꞉> 
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDManager 0x6abb3d66 "Name: f7b48de7-6c2c-49d0-8837-a9a3f8d48582 Parent Name: df0234e8-add2-4070-a44d-7b7e19b87e45 isOpen: false Resource size: 0"]
+clj꞉poker.ERL꞉> 
+[[1 2] [3 4]]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDManager 0x6abb3d66 "Name: f7b48de7-6c2c-49d0-8837-a9a3f8d48582 Parent Name: df0234e8-add2-4070-a44d-7b7e19b87e45 isOpen: false Resource size: 0"]
+clj꞉poker.ERL꞉> 
+; Execution error (IndexOutOfBoundsException) at poker.headsup/eval51736 (form-init9294421832384377947.clj:336).
+; null
+clj꞉poker.ERL꞉> 
+3
+clj꞉poker.headsup꞉> 
+#'poker.ERL/identical-ndarray
+clj꞉poker.ERL꞉> 
+#'poker.ERL/identical-array
+clj꞉poker.ERL꞉> 
+((1 1) (1 1))
+clj꞉poker.ERL꞉> 
+#'poker.ERL/identical-array
+clj꞉poker.ERL꞉> 
+[[1 1] [1 1]]
+clj꞉poker.ERL꞉> 
+[[[1 1] [1 1]] [[1 1] [1 1]]]
+clj꞉poker.ERL꞉> 
+[[[[1 0] [1 1]] [[1 0] [1 1]]] [[[1 0] [1 1]] [[1 0] [1 1]]]]
+clj꞉poker.ERL꞉> 
+[[[[1 0] [1 1]] [[1 0] [1 1]]] [[[1 0] [1 1]] [[1 0] [1 1]]]]
+nil
+clj꞉poker.ERL꞉> 
+[[[[1 0] [1 1]] [[1 0] [1 1]]] [[[1 0] [1 1]] [[1 0] [1 1]]]]
+nil
+clj꞉poker.ERL꞉> 
+; Execution error (ArityException) at poker.ERL/eval51775 (form-init9294421832384377947.clj:352).
+; Wrong number of args (2) passed to: poker.ERL/ndarray
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalStateException) at ai.djl.ndarray.BaseNDManager/attachUncappedInternal (BaseNDManager.java:317).
+; NDManager has been closed already.
+clj꞉poker.ERL꞉> 
+#'poker.ERL/m
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x779ea8f9 "ND: (4, 4) cpu() int32\n[[ 1,  0,  0,  0],\n [ 1,  1,  0,  0],\n [ 1,  1,  1,  0],\n [ 1,  1,  1,  1],\n]\n"]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/sequence-mask
+clj꞉poker.ERL꞉> 
+; Execution error (ClassCastException) at poker.ERL/sequence-mask$fn (form-init9294421832384377947.clj:350).
+; class clojure.lang.PersistentVector cannot be cast to class java.lang.Number (clojure.lang.PersistentVector is in unnamed module of loader 'app'; java.lang.Number is in module java.base of loader 'bootstrap')
+clj꞉poker.ERL꞉> 
+#'poker.ERL/sequence-mask
+clj꞉poker.ERL꞉> 
+; Execution error (ClassCastException) at poker.ERL/sequence-mask$fn (form-init9294421832384377947.clj:350).
+; class clojure.lang.PersistentVector cannot be cast to class java.lang.Number (clojure.lang.PersistentVector is in unnamed module of loader 'app'; java.lang.Number is in module java.base of loader 'bootstrap')
+clj꞉poker.ERL꞉> 
+#'poker.ERL/sequence-mask
+clj꞉poker.ERL꞉> 
+; Execution error (ClassCastException) at poker.ERL/sequence-mask$fn (form-init9294421832384377947.clj:350).
+; class clojure.lang.PersistentVector cannot be cast to class java.lang.Number (clojure.lang.PersistentVector is in unnamed module of loader 'app'; java.lang.Number is in module java.base of loader 'bootstrap')
+clj꞉poker.ERL꞉> 
+#'poker.ERL/sequence-mask
+clj꞉poker.ERL꞉> 
+[[0 0 0 0] [1 0 0 0] [1 2 0 0] [1 2 3 0]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/sequence-mask
+clj꞉poker.ERL꞉> 
+[[1 0 0 0] [1 2 0 0] [1 2 3 0] [1 2 3 4]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/sequence-mask
+clj꞉poker.ERL꞉> 
+[[1 1 1 1] [1 2 1 1] [1 2 3 1] [1 2 3 4]]
+clj꞉poker.ERL꞉> 
+[[1 2 3 4] [1 2 -1 -1] [1 2 3 4] [1 2 -1 -1]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mask-2d
+clj꞉poker.ERL꞉> 
+[1 4 9]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/make-mask
+clj꞉poker.ERL꞉> 
+[[[1 1 1] [0 0 0] [0 0 0]] [[1 1 1] [1 1 1] [0 0 0]] [[1 1 1] [1 1 1] [1 1 1]]]
+clj꞉poker.ERL꞉> 
+0
+clj꞉poker.ERL꞉> 
+#'poker.ERL/make-mask
+clj꞉poker.ERL꞉> 
+() (3) 3 3
+[[[1 1 1] [0 0 0] [0 0 0]] [[1 1 1] [1 1 1] [0 0 0]] [[1 1 1] [1 1 1] [1 1 1]]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/make-mask
+clj꞉poker.ERL꞉> 
+() () 3 3
+[[1 0 0] [1 1 0] [1 1 1]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/make-mask
+clj꞉poker.ERL꞉> 
+[[[1 1 1] [0 0 0] [0 0 0]]
+ [[1 1 1] [1 1 1] [0 0 0]]
+ [[1 1 1] [1 1 1] [1 1 1]]]
+nil
+clj꞉poker.ERL꞉> 
+[[1 0 0] [1 1 0] [1 1 1]]
+nil
+clj꞉poker.ERL꞉> 
+#'poker.ERL/make-mask
+clj꞉poker.ERL꞉> 
+[[[1 0 0] [1 1 0] [1 1 1]]
+ [[1 0 0] [1 1 0] [1 1 1]]
+ [[1 0 0] [1 1 0] [1 1 1]]]
+nil
+clj꞉poker.ERL꞉> 
+; Execution error (IndexOutOfBoundsException) at poker.ERL/make-mask (form-init9294421832384377947.clj:372).
+; null
+clj꞉poker.ERL꞉> 
+#'poker.ERL/make-mask
+clj꞉poker.ERL꞉> 
+; Execution error (IndexOutOfBoundsException) at poker.ERL/make-mask (form-init9294421832384377947.clj:371).
+; null
+clj꞉poker.ERL꞉> 
+#'poker.ERL/make-mask
+clj꞉poker.ERL꞉> 
+; Execution error (AssertionError) at poker.ERL/make-mask (form-init9294421832384377947.clj:371).
+; Assert failed: Axis is too large: axis = 2
+; (< axis (count shape))
+clj꞉poker.ERL꞉> 
+; Execution error (AssertionError) at poker.ERL/make-mask (form-init9294421832384377947.clj:370).
+; Assert failed: Shape dimension is too small: shape = [3]
+; (< 1 (count shape))
+clj꞉poker.ERL꞉> 
+#'poker.ERL/make-mask
+clj꞉poker.ERL꞉> 
+; Execution error (AssertionError) at poker.ERL/make-mask (form-init9294421832384377947.clj:371).
+; Assert failed: Axis is too large: axis = 1
+; (<= axis (- 2 (count shape)))
+clj꞉poker.ERL꞉> 
+[[1 0 0] [1 1 0] [1 1 1]]
+clj꞉poker.ERL꞉> 
+; Execution error (AssertionError) at poker.ERL/make-mask (form-init9294421832384377947.clj:371).
+; Assert failed: Axis is too large: axis = 1
+; (<= axis (- 2 (count shape)))
+clj꞉poker.ERL꞉> 
+#'poker.ERL/make-mask
+clj꞉poker.ERL꞉> 
+[[[1 0 0] [1 1 0] [1 1 1]] [[1 0 0] [1 1 0] [1 1 1]] [[1 0 0] [1 1 0] [1 1 1]]]
+clj꞉poker.ERL꞉> 
+[[[1 1 1] [0 0 0] [0 0 0]] [[1 1 1] [1 1 1] [0 0 0]] [[1 1 1] [1 1 1] [1 1 1]]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/new-manager
+clj꞉poker.ERL꞉> 
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDManager 0x435dec31 "Name: 62c5785d-6533-484e-b743-fe6c02c198ea Parent Name: df0234e8-add2-4070-a44d-7b7e19b87e45 isOpen: false Resource size: 0"]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/m
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDManager 0x20c105d0 "Name: 83860e3d-9051-4a38-8ec1-3e54d22eb697 Parent Name: df0234e8-add2-4070-a44d-7b7e19b87e45 isOpen: true Resource size: 0"]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/new-default-manager
+clj꞉poker.ERL꞉> 
+#'poker.ERL/close-default-manager
+clj꞉poker.ERL꞉> 
+[[1 2 3 4] [1 2 "hi" "hi"] [1 2 3 "hi"] [1 2 "hi" "hi"]]
+clj꞉poker.ERL꞉> 
+[[2 2 2] [2 2 2] [2 2 2]]
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0xba86a9b "ND: (4, 2) cpu() float32\n[[1., 2.],\n [1., 2.],\n [3., 4.],\n [4., 3.],\n]\n"]]
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x10314306 "ND: (4, 2) cpu() float32\n[[1., 2.],\n [3., 4.],\n [1., 2.],\n [4., 3.],\n]\n"]]
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x22488c4c "ND: (4, 2) cpu() float32\n[[1., 2.],\n [3., 4.],\n [5., 6.],\n [7., 8.],\n]\n"]]
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x7437f033 "ND: (4, 2) cpu() float32\n[[1., 2.],\n [5., 6.],\n [3., 4.],\n [7., 8.],\n]\n"]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/shape
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.types.Shape 0x4eb84e4f "(3, 3)"]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.types.Shape 0x76a44ca2 "(3, 2)"]
+clj꞉poker.ERL꞉> 
+; Syntax error compiling at (src/clojure/poker/ERL.clj:196:3).
+; Unable to resolve symbol: add-gaussian-noise! in this context
+clj꞉poker.ERL꞉> 
+#'poker.ERL/add-gaussian-noise!
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/add-gaussian-noise! (form-init9294421832384377947.clj:192).
+; No matching method set found taking 1 args for class ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.ERL꞉> 
+#'poker.ERL/add-gaussian-noise!
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/add-gaussian-noise! (form-init9294421832384377947.clj:212).
+; No matching method set found taking 1 args for class ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.ERL꞉> 
+#'poker.ERL/add-gaussian-noise!
+clj꞉poker.ERL꞉> 
+#object[[Ljava.lang.Number; 0x77b15ee9 [Ljava.lang.Number;@77b15ee9] #object[[Ljava.lang.Number; 0x2f4ad5f4 [Ljava.lang.Number;@2f4ad5f4] (0.0 7.250490215943009E-6 5.773646550569799E-4 0.03883805878583697)
+; Execution error (IllegalArgumentException) at poker.ERL/add-gaussian-noise! (form-init9294421832384377947.clj:213).
+; No matching method set found taking 1 args for class ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.ERL꞉> 
+[1, 2, 3, 4]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/add-gaussian-noise!
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/add-gaussian-noise! (form-init9294421832384377947.clj:212).
+; No matching method set found taking 1 args for class ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.ERL꞉> 
+#'poker.ERL/add-gaussian-noise!
+clj꞉poker.ERL꞉> 
+#object[[Ljava.lang.Double; 0x36219b32 [Ljava.lang.Double;@36219b32]
+; Execution error (IllegalArgumentException) at poker.ERL/add-gaussian-noise! (form-init9294421832384377947.clj:213).
+; No matching method set found taking 1 args for class ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.ERL꞉> 
+#'poker.ERL/add-gaussian-noise!
+clj꞉poker.ERL꞉> 
+#object[[Ljava.lang.Double; 0x5f42b4b4 [Ljava.lang.Double;@5f42b4b4]
+; Execution error (IllegalArgumentException) at poker.ERL/add-gaussian-noise! (form-init9294421832384377947.clj:213).
+; No matching method set found taking 1 args for class ai.djl.mxnet.engine.MxNDArray
+clj꞉poker.ERL꞉> 
+#'poker.ERL/add-gaussian-noise!
+clj꞉poker.ERL꞉> 
+#object[[Ljava.lang.Double; 0x18bb5cdc [Ljava.lang.Double;@18bb5cdc]
+#object[ai.djl.mxnet.engine.MxNDArray 0x276756cc "This array is already closed"]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/add-gaussian-noise!
+clj꞉poker.ERL꞉> 
+#object[[Ljava.lang.Double; 0x46c9bcdb [Ljava.lang.Double;@46c9bcdb]
+#object[ai.djl.mxnet.engine.MxNDArray 0x44307b2e "This array is already closed"]
+clj꞉poker.ERL꞉> 
+#object[[Ljava.lang.Double; 0x6f8033d4 [Ljava.lang.Double;@6f8033d4]
+#object[ai.djl.mxnet.engine.MxNDArray 0x6e1a8cca ND: (2, 2) cpu() float32
+[[1.    , 2.    ],
+ [2.9993, 3.9683],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[[Ljava.lang.Double; 0x4edee6c0 [Ljava.lang.Double;@4edee6c0]
+#object[ai.djl.mxnet.engine.MxNDArray 0x499ebd8b ND: (2, 2) cpu() float32
+[[1.    , 1.9989],
+ [2.9932, 4.052 ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+java.lang.Long
+clj꞉poker.ERL꞉> 
+java.lang.Double
+clj꞉poker.ERL꞉> 
+#'poker.ERL/add-gaussian-noise!
+clj꞉poker.ERL꞉> 
+#object[[Ljava.lang.Double; 0x72d590b1 [Ljava.lang.Double;@72d590b1]
+#object[ai.djl.mxnet.engine.MxNDArray 0x3b76fc11 ND: (2, 2) cpu() float32
+[[1.    , 2.0001],
+ [3.0132, 4.0695],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+; Syntax error compiling at (src/clojure/poker/ERL.clj:322:15).
+; Unable to resolve symbol: transformer-decoder-block in this context
+clj꞉poker.ERL꞉> 
+#'poker.ERL/transformer-decoder-block
+clj꞉poker.ERL꞉> 
+; Execution error (ClassNotFoundException) at java.lang.Class/forName0 (Class.java:-2).
+; [Shape
+clj꞉poker.ERL꞉> 
+#'poker.ERL/transformer-decoder-block
+clj꞉poker.ERL꞉> 
+; Execution error (ClassNotFoundException) at java.lang.Class/forName0 (Class.java:-2).
+; [Shape
+clj꞉poker.ERL꞉> 
+; Execution error (ClassNotFoundException) at java.lang.Class/forName0 (Class.java:-2).
+; [Long
+clj꞉poker.ERL꞉> 
+; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
+; Long
+clj꞉poker.ERL꞉> 
+java.lang.Long
+clj꞉poker.ERL꞉> 
+java.lang.Long
+clj꞉poker.ERL꞉> 
+ai.djl.ndarray.types.Shape
+clj꞉poker.ERL꞉> 
+; Execution error (ClassNotFoundException) at java.lang.Class/forName0 (Class.java:-2).
+; [ai/djl/ndarray/types/Shape
+clj꞉poker.ERL꞉> 
+; Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:445).
+; Shape
+clj꞉poker.ERL꞉> 
+java.lang.Long
+clj꞉poker.ERL꞉> 
+; Execution error (ClassNotFoundException) at java.lang.Class/forName0 (Class.java:-2).
+; [java/lang/Long
+clj꞉poker.ERL꞉> 
+[J
+clj꞉poker.ERL꞉> 
+[J
+clj꞉poker.ERL꞉> 
+[Lai.djl.ndarray.types.Shape;
+clj꞉poker.ERL꞉> 
+; Execution error (ClassNotFoundException) at java.lang.Class/forName0 (Class.java:-2).
+; [Lai/djl/ndarray/types/Shape
+clj꞉poker.ERL꞉> 
+; Execution error (ClassNotFoundException) at java.lang.Class/forName0 (Class.java:-2).
+; [Lai/djl/ndarray/types/Shape
+clj꞉poker.ERL꞉> 
+; Execution error (ClassNotFoundException) at java.lang.Class/forName0 (Class.java:-2).
+; [Lai/djl/ndarray/types/Shape
+clj꞉poker.ERL꞉> 
+[J
+clj꞉poker.ERL꞉> 
+; Execution error (ClassNotFoundException) at java.lang.Class/forName0 (Class.java:-2).
+; [Ljava/lang/String
+clj꞉poker.ERL꞉> 
+[Ljava.lang.String;
+clj꞉poker.ERL꞉> 
+[Lai.djl.ndarray.types.Shape;
+clj꞉poker.ERL꞉> 
+#'poker.ERL/transformer-decoder-block
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.types.Shape 0x11d18c98 (1, 2, 2)]
+; Execution error (ClassCastException) at poker.ERL/transformer-decoder-block (form-init9294421832384377947.clj:140).
+; class ai.djl.ndarray.types.Shape cannot be cast to class [Lai.djl.ndarray.types.Shape; (ai.djl.ndarray.types.Shape and [Lai.djl.ndarray.types.Shape; are in unnamed module of loader 'app')
+clj꞉poker.ERL꞉> 
+#'poker.ERL/transformer-decoder-block
+clj꞉poker.ERL꞉> 
+["01selfAttention_01keyProjection_weight"
+ "01selfAttention_01keyProjection_bias"
+ "01selfAttention_02queryProjection_weight"
+ "01selfAttention_02queryProjection_bias"
+ "01selfAttention_03valueProjection_weight"
+ "01selfAttention_03valueProjection_bias"
+ "01selfAttention_04resultProjection_weight"
+ "01selfAttention_04resultProjection_bias"
+ "02attentionNorm_gamma"
+ "02attentionNorm_beta"
+ "02attentionNorm_runningMean"
+ "02attentionNorm_runningVar"
+ "03outputBlock_01Linear_weight"
+ "03outputBlock_01Linear_bias"
+ "03outputBlock_03Linear_weight"
+ "03outputBlock_03Linear_bias"
+ "04outputNorm_gamma"
+ "04outputNorm_beta"
+ "04outputNorm_runningMean"
+ "04outputNorm_runningVar"]
+clj꞉poker.ERL꞉> 
+{01selfAttention_04resultProjection_weight #object[ai.djl.mxnet.engine.MxNDArray 0x76413fb3 weight: (2, 2) cpu() float32 hasGradient
+[[ 0.0883, -0.4519],
+ [ 0.5068,  1.7732],
+]
+], 01selfAttention_04resultProjection_bias #object[ai.djl.mxnet.engine.MxNDArray 0x8d2c0e6 bias: (2) cpu() float32 hasGradient
+[0., 0.]
+], 01selfAttention_03valueProjection_weight #object[ai.djl.mxnet.engine.MxNDArray 0x7e0287b0 weight: (2, 2) cpu() float32 hasGradient
+[[-1.4155, -0.9957],
+ [ 0.8124,  0.149 ],
+]
+], 01selfAttention_02queryProjection_bias #object[ai.djl.mxnet.engine.MxNDArray 0x21d773 bias: (2) cpu() float32 hasGradient
+[0., 0.]
+], 02attentionNorm_runningVar #object[ai.djl.mxnet.engine.MxNDArray 0x7f62cc63 runningVar: (2) cpu() float32
+[1., 1.]
+], 04outputNorm_beta #object[ai.djl.mxnet.engine.MxNDArray 0x6129f699 beta: (2) cpu() float32 hasGradient
+[0., 0.]
+], 03outputBlock_01Linear_weight #object[ai.djl.mxnet.engine.MxNDArray 0xb7cc20b weight: (3, 2) cpu() float32 hasGradient
+[[-0.5393, -0.7684],
+ [ 2.7425,  0.9181],
+ [-0.3196,  0.2467],
+]
+], 04outputNorm_runningMean #object[ai.djl.mxnet.engine.MxNDArray 0x5e81658 runningMean: (2) cpu() float32
+[0., 0.]
+], 03outputBlock_01Linear_bias #object[ai.djl.mxnet.engine.MxNDArray 0x6c00c352 bias: (3) cpu() float32 hasGradient
+[0., 0., 0.]
+], 04outputNorm_runningVar #object[ai.djl.mxnet.engine.MxNDArray 0x42b37d75 runningVar: (2) cpu() float32
+[1., 1.]
+], 01selfAttention_01keyProjection_bias #object[ai.djl.mxnet.engine.MxNDArray 0x2f3293b2 bias: (2) cpu() float32 hasGradient
+[0., 0.]
+], 01selfAttention_02queryProjection_weight #object[ai.djl.mxnet.engine.MxNDArray 0x6a2d1ada weight: (2, 2) cpu() float32 hasGradient
+[[ 1.3158,  0.0894],
+ [-0.5703,  2.0406],
+]
+], 03outputBlock_03Linear_bias #object[ai.djl.mxnet.engine.MxNDArray 0xdd5e9e bias: (2) cpu() float32 hasGradient
+[0., 0.]
+], 02attentionNorm_beta #object[ai.djl.mxnet.engine.MxNDArray 0x59dcc325 beta: (2) cpu() float32 hasGradient
+[0., 0.]
+], 02attentionNorm_gamma #object[ai.djl.mxnet.engine.MxNDArray 0x62c874af gamma: (2) cpu() float32 hasGradient
+[1., 1.]
+], 04outputNorm_gamma #object[ai.djl.mxnet.engine.MxNDArray 0x603149e6 gamma: (2) cpu() float32 hasGradient
+[1., 1.]
+], 01selfAttention_01keyProjection_weight #object[ai.djl.mxnet.engine.MxNDArray 0xa72c2d0 weight: (2, 2) cpu() float32 hasGradient
+[[ 1.4203,  0.3626],
+ [-0.4139, -0.3154],
+]
+], 01selfAttention_03valueProjection_bias #object[ai.djl.mxnet.engine.MxNDArray 0x3588ed50 bias: (2) cpu() float32 hasGradient
+[0., 0.]
+], 02attentionNorm_runningMean #object[ai.djl.mxnet.engine.MxNDArray 0x14c48a42 runningMean: (2) cpu() float32
+[0., 0.]
+], 03outputBlock_03Linear_weight #object[ai.djl.mxnet.engine.MxNDArray 0x7e508f45 weight: (2, 3) cpu() float32 hasGradient
+[[-1.9775,  1.1366,  1.3563],
+ [-0.6535, -0.8004,  0.2256],
+]
+]}
+nil
+clj꞉poker.ERL꞉> 
+{"01selfAttention_04resultProjection_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x462e412 "weight: (2, 2) cpu() float32 hasGradient\n[[ 0.6759, -0.3752],\n [ 0.3334, -1.3547],\n]\n"],
+ "01selfAttention_04resultProjection_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x2abe7f0a "bias: (2) cpu() float32 hasGradient\n[0., 0.]\n"],
+ "01selfAttention_03valueProjection_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x64ed837e "weight: (2, 2) cpu() float32 hasGradient\n[[-1.1603, -1.4853],\n [-1.1081,  2.1349],\n]\n"],
+ "01selfAttention_02queryProjection_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x7c1b9e1d "bias: (2) cpu() float32 hasGradient\n[0., 0.]\n"],
+ "02attentionNorm_runningVar"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x4a143bcb "runningVar: (2) cpu() float32\n[1., 1.]\n"],
+ "04outputNorm_beta"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x163fc08a "beta: (2) cpu() float32 hasGradient\n[0., 0.]\n"],
+ "03outputBlock_01Linear_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x3e4c416e "weight: (3, 2) cpu() float32 hasGradient\n[[-0.2642,  0.499 ],\n [ 0.8954,  0.0714],\n [-0.5877,  0.1095],\n]\n"],
+ "04outputNorm_runningMean"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x61e6ad9e "runningMean: (2) cpu() float32\n[0., 0.]\n"],
+ "03outputBlock_01Linear_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0xf79d413 "bias: (3) cpu() float32 hasGradient\n[0., 0., 0.]\n"],
+ "04outputNorm_runningVar"
+ #object[ai.djl.mxnet.engine.MxNDArray 0xab9d1f6 "runningVar: (2) cpu() float32\n[1., 1.]\n"],
+ "01selfAttention_01keyProjection_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x1cf1a358 "bias: (2) cpu() float32 hasGradient\n[0., 0.]\n"],
+ "01selfAttention_02queryProjection_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x1f194dc0 "weight: (2, 2) cpu() float32 hasGradient\n[[ 0.1844,  2.1747],\n [-0.4778, -1.0669],\n]\n"],
+ "03outputBlock_03Linear_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x88a5ad3 "bias: (2) cpu() float32 hasGradient\n[0., 0.]\n"],
+ "02attentionNorm_beta"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x5f2f94d5 "beta: (2) cpu() float32 hasGradient\n[0., 0.]\n"],
+ "02attentionNorm_gamma"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x6b7fa055 "gamma: (2) cpu() float32 hasGradient\n[1., 1.]\n"],
+ "04outputNorm_gamma"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x76b6e1c3 "gamma: (2) cpu() float32 hasGradient\n[1., 1.]\n"],
+ "01selfAttention_01keyProjection_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x4f58f708 "weight: (2, 2) cpu() float32 hasGradient\n[[ 0.5052, -1.3875],\n [-0.2656, -0.0667],\n]\n"],
+ "01selfAttention_03valueProjection_bias"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x7b88c04c "bias: (2) cpu() float32 hasGradient\n[0., 0.]\n"],
+ "02attentionNorm_runningMean"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x7dcf9f03 "runningMean: (2) cpu() float32\n[0., 0.]\n"],
+ "03outputBlock_03Linear_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x5ea4824f "weight: (2, 3) cpu() float32 hasGradient\n[[-0.3962,  0.3465,  0.9688],\n [ 0.2776,  0.2193, -0.5799],\n]\n"]}
+nil
+clj꞉poker.ERL꞉> 
+; Syntax error compiling at (src/clojure/poker/ERL.clj:354:1).
+; Unable to resolve symbol: mul-block in this context
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mul-block
+clj꞉poker.ERL꞉> 
+#object[ai.djl.nn.core.Multiplication 0xb830625 "Multiplication"]
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x4d096cc6 "This array is already closed"]]
+clj꞉poker.ERL꞉> 
+; Execution error (IndexOutOfBoundsException) at ai.djl.ndarray.NDList/singletonOrThrow (NDList.java:246).
+; Incorrect number of elements in NDList.singletonOrThrow: Expected 1 and was 0
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x12c114f4 ND: (2, 6, 2) cpu() float32
+[[[  1.,   2.],
+  [  5.,   6.],
+  [  9.,  10.],
+  [  3.,   4.],
+  [  7.,   8.],
+  [ 11.,  12.],
+ ],
+ [[ 11.,  21.],
+  [ 51.,  61.],
+  [ 91., 101.],
+  [ 31.,  41.],
+  [ 71.,  81.],
+  [111., 121.],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDArray 0x9508cb5 ND: (2, 6, 2) cpu() int32
+[[[  1,   2],
+  [  5,   6],
+  [  9,  10],
+  [  3,   4],
+  [  7,   8],
+  [ 11,  12],
+ ],
+ [[ 11,  21],
+  [ 51,  61],
+  [ 91, 101],
+  [ 31,  41],
+  [ 71,  81],
+  [111, 121],
+ ],
+]
+]
+nil
+clj꞉poker.ERL꞉> 
+[[1 2 3 4] [1 2 0 0] [1 2 3 0] [1 2 0 0]]
+clj꞉poker.ERL꞉> 
+; Syntax error compiling at (src/clojure/poker/ERL.clj:427:13).
+; Unable to resolve symbol: squeeze-block in this context
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mul-block
+clj꞉poker.ERL꞉> 
+#'poker.ERL/squeeze-block
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mul-block
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mask-block
+clj꞉poker.ERL꞉> 
+; Execution error (ClassCastException) at poker.ERL/mask-block (form-init9294421832384377947.clj:427).
+; class clojure.lang.PersistentVector cannot be cast to class [Lai.djl.ndarray.types.Shape; (clojure.lang.PersistentVector and [Lai.djl.ndarray.types.Shape; are in unnamed module of loader 'app')
+clj꞉poker.ERL꞉> 
+#'poker.ERL/process-shape
+clj꞉poker.ERL꞉> 
+#'poker.ERL/process-shape
+clj꞉poker.ERL꞉> 
+#'poker.ERL/process-shape
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.types.Shape 0x75a58b01 "(1, 2)"]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/process-shape
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.types.Shape 0x70a7d6ea "(1, 2)"]
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.ndarray.types.Shape 0x16662050 "(1, 2)"]]
+clj꞉poker.ERL꞉> 
+; Syntax error compiling at (src/clojure/poker/ERL.clj:135:3).
+; Unable to resolve symbol: process-activation in this context
+clj꞉poker.ERL꞉> 
+#'poker.ERL/process-activation
+clj꞉poker.ERL꞉> 
+#object[poker.utils$make_function$reify__17059 0x1761de1 "poker.utils$make_function$reify__17059@1761de1"]
+clj꞉poker.ERL꞉> 
+poker.utils$make_function$reify__17059
+clj꞉poker.ERL꞉> 
+#'poker.ERL/process-datatype
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.types.DataType 0x36cdc506 "float32"]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/transformer-decoder-block
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.types.Shape 0x7f5625ba "(1, 2)"]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mask-block
+clj꞉poker.ERL꞉> 
+; Execution error (AssertionError) at poker.ERL/make-mask (form-init9294421832384377947.clj:370).
+; Assert failed: Shape dimension is too small: shape = [Lai.djl.ndarray.types.Shape;@606f629b
+; (<= 2 (count shape))
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mask-block
+clj꞉poker.ERL꞉> 
+; Execution error (AssertionError) at poker.ERL/make-mask (form-init9294421832384377947.clj:370).
+; Assert failed: Shape dimension is too small: shape = [Lai.djl.ndarray.types.Shape;@1ad0f0f7
+; (<= 2 (count shape))
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mask-block
+clj꞉poker.ERL꞉> 
+; Execution error (ClassCastException) at poker.ERL/mask-block (form-init9294421832384377947.clj:459).
+; class clojure.lang.PersistentVector cannot be cast to class java.lang.Number (clojure.lang.PersistentVector is in unnamed module of loader 'app'; java.lang.Number is in module java.base of loader 'bootstrap')
+clj꞉poker.ERL꞉> 
+clojure.lang.Numbers/float_array (Numbers.java:1230)
+clojure.core/float-array (core.clj:5307)
+clojure.core/float-array (core.clj:5302)
+poker.ERL/mask-block (form-init9294421832384377947.clj:459)
+poker.ERL/mask-block (form-init9294421832384377947.clj:449)
+poker.ERL/eval52383 (form-init9294421832384377947.clj:461)
+clojure.lang.Compiler/eval (Compiler.java:7194)
+clojure.core/eval (core.clj:3215)
+clojure.core/eval (core.clj:3211)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:87)
+clojure.core/apply (core.clj:667)
+clojure.core/with-bindings* (core.clj:1990)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:87)
+clojure.main/repl (main.clj:437)
+clojure.main/repl (main.clj:458)
+clojure.main/repl (main.clj:368)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:84)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:56)
+nrepl.middleware.interruptible-eval/interruptible-eval (interruptible_eval.clj:152)
+nrepl.middleware.session/session-exec (session.clj:218)
+nrepl.middleware.session/session-exec (session.clj:217)
+java.lang.Thread/run (Thread.java:1589)
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mask-block
+clj꞉poker.ERL꞉> 
+#object[ai.djl.nn.SequentialBlock 0x6e8e36aa "SequentialBlock {\n\tMultiplication(3, 3) -> (1, 3, 3)\n\tLambdaBlock(1, 3, 3) -> (3, 3)\n}"]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mask-block
+clj꞉poker.ERL꞉> 
+{01Multiplication_weight #object[ai.djl.mxnet.engine.MxNDArray 0x520a9b1b weight: (1, 1, 3) cpu() float32 hasGradient
+[[[-0.6095,  0.5256,  0.271 ],
+ ],
+]
+]}
+#object[ai.djl.nn.SequentialBlock 0x1c406508 "SequentialBlock {\n\tMultiplication(3, 3) -> (1, 3, 3)\n\tLambdaBlock(1, 3, 3) -> (3, 3)\n}"]
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.ndarray.types.Shape 0x2ce02688 "(3, 3)"]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mul
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/eval52397 (form-init9294421832384377947.clj:466).
+; No matching method intialize found taking 3 args for class ai.djl.nn.core.Multiplication
+clj꞉poker.ERL꞉> 
+#object[ai.djl.mxnet.engine.MxNDManager 0x20c105d0 "Name: 83860e3d-9051-4a38-8ec1-3e54d22eb697 Parent Name: df0234e8-add2-4070-a44d-7b7e19b87e45 isOpen: true Resource size: 23"]
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/eval52399 (form-init9294421832384377947.clj:467).
+; No matching method intialize found taking 3 args for class ai.djl.nn.core.Multiplication
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.ndarray.types.Shape 0x44d68457 "(3, 3)"]]
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/eval52403 (form-init9294421832384377947.clj:467).
+; No matching method intialize found taking 3 args for class ai.djl.nn.core.Multiplication
+clj꞉poker.ERL꞉> 
+#object[ai.djl.nn.core.Multiplication 0x49a78db9 "Multiplication"]
+clj꞉poker.ERL꞉> 
+; Execution error (IllegalArgumentException) at poker.ERL/eval52405 (form-init9294421832384377947.clj:467).
+; No matching method intialize found taking 3 args for class ai.djl.nn.core.Multiplication
+clj꞉poker.ERL꞉> 
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.nn.core.Multiplication 0x49a78db9 "Multiplication(3, 3) -> (1, 3, 3)"]
+clj꞉poker.ERL꞉> 
+{"weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x13f1ffde "weight: (1, 1, 3) cpu() float32 hasGradient\n[[[-0.8483,  1.6204,  1.1642],\n ],\n]\n"]}
+clj꞉poker.ERL꞉> 
+#object[ai.djl.nn.core.Multiplication 0x49a78db9 "Multiplication(3, 3) -> (1, 3, 3)"]
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x35014a95 "ND: (1, 3, 3) cpu() float32\n[[[-0.8483,  1.6204,  1.1642],\n  [-0.8483,  1.6204,  1.1642],\n  [-0.8483,  1.6204,  1.1642],\n ],\n]\n"]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mul
+clj꞉poker.ERL꞉> 
+nil
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x13eb4334 "ND: (1, 3, 3) cpu() float32\n[[[ 0.5739,  0.2744, -1.3177],\n  [ 0.5739,  0.2744, -1.3177],\n  [ 0.5739,  0.2744, -1.3177],\n ],\n]\n"]]
+clj꞉poker.ERL꞉> 
+{"weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x548c5728 "weight: (1, 1, 3) cpu() float32 hasGradient\n[[[ 0.5739,  0.2744, -1.3177],\n ],\n]\n"]}
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mul
+clj꞉poker.ERL꞉> 
+; Execution error (UninitializedParameterException) at ai.djl.nn.Parameter/getArray (Parameter.java:133).
+; The array for parameter "weight" has not been initialized
+clj꞉poker.ERL꞉> 
+nil
+clj꞉poker.ERL꞉> 
+{"weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x58769894 "weight: (3, 1, 3) cpu() float32 hasGradient\n[[[-0.0751, -0.1512,  1.7681],\n ],\n [[ 0.2904,  0.2129,  0.0249],\n ],\n [[ 0.655 ,  0.9518,  1.2046],\n ],\n]\n"]}
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x3f1a844c "ND: (3, 3, 3) cpu() float32\n[[[-0.0751, -0.1512,  1.7681],\n  [-0.0751, -0.1512,  1.7681],\n  [-0.0751, -0.1512,  1.7681],\n ],\n [[ 0.2904,  0.2129,  0.0249],\n  [ 0.2904,  0.2129,  0.0249],\n  [ 0.2904,  0.2129,  0.0249],\n ],\n [[ 0.655 ,  0.9518,  1.2046],\n  [ 0.655 ,  0.9518,  1.2046],\n  [ 0.655 ,  0.9518,  1.2046],\n ],\n]\n"]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mul
+clj꞉poker.ERL꞉> 
+nil
+clj꞉poker.ERL꞉> 
+{"weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x3e52aac9 "weight: (1, 1, 3, 3) cpu() float32 hasGradient\n[[[[-0.5978, -0.3553, -0.0068],\n   [-1.0621, -0.5147,  0.109 ],\n   [ 0.168 ,  0.8055, -0.8309],\n  ],\n ],\n]\n"]}
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x902cf93 "ND: (1, 1, 3, 3) cpu() float32\n[[[[-0.5978, -0.3553, -0.0068],\n   [-1.0621, -0.5147,  0.109 ],\n   [ 0.168 ,  0.8055, -0.8309],\n  ],\n ],\n]\n"]]
+clj꞉poker.ERL꞉> 
+{01Multiplication_weight #object[ai.djl.mxnet.engine.MxNDArray 0x2457ef8e weight: (1, 1, 3, 3) cpu() float32 hasGradient
+[[[[ 0.219 , -0.3428,  0.3567],
+   [-0.3361, -0.2948,  0.7267],
+   [-0.2779, -0.3306,  0.2158],
+  ],
+ ],
+]
+]}
+#object[ai.djl.nn.SequentialBlock 0x5c43f1d8 "SequentialBlock {\n\tMultiplication(1, 3, 3) -> (1, 1, 3, 3)\n\tLambdaBlock(1, 1, 3, 3) -> (1, 3, 3)\n}"]
+clj꞉poker.ERL꞉> 
+{01Multiplication_weight #object[ai.djl.mxnet.engine.MxNDArray 0x6a574e9a weight: (1, 1, 3) cpu() float32 hasGradient
+[[[1.1409, 1.5788, 1.0621],
+ ],
+]
+]}
+#object[ai.djl.nn.SequentialBlock 0x1df3f3d4 "SequentialBlock {\n\tMultiplication(3, 3) -> (1, 3, 3)\n\tLambdaBlock(1, 3, 3) -> (3, 3)\n}"]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mask-block
+clj꞉poker.ERL꞉> 
+#object[ai.djl.nn.SequentialBlock 0x38de8197 "SequentialBlock {\n\tMultiplication(1, 3, 3) -> (1, 1, 3, 3)\n\tLambdaBlock(1, 1, 3, 3) -> (1, 3, 3)\n}"]
+clj꞉poker.ERL꞉> 
+; Execution error (AssertionError) at poker.ERL/mask-block (form-init9294421832384377947.clj:455).
+; Assert failed: Shape size too small. Must be at least [B F E]. Shape: [3 3]
+; (>= (count input-shape) 3)
+clj꞉poker.ERL꞉> 
+{"01Multiplication_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x11c29f6b "weight: (1, 1, 3, 3) cpu() float32 hasGradient\n[[[[1., 0., 0.],\n   [1., 1., 0.],\n   [1., 1., 1.],\n  ],\n ],\n]\n"]}
+nil
+clj꞉poker.ERL꞉> 
+{"01Multiplication_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x2aff088 "weight: (1, 1, 3, 3) cpu() float32 hasGradient\n[[[[1., 0., 0.],\n   [1., 1., 0.],\n   [1., 1., 1.],\n  ],\n ],\n]\n"]}
+nil
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mask-block
+clj꞉poker.ERL꞉> 
+; Execution error (ClassCastException) at poker.ERL/make-mask (form-init9294421832384377947.clj:374).
+; class clojure.lang.LazySeq cannot be cast to class clojure.lang.IFn (clojure.lang.LazySeq and clojure.lang.IFn are in unnamed module of loader 'app')
+clj꞉poker.ERL꞉> 
+#'poker.ERL/make-mask
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mask-block
+clj꞉poker.ERL꞉> 
+{"01Multiplication_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x5b1168d3 "weight: (1, 1, 3, 3) cpu() float32 hasGradient\n[[[[1., 0., 0.],\n   [1., 1., 0.],\n   [1., 1., 1.],\n  ],\n ],\n]\n"]}
+nil
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.NDList 0x1db61f34 NDList size: 0
+]
+#object[ai.djl.ndarray.NDList 0x5ac430de NDList size: 0
+]
+#object[ai.djl.ndarray.NDList 0x671c2db0 NDList size: 0
+]
+(nil nil nil)
+clj꞉poker.ERL꞉> 
+[]
+clj꞉poker.ERL꞉> 
+[]
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x3199ab52 "ND: (1, 2) cpu() float32\n[[1., 2.],\n]\n"]]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.ndarray.NDList 0x42475450 NDList size: 1
+0 : (1, 2) float32
+]
+#object[ai.djl.ndarray.NDList 0x66519c4f NDList size: 1
+0 : (1, 1, 2) float32
+]
+#object[ai.djl.ndarray.NDList 0x1b30ee50 NDList size: 1
+0 : (2) float32
+]
+(nil nil nil)
+clj꞉poker.ERL꞉> 
+#'poker.ERL/parallel-mask
+clj꞉poker.ERL꞉> 
+[[1 0 1 0 1 0] [1 0 1 0 1 0] [1 0 1 0 1 0]]
+clj꞉poker.ERL꞉> 
+[[[1 1 1] [0 0 0] [1 1 1] [0 0 0] [1 1 1] [0 0 0]]
+ [[1 1 1] [0 0 0] [1 1 1] [0 0 0] [1 1 1] [0 0 0]]
+ [[1 1 1] [0 0 0] [1 1 1] [0 0 0] [1 1 1] [0 0 0]]]
+clj꞉poker.ERL꞉> 
+[[[1 1 1] [1 1 1] [1 1 1] [1 1 1] [1 1 1] [1 1 1]]
+ [[1 1 1] [1 1 1] [1 1 1] [1 1 1] [1 1 1] [1 1 1]]
+ [[1 1 1] [1 1 1] [1 1 1] [1 1 1] [1 1 1] [1 1 1]]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/parallel-mask
+clj꞉poker.ERL꞉> 
+; Execution error (ArithmeticException) at poker.ERL/parallel-mask$get-value (form-init9294421832384377947.clj:440).
+; Divide by zero
+clj꞉poker.ERL꞉> 
+0
+clj꞉poker.ERL꞉> 
+#'poker.ERL/parallel-mask
+clj꞉poker.ERL꞉> 
+[[[0 0 0] [0 0 0] [0 0 0] [0 0 0] [0 0 0] [0 0 0]]
+ [[0 0 0] [0 0 0] [0 0 0] [0 0 0] [0 0 0] [0 0 0]]
+ [[0 0 0] [0 0 0] [0 0 0] [0 0 0] [0 0 0] [0 0 0]]]
+clj꞉poker.ERL꞉> 
+[[[0 0 0] [1 1 1] [1 1 1] [0 0 0] [1 1 1] [1 1 1]]
+ [[0 0 0] [1 1 1] [1 1 1] [0 0 0] [1 1 1] [1 1 1]]
+ [[0 0 0] [1 1 1] [1 1 1] [0 0 0] [1 1 1] [1 1 1]]]
+clj꞉poker.ERL꞉> 
+; Execution error (ArithmeticException) at poker.ERL/parallel-mask (form-init9294421832384377947.clj:437).
+; Divide by zero
+clj꞉poker.ERL꞉> 
+clojure.lang.Numbers/remainder (Numbers.java:204)
+clojure.core/mod (core.clj:3572)
+clojure.core/mod (core.clj:3567)
+poker.ERL/parallel-mask (form-init9294421832384377947.clj:437)
+poker.ERL/parallel-mask (form-init9294421832384377947.clj:430)
+poker.ERL/eval52631 (form-init9294421832384377947.clj:446)
+clojure.lang.Compiler/eval (Compiler.java:7194)
+clojure.core/eval (core.clj:3215)
+clojure.core/eval (core.clj:3211)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:87)
+clojure.core/apply (core.clj:667)
+clojure.core/with-bindings* (core.clj:1990)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:87)
+clojure.main/repl (main.clj:437)
+clojure.main/repl (main.clj:458)
+clojure.main/repl (main.clj:368)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:84)
+nrepl.middleware.interruptible-eval/evaluate (interruptible_eval.clj:56)
+nrepl.middleware.interruptible-eval/interruptible-eval (interruptible_eval.clj:152)
+nrepl.middleware.session/session-exec (session.clj:218)
+nrepl.middleware.session/session-exec (session.clj:217)
+java.lang.Thread/run (Thread.java:1589)
+clj꞉poker.ERL꞉> 
+; Execution error (ArithmeticException) at poker.ERL/parallel-mask (form-init9294421832384377947.clj:437).
+; Divide by zero
+clj꞉poker.ERL꞉> 
+#'poker.ERL/parallel-mask
+clj꞉poker.ERL꞉> 
+; Execution error (ArithmeticException) at poker.ERL/parallel-mask (form-init9294421832384377947.clj:437).
+; Divide by zero
+clj꞉poker.ERL꞉> 
+; Execution error (ArithmeticException) at poker.ERL/eval52642 (form-init9294421832384377947.clj:448).
+; Divide by zero
+clj꞉poker.ERL꞉> 
+#'poker.ERL/parallel-mask
+clj꞉poker.ERL꞉> 
+[[[0 0 0] [1 1 1] [1 1 1] [0 0 0] [1 1 1] [1 1 1]]
+ [[0 0 0] [1 1 1] [1 1 1] [0 0 0] [1 1 1] [1 1 1]]
+ [[0 0 0] [1 1 1] [1 1 1] [0 0 0] [1 1 1] [1 1 1]]]
+clj꞉poker.ERL꞉> 
+[[[1 1 1] [0 0 0] [1 1 1] [1 1 1] [0 0 0] [1 1 1]]
+ [[1 1 1] [0 0 0] [1 1 1] [1 1 1] [0 0 0] [1 1 1]]
+ [[1 1 1] [0 0 0] [1 1 1] [1 1 1] [0 0 0] [1 1 1]]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/parallel-mask
+clj꞉poker.ERL꞉> 
+[[[0 0 0] [1 1 1] [0 0 0] [0 0 0] [1 1 1] [0 0 0]]
+ [[0 0 0] [1 1 1] [0 0 0] [0 0 0] [1 1 1] [0 0 0]]
+ [[0 0 0] [1 1 1] [0 0 0] [0 0 0] [1 1 1] [0 0 0]]]
+clj꞉poker.ERL꞉> 
+; Syntax error compiling at (src/clojure/poker/ERL.clj:533:44).
+; Unable to resolve symbol: parallel-mask-block in this context
+clj꞉poker.ERL꞉> 
+#'poker.ERL/parallel-mask-block
+clj꞉poker.ERL꞉> 
+; Execution error (NullPointerException) at poker.ERL/set-parameter! (form-init9294421832384377947.clj:344).
+; Cannot invoke "Object.getClass()" because "target" is null
+clj꞉poker.ERL꞉> 
+#'poker.ERL/parallel-mask-block
+clj꞉poker.ERL꞉> 
+; Execution error (NullPointerException) at poker.ERL/get-parameters (form-init9294421832384377947.clj:361).
+; Cannot invoke "Object.getClass()" because "target" is null
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mask-block
+clj꞉poker.ERL꞉> 
+#'poker.ERL/parallel-mask-block
+clj꞉poker.ERL꞉> 
+#'poker.ERL/parallel-mask-block
+clj꞉poker.ERL꞉> 
+{01Multiplication_weight #object[ai.djl.mxnet.engine.MxNDArray 0x619418bf weight: (1, 1, 6, 3) cpu() float32 hasGradient
+[[[[ 0.1923,  0.031 ,  0.149 ],
+   [ 0.0269,  0.0918,  0.0604],
+   [ 0.1105,  0.244 , -0.3007],
+   [-0.0284,  0.1793,  0.004 ],
+   [ 0.0351, -0.2377,  0.3316],
+   [-0.1664, -0.4112, -0.2052],
+  ],
+ ],
+]
+]}
+{"01Multiplication_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x619418bf "weight: (1, 1, 6, 3) cpu() float32 hasGradient\n[[[[1., 1., 1.],\n   [0., 0., 0.],\n   [0., 0., 0.],\n   [1., 1., 1.],\n   [0., 0., 0.],\n   [0., 0., 0.],\n  ],\n ],\n]\n"]}
+nil
+clj꞉poker.ERL꞉> 
+#'poker.ERL/parallel-mask-block
+clj꞉poker.ERL꞉> 
+{"01Multiplication_weight"
+ #object[ai.djl.mxnet.engine.MxNDArray 0x4e4cf1c0 "weight: (1, 1, 6, 3) cpu() float32 hasGradient\n[[[[1., 1., 1.],\n   [0., 0., 0.],\n   [0., 0., 0.],\n   [1., 1., 1.],\n   [0., 0., 0.],\n   [0., 0., 0.],\n  ],\n ],\n]\n"]}
+nil
+clj꞉poker.ERL꞉> 
+; Execution error (ClassCastException) at poker.ERL/eval52891 (form-init9294421832384377947.clj:540).
+; class clojure.lang.PersistentVector cannot be cast to class [I (clojure.lang.PersistentVector is in unnamed module of loader 'app'; [I is in module java.base of loader 'bootstrap')
+clj꞉poker.ERL꞉> 
+#object[ai.djl.basicmodelzoo.basic.Mlp 0x32c9b4ab "Mlp {\n\tbatchFlatten\n\tLinear\n\tLambdaBlock\n\tLinear\n}"]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mlp
+clj꞉poker.ERL꞉> 
+; Execution error (UninitializedParameterException) at ai.djl.nn.Parameter/getArray (Parameter.java:133).
+; The array for parameter "weight" has not been initialized
+clj꞉poker.ERL꞉> 
+nil
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x44cd82dd "ND: (1, 2) cpu() float32\n[[-0.6691,  0.2568],\n]\n"]]
+clj꞉poker.ERL꞉> 
+#'poker.ERL/mlp
+clj꞉poker.ERL꞉> 
+nil
+clj꞉poker.ERL꞉> 
+[#object[ai.djl.mxnet.engine.MxNDArray 0x70c5c9ee "ND: (2, 2) cpu() float32\n[[-0.7089, -0.0094],\n [-0.7089, -0.0094],\n]\n"]]
+clj꞉poker.ERL꞉> 
+#object[ai.djl.basicmodelzoo.basic.Mlp 0x3242cd9c "Mlp {\n\tbatchFlatten(2, 1, 2) -> (2, 2)\n\tLinear(2, 2) -> (2, 4)\n\tLambdaBlock(2, 4) -> (2, 4)\n\tLinear(2, 4) -> (2, 2)\n}"]
+clj꞉poker.ERL꞉> 

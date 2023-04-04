@@ -2,18 +2,18 @@
  * Decompiled with CFR 0.152.
  * 
  * Could not load the following classes:
- *  ai.djl.ndarray.NDArray
  *  ai.djl.ndarray.NDManager
  *  ai.djl.nn.AbstractBlock
  *  ai.djl.nn.Block
  *  ai.djl.nn.norm.BatchNorm
  *  ai.djl.nn.norm.Dropout
- *  ai.djl.nn.transformer.PointwiseFeedForwardBlock
  *  ai.djl.util.PairList
+ *  java.lang.Integer
  *  java.lang.Object
  *  java.lang.String
  *  java.util.Collection
  *  java.util.Collections
+ *  java.util.List
  *  java.util.function.Function
  */
 package ai.djl.nn.transformer;
@@ -33,6 +33,7 @@ import ai.djl.training.ParameterStore;
 import ai.djl.util.PairList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 
 public class TransformerEncoderBlock
@@ -48,7 +49,7 @@ extends AbstractBlock {
         this.selfAttentionBlock = (ScaledDotProductAttentionBlock)this.addChildBlock("selfAttention", (Block)ScaledDotProductAttentionBlock.builder().setEmbeddingSize(embeddingSize).setHeadCount(headCount).optAttentionProbsDropoutProb(dropoutProbability).build());
         this.selfAttentionDropout = Dropout.builder().optRate(dropoutProbability).build();
         this.attentionNorm = (BatchNorm)this.addChildBlock("attentionNorm", (Block)BatchNorm.builder().optAxis(2).build());
-        this.pointWisefullyConnected = (PointwiseFeedForwardBlock)this.addChildBlock("outputBlock", (Block)new PointwiseFeedForwardBlock(Collections.singletonList((Object)hiddenSize), embeddingSize, activationFunction));
+        this.pointWisefullyConnected = (PointwiseFeedForwardBlock)this.addChildBlock("outputBlock", (Block)new PointwiseFeedForwardBlock((List<Integer>)Collections.singletonList((Object)hiddenSize), embeddingSize, activationFunction));
         this.fullyConnectedDropout = Dropout.builder().optRate(dropoutProbability).build();
         this.outputNorm = (BatchNorm)this.addChildBlock("outputNorm", (Block)BatchNorm.builder().optAxis(2).build());
     }
