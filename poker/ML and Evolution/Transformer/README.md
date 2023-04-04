@@ -1,12 +1,10 @@
 # Transformer Paper Descriptions
-## Attention is All You Need
+## [Attention is All You Need](Attention%20is%20All%20You%20Need.pdf)
 Pioneer paper in transformers. 
 
 Explains why transformers are better than LSTMs
 
 Uses a 6xEncoder -> 6xDecoder architecture
-
-[This link](Attention%20is%20All%20You%20Need.pdf)
 ## BERT- Pre-training of Deep Bidirectional Transformers for Language Understanding
 ## Decision Transformer - Reinforcement Learning via Sequence Modeling
 First paper to apply transformers to RL. 
