@@ -17,7 +17,10 @@ Able to display different skill levels during inference by controlling the value
 ## Deep Reinforcement Learning with Swin Transformer
 ## Deep Transformer Q-Networks for Partially Observable Reinforcement Learning
 ## Dropout - A Simple Way to Prevent Neural Networks from Overfitting
+A description of dropout, where weights in a network are randomly set to zero during each training iteration. Helps prevent weights from coadapting, helps prevent the network from being too brittle, helps the network learn generalizable features.
+Dropout is used in transformers
 ## Improving Language Understanding by Generative Pre-Training
+GPT2 architecture - 12x transformer decoder layer
 ## Language Models are Few Shot Learners
 ## Language Models are Unsupervised Multitask Learners
 ## Multi-Agent Reinforcement Learning is A Sequence Modeling Problem
@@ -29,4 +32,6 @@ Able to display different skill levels during inference by controlling the value
 ## The Sensory Neuron as a Transformer- Permutation-Invariant Neural Networks for Reinforcement Learning
 ## Transformer Based Reinforcement Learning For Games
 ## Transformer Models - An Introduction and Catalog
+Catalogs and introduces different types of transformers. 
+Explains different pretraining methods
 ## Transformer-based Working Memory for Multiagent Reinforcement Learning with Action Parsing
