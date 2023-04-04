@@ -1,13 +1,18 @@
 # Transformer Paper Descriptions
 ## Attention is All You Need
 Pioneer paper in transformers. 
+
 Explains why transformers are better than LSTMs
+
 Uses a 6xEncoder -> 6xDecoder architecture
 ## BERT- Pre-training of Deep Bidirectional Transformers for Language Understanding
 ## Decision Transformer - Reinforcement Learning via Sequence Modeling
 First paper to apply transformers to RL. 
+
 Offline RL formulated as a sequence modeling problem - model the sequence (R S A ...) obtained from random walk where R = reward-to-go, S = state, A = action
+
 Trained to accurately predict A given previous sequence.
+
 Able to display different skill levels during inference by controlling the value of R
 ## Deep Reinforcement Learning with Swin Transformer
 ## Deep Transformer Q-Networks for Partially Observable Reinforcement Learning
