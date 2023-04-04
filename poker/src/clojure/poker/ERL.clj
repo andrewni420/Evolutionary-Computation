@@ -20,6 +20,8 @@
            ai.djl.ndarray.types.DataType
            ai.djl.ndarray.types.Shape
            ai.djl.ndarray.NDArray
+           ai.djl.nn.SequentialBlock
+           ai.djl.nn.LambdaBlock
            ai.djl.nn.Activation
            java.lang.Class))
 
@@ -79,6 +81,10 @@
          "string" DataType/STRING
          "uint8" DataType/UINT8
          DataType/UNKNOWN))
+
+(def relu-function 
+  "Returns a java Function that applies the relu activation function"
+  (utils/make-function #(Activation/relu %)))
 
 (defn new-default-manager 
   "Defines m as a new base manager"
@@ -144,6 +150,16 @@
     d))
 
 #_(process-datatype "float")
+
+(defn linear
+  "Creates a linear block with a given amount of units\\
+   -> Linear"
+  [units & {:keys [bias?]
+            :or {bias? true}}]
+  (-> (ai.djl.nn.core.Linear/builder)
+      (.setUnits units)
+      (.optBias bias?)
+      (.build)))
 
 (defn transformer-decoder-block
   "Creates and initializes transformer decoder block.\\
@@ -468,19 +484,19 @@
    -> LambdaBlock"
   [& {:keys [axis]
       :or {axis 0}}]
-  (ai.djl.nn.LambdaBlock.
+  (LambdaBlock.
    (utils/make-function #(nd/ndlist (.squeeze (.singletonOrThrow %) axis)))))
 
 
 (defn mask-block
   "Creates and initializes a mul-squeeze block for masking\\
-   input-shape: [B F1 F2] or higher dimension\\
+   input-shape: vector [B F1 F2] or higher dimension\\
    creates a [1 1 F1 F2] lower triangular masking block\\
    -> Block"
   [manager input-shape & {:keys [datatype]
                           :or {datatype DataType/FLOAT32}}]
   (assert (>= (count input-shape) 3) (str "Shape size too small. Must be at least [B F E]. Shape: " input-shape))
-  (let [s (ai.djl.nn.SequentialBlock.)]
+  (let [s (SequentialBlock.)]
     (.add s (mul-block))
     (.add s (squeeze-block))
     (.initializeChildBlocks s
@@ -516,7 +532,7 @@
 
 (defn parallel-mask-block
   "Creates a parallel mask to zero out every nth item starting from an i<n\\
-   input-shape: [B F] or higher dimension\\
+   input-shape: vector [B F] or higher dimension\\
    creates a [1 1 F] or more parallel masking block\\
    -> Block"
   [manager input-shape & {:keys [datatype axis arrfn n i]
@@ -537,6 +553,53 @@
 #_(with-open [m (nd/new-base-manager)]
     (clojure.pprint/pprint (get-parameters (parallel-mask-block m [2 6 3]))))
 
+(defn create-mlp 
+  "Given an output size and any number of hidden-sizes, creates but does not initialize a multilayer perceptron\\
+   Structure: sequential Nx(Linear -> Activation) -> Linear\\
+   bias: Whether to include bias for all linear blocks\\
+   -> Block"
+  [output-size & {:keys [hidden-sizes activation-function bias?]
+                                 :or {hidden-sizes []
+                                      bias? true
+                                      activation-function relu-function}}]
+  (let [s (SequentialBlock.)]
+    (run! #(.add s %)
+          (reduce #(conj %1
+                         (linear %2 :bias? bias?)
+                         (process-activation activation-function))
+                  []
+                  hidden-sizes))
+    (.add s (linear output-size :bias?  bias?))
+    s))
+
+
+#_(let [mlp (create-mlp 2 :hidden-sizes [4] :bias? true)] 
+  (.initializeChildBlocks
+   mlp
+   m
+   ai.djl.ndarray.types.DataType/FLOAT32
+   (into-array ai.djl.ndarray.types.Shape [(nd/new-shape [2 2])]))
+  (println (get-parameters mlp)))
+
+
+(defn n-fold-embedding-block
+  "A block that applies a multilayer perceptron to every nth item along the given axis\\
+   input -> parallel nx(mask - mlp) -> add -> output\\
+   -> Block"
+  [manager input-shape & {:keys [datatype axis arrfn n i hidden-sizes activation-function]
+                          :or {datatype DataType/FLOAT32
+                               axis -2
+                               n 3
+                               hidden-sizes (into [] (repeat n []))
+                               activation-function (utils/make-function #(Activation/relu %))
+                               arrfn float-array}}]
+  ())
+
+
+(def test-block (parallel-mask-block m [1 6 3]))
+
+
+
 (defn mlp-block
   [manager input-shape ])
 
@@ -548,10 +611,23 @@ mlp
 ai.djl.ndarray.types.DataType/FLOAT32
 (into-array ai.djl.ndarray.types.Shape [(nd/new-shape [2 1 2])]))
 
+
+(shape [[[1 1 1]
+         [2 2 2]
+         [3 3 3]
+         [4 4 4]
+         [5 5 5]
+         [6 6 6]]])
+
 (.forward
- mlp
+ test-block
  (ai.djl.training.ParameterStore.)
- (poker.ERL/ndlist m float-array [[[1 1]][[1 1]]])
+ (poker.ERL/ndlist m float-array [[[1 1 1]
+                                   [2 2 2]
+                                   [3 3 3]
+                                   [4 4 4]
+                                   [5 5 5]
+                                   [6 6 6]]])
  false
  nil)
 

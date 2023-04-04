@@ -82,7 +82,7 @@ public class TransformerDecoderBlock extends AbstractBlock {
         this.outputNorm = addChildBlock("outputNorm", BatchNorm.builder().optAxis(2).build());
     }
 
-    private NDArray initializeMask(Shape inputShape){
+    private void initializeMask(Shape inputShape){
         int B = (int) inputShape.get(0);
         int F = (int) inputShape.get(1);
         try (NDManager m = NDManager.newBaseManager();)
