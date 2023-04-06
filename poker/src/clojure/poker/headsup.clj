@@ -100,7 +100,6 @@
 
 #_(make-move (init-game) [] :verbosity 1)
 
-
 (defn check-active-players
   "Checks to see if there is only one active player left in the game.
    If so, awards that player the pot and ends the game\\
