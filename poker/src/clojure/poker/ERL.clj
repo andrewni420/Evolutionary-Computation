@@ -586,7 +586,6 @@ ai.djl.ndarray.NDManager/newBaseManager
     (.add s (linear output-size :bias?  bias?))
     s))
 
-
 #_(let [mlp (create-mlp 2 :hidden-sizes [4] :bias? true)] 
   (.initializeChildBlocks
    mlp
