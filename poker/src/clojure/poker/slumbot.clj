@@ -1,6 +1,8 @@
 (ns poker.slumbot
   (:require [libpython-clj2.require :refer [require-python]]
             [libpython-clj2.python :as py :refer [py. py.. py.-]]
+            [clojure.pprint :as pprint]
+            [clojure.string :as string]
             [poker.utils :as utils]
             [poker.headsup :as headsup]))
 
@@ -25,7 +27,7 @@
 
 (defn handle-post-error [r]
   (if (not= 200 (py/get-attr r "status_code"))
-    (clojure.pprint/pprint {:r r
+    (pprint/pprint {:r r
                             :error "ERROR"
                             :json (try ((r "json"))
                                        (catch Exception e e))}) nil))
@@ -35,7 +37,7 @@
        (catch Exception e (println "Can't get json" e))))
 
 (defn handle-r-error [r input]
-  (when (r "error_msg") (clojure.pprint/pprint {:error "ERROR"
+  (when (r "error_msg") (pprint/pprint {:error "ERROR"
                                                 :r r
                                                 :input input})))
 
@@ -131,7 +133,7 @@
   "Encode the actions in a game for interface with SlumBot\\
    -> string"
   [action-history]
-  (clojure.string/join "/" (map-indexed #(encode-round %2 (if (= 0 %1) [0.5 1.0] [0.0 0.0])) action-history)))
+  (string/join "/" (map-indexed #(encode-round %2 (if (= 0 %1) [0.5 1.0] [0.0 0.0])) action-history)))
 
 
 (defn decode-action
@@ -141,7 +143,7 @@
    (condp = (first action)
      \c ["Call" (- current-bet (bet-values current-player))]
      \k ["Check" 0.0]
-     \b (let [value (/ (read-string (clojure.string/join (rest action))) slumbot-bb)]
+     \b (let [value (/ (read-string (string/join (rest action))) slumbot-bb)]
           (cond
             (zero? (- (+ money (bet-values current-player)) value))
             ["All-In" money]
@@ -198,7 +200,7 @@
   "Decodes a string of actions from a slumbot game\\
    -> [round = [action = [action-type spent-money] ...] ...]"
   [action-history]
-  (let [round-actions (clojure.string/split action-history #"/")]
+  (let [round-actions (string/split action-history #"/")]
     (loop [i 0
            decoded-actions []
            money [slumbot-start-bb slumbot-start-bb]]
@@ -216,7 +218,7 @@
   "Returns the last action taken from a round of actions received from slumbot\\
    -> string"
   [action]
-  (let [last-round (last (clojure.string/split action #"/"))]
+  (let [last-round (last (string/split action #"/"))]
     (loop [[_ a r] [nil nil last-round]]
       (if (empty? r)
         a
@@ -258,7 +260,7 @@
         client-pos (r "client_pos")
         game-state (assoc game-state
                           :hands (assoc hands
-                                        client-pos (map utils/parse-card
+                                        client-pos (map parse-card
                                                         (r "bot_hole_cards"))))
         game-state (if (not= "Fold" (utils/fsecond (last (last action-history))))
                      (headsup/showdown game-state)
@@ -266,11 +268,11 @@
     (assoc game-state
            :players (assoc players
                            client-pos (utils/set-money (players client-pos)
-                                                       (- utils/slumbot-start-bb
-                                                          (/ w utils/slumbot-bb)))
+                                                       (- slumbot-start-bb
+                                                          (/ w slumbot-bb)))
                            (- 1 client-pos) (utils/set-money (players (- 1 client-pos))
-                                                             (+ utils/slumbot-start-bb
-                                                                (/ w utils/slumbot-bb))))
+                                                             (+ slumbot-start-bb
+                                                                (/ w slumbot-bb))))
            :game-over true)))
 
 
@@ -282,7 +284,7 @@
    game-state: current game state\\
    -> game-state"
   [r game-state]
-  (let [_ (if (r "error_msg") (clojure.pprint/pprint {:error "ERROR"
+  (let [_ (if (r "error_msg") (pprint/pprint {:error "ERROR"
                                                       :r r
                                                       :game-state game-state}) nil)
         old-action (r "old_action")
@@ -291,20 +293,20 @@
                                 action)
                        2)
                   (catch Exception e (println (.toString e) r game-state)))
-        board (map utils/parse-card (r "board"))
-        client-hand (map utils/parse-card (r "hole_cards"))
+        board (map parse-card (r "board"))
+        client-hand (map parse-card (r "hole_cards"))
         client-pos (r "client_pos")]
-    (loop [[_ a rem] (utils/get-action+roundover incr)
+    (loop [[_ a rem] (get-action+roundover incr)
            game-state (assoc game-state
                              :community board
                              :visible board
                              :hands (assoc [nil nil] (- 1 client-pos) client-hand)
                              :r r)]
       (if a
-        (recur (utils/get-action+roundover rem)
+        (recur (get-action+roundover rem)
                (if (= a "/")
                  (headsup/next-round game-state)
-                 (headsup/parse-action (utils/decode-action a game-state)
+                 (headsup/parse-action (decode-action a game-state)
                                game-state)))
         (if-let [w (r "winnings")]
           (parse-winnings w r game-state)
@@ -319,7 +321,7 @@
    game-history: current history of games played against slumbot\\
    -> [token game-state game-history]"
   [token agent game-history]
-  (let [[token r] (utils/slumbot-new-hand token)
+  (let [[token r] (slumbot-new-hand token)
         players [(utils/init-player agent :client)
                  (utils/init-player :slumbot :bot)]
         client-pos (- 1 (r "client_pos"))
@@ -329,15 +331,15 @@
         game-state (assoc game-state
                           :hands (assoc [nil nil]
                                         client-pos
-                                        (map utils/parse-card
+                                        (map parse-card
                                              (r "hole_cards")))
-                          :community (map utils/parse-card (r "board"))
-                          :visible (map utils/parse-card (r "board"))
+                          :community (map parse-card (r "board"))
+                          :visible (map parse-card (r "board"))
                           :r r)
         game-state (parse-incr-action r game-state)
         #_(if (= 0 client-pos)
             game-state
-            (parse-action (utils/decode-action (r "action") game-state)
+            (parse-action (decode-action (r "action") game-state)
                           game-state))]
     [token game-state game-history]))
 
@@ -373,15 +375,15 @@
         [token
          agent
          (conj game-history
-               (assoc (headsup/state-to-history {:players (map #(utils/set-money % utils/slumbot-start-bb)
+               (assoc (headsup/state-to-history {:players (map #(utils/set-money % slumbot-start-bb)
                                                        (:players game-state))}
                                         game-state)
                       :r (into {}
                                (remove-unneeded-r (utils/recursive-copy
                                                    (:r game-state))))))]
         (let [action (headsup/make-move game-state game-history)
-              r (utils/slumbot-send-action token
-                                           (utils/encode-action action
+              r (slumbot-send-action token
+                                           (encode-action action
                                                                 game-state))]
           (recur (parse-incr-action r game-state)))))))
 
@@ -405,7 +407,7 @@
                 token
                 game-history)))))
   ([token agent num-games] (iterate-games-slumbot token agent num-games []))
-  ([agent num-games] (iterate-games-slumbot (utils/slumbot-login)
+  ([agent num-games] (iterate-games-slumbot (slumbot-login)
                                             agent
                                             num-games)))
 
@@ -420,12 +422,12 @@
    -> game-history"
   [agent txt num-samples num-iter]
   (loop [i 0
-         token (utils/slumbot-login)]
+         token (slumbot-login)]
     (if (= i num-samples)
       nil
       (let [[token history] (iterate-games-slumbot token agent num-iter)]
         (spit txt
-              (with-out-str (clojure.pprint/pprint history))
+              (with-out-str (pprint/pprint history))
               :append true)
         (println i)
         (recur (inc i) token)))))
