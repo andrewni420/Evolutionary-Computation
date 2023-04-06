@@ -1,6 +1,6 @@
 # poker
 
-FIXME: description
+Using evolutionary reinforcement learning to create a superhuman poker AI.
 
 ## Installation
 
