@@ -1,4 +1,4 @@
-(ns poker.RoShamBo
+(ns poker.Andrew.RoShamBo
   (:require [poker.utils :as utils]
             [propeller.genome :as genome]
             [propeller.push.interpreter :as interpreter]
