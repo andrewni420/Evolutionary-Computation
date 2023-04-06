@@ -594,7 +594,7 @@ ai.djl.ndarray.NDManager/newBaseManager
    ai.djl.ndarray.types.DataType/FLOAT32
    (into-array ai.djl.ndarray.types.Shape [(nd/new-shape [2 2])]))
   (println (get-parameters mlp)))
-
+(ai.djl.ndarray.NDManager/newBaseManager)
 
 (defn n-fold-embedding-block
   "A block that applies a multilayer perceptron to every nth item along the given axis\\

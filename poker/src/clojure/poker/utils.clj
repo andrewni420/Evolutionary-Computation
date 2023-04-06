@@ -1,9 +1,9 @@
 (ns poker.utils
   (:require [clojure.set :as set]
-            [clojure.core.matrix :as matrix]
+            ;;[clojure.core.matrix :as matrix]
             [libpython-clj2.require :refer [require-python]]
             [libpython-clj2.python :as py :refer [py. py.. py.-]]
-            [propeller.selection :as selection] :reload))
+            [clojure.pprint :as pprint]))
 
 (require-python '[requests :as requests])
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -14,6 +14,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Math and Auxiliary ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn print-verbose 
+  [verbosity maps]
+  (when (>= verbosity 1)
+    (pprint/pprint (apply merge (take verbosity maps)))))
+
+(defn print-return [x & {:keys [pprint?]
+                         :or {pprint? true}}]
+  (if pprint? 
+    (pprint/pprint x)
+    (println x))
+  x)
 
 (defn make-consumer [f]
   (reify java.util.function.Consumer
