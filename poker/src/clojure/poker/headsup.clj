@@ -61,6 +61,8 @@
   ([] (init-game [{:money 200.0 :id :p0 :agent (constantly ["Fold" 0.0])}
                   {:money 200.0 :id :p1 :agent (constantly ["Fold" 0.0])}])))
 
+#_(init-game)
+
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Single Move    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -69,19 +71,23 @@
 (defn make-move 
   "Asks the current player for a move\\
    -> [move-type amount]"
-  [game-state game-history]
+  [game-state game-history & {:keys [verbose?]
+                              :or {verbose? false}}]
   (let [{current-player :current-player
          players :players} game-state
         player (players current-player)]
     ((:agent player) game-state
                      game-history)))
 
+#_(make-move (init-game) [])
+
 
 (defn check-active-players 
   "Checks to see if there is only one active player left in the game.
    If so, awards that player the pot and ends the game\\
    -> game-state"
-  [game-state]
+  [game-state & {:keys [verbose?]
+                 :or {verbose? false}}]
   (let [{players :players
          active-players :active-players
          pot :pot} game-state
@@ -93,20 +99,26 @@
                :game-over true))
       game-state)))
 
+#_(check-active-players (init-game))
+
 (defn next-player
   "Passes action to the next player\\
    -> game-state"
-  [game-state]
+  [game-state & {:keys [verbose?]
+                 :or {verbose? false}}]
   (let [{current-player :current-player
          n :num-players} game-state]
     (assoc game-state
            :current-player (mod (inc current-player) n))))
 
+#_(next-player (init-game))
+
 (defn parse-action
   "Updates game state based on action. Does not check for legality of action\\
    action: [move-type amount]\\
    -> game-state"
-  [action game-state]
+  [action game-state & {:keys [verbose?]
+                        :or {verbose? false}}]
   (let [{current-player :current-player
          active-players :active-players
          pot :pot
@@ -146,7 +158,8 @@
 (defn blind
   "Pays blind or goes all in depending on money available. Assumes nonzero money
    Returns [updated-player action]"
-  [player value]
+  [player value & {:keys [verbose?]
+                   :or {verbose? false}}]
   (let [{money :money} player]
     (if (< money value)
       [(assoc player :money 0) ["All-In" money]]
@@ -154,7 +167,8 @@
 
 (defn pay-blinds
   "Small blind and big blind bet or go all in if they don't have enough money"
-  [game-state]
+  [game-state & {:keys [verbose?]
+                 :or {verbose? false}}]
   (let [{players :players
          num-players :num-players
          bet-values :bet-values} game-state
@@ -179,7 +193,8 @@
 
 (defn reset-action
   "Big blind acts first in all rounds except pre-flop"
-  [game-state]
+  [game-state & {:keys [verbose?]
+                 :or {verbose? false}}]
   (assoc game-state
          :current-player 1
          :current-bet 0.0
@@ -189,7 +204,8 @@
 
 (defn all-in? 
   "Has someone gone all-in in a previous betting round?"
-  [game-state]
+  [game-state & {:keys [verbose?]
+                 :or {verbose? false}}]
   (and (every? zero? (:bet-values game-state))
        (some zero? (map :money (:players game-state)))))
 
@@ -206,7 +222,8 @@
   "When betting goes back to the player who first made the bet,
    the round is over.
    Faster than checkall"
-  [game-state]
+  [game-state & {:keys [verbose?]
+                 :or {verbose? false}}]
   (let [{bet-values :bet-values
          current-player :current-player
          current-bet :current-bet} game-state]
@@ -220,7 +237,8 @@
 
 (defn bet-round
   "Runs betting for one round"
-  [game-state game-history]
+  [game-state game-history & {:keys [verbose?]
+                              :or {verbose? false}}]
   (if (or (:game-over game-state)
           (all-in? game-state))
     game-state
@@ -247,7 +265,8 @@
    the last aggressive move
    If everyone is all-in or checks, first player to the left of the button shows
    players = [button/sb bb]"
-  [action-history players]
+  [action-history players & {:keys [verbose?]
+                             :or {verbose? false}}]
   (let [actions (mapcat identity action-history)
         last-round (take-last 2 action-history)]
     (if (every? (partial contains? #{"All-In" "Check"})
@@ -264,7 +283,8 @@
   "Heads-up showdown. Does not consider side pots.
    Computes the people with the highest hands and divides the pot among them
    Visible hands are the last aggressor and the winning hands"
-  [game-state]
+  [game-state & {:keys [verbose?]
+                 :or {verbose? false}}]
   (let [{hands :hands
          community :community
          pot :pot
@@ -295,7 +315,8 @@
 (defn next-round
   "Checks to see if all players but one have folded, then runs showdown or
    reveals the next card and proceeds to the next betting round"
-  [game-state]
+  [game-state & {:keys [verbose?]
+                 :or {verbose? false}}]
   (let [{betting-round :betting-round
          community :community} game-state
         reset-state (check-active-players (reset-action game-state))]
@@ -316,7 +337,8 @@
 
 (defn bet-game 
   "Runs betting from initialization of game until showdown"
-  [game-state game-history]
+  [game-state game-history & {:keys [verbose?]
+                              :or {verbose? false}}]
   (let [new-state (bet-round game-state game-history)]
     (if (:game-over new-state)
       new-state
@@ -337,7 +359,11 @@
                      (vector p (- g (* 0 (:pot game-state) (/ win total))))) 
                   net-gain))))
 
-(defn var-reduce [net-gain _game-state]
+(defn var-reduce 
+  "NOT IMPLEMENTED\\
+   Reduce variance"
+  [net-gain _game-state & {:keys [verbose?]
+                           :or {verbose? false}}]
   net-gain)
 
 (defn state-to-history 
@@ -348,7 +374,8 @@
    action-history: actions taken by each player\\
    visible-cards: revealed community cards\\
    net-gain: the net gain of each player in the game"
-  [old-state new-state]
+  [old-state new-state & {:keys [verbose?]
+                          :or {verbose? false}}]
   (let [{action-history :action-history
          hands :hands
          new-players :players
@@ -398,7 +425,8 @@
    An even number of hands ensures balanced play.
    Returns after num-games are reached or a player has no more money
    -> [players game-history]"
-  [players num-games game-history]
+  [players num-games game-history & {:keys [verbose?]
+                                     :or {verbose? false}}]
   (let [num-games (int num-games)]
     (if (or (zero? num-games)
           (some zero? (map :money players)))
@@ -414,7 +442,10 @@
    list: Whether to keep a list of the gains to return as a mean and stdev or to simply return
    the total gain over all games\\
    -> [players net-gain = [gain ...] or {:mean :stdev} game-history]"
-  [players num-games game-history & {:keys [list? decks] :or {list? false decks nil}}]
+  [players num-games game-history & {:keys [list? decks verbose?] 
+                                     :or {list? false 
+                                          decks nil
+                                          verbose? false}}]
   (loop [net-gain (zipmap (map :id players) (if list? [[] []] [0.0 0.0]))
          n (int num-games)
          players players
@@ -471,7 +502,9 @@
       {:mean m1 :stdev s1}))))
 
 (defn iterate-games-symmetrical 
-  [players num-games game-history & {:keys [list?] :or {list? false}}]
+  [players num-games game-history & {:keys [list? verbose?] 
+                                     :or {list? false
+                                                                 verbose? false}}]
   (loop [net-gain (zipmap (map :id players) (if list? [[] []] [0.0 0.0]))
          n (int num-games)
          players players

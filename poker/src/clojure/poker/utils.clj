@@ -83,6 +83,12 @@
    (reduce + 0 data)
    (float (count data))))
 
+(defn de-mean 
+  "Shifts data so that the mean is 0"
+  [data]
+  (let [m (mean data)]
+    (map #(- % m) data)))
+
 (defn stdev
   "Takes the standard deviation of the arguments"
   [data]
@@ -90,6 +96,14 @@
     (Math/sqrt (pd
                 (reduce + 0 (map #(square (- % x)) data))
                 (count data)))))
+
+(defn de-std
+  "Scales the data to have a stdev of 1."
+  [data]
+  (let [s (stdev data)]
+    (if (zero? s)
+      data
+      (map #(/ % s) data))))
 
 (defn cov
   "Takes the covariance of two sequences"

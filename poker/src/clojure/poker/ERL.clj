@@ -102,6 +102,8 @@
   [arr]
   (nd/new-shape (utils/shape arr)))
 
+ai.djl.ndarray.NDManager/newBaseManager
+
 #_(shape [[1 2] [3 4] [5 6]])
 
 (defn ndarray
@@ -160,6 +162,17 @@
       (.setUnits units)
       (.optBias bias?)
       (.build)))
+
+(defn initialize-model
+  "Initializes a model\\
+   childblocks? - whether to initialize self or child blocks"
+  [model manager datatype shape & {:keys [childblocks?]
+                                   :or {childblocks? false}}]
+  (.initialize
+   model
+   manager
+   (process-datatype datatype)
+   (process-shape shape :array? true)))
 
 (defn transformer-decoder-block
   "Creates and initializes transformer decoder block.\\
@@ -530,6 +543,7 @@
 #_(with-open [m (nd/new-base-manager)]
     (clojure.pprint/pprint (get-parameters (causal-mask-block m [2 3 3]))))
 
+
 (defn parallel-mask-block
   "Creates a parallel mask to zero out every nth item starting from an i<n\\
    input-shape: vector [B F] or higher dimension\\
@@ -596,12 +610,67 @@
   ())
 
 
+
+
 (def test-block (parallel-mask-block m [1 6 3]))
 
+(let [l (create-mlp 3 :hidden-sizes [4])]
+  (initialize-model l m "float" [5 2])
+  (get-parameters l))
+
+(matrix/div (matrix/mmul [[2 1.5]
+                          [1.5 1]
+                          [1.5 1]
+                          [2.5 2.3]
+                          [1.5 1.0]]
+                         (matrix/transpose [[1.5 1.5] [1.25 1.0] [1.25 1.0] [1.5 2.25] [1.25 1.0]]))
+            (Math/sqrt 2))
+
+(matrix/mmul [[1 1]
+              [1 0.5]
+              [1 0.5]
+              [0.5 2]
+              [1 0.5]]
+             
+             [[1 0.5]
+              [0.5 1]])
+
+(utils/softmax [3.7123106012293743 2.82842712474619 2.82842712474619 4.5078057300642405 2.82842712474619])
+(utils/softmax [5.091168824543141 3.83605428793702 3.83605428793702 6.310928022089937 3.83605428793702])
 
 
-(defn mlp-block
-  [manager input-shape ])
+(set-parameter! l "weight" (float-array [2 1 0.5 0.5]))
+(println (.head (.forward l (ai.djl.training.ParameterStore.)
+                          (ndlist m float-array [[1 1]
+                                                 [1 0.5]
+                                                 [1 0.5]
+                                                 [0.5 2]
+                                                 [1 0.5]])
+                          false
+                          nil)))
+
+(matrix/mmul [[0.22 0.09 0.09 0.50 0.09]
+              [0.23 0.12 0.12 0.39 0.12]
+              [0.23 0.12 0.12 0.39 0.12]
+              [0.19 0.05 0.05 0.65 0.05]
+              [0.23 0.12 0.12 0.39 0.12]]
+             [[3 1]
+              [2.5 0.8]
+              [2.5 0.8]
+              [3 1.3]
+              [2.5 0.8]])
+
+(utils/mean [2 1 1 2])
+
+(utils/de-std (utils/de-mean [2.0 1.0 1.0 2.0]))
+
+(map #(+ (* % 0.54) 1.125) (list -0.22941573387056174 -1.1470786693528088 1.6059101370939322 -0.22941573387056174))
+
+(ndlist m [[1 0 0]
+           [0 1 0]
+           [0 1 0]
+           [0 0 1]
+           [0 1 0]])
 
 (def mlp (ai.djl.basicmodelzoo.basic.Mlp. 2 2 (int-array [4])))
 
@@ -630,6 +699,9 @@ ai.djl.ndarray.types.DataType/FLOAT32
                                    [6 6 6]]])
  false
  nil)
+
+m
+
 
 
 
