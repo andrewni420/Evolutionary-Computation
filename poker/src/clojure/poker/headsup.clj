@@ -1,7 +1,5 @@
 (ns poker.headsup
   (:require [poker.utils :as utils]
-            [propeller.tools.math :as math]
-            [clojure.set :as set]
             [clojure.pprint :as pprint])
   (:gen-class))
 
