@@ -560,13 +560,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn iterate-games
-  "Plays num-games hands of poker with players switching from sb to bb every hand.
-   An even number of hands ensures balanced play.
-   Returns after num-games are reached or a player has no more money
+  "Plays num-games hands of poker with players switching from sb to bb every hand.\\
+   An even number of hands ensures balanced play.\\
+   Returns after num-games are reached or a player has no more money\\
+   Do not print the second item (game-history) - it can get very large\\
    -> [players game-history]"
   [players num-games game-history & {:keys [verbosity]
                                      :or {verbosity 0}}]
-  (let [num-games (int num-games)]
+  (let [players (utils/process-players players)
+        num-games (int num-games)]
     (if (or (zero? num-games)
           (some zero? (map :money players)))
     [players game-history]
@@ -576,6 +578,21 @@
              history
              verbosity)))))
 
+#_(first (iterate-games [utils/random-agent
+                         utils/rule-agent]
+                        100
+                        []))
+
+;;Plays up to 100 games until a player has no money and returns the history of the "interesting" ones
+;;"interesting" determined by more than one action, at least one bet, and significant money exchange (>10bb)
+#_(apply (fn [p h] (vector p (take 10 (filter #(and (not= 1 (count (:action-history %)))
+                                                    (utils/in? (flatten (:action-history %)) "Bet")
+                                                    (> (abs (second (first (:net-gain %)))) 10)
+                                                    #_(not (utils/in? (flatten (:action-history %)) "Fold"))) h))))
+         (iterate-games [utils/random-agent
+                         utils/rule-agent]
+                        100 []))
+
 
 (defn iterate-games-reset
   "Plays num-games hands of poker with players switching from sb to bb every hand and resetting their money values
@@ -583,82 +600,76 @@
    Returns the total gain/loss of players and history after num-games are reached\\
    list: Whether to keep a list of the gains to return as a mean and stdev or to simply return
    the total gain over all games\\
-   Do not print out the last item (game-history) returned by iterate-games-reset - it can get very big\\
+   Do not print out the last item (game-history) - it can get very big\\
    -> [players, net-gain = [gain ...] or {:mean :stdev}, game-history]"
-  [players num-games game-history & {:keys [list? decks verbosity] 
-                                     :or {list? false 
+  [players num-games game-history & {:keys [list? decks verbosity]
+                                     :or {list? false
                                           decks nil
                                           verbosity 0}}]
-  (loop [net-gain (zipmap (map :id players) (if list? [[] []] [0.0 0.0]))
-         n (int num-games)
-         players players
-         history game-history
-         decks (if decks decks (repeatedly #(shuffle utils/deck)))]
-    (if (zero? n)
-      [players
-       (into {}
-             (map #(vector (first %)
-                           (if list?
-                             {:mean (utils/mean (second %)) 
-                              :stdev (utils/stdev (second %))}
-                             (/ (second %) num-games)))
-                  net-gain))
-       history]
-      (let [[[p1 p2] h] (play-game players history (first decks))]
-        (recur (update (update net-gain
-                               (:id p1)
-                               #((if list? conj +) % (- (:money p1) (:money (first players)))))
-                       (:id p2)
-                       #((if list? conj +) % (- (:money p2) (:money (first players)))))
-               (dec n)
-               (into [] (reverse players))
-               h
-               (rest decks))))))
+  (let [players (utils/process-players players)]
+    (loop [net-gain (zipmap (map :id players) (if list? [[] []] [0.0 0.0]))
+           n (int num-games)
+           players players
+           history game-history
+           decks (if decks decks (repeatedly #(shuffle utils/deck)))]
+      (if (zero? n)
+        [players
+         (into {}
+               (map #(vector (first %)
+                             (if list?
+                               {:mean (utils/mean (second %))
+                                :stdev (utils/stdev (second %))}
+                               (/ (second %) num-games)))
+                    net-gain))
+         history]
+        (let [[[p1 p2] h] (play-game players history (first decks))]
+          (recur (update (update net-gain
+                                 (:id p1)
+                                 #((if list? conj +) % (- (:money p1) (:money (first players)))))
+                         (:id p2)
+                         #((if list? conj +) % (- (:money p2) (:money (first players)))))
+                 (dec n)
+                 (into [] (reverse players))
+                 h
+                 (rest decks)))))))
 
-#_(take 2 (iterate-games-reset  [(utils/init-player utils/rule-agent :p0)
-                                 (utils/init-player utils/random-agent :p1)] 
+#_(take 2 (iterate-games-reset  [utils/rule-agent utils/random-agent] 
                                 10000 
                                 [] 
                                 :list? true))
 
-;;Plays 1000 (or 1000000) games between a rule-based agent and a random agent
-;;Returns the players, the average net gain per hand, and the standard deviations of the wins per hand
-#_(clojure.pprint/pprint (take 2 (iterate-games-reset [(utils/init-player wait-and-bet :p0)
-                                                       (utils/init-player random-agent :p1)]
-                                                      10000 #_1000000
-                                                      []
-                                                      :list? true)))
-
 (defn iterate-games-significantly
-  "Iterate play between players until either statistical significance is reached or max-games are played\\
+  "Takes 100 games to sample the standard deviation of games between the two players.\\
+   Calculates the required number of games to have a confidence interval of length CI.\\
+   Plays that many games, or the max number of games, whichever is smaller\\
    -> winning agent or {:mean :stdev} of agent0"
   [agent0 agent1 max-games game-history &
-   {:keys [verbosity winner?]
+   {:keys [verbosity winner? CI]
     :or {verbosity 0
-         winner? false}}]
-  (identity #_time (let [desired-std 0.5
-        Z 1.96
+         winner? false
+         CI 1}}]
+  (let [Z 1.96
         players [(utils/init-player agent0 :p0)
                  (utils/init-player agent1 :p1)]
-        [_ {{s0 :stdev} :p0}]
-        (iterate-games-reset players 100 []
-                             :list? true)
-        num-games (min max-games (utils/square (* Z (/ s0 desired-std))))
-        [_ {{m1 :mean s1 :stdev} :p0}]
-        (iterate-games-reset players num-games []
-                             :list? true)]
+        [_ {{s0 :stdev} :p0}] (iterate-games-reset players 100 []
+                                                   :list? true)
+        num-games (min max-games (utils/square (* Z (/ s0 (/ CI 2)))))
+        [_ {{m1 :mean s1 :stdev} :p0}] (iterate-games-reset players num-games []
+                                                            :list? true)]
     (when (>= verbosity 1) (clojure.pprint/pprint {:fn "iterate-games-significantly"
-                                           :agents [agent0 agent1]
-                                           :num-games num-games
-                                           :Z Z
-                                           :desired-std desired-std
-                                           :CI [(- m1 (/ (* Z s1) (Math/sqrt num-games)))
-                                                (+ m1 (/ (* Z s1) (Math/sqrt num-games)))]}))
+                                                   :agents [agent0 agent1]
+                                                   :num-games num-games
+                                                   :Z Z
+                                                   :desired-CI CI
+                                                   :CI [(- m1 (/ (* Z s1) (Math/sqrt num-games)))
+                                                        (+ m1 (/ (* Z s1) (Math/sqrt num-games)))]}))
     (if winner?
       (if (>= m1 0) agent0 agent1)
-      {:mean m1 :stdev s1}))))
+      {:mean m1 :stdev s1})))
 
 (defn iterate-games-symmetrical
+  "Plays each deck twice, with the players switching sides, and adds the net-gain up for each deck\\
+   Lower the variance in the results"
   [players num-games game-history & {:keys [list? verbosity]
                                      :or {list? false
                                           verbosity 0}}]
@@ -690,98 +701,8 @@
                players
                h2)))))
 
-
-
-
-
-
-;;Plays up to 100 games until a player has no money and returns the history of the "interesting" ones
-#_(apply (fn [p h] (vector p (take 10 (filter #(and (not= 1 (count (:action-history %)))
-                                                  (utils/in? (flatten (:action-history %)) "Bet")
-                                                  (> (abs (second (first (:net-gain %)))) 10)
-                                                  #_(not (utils/in? (flatten (:action-history %)) "Fold"))) h))))
-       (iterate-games [(utils/init-player random-agent :p0)
-                       (utils/init-player utils/rule-agent :p1)]
-                      100 []))
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;         Runtime       ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;iterated versus competition
-#_(time (take 2
-            (iterate-games-reset [(utils/init-player utils/lazy-agent :p0)
-                                  (utils/init-player utils/random-agent :p1)]
-                                 100000
-                                 []
-                                 :list? true)))
-
-#_(/ (* 155 1.96) (Math/sqrt 100000))
-
-;;I gots to estimate the stdev, and then play enough games for it to be 
-;;statistically significant.
-;;computing statistically significant win results between two agents
-#_(time (let [[_ {{m0 :mean s0 :stdev} :p0}] (iterate-games-reset [(utils/init-player utils/rule-agent :p0)
-                                                       (utils/init-player random-agent :p1)]
-                                                      100
-                                                      []
-                                                      :list? true)]
-        (print (min 100000 (utils/square (* 2 (* s0 (* 0.5 m0))))))
-  (take 2 (iterate-games-reset [(utils/init-player utils/rule-agent :p0)
-                                (utils/init-player random-agent :p1)]
-                               (min 100000 (utils/square (* 2 (/ s0 1))))
-                               []
-                               :list? true))))
-
-;;statistics on mean and net gain?
-#_(clojure.pprint/pprint
- (let [gains (map :net-gain (nth (iterate-games-reset [(utils/init-player random-agent :p0)
-                                             (utils/init-player random-agent :p1)]
-                                            1000
-                                            []
-                                            :list? true) 2))
-      gains [(map #(if (= :p0 (ffirst %)) (utils/sfirst %) (utils/ssecond %)) gains)
-             (map #(if (= :p1 (ffirst %)) (utils/sfirst %) (utils/ssecond %)) gains)]]
-  {:p0 {:mean (utils/mean (first gains)) 
-        :stdev (utils/stdev (first gains))}
-   :p1 {:mean (utils/mean (second gains))
-        :stdev (utils/stdev (second gains))}}))
-
-
-#_(loop [i 0
-       m {:p0 0 :p1 0}]
-  (if (= i 50)
-    {:p0 (/ (:p0 m) i) :p1 (/ (:p1 m) i)}
-    (let [g (iterate-games [(utils/init-player random-agent :p0)
-                            (utils/init-player utils/rule-agent :p1)]
-                           1000 [])
-          [p1 p2] (first g)
-          m1 (update m (:id p1) (partial + (:money p1)))
-          m2 (update m1 (:id p2) (partial + (:money p2)))]
-      (recur (inc i) m2))))
-
-
-#_(loop [i 0] (let [state (bet-game (pay-blinds (init-game [(utils/init-player utils/rule-agent :p0) (utils/init-player random-agent :p1)])) [])]
-              (if (or (= 1 (count (:action-history state)))
-                      (not (utils/in? (flatten (:action-history state)) "Bet"))
-                      (utils/in? (flatten (:action-history state)) "Fold"))
-                (recur (inc i))
-                (do (println i)
-                  state))))
-
-;;using :r to fill in missing values in game-history
-#_(let [l (read-string (slurp "slumbot-history-random.txt"))
-        bot-hands (map #(map utils/parse-card ((:r %) "bot_hole_cards")) l)
-        hands (map :hands l)
-        new-hands (map (fn [hand bot-hand]
-                         (mapv #(if (not= :bot (first %))
-                                  %
-                                  [:bot bot-hand]) hand))
-                       hands
-                       bot-hands)
-        new-l (mapv (fn [g h]
-                     (assoc g :hands h)) l new-hands)]
-    #_(spit "slumbot-history-random.txt" 
-          (with-out-str (clojure.pprint/pprint new-l))))
 

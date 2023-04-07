@@ -448,6 +448,15 @@
 ;;  Card Functions   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn card-index
+  "Gets the index of the card in an array of cards listed by number then by suit\\
+   order of suits: Clubs, Diamonds, Hearts, Spades\\
+   -> int"
+  [card]
+  (let [[value suit] card
+        s (.indexOf suits suit)
+        v (- value 2)]
+    (+ v (* 13 s))))
 
 (defn preflop-win-chance
   "Computes the chance of a hand outperforming a random hand when all-in preflop\\

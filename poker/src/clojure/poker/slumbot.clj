@@ -433,11 +433,28 @@
         (recur (inc i) token)))))
 
 
+(defn fill-missing-hands
+  "Fills in missing hands from playing against slumbot, using the recorded response from slumbot\\
+   -> spits to file"
+  []
+  (let [l (read-string (slurp "slumbot-history-random.txt"))
+        bot-hands (map #(map parse-card ((:r %) "bot_hole_cards")) l)
+        hands (map :hands l)
+        new-hands (map (fn [hand bot-hand]
+                         (mapv #(if (not= :bot (first %))
+                                  %
+                                  [:bot bot-hand]) hand))
+                       hands
+                       bot-hands)
+        new-l (mapv (fn [g h]
+                      (assoc g :hands h)) l new-hands)]
+    #_(spit "slumbot-history-random.txt"
+            (with-out-str (clojure.pprint/pprint new-l)))))
 
 
 ;;computing slumbot statistics
 #_(let [l (read-string (slurp "slumbot-history-random.txt"))
-        _ (println (count l))
+        _ (println "Number of games against slumbot: " (count l))
         bot-hands (map #(:bot (into {} (:hands %))) l)
         bot-str (map #(let [{win :win total :total}
                             (utils/rollout (into #{} %))]
@@ -460,18 +477,6 @@
                          (read-string (slurp "slumbot-history-random.txt"))))]
     {:mean-games-per-hand (utils/mean (map #(count (second %)) l))})
 
-;;Slumbot rollout
-#_(loop [i 0]
-    (if (= i 10)
-      nil
-      (do
-        (time (slumbot-rollout random-agent
-                               "slumbot-history-random.txt"
-                               10
-                               240))
-        (utils/combine-vectors "slumbot-history-random.txt")
-        (flush)
-        (recur (inc i)))))
 
 
 

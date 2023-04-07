@@ -21,6 +21,7 @@
            ai.djl.ndarray.types.Shape
            ai.djl.ndarray.NDArray
            ai.djl.nn.SequentialBlock
+           ai.djl.nn.ParallelBlock
            ai.djl.nn.LambdaBlock
            ai.djl.nn.Activation
            java.lang.Class))
@@ -62,6 +63,9 @@
 ;;Parallel block to process one-hot encoded parts of state
 ;;Parallel? block with masking for (R S A) 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;Auxiliaries and Constants;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn get-djl-type 
   [type]
@@ -96,6 +100,9 @@
   [] 
   (when m (.close m)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  NDArrays and NDLists   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn shape
   "Turns a vector into a Shape object\\
@@ -115,7 +122,31 @@
              (utils/shape arr)))
 
 #_(with-open [m (nd/new-base-manager)]
-    (ndarray int-array [[1 2] [3 4]]))
+    (println (ndarray m int-array [[1 2] [3 4]])))
+
+
+
+(defn ndlist
+  "Given a manager, a function, and any number of vector arrays, creates an NDList object
+   holding all of the arrays in order.\\
+   Applies arrfn to each vector array\\
+   NDManager, arr1, arr2, ... -> NDList"
+  [manager arrfn & arrs]
+  (let [ndarrays (map (partial ndarray manager arrfn) arrs)]
+    (apply nd/ndlist ndarrays)))
+
+#_(with-open [m (nd/new-base-manager)]
+    (println (ndlist m int-array [[1 2] [3 4]] [[5 6] [7 8]])))
+
+(defn ndarray-to-vector
+  "Given an nd-array, converts it into a clojure nested vector of the same dimensions."
+  [ndarr]
+  (matrix/reshape (nd/to-array ndarr)
+                  (nd/to-array (nd/shape ndarr))))
+
+#_(with-open [m (nd/new-base-manager)]
+    (ndarray-to-vector (ndarray m int-array [[1 2] [3 4]])))
+
 
 (defn process-shape 
   "Turns a vector/Shape/[Shape into a Shape or [Shape\\
@@ -151,161 +182,6 @@
     d))
 
 #_(process-datatype "float")
-
-(defn linear
-  "Creates a linear block with a given amount of units\\
-   -> Linear"
-  [units & {:keys [bias?]
-            :or {bias? true}}]
-  (-> (ai.djl.nn.core.Linear/builder)
-      (.setUnits units)
-      (.optBias bias?)
-      (.build)))
-
-(defn initialize-model
-  "Initializes a model\\
-   childblocks? - whether to initialize self or child blocks"
-  [model manager datatype shape & {:keys [childblocks?]
-                                   :or {childblocks? false}}]
-  (.initialize
-   model
-   manager
-   (process-datatype datatype)
-   (process-shape shape :array? true)))
-
-(defn transformer-decoder-block
-  "Creates and initializes transformer decoder block.\\
-   Manager: controls lifecycle of NDArrays\\
-   embedding-size: length of embedded vectors\\
-   head-count: number of attention heads\\
-   hidden-size: number of hidden units in positional feed-forward network\\
-   input-shape ([Shape/Shape/collection): Shape of input [B F E]\\
-   activation-function (ifn/Function): activation function of positional feed-forward network\\
-   datatype (string/DataType): datatype of transformer block\\
-   -> TransformerDecoderBlock"
-  [manager
-   embedding-size
-   head-count
-   hidden-size
-   input-shape
-   & {:keys [activation-function dropout-probability datatype]
-      :or {activation-function (utils/make-function #(Activation/relu %))
-           dropout-probability 0.1
-           datatype DataType/FLOAT32}}]
-  (let [input-shape (process-shape input-shape :array? true)
-        activation-function (process-activation activation-function)
-        datatype (process-datatype datatype)
-        b (TransformerDecoderBlock. embedding-size
-                                    head-count
-                                    hidden-size
-                                    dropout-probability
-                                    activation-function)]
-    (.initializeChildBlocks b
-                            manager
-                            datatype
-                            input-shape)
-    b))
-
-
-(defn initialize-stdevs 
-  "For each parameter NDArray of nnet, creates an array of ones with the same shape 
-   representing an adaptive standard deviation for each entry in the array\\
-   -> {name NDArray}"
-  [nnet manager]
-  (let [p (.getParameters nnet)
-        k (.keys p)]
-    (zipmap k
-            (map #(nd/ones manager
-                           (-> p
-                               (.get %)
-                               (.getArray)
-                               (.getShape)))
-                 k))))
-
-(defn initialize-individual
-  "Creates an individual of the form {:nnet :stdev} 
-   with the neural net and possibly also the standard deviations for 
-   mutating each of the nnet parameters"
-  [individual nnet & {:keys [stdev?]
-                      :or {stdev? true}}]
-  (if stdev?
-    {:nnet nnet
-   :stdev (initialize-stdevs nnet (:manager individual))}
-    {:nnet nnet}))
-
-(defn create-individual
-  "Given a manager, assigns a new submanager of that manager to a new individual.\\
-   Given a function (fn [manager] nnet), also initializes the individual\\
-   -> {:manager :nnet? :stdev?}"
-  ([manager & {:keys [nn-factory stdev?]
-               :or {stdev? true}}]
-   (if nn-factory
-     (initialize-individual (create-individual manager)
-                            (nn-factory manager)
-                            stdev?)
-     {:manager (.newSubManager manager)})))
-
-
-(defn error-function 
-  "NOT FINISHED\\
-   -> individual"
-  [individual]
-  (assoc individual :error 0))
-
-
-(defn add-gaussian-noise!
-  "Adds gaussian noise to an ndarray\\
-   Either uses a common mean and stdev or a mean of 0 and an ndarray of the same size as the stdev\\
-   -> ndarray"
-  ([ndarray mean stdev arrfn]
-   (let [v (nd/to-array ndarray)
-         newv (map #(+ % (utils/rand-normal mean stdev))
-                   v)]
-     (.set ndarray (arrfn newv))
-     ndarray))
-  ([value-array stdev-array arrfn]
-   (let [v (nd/to-array value-array)
-         s (nd/to-array stdev-array)
-         new-s (map (partial utils/rand-normal 0) s)]
-     (println (into-array (map + v new-s)))
-     (.set value-array (arrfn (map + v new-s)))
-     value-array)))
-
-#_(with-open [m (nd/new-base-manager)]
-    (println (add-gaussian-noise!
-              (ndarray m float-array [[1 2] [3 4]])
-              (ndarray m float-array [[0 0.001] [0.01 0.1]])
-              float-array)))
-
-(defn close-individual 
-  "Closes the manager of the individual\\
-   -> individual"
-  [individual]
-  (.close (:manager individual))
-  individual)
-
-
-
-(defn ndlist 
-  "Given a manager, a function, and any number of vector arrays, creates an NDList object
-   holding all of the arrays in order.\\
-   Applies arrfn to each vector array\\
-   NDManager, arr1, arr2, ... -> NDList"
-  [manager arrfn & arrs]
-  (let [ndarrays (map (partial ndarray manager arrfn) arrs)]
-    (apply nd/ndlist ndarrays)))
-
-#_(with-open [m (nd/new-base-manager)]
-    (ndlist int-array [[1 2] [3 4]] [[5 6] [7 8]]))
-
-(defn ndarray-to-vector 
-  "Given an nd-array, converts it into a clojure nested vector of the same dimensions."
-  [ndarr]
-  (matrix/reshape (nd/to-array ndarr)
-                  (nd/to-array (nd/shape ndarr))))
-
-#_(with-open [m (nd/new-base-manager)]
-    (ndarray-to-vector (ndarray m int-array [[1 2] [3 4]])))
 
 
 (defn concat-ndlist
@@ -364,6 +240,7 @@
                                         (ndlist m int-array [[[9 10] [11 12]] [[91 101] [111 121]]])]
                                        1))))
 
+
 (defn set-parameter!
   "Given a block, the name of a parameter, and an array of the values in the parameter,
    sets the values of that parameter to the values in the array.\\
@@ -381,7 +258,7 @@
 #_(with-open [m (nd/new-base-manager)]
     (get-pnames (transformer-decoder-block m 2 1 3 [1 2 2])))
 
-(defn get-parameters 
+(defn get-parameters
   "Given a block, returns a map from the name of a parameter to the value, either as an NDArray or as a nested vector, of that parameter\\
    -> {pname pvalue}"
   [block & {:keys [as-array?]
@@ -389,11 +266,11 @@
   (let [p (.getParameters block)
         k (.keys p)]
     (zipmap k
-          (for [n k] 
-            ((if as-array?
-               ()
-               identity)
-             (.getArray (.get p n)))))))
+            (for [n k]
+              ((if as-array?
+                 ()
+                 identity)
+               (.getArray (.get p n)))))))
 
 #_(with-open [m (nd/new-base-manager)]
     (clojure.pprint/pprint
@@ -403,14 +280,14 @@
   "Creates a vector array with a shape populated by only the given value\\
   vector value -> vector"
   [shape value]
-  ((apply comp 
-          (map #(fn [v] (into [] (repeat % v))) 
-               shape)) 
+  ((apply comp
+          (map #(fn [v] (into [] (repeat % v)))
+               shape))
    value))
 
 #_(identical-array [3 3] 2)
 
-(defn mask-2d 
+(defn mask-2d
   "Given an mxn array and a length m vector, sets everything in the mxn array 
    that exceeds the sequence lengths in the seq-length vector to a given value\\
    [[... n]... m] [... m]-> [[... n]... m]"
@@ -422,16 +299,16 @@
         seq-length (if seq-length
                      seq-length
                      (range 1 (inc m)))]
-    (into [] 
-          (map #(into [] 
-                      (concat (take %2 %1) 
-                              (repeat (- n %2) value))) 
-               array 
+    (into []
+          (map #(into []
+                      (concat (take %2 %1)
+                              (repeat (- n %2) value)))
+               array
                seq-length))))
 
 #_(mask-2d [[1 2 3 4] [1 2 3 4] [1 2 3 4] [1 2 3 4]]
-         :seq-length [4 2 3 2]
-         :value 0)
+           :seq-length [4 2 3 2]
+           :value 0)
 
 (defn causal-mask
   "Given a shape and an axis, constructs a mask for that axis.\\
@@ -477,6 +354,122 @@
                      (into [] (map get-value (range m))))))
 
 #_(n-fold-mask [3 6 3] 1 3 1)
+
+
+(defn add-NDArrays
+  [ndlist]
+  (let [[array & rest] (map #(.singletonOrThrow %) ndlist)]
+    (nd/ndlist (reduce #(.add %1 %2) array rest))))
+
+#_(with-open [m (nd/new-base-manager)]
+    (let [l1 (ndlist m float-array [[1 2] [3 4]])
+          l2 (ndlist m float-array [[0.1 0.2] [0.3 0.4]])
+          l3 (ndlist m float-array [[10 20] [30 40]])]
+      (println (.singletonOrThrow (add-NDArrays (java.util.ArrayList. [l1 l2 l3]))))))
+
+
+(defn add-gaussian-noise!
+  "Adds gaussian noise to an ndarray\\
+   Either uses a common mean and stdev or a mean of 0 and an ndarray of the same size as the stdev\\
+   -> ndarray"
+  ([ndarray mean stdev arrfn]
+   (let [v (nd/to-array ndarray)
+         newv (map #(+ % (utils/rand-normal mean stdev))
+                   v)]
+     (.set ndarray (arrfn newv))
+     ndarray))
+  ([value-array stdev-array arrfn]
+   (let [v (nd/to-array value-array)
+         s (nd/to-array stdev-array)
+         new-s (map (partial utils/rand-normal 0) s)]
+     (println (into-array (map + v new-s)))
+     (.set value-array (arrfn (map + v new-s)))
+     value-array)))
+
+#_(with-open [m (nd/new-base-manager)]
+    (println (add-gaussian-noise!
+              (ndarray m float-array [[1 2] [3 4]])
+              (ndarray m float-array [[0 0.001] [0.01 0.1]])
+              float-array)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;          Models         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn initialize-model
+  "Initializes a model\\
+   childblocks? - whether to initialize self or child blocks"
+  [model manager datatype input-shape & {:keys [childblocks?]
+                                         :or {childblocks? false}}]
+  (.initialize
+   model
+   manager
+   (process-datatype datatype)
+   (process-shape input-shape :array? true)))
+
+(defn linear
+  "Creates a linear block with a given amount of units\\
+   -> Linear"
+  [units & {:keys [bias?]
+            :or {bias? true}}]
+  (-> (ai.djl.nn.core.Linear/builder)
+      (.setUnits units)
+      (.optBias bias?)
+      (.build)))
+
+
+
+(defn forward
+  "Does a forward pass of the model using the input NDList.\\
+   model - Block\\
+   inputs - NDList\\
+   training - boolean\\
+   params - PairList\\
+   -> NDList"
+  [model inputs & {:keys [param-store training params]
+                   :or {param-store (ai.djl.training.ParameterStore.)
+                        training false
+                        params nil}}]
+  (.forward model param-store inputs training params))
+
+(with-open [m (nd/new-base-manager)]
+  (let [model (linear 3)]
+    (initialize-model model m "float" [1 2])
+    (println (.singletonOrThrow (forward model (ndlist m float-array [[1 2]]))))))
+
+(defn transformer-decoder-block
+  "Creates and initializes transformer decoder block.\\
+   Manager: controls lifecycle of NDArrays\\
+   embedding-size: length of embedded vectors\\
+   head-count: number of attention heads\\
+   hidden-size: number of hidden units in positional feed-forward network\\
+   input-shape ([Shape/Shape/collection): Shape of input [B F E]\\
+   activation-function (ifn/Function): activation function of positional feed-forward network\\
+   datatype (string/DataType): datatype of transformer block\\
+   -> TransformerDecoderBlock"
+  [manager
+   embedding-size
+   head-count
+   hidden-size
+   input-shape
+   & {:keys [activation-function dropout-probability datatype]
+      :or {activation-function (utils/make-function #(Activation/relu %))
+           dropout-probability 0.1
+           datatype DataType/FLOAT32}}]
+  (let [input-shape (process-shape input-shape :array? true)
+        activation-function (process-activation activation-function)
+        datatype (process-datatype datatype)
+        b (TransformerDecoderBlock. embedding-size
+                                    head-count
+                                    hidden-size
+                                    dropout-probability
+                                    activation-function)]
+    (.initializeChildBlocks b
+                            manager
+                            datatype
+                            input-shape)
+    b))
 
 
 (defn mul-block
@@ -591,99 +584,112 @@
 
 (defn n-fold-embedding-block
   "A block that applies a multilayer perceptron to every nth item along the given axis\\
-   input -> parallel nx(mask - mlp) -> add -> output\\
+   input -> parallel nx(mask - mlp) -> add-fn -> output\\
    -> Block"
-  [manager input-shape & {:keys [datatype axis arrfn n i hidden-sizes activation-function]
-                          :or {datatype DataType/FLOAT32
-                               axis -2
-                               n 3
-                               hidden-sizes (into [] (repeat n []))
-                               activation-function (utils/make-function #(Activation/relu %))
-                               arrfn float-array}}]
-  (let [p (ai.djl.nn.ParallelBlock. )]
-    ()))
+  [manager input-shape output-size & {:keys [datatype axis arrfn n hidden-sizes activation-function bias?]
+                                      :or {datatype DataType/FLOAT32
+                                           axis -2
+                                           n 3
+                                           hidden-sizes (into [] (repeat n []))
+                                           activation-function (utils/make-function #(Activation/relu %))
+                                           arrfn float-array
+                                           bias? false}}]
+  (let [nfold (map (fn [i]
+                     (let [s (SequentialBlock.)]
+                       (.add s (n-fold-mask-block manager
+                                                  input-shape
+                                                  :datatype datatype
+                                                  :axis axis
+                                                  :arrfn arrfn
+                                                  :n n
+                                                  :i i))
+                       (.add s (create-mlp output-size
+                                           :hidden-sizes (hidden-sizes i)
+                                           :activation-function activation-function
+                                           :bias? bias?))
+                       s))
+                   (range n))
+        p (ParallelBlock. (utils/make-function add-NDArrays)
+                          nfold)]
+    (initialize-model p manager datatype input-shape)
+    p))
+
+#_(with-open [m (nd/new-base-manager)]
+    (let [p (n-fold-embedding-block m [1 3 2] 2)]
+      (set-parameter! p "01SequentialBlock_02SequentialBlock_01Linear_weight"
+                      (float-array [1 0 0 1]))
+      (set-parameter! p "02SequentialBlock_02SequentialBlock_01Linear_weight"
+                      (float-array [1 1 1 1]))
+      (set-parameter! p "03SequentialBlock_02SequentialBlock_01Linear_weight"
+                      (float-array [-1 0 0 -1]))
+      (println (get-parameters p))
+      (println
+       (.singletonOrThrow
+        (forward p
+                 (ndlist m float-array [[[1 2] [3 4] [5 6]]]))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       Individuals       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(def test-block (parallel-mask-block m [1 6 3]))
+(defn initialize-stdevs
+  "For each parameter NDArray of nnet, creates an array of ones with the same shape 
+   representing an adaptive standard deviation for each entry in the array\\
+   -> {name NDArray}"
+  [nnet manager]
+  (let [p (.getParameters nnet)
+        k (.keys p)]
+    (zipmap k
+            (map #(nd/ones manager
+                           (-> p
+                               (.get %)
+                               (.getArray)
+                               (.getShape)))
+                 k))))
 
-(let [l (create-mlp 3 :hidden-sizes [4])]
-  (initialize-model l m "float" [5 2])
-  (get-parameters l))
+(defn initialize-individual
+  "Creates an individual of the form {:nnet :stdev} 
+   with the neural net and possibly also the standard deviations for 
+   mutating each of the nnet parameters"
+  [individual nnet & {:keys [stdev?]
+                      :or {stdev? true}}]
+  (if stdev?
+    {:nnet nnet
+     :stdev (initialize-stdevs nnet (:manager individual))}
+    {:nnet nnet}))
 
-(matrix/div (matrix/mmul [[2 1.5]
-                          [1.5 1]
-                          [1.5 1]
-                          [2.5 2.3]
-                          [1.5 1.0]]
-                         (matrix/transpose [[1.5 1.5] [1.25 1.0] [1.25 1.0] [1.5 2.25] [1.25 1.0]]))
-            (Math/sqrt 2))
-
-(matrix/mmul [[1 1]
-              [1 0.5]
-              [1 0.5]
-              [0.5 2]
-              [1 0.5]]
-             
-             [[1 0.5]
-              [0.5 1]])
-
-(utils/softmax [3.7123106012293743 2.82842712474619 2.82842712474619 4.5078057300642405 2.82842712474619])
-(utils/softmax [5.091168824543141 3.83605428793702 3.83605428793702 6.310928022089937 3.83605428793702])
-
-
-(matrix/mmul [[0.22 0.09 0.09 0.50 0.09]
-              [0.23 0.12 0.12 0.39 0.12]
-              [0.23 0.12 0.12 0.39 0.12]
-              [0.19 0.05 0.05 0.65 0.05]
-              [0.23 0.12 0.12 0.39 0.12]]
-             [[3 1]
-              [2.5 0.8]
-              [2.5 0.8]
-              [3 1.3]
-              [2.5 0.8]])
-
-(utils/mean [2 1 1 2])
-
-(utils/de-std (utils/de-mean [2.0 1.0 1.0 2.0]))
-
-(map #(+ (* % 0.54) 1.125) (list -0.22941573387056174 -1.1470786693528088 1.6059101370939322 -0.22941573387056174))
-
-(ndlist m [[1 0 0]
-           [0 1 0]
-           [0 1 0]
-           [0 0 1]
-           [0 1 0]])
-
-(def mlp (ai.djl.basicmodelzoo.basic.Mlp. 2 2 (int-array [4])))
-
-mlp
-
-(.initializeChildBlocks mlp m
-ai.djl.ndarray.types.DataType/FLOAT32
-(into-array ai.djl.ndarray.types.Shape [(nd/new-shape [2 1 2])]))
+(defn create-individual
+  "Given a manager, assigns a new submanager of that manager to a new individual.\\
+   Given a function (fn [manager] nnet), also initializes the individual\\
+   -> {:manager :nnet? :stdev?}"
+  ([manager & {:keys [nn-factory stdev?]
+               :or {stdev? true}}]
+   (if nn-factory
+     (initialize-individual (create-individual manager)
+                            (nn-factory manager)
+                            stdev?)
+     {:manager (.newSubManager manager)})))
 
 
-(shape [[[1 1 1]
-         [2 2 2]
-         [3 3 3]
-         [4 4 4]
-         [5 5 5]
-         [6 6 6]]])
+(defn error-function
+  "NOT FINISHED\\
+   -> individual"
+  [individual]
+  (assoc individual :error 0))
 
-(.forward
- test-block
- (ai.djl.training.ParameterStore.)
- (poker.ERL/ndlist m float-array [[[1 1 1]
-                                   [2 2 2]
-                                   [3 3 3]
-                                   [4 4 4]
-                                   [5 5 5]
-                                   [6 6 6]]])
- false
- nil)
 
-m
+(defn close-individual
+  "Closes the manager of the individual\\
+   -> individual"
+  [individual]
+  (.close (:manager individual))
+  individual)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;         Runtime         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 
