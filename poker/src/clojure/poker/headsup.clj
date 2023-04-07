@@ -49,13 +49,13 @@
            verbosity 0}}]
   (let [deal (utils/deal-hands 2 deck)]
     (utils/print-verbose verbosity
-                         [{:fn "init-game"}
-                          {:players players
-                           :deal deal}
-                          {:final-state (init-game :players players
-                                                   :deck deck
-                                                   :verbosity 0)}
-                          {:initial-state {}}])
+                         {:fn "init-game"}
+                         {:players players
+                          :deal deal}
+                         {:final-state (init-game :players players
+                                                  :deck deck
+                                                  :verbosity 0)}
+                         {:initial-state {}})
     {:hands (vec (:hands deal))
      :community (vec (:community deal))
      :visible []
@@ -73,7 +73,7 @@
      :game-over false
      :action-history [[]]}))
 
-#_(init-game :verbosity 1)
+#_(init-game :verbosity 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Single Move    ;;
@@ -89,16 +89,16 @@
          players :players} game-state
         player (players current-player)]
     (utils/print-verbose verbosity
-                         [{:fn "make-move"}
-                          {:current-player current-player
-                           :player player}
-                          {:final-state (make-move game-state game-history :verbosity 0)}
-                          {:initial-state game-state}])
+                         {:fn "make-move"}
+                         {:current-player current-player
+                          :player-id (:id player)}
+                         {:final-state (make-move game-state game-history :verbosity 0)}
+                         {:initial-state game-state})
     ((:agent player) game-state
                      game-history)))
 
 
-#_(make-move (init-game) [] :verbosity 1)
+#_(make-move (init-game) [] :verbosity 2)
 
 (defn check-active-players
   "Checks to see if there is only one active player left in the game.
@@ -111,10 +111,10 @@
          pot :pot} game-state
         i (first active-players)]
     (utils/print-verbose verbosity
-                         [{:fn "check-active-players"}
-                          {:num-active (count active-players)}
-                          {:final-state (check-active-players game-state :verbosity 0)}
-                          {:initial-state game-state}])
+                         {:fn "check-active-players"}
+                         {:num-active (count active-players)}
+                         {:final-state (check-active-players game-state :verbosity 0)}
+                         {:initial-state game-state})
     (if (= 1 (count active-players))
       (let [player (utils/add-money (players i) pot)]
         (assoc game-state
@@ -122,7 +122,7 @@
                :game-over true))
       game-state)))
 
-#_(check-active-players (init-game) :verbosity 1)
+#_(check-active-players (init-game) :verbosity 2)
 
 (defn next-player
   "Passes action to the next player\\
@@ -131,14 +131,15 @@
                  :or {verbosity 0}}]
   (let [{current-player :current-player
          n :num-players} game-state]
-    (when (>= verbosity 1)
-      (pprint/pprint (merge {:fn "next-player"
-                             :next-player (mod (inc current-player) n)}
-                            (when (>= verbosity 2) {:output game-state}))))
+    (utils/print-verbose verbosity
+                         {:fn "next-player"}
+                         {:next-player  (mod (inc current-player) n)}
+                         {:final-state (next-player game-state :verbosity 0)}
+                         {:initial-state game-state})
     (assoc game-state
            :current-player (mod (inc current-player) n))))
 
-#_(next-player (init-game) :verbosity 1)
+#_(next-player (init-game) :verbosity 2)
 
 (defn parse-action
   "Updates game state based on action. Does not check for legality of action\\
@@ -156,24 +157,26 @@
          min-raise :min-raise} game-state
         [type amount] action
         players (update players current-player (fn [p] (update p :money #(- % amount))))
-        new-state (assoc (next-player game-state)
+        new-state (assoc (next-player game-state :verbosity verbosity)
                          :action-history (conj (into [] (drop-last action-history))
                                                (conj (last action-history)
                                                      [(:id (players current-player))
                                                       action]))
                          :players players)]
     (utils/print-verbose verbosity
-                         [{:fn "parse-action"}
-                          {:action action
-                           :bet-values bet-values
-                           :current-bet current-bet
-                           :current-player current-player}
-                          {:final-state (parse-action action game-state :verbosity 0)}
-                          {:initial-state game-state}])
+                         {:fn "parse-action"}
+                         {:action action
+                          :bet-values bet-values
+                          :current-bet current-bet
+                          :current-player current-player
+                          :current-player-id (:id (players current-player))}
+                         {:final-state (parse-action action game-state :verbosity 0)}
+                         {:initial-state game-state})
     (condp utils/in? type
       ["Fold"] (check-active-players (assoc new-state
                                             :active-players (remove (partial = current-player)
-                                                                    active-players)))
+                                                                    active-players))
+                                     :verbosity verbosity)
       ["Check"] new-state
       ["Raise"] (assoc new-state
                        :bet-values (update bet-values current-player (partial + amount))
@@ -186,7 +189,7 @@
                                      :current-bet (max current-bet (+ amount (bet-values current-player)))
                                      :min-raise (max min-raise (- (+ amount (bet-values current-player)) current-bet))))))
 
-#_(parse-action ["Fold" 0.0] (init-game) :verbosity 1)
+#_(parse-action ["Fold" 0.0] (init-game) :verbosity 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Single Round   ;;
@@ -198,15 +201,19 @@
   [player value & {:keys [verbosity]
                    :or {verbosity 0}}]
   (utils/print-verbose verbosity
-                       [{:fn "blind"}
-                        {:player player
-                         :value value}
-                        {:final-state (blind player value :verbosity 0)}
-                        {:initial-state {}}])
+                       {:fn "blind"}
+                       {:player-id (:id player)
+                        :value value}
+                       {:final-state (blind player value :verbosity 0)}
+                       {:initial-state {}})
   (let [{money :money} player]
     (if (< money value)
       [(assoc player :money 0) ["All-In" money]]
       [(assoc player :money (- money value)) ["Bet" value]])))
+
+#_(blind (utils/init-player (constantly ["Fold" 0.0]) :p0) 
+         1.0 
+         :verbosity 2)
 
 (defn pay-blinds
   "Small blind and big blind bet or go all in if they don't have enough money"
@@ -217,14 +224,14 @@
          bet-values :bet-values} game-state
         sb 0
         bb 1
-        [sb-player sb-action] (blind (players sb) 0.5)
-        [bb-player bb-action] (blind (players bb) 1.0)]
+        [sb-player sb-action] (blind (players sb) 0.5 :verbosity verbosity)
+        [bb-player bb-action] (blind (players bb) 1.0 :verbosity verbosity)]
     (utils/print-verbose verbosity
-                         [{:fn "pay-blinds"}
-                          {:small-blind (players sb)
-                           :big-blind (players bb)}
-                          {:final-state (pay-blinds game-state :verbosity 0)}
-                          {:initial-state game-state}])
+                         {:fn "pay-blinds"}
+                         {:small-blind (:id (players sb))
+                          :big-blind (:id (players bb))}
+                         {:final-state (pay-blinds game-state :verbosity 0)}
+                         {:initial-state game-state})
     (assoc game-state
            :players (assoc players
                            sb sb-player
@@ -237,15 +244,17 @@
                               bb (second bb-action))
            :current-bet 1.0)))
 
+#_(pay-blinds (init-game) :verbosity 2)
+
 (defn reset-action
   "Big blind acts first in all rounds except pre-flop"
   [game-state & {:keys [verbosity]
                  :or {verbosity 0}}]
   (utils/print-verbose verbosity
-                       [{:fn "reset-action"}
-                        {:last-action (last (last (:action-history game-state)))}
-                        {:final-state (reset-action game-state :verbosity 0)}
-                        {:initial-state game-state}])
+                       {:fn "reset-action"}
+                       {:last-action (last (last (:action-history game-state)))}
+                       {:final-state (reset-action game-state :verbosity 0)}
+                       {:initial-state game-state})
   (assoc game-state
          :current-player 1
          :current-bet 0.0
@@ -253,18 +262,22 @@
          :bet-values [0.0 0.0]
          :action-history (conj (:action-history game-state) [])))
 
-(defn all-in? 
+#_(reset-action (init-game) :verbosity 2)
+
+(defn all-in?
   "Has someone gone all-in in a previous betting round?"
   [game-state & {:keys [verbosity]
                  :or {verbosity 0}}]
   (utils/print-verbose verbosity
-                       [{:fn "all-in?"}
-                        {:bet-values (:bet-values game-state)
-                         :players (:players game-state)}
-                        {:final-state (reset-action game-state :verbosity 0)}
-                        {:initial-state game-state}])
+                       {:fn "all-in?"}
+                       {:bet-values (:bet-values game-state)
+                        :players (:players game-state)}
+                       {:final-state (reset-action game-state :verbosity 0)}
+                       {:initial-state game-state})
   (and (every? zero? (:bet-values game-state))
        (some zero? (map :money (:players game-state)))))
+
+#_(all-in? (init-game) :verbosity 2)
 
 #_(defn round-over-checkall
     "When all active players have contributed the same amount to the pot,
@@ -277,26 +290,26 @@
 
 (defn round-over-checkone
   "When betting goes back to the player who first made the bet,
-   the round is over.
-   Faster than checkall"
+   the round is over."
   [game-state & {:keys [verbosity]
                  :or {verbosity 0}}]
   (let [{bet-values :bet-values
          current-player :current-player
          current-bet :current-bet} game-state]
     (utils/print-verbose verbosity
-                         [{:fn "round-over-checkone"}
-                          {:bet-values bet-values
-                           :current-player current-player
-                           :current-bet current-bet}
-                          {:final-state (round-over-checkone game-state :verbosity 0)}
-                          {:initial-state game-state}])
+                         {:fn "round-over-checkone"}
+                         {:bet-values bet-values
+                          :current-player current-player
+                          :current-bet current-bet}
+                         {:final-state (round-over-checkone game-state :verbosity 0)}
+                         {:initial-state game-state})
     (cond
       (all-in? game-state) true
       (every? zero? bet-values) (= 1 current-player)
       (utils/pre-flop-bb? game-state) false
       :else (= (bet-values current-player) current-bet))))
 
+#_(round-over-checkone (init-game) :verbosity 2)
 
 
 (defn bet-round
@@ -304,28 +317,32 @@
   [game-state game-history & {:keys [verbosity]
                               :or {verbosity 0}}]
   (utils/print-verbose verbosity
-                       [{:fn "bet-round"}
-                        {:game-over (:game-over game-state)
-                         :round (:betting-round game-state)}
-                        {:final-state (bet-round game-state game-history :verbosity 0)}
-                        {:initial-state game-state}])
+                       {:fn "bet-round"}
+                       {:game-over (:game-over game-state)
+                        :round (:betting-round game-state)}
+                       {:final-state nil #_(bet-round game-state game-history :verbosity 0)}
+                       {:initial-state game-state})
   (if (or (:game-over game-state)
-          (all-in? game-state))
+          (all-in? game-state :verbosity verbosity))
     game-state
     (let [p1-move (make-move game-state
-                             game-history)
+                             game-history
+                             :verbosity verbosity)
           new-state (parse-action p1-move
-                                  game-state)]
+                                  game-state
+                                  :verbosity verbosity)]
       (if (or (:game-over new-state)
-              (round-over-checkone new-state))
+              (round-over-checkone new-state
+                                   :verbosity verbosity))
         new-state
         (recur new-state
                game-history
-               verbosity)))))
+              {:verbosity verbosity})))))
 
-#_(bet-round (init-game [(utils/init-player random-agent :p0)
-                         (utils/init-player random-agent :p1)])
-             [])
+#_(bet-round (init-game :players [(utils/init-player utils/random-agent :p0)
+                                  (utils/init-player utils/random-agent :p1)])
+             []
+             :verbosity 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Single Game    ;;
@@ -341,11 +358,11 @@
   (let [actions (mapcat identity action-history)
         last-round (take-last 2 action-history)]
     (utils/print-verbose verbosity
-                         [{:fn "bet-round"}
-                          {:last-round last-round}
-                          {:final-state (last-aggressor action-history players :verbosity 0)}
-                          {:initial-state action-history
-                           :players players}])
+                         {:fn "last-aggressor"}
+                         {:last-round last-round}
+                         {:final-state (last-aggressor action-history players :verbosity 0)}
+                         {:initial-state action-history
+                          :players players})
     (if (every? (partial contains? #{"All-In" "Check"})
                 (map #(first (second %)) last-round))
       (:id (second players))
@@ -355,6 +372,10 @@
           (if (contains? utils/aggressive-actions (first (second (last actions))))
             (first (last actions))
             (recur (drop-last actions))))))))
+
+#_(let [{action-history :action-history
+         players :players} (init-game)]
+    (last-aggressor action-history players :verbosity 2))
 
 (defn showdown
   "Heads-up showdown. Does not consider side pots.
@@ -379,25 +400,25 @@
                                            (utils/add-money p (/ pot (count winners)))))
                                 players
                                 winners)
-        l (last-aggressor action-history players)
+        l (last-aggressor action-history players :verbosity verbosity)
         l-idx (first (keep-indexed #(if (= l (:id %2)) %1 nil) players))
         visible-idx (set (conj (map first winners) l-idx))]
     (utils/print-verbose verbosity
-                         [{:fn "bet-round"}
-                          {:community community
-                           :hands hands
-                           :players players
-                           :last-aggressor l}
-                          {:final-state (showdown game-state :verbosity 0)}
-                          {:initial-state game-state}])
+                         {:fn "bet-round"}
+                         {:community community
+                          :hands hands
+                          :players players
+                          :last-aggressor l}
+                         {:final-state (showdown game-state :verbosity 0)}
+                         {:initial-state game-state})
     (assoc game-state
            :game-over true
            :players updated-players
            :betting-round "Showdown"
-           :visible-hands (keep-indexed #(if (contains? visible-idx %1) (vector (:id (players %1)) %2) nil) 
+           :visible-hands (keep-indexed #(if (contains? visible-idx %1) (vector (:id (players %1)) %2) nil)
                                         hands))))
 
-
+#_(showdown (init-game) :verbosity 2)
 
 (defn next-round
   "Checks to see if all players but one have folded, then runs showdown or
@@ -406,12 +427,13 @@
                  :or {verbosity 0}}]
   (let [{betting-round :betting-round
          community :community} game-state
-        reset-state (check-active-players (reset-action game-state))]
+        reset-state (check-active-players (reset-action game-state :verbosity verbosity)
+                                          :verbosity verbosity)]
     (utils/print-verbose verbosity
-                         [{:fn "next-round"}
-                          {:prev-round betting-round}
-                          {:final-state (next-round game-state :verbosity 0)}
-                          {:initial-state game-state}])
+                         {:fn "next-round"}
+                         {:prev-round betting-round}
+                         {:final-state (next-round game-state :verbosity 0)}
+                         {:initial-state game-state})
     (if (:game-over reset-state)
       reset-state
       (condp = betting-round
@@ -424,26 +446,35 @@
         "Turn" (assoc reset-state
                       :betting-round "River"
                       :visible community)
-        "River" (showdown game-state)))))
+        "River" (showdown game-state :verbosity verbosity)))))
 
+#_(next-round (init-game) :verbosity 2)
 
-(defn bet-game 
+(defn bet-game
   "Runs betting from initialization of game until showdown"
   [game-state game-history & {:keys [verbosity]
                               :or {verbosity 0}}]
   (utils/print-verbose verbosity
-                       [{:fn "bet-game"}
-                        {:final-state (bet-game game-state game-history :verbosity 0)}
-                        {:initial-state game-state}])
-  (let [new-state (bet-round game-state game-history)]
+                       {:fn "bet-game"}
+                       {}
+                       {:final-state (bet-game game-state game-history :verbosity 0)}
+                       {:initial-state game-state})
+  (let [new-state (bet-round game-state game-history :verbosity verbosity)]
     (if (:game-over new-state)
       new-state
-      (let [next-round (next-round new-state)]
+      (let [next-round (next-round new-state :verbosity verbosity)]
         (if (:game-over next-round)
           next-round
-          (recur next-round 
+          (recur next-round
                  game-history
-                 verbosity))))))
+                 {:verbosity verbosity}))))))
+
+
+#_(bet-game (pay-blinds
+           (init-game :players [(utils/init-player utils/random-agent :p0)
+                                (utils/init-player utils/random-agent :p1)]))
+          []
+          :verbosity 2)
 
 #_(defn var-reduce 
   "Subtracts expected value of hand from the money earned"
@@ -498,22 +529,30 @@
 (defn play-game 
   "Initializes and plays a game of poker, updating players and game-history in the process.
    -> [players game-history]"
-  ([players game-history deck]
-  (let [game-state (init-game players deck)
-        new-state (bet-game (pay-blinds game-state) game-history)]
+  ([players game-history & {:keys [deck verbosity]
+                            :or {deck (shuffle utils/deck)
+                                 verbosity 0}}]
+  (let [game-state (init-game :players players 
+                              :deck deck 
+                              :verbosity verbosity)
+        new-state (bet-game (pay-blinds game-state :verbosity verbosity) 
+                            game-history
+                            :verbosity verbosity)]
+    (utils/print-verbose verbosity
+                         {:fn "play-game"}
+                         {:players players
+                          :deck (take 7 deck)}
+                         {:final-state new-state}
+                         {:initial-state {}})
     [(:players new-state) 
-     (conj game-history (state-to-history game-state new-state))]))
-  ([players game-history] (play-game players game-history (shuffle utils/deck))))
+     (conj game-history (state-to-history game-state new-state))])))
 
 
-#_(clojure.pprint/pprint (bet-game (pay-blinds (init-game [(utils/init-player random-agent :p0)
-                                    (utils/init-player random-agent :p1)]))
-            []))
+#_(play-game [(utils/init-player utils/random-agent :p0)
+              (utils/init-player utils/random-agent :p1)]
+             []
+             :verbosity 2)
 
-#_(clojure.pprint/pprint (second (play-game [(utils/init-player random-agent :p0)
-              (utils/init-player random-agent :p1)]
-             [])))
-;;visibleHands is a map from playerid to vector of hands
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;   Multiple Games  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;

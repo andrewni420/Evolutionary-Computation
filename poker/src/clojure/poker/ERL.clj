@@ -96,13 +96,12 @@
   [] 
   (when m (.close m)))
 
+
 (defn shape
   "Turns a vector into a Shape object\\
    -> Shape"
   [arr]
   (nd/new-shape (utils/shape arr)))
-
-ai.djl.ndarray.NDManager/newBaseManager
 
 #_(shape [[1 2] [3 4] [5 6]])
 
@@ -456,7 +455,7 @@ ai.djl.ndarray.NDManager/newBaseManager
 
 #_(causal-mask [3 3 3] 0)
 
-(defn parallel-mask
+(defn n-fold-mask
   "Sets everything to 0 except every nth item of an array\\
    axis: axis to apply parallel mask to\\
    n: every nth item is nonzero\\
@@ -477,7 +476,7 @@ ai.djl.ndarray.NDManager/newBaseManager
     (identical-array first-identical
                      (into [] (map get-value (range m))))))
 
-#_(parallel-mask [3 6 3] 1 3 1)
+#_(n-fold-mask [3 6 3] 1 3 1)
 
 
 (defn mul-block
@@ -512,10 +511,7 @@ ai.djl.ndarray.NDManager/newBaseManager
   (let [s (SequentialBlock.)]
     (.add s (mul-block))
     (.add s (squeeze-block))
-    (.initializeChildBlocks s
-                            manager
-                            (process-datatype datatype)
-                            (process-shape input-shape :array? true))
+    (initialize-model s manager datatype input-shape :childblocks? true)
     s))
 
 #_(with-open [m (nd/new-base-manager)]
@@ -544,7 +540,7 @@ ai.djl.ndarray.NDManager/newBaseManager
     (clojure.pprint/pprint (get-parameters (causal-mask-block m [2 3 3]))))
 
 
-(defn parallel-mask-block
+(defn n-fold-mask-block
   "Creates a parallel mask to zero out every nth item starting from an i<n\\
    input-shape: vector [B F] or higher dimension\\
    creates a [1 1 F] or more parallel masking block\\
@@ -561,7 +557,7 @@ ai.djl.ndarray.NDManager/newBaseManager
                     "01Multiplication_weight"
                     (arrfn
                      (flatten
-                      (parallel-mask (drop 1 input-shape) axis n i))))
+                      (n-fold-mask (drop 1 input-shape) axis n i))))
     m))
 
 #_(with-open [m (nd/new-base-manager)]
@@ -586,15 +582,12 @@ ai.djl.ndarray.NDManager/newBaseManager
     (.add s (linear output-size :bias?  bias?))
     s))
 
-#_(let [mlp (create-mlp 2 :hidden-sizes [4] :bias? true)] 
-  (.initializeChildBlocks
-   mlp
-   m
-   ai.djl.ndarray.types.DataType/FLOAT32
-   (into-array ai.djl.ndarray.types.Shape [(nd/new-shape [2 2])]))
-  (println (get-parameters mlp)))
-
-(ai.djl.ndarray.NDManager/newBaseManager)
+#_(with-open [m (nd/new-base-manager)]
+    (let [mlp (create-mlp 2 :hidden-sizes [4] :bias? true)]
+      (initialize-model mlp m "float" [2 2] :childblocks? true)
+      (println (get-parameters mlp))
+      (initialize-model mlp m "float" [2 2] :childblocks? true)
+      (println (get-parameters mlp))))
 
 (defn n-fold-embedding-block
   "A block that applies a multilayer perceptron to every nth item along the given axis\\
@@ -607,9 +600,8 @@ ai.djl.ndarray.NDManager/newBaseManager
                                hidden-sizes (into [] (repeat n []))
                                activation-function (utils/make-function #(Activation/relu %))
                                arrfn float-array}}]
-  ())
-
-
+  (let [p (ai.djl.nn.ParallelBlock. )]
+    ()))
 
 
 (def test-block (parallel-mask-block m [1 6 3]))
@@ -638,16 +630,6 @@ ai.djl.ndarray.NDManager/newBaseManager
 (utils/softmax [3.7123106012293743 2.82842712474619 2.82842712474619 4.5078057300642405 2.82842712474619])
 (utils/softmax [5.091168824543141 3.83605428793702 3.83605428793702 6.310928022089937 3.83605428793702])
 
-
-(set-parameter! l "weight" (float-array [2 1 0.5 0.5]))
-(println (.head (.forward l (ai.djl.training.ParameterStore.)
-                          (ndlist m float-array [[1 1]
-                                                 [1 0.5]
-                                                 [1 0.5]
-                                                 [0.5 2]
-                                                 [1 0.5]])
-                          false
-                          nil)))
 
 (matrix/mmul [[0.22 0.09 0.09 0.50 0.09]
               [0.23 0.12 0.12 0.39 0.12]

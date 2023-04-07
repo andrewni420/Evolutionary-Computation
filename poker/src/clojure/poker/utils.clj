@@ -13,10 +13,13 @@
 ;; Math and Auxiliary ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn print-verbose 
-  [verbosity maps]
-  (when (>= verbosity 1)
-    (pprint/pprint (apply merge (take verbosity maps)))))
+(defmacro print-verbose
+  [verbosity & maps]
+  `(when (>= ~verbosity 1)
+     (pprint/pprint
+      (merge ~@(map-indexed (fn [idx# item#]
+                              `(when (>= ~verbosity ~(inc idx#)) ~item#))
+                            maps)))))
 
 (defn print-return [x & {:keys [pprint?]
                          :or {pprint? true}}]
@@ -424,7 +427,7 @@
    {hand {:win win :draw draw :total total} ...}"
   (read-string (slurp "rollout.txt")))
 
-(def S-C-numbers
+#_(def S-C-numbers
   "Sklansky-Chubukov numbers describing the strength of each hand when all-in preflop\\
    {hand [num-better-hands win%-when-underdog money-needed-to-prefer-all-in-to-fold]}"
   (read-string (slurp "Sklansky-Chubukov.txt")))
@@ -534,7 +537,7 @@
                        (facecard-from-value v2)
                        s))))))
 
-(defn rollout-winrate [hand]
+#_(defn rollout-winrate [hand]
   (let [{win :win total :total} (rollout (into #{} hand))]
     (float (/ win total))))
 
@@ -590,6 +593,8 @@
       {:hands hands
        :community (take 5 deck)})))
   ([n] (deal-hands n (shuffle deck))))
+
+#_(deal-hands 2 deck)
 
 (defn add-ace
   "Turns an ace into a card with value 14 and a card with value 1 for computing straights\\

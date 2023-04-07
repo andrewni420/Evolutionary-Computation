@@ -82,24 +82,6 @@ public class TransformerDecoderBlock extends AbstractBlock {
         this.outputNorm = addChildBlock("outputNorm", BatchNorm.builder().optAxis(2).build());
     }
 
-    private void initializeMask(Shape inputShape){
-        int B = (int) inputShape.get(0);
-        int F = (int) inputShape.get(1);
-        try (NDManager m = NDManager.newBaseManager();)
-        {
-                float[] mask = new float[B*F*F];
-                for (int i=0;i<B;i++){
-                        for (int j=0;j<F;j++){
-                                for (int k=0;k<F;k++){
-                                        mask[k + j*F + i*F*F] = k<=j ? 1f : 0f;
-                                }
-                        }
-                }
-                NDArray maskArray = m.create(mask, new Shape(B,F,F));
-                this.mask = maskArray;
-        }
-    }
-
     /** {@inheritDoc} */
     @Override
     public Shape[] getOutputShapes(Shape[] inputShapes) {
@@ -113,8 +95,6 @@ public class TransformerDecoderBlock extends AbstractBlock {
         attentionNorm.initialize(manager, dataType, inputShapes);
         pointWisefullyConnected.initialize(manager, dataType, inputShapes);
         outputNorm.initialize(manager, dataType, inputShapes);
-
-        initializeMask(inputShapes[0]);
     }
 
     //Still need to include possible attention on encoder output
@@ -128,10 +108,6 @@ public class TransformerDecoderBlock extends AbstractBlock {
         NDArray embedding = inputs.head();
         // perform attention lookup
         Shape shape = embedding.getShape();
-        
-        if (inputs.size()==1){
-                inputs.add(mask);
-        }
         
         NDList attentionOutput = selfAttentionBlock.forward(ps, inputs, training);
         // add dropout to attention Output
@@ -150,6 +126,8 @@ public class TransformerDecoderBlock extends AbstractBlock {
         NDList outputWithResidual =
                 new NDList(afterFullyConnectedDropout.singletonOrThrow().add(embedding));
         // normalize result
-        return outputNorm.forward(ps, new NDList(outputWithResidual), training);
+        NDList outputWithNorm = outputNorm.forward(ps, new NDList(outputWithResidual), training);
+        outputWithNorm.add(inputs.get(1));
+        return outputWithNorm;
     }
 }
