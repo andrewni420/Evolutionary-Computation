@@ -25,6 +25,8 @@
 ;;  Initialization   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
+
+
 (defn init-game
   "Removes players with no money and initializes the poker game. In the context of this game, players are 
    referenced by their index, not their id. In the history, players are referenced by their index.\\
@@ -43,11 +45,11 @@
    num-players - the number of players\\
    game-over - whether the game has terminated\\"
   [& {:keys [players deck verbosity]
-      :or {players [{:money utils/initial-stack :id :p0 :agent (constantly ["Fold" 0.0])}
-                    {:money utils/initial-stack :id :p1 :agent (constantly ["Fold" 0.0])}]
+      :or {players [(constantly ["Fold" 0.0]) (constantly ["Fold" 0.0])]
            deck (shuffle utils/deck)
            verbosity 0}}]
-  (let [deal (utils/deal-hands 2 deck)]
+  (let [players (utils/process-players players)
+        deal (utils/deal-hands 2 deck)]
     (utils/print-verbose verbosity
                          {:fn "init-game"}
                          {:players players
@@ -581,7 +583,8 @@
    Returns the total gain/loss of players and history after num-games are reached\\
    list: Whether to keep a list of the gains to return as a mean and stdev or to simply return
    the total gain over all games\\
-   -> [players net-gain = [gain ...] or {:mean :stdev} game-history]"
+   Do not print out the last item (game-history) returned by iterate-games-reset - it can get very big\\
+   -> [players, net-gain = [gain ...] or {:mean :stdev}, game-history]"
   [players num-games game-history & {:keys [list? decks verbosity] 
                                      :or {list? false 
                                           decks nil
@@ -611,6 +614,20 @@
                (into [] (reverse players))
                h
                (rest decks))))))
+
+#_(take 2 (iterate-games-reset  [(utils/init-player utils/rule-agent :p0)
+                                 (utils/init-player utils/random-agent :p1)] 
+                                10000 
+                                [] 
+                                :list? true))
+
+;;Plays 1000 (or 1000000) games between a rule-based agent and a random agent
+;;Returns the players, the average net gain per hand, and the standard deviations of the wins per hand
+#_(clojure.pprint/pprint (take 2 (iterate-games-reset [(utils/init-player wait-and-bet :p0)
+                                                       (utils/init-player random-agent :p1)]
+                                                      10000 #_1000000
+                                                      []
+                                                      :list? true)))
 
 (defn iterate-games-significantly
   "Iterate play between players until either statistical significance is reached or max-games are played\\
@@ -675,16 +692,9 @@
 
 
 
-#_(take 2 (iterate-games-reset  [(utils/init-player utils/rule-agent :p0)
-    (utils/init-player utils/random-agent :p1)] 10000 [] :list? true))
 
-;;Plays 1000 (or 1000000) games between a rule-based agent and a random agent
-;;Returns the players, the average net gain per hand, and the standard deviations of the wins per hand
-#_(clojure.pprint/pprint (take 2 (iterate-games-reset [(utils/init-player wait-and-bet :p0)
-                                                     (utils/init-player random-agent :p1)]
-                                                    10000 #_1000000
-                                                    []
-                                                    :list? true)))
+
+
 ;;Plays up to 100 games until a player has no money and returns the history of the "interesting" ones
 #_(apply (fn [p h] (vector p (take 10 (filter #(and (not= 1 (count (:action-history %)))
                                                   (utils/in? (flatten (:action-history %)) "Bet")
@@ -774,3 +784,4 @@
                      (assoc g :hands h)) l new-hands)]
     #_(spit "slumbot-history-random.txt" 
           (with-out-str (clojure.pprint/pprint new-l))))
+

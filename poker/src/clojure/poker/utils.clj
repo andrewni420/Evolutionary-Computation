@@ -841,6 +841,16 @@
    :money init-money
    :id id})
 
+(defn process-players
+  "Given a collection of agents, initializes them as players identified by their position in the collection\\
+   Given a collection of players, returns them.\\
+   -> players"
+  [players]
+  (into [] (map-indexed #(if (and (map? %2) (:money %2) (:id %2))
+                           %2
+                           (init-player %2 (keyword (str "p" %1))))
+                        players)))
+
 (defn add-money
   "Adds money to a player\\
    -> player"
