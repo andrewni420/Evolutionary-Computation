@@ -59,6 +59,7 @@
   (one-hot position 10))
 
 (defn encode-money-bb
+  ""
   [amount]
   )
 
@@ -74,3 +75,38 @@
   (let [{active-players :active-players} game-state]
     ()))
 
+
+
+(utils/benchmark 10000 (play-game [utils/random-agent utils/random-agent]
+                                 []))
+
+(utils/benchmark 10000
+                 (let [{hands :hands community :community} (utils/deal-hands 2 (shuffle utils/deck))]
+                   (utils/highest-hand (map #(vector %
+                                                     (concat (nth hands %)
+                                                             community))
+                                            (range 2))))
+                 #_(utils/deal-hands 2 (shuffle utils/deck))
+                 #_(utils/process-players [utils/random-agent utils/random-agent]))
+
+;; 1000 games per game
+;; 50 agents 
+;; 1225 or 50 games per generation
+;; 10 actions per game
+;; 20 cores
+;; 100 generations
+;;10 hours  = 36000 seconds
+;; bottom line = do a lot more sequence modeling than acquisition of information
+;; start maybe with random actions for information acquisition
+
+(float (/ (* 5000 60 60 1000) 50 100 1000 10))
+(float (/ 210 8))
+(float (/ 5000 100))
+
+
+;;;; 80,000 games for Deepstack vs Humans
+;;;; 135,000 games for Deepstack vs LBR
+;;;; 405,000 games for Hyperborean vs LBR
+
+;;;; 1,000,000 $0.08-$0.16 HUNL games for $6 
+;;;; 5,000,000 $0.08-0.16 6p or less NL games for $6 

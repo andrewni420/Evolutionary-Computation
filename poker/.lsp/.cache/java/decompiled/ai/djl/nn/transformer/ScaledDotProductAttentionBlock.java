@@ -2,15 +2,11 @@
  * Decompiled with CFR 0.152.
  * 
  * Could not load the following classes:
- *  ai.djl.ndarray.NDArray
  *  ai.djl.ndarray.NDManager
- *  ai.djl.ndarray.types.Shape
  *  ai.djl.nn.AbstractBlock
  *  ai.djl.nn.Block
- *  ai.djl.nn.core.Linear
  *  ai.djl.nn.norm.Dropout
  *  ai.djl.nn.transformer.ScaledDotProductAttentionBlock$Builder
- *  ai.djl.training.ParameterStore
  *  ai.djl.util.PairList
  *  java.lang.IllegalArgumentException
  *  java.lang.Math
@@ -90,15 +86,15 @@ extends AbstractBlock {
     }
 
     public void initializeChildBlocks(NDManager manager, DataType dataType, Shape ... inputShapes) {
-        Shape projectionShape = new Shape(new long[]{-1L, this.embeddingSize});
+        Shape projectionShape = new Shape(-1L, this.embeddingSize);
         for (Block projection : this.children.values()) {
             projection.initialize(manager, DataType.FLOAT32, new Shape[]{projectionShape});
         }
     }
 
     private NDArray createAttentionHeadsFromEmbeddings(NDArray projection, long B, long S, long N, long H) {
-        NDArray sequenceAndHeads = projection.reshape(new long[]{B, S, N, H});
-        return sequenceAndHeads.transpose(new int[]{0, 2, 1, 3});
+        NDArray sequenceAndHeads = projection.reshape(B, S, N, H);
+        return sequenceAndHeads.transpose(0, 2, 1, 3);
     }
 
     protected NDList forwardInternal(ParameterStore parameterStore, NDList inputs, boolean training, PairList<String, Object> params) {
@@ -129,12 +125,12 @@ extends AbstractBlock {
         NDArray keyHeads = this.createAttentionHeadsFromEmbeddings(keys.head(), B, F, N, H);
         NDArray queryHeads = this.createAttentionHeadsFromEmbeddings(queries.head(), B, T, N, H);
         NDArray valueHeads = this.createAttentionHeadsFromEmbeddings(values.head(), B, F, N, H);
-        NDArray attentionScores = queryHeads.matMul(keyHeads.transpose(new int[]{0, 1, 3, 2}));
+        NDArray attentionScores = queryHeads.matMul(keyHeads.transpose(0, 1, 3, 2));
         NDArray normalizedAttentionScores = attentionScores.mul(attentionScores.getManager().create(1.0f / (float)Math.sqrt((double)H)));
         if (attentionMask != null) {
             NDArray maskOffset;
             if (attentionMask.getShape().dimension() != 4) {
-                NDArray expandedMask = attentionMask.reshape(new long[]{B, 1L, T, F});
+                NDArray expandedMask = attentionMask.reshape(B, 1L, T, F);
                 maskOffset = expandedMask.toType(DataType.FLOAT32, false).mul(expandedMask.getManager().create(-1.0f)).add(expandedMask.getManager().create(1.0f)).mul(expandedMask.getManager().create(-100000.0f));
             } else {
                 maskOffset = attentionMask;
@@ -144,7 +140,7 @@ extends AbstractBlock {
         NDArray attentionProbs = normalizedAttentionScores.softmax(3);
         NDArray attentionProbsAfterDropout = this.attentionProbsDropout.forward(parameterStore, new NDList(attentionProbs), training).singletonOrThrow();
         NDArray attentionResult = attentionProbsAfterDropout.matMul(valueHeads);
-        NDArray resultEmbeddings = attentionResult.transpose(new int[]{0, 2, 1, 3}).reshape(new long[]{B, T, E});
+        NDArray resultEmbeddings = attentionResult.transpose(0, 2, 1, 3).reshape(B, T, E);
         NDList projectedEmbeddings = this.resultProjection.forward(parameterStore, new NDList(resultEmbeddings), training);
         return new NDList((Collection<NDArray>)projectedEmbeddings);
     }

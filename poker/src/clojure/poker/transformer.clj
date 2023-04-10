@@ -1,4 +1,4 @@
-(ns poker.ERL
+(ns poker.transformer
   (:require
    [clj-djl.ndarray :as nd]
    [clojure.core.matrix :as matrix]
@@ -15,7 +15,6 @@
    [clj-djl.dataframe.functional :as dfn]
    [poker.utils :as utils])
   (:import poker.TransformerDecoderBlock
-           poker.Test
            poker.Utils
            ai.djl.ndarray.types.DataType
            ai.djl.ndarray.types.Shape
@@ -24,6 +23,10 @@
            ai.djl.nn.ParallelBlock
            ai.djl.nn.LambdaBlock
            ai.djl.nn.Activation
+           poker.UnembedBlock
+           poker.LinearEmbedding
+           java.util.function.Function
+           poker.ParallelEmbedding
            java.lang.Class))
 
 
@@ -67,37 +70,37 @@
 ;;Auxiliaries and Constants;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn get-djl-type 
+(defn get-djl-type
   [type]
   (condp = (clojure.string/lower-case type)
-         "float32" DataType/FLOAT32
-         "float16" DataType/FLOAT16
-         "float64" DataType/FLOAT64
-         "float" DataType/FLOAT32
-         "bool" DataType/BOOLEAN
-         "boolean" DataType/BOOLEAN
-         "complex" DataType/COMPLEX64
-         "complex64" DataType/COMPLEX64
-         "int8" DataType/INT8
-         "int32" DataType/INT32
-         "int64" DataType/INT64
-         "int" DataType/INT32
-         "string" DataType/STRING
-         "uint8" DataType/UINT8
-         DataType/UNKNOWN))
+    "float32" DataType/FLOAT32
+    "float16" DataType/FLOAT16
+    "float64" DataType/FLOAT64
+    "float" DataType/FLOAT32
+    "bool" DataType/BOOLEAN
+    "boolean" DataType/BOOLEAN
+    "complex" DataType/COMPLEX64
+    "complex64" DataType/COMPLEX64
+    "int8" DataType/INT8
+    "int32" DataType/INT32
+    "int64" DataType/INT64
+    "int" DataType/INT32
+    "string" DataType/STRING
+    "uint8" DataType/UINT8
+    DataType/UNKNOWN))
 
-(def relu-function 
+(def relu-function
   "Returns a java Function that applies the relu activation function"
   (utils/make-function #(Activation/relu %)))
 
-(defn new-default-manager 
+(defn new-default-manager
   "Defines m as a new base manager"
-  [] 
+  []
   (def m (nd/new-base-manager)))
 
-(defn close-default-manager 
+(defn close-default-manager
   "Closes the manager m"
-  [] 
+  []
   (when m (.close m)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -116,24 +119,32 @@
   "Given a manager, a function, and a vector array, creates an NDArray object\\
    Applies the function to the vector array\\
    NDManager, arr -> NDArray"
-  [manager arrfn arr]
+  ([manager arrfn arr]
   (nd/create manager
              (arrfn (flatten arr))
              (utils/shape arr)))
+  ([manager arr] (ndarray manager float-array arr)))
 
 #_(with-open [m (nd/new-base-manager)]
     (println (ndarray m int-array [[1 2] [3 4]])))
 
-
+(defn random-array [shape]
+  (let [fns (map (fn [len]
+                   #(fn [] (into [] (repeatedly len %)))) shape)]
+    (((apply comp fns) rand))))
 
 (defn ndlist
-  "Given a manager, a function, and any number of vector arrays, creates an NDList object
+  "Given a manager, an optional function (default float-array), and any number of vector arrays, creates an NDList object
    holding all of the arrays in order.\\
-   Applies arrfn to each vector array\\
-   NDManager, arr1, arr2, ... -> NDList"
-  [manager arrfn & arrs]
-  (let [ndarrays (map (partial ndarray manager arrfn) arrs)]
+   Applies optional function to each vector array\\
+   NDManager, (arrfn), arr1, arr2, ... -> NDList"
+  [manager & args]
+  (let [[arrfn arrs] (if (coll? (first args)) 
+                       [float-array args] 
+                       [(first args) (rest args)])
+        ndarrays (map (partial ndarray manager arrfn) arrs)]
     (apply nd/ndlist ndarrays)))
+
 
 #_(with-open [m (nd/new-base-manager)]
     (println (ndlist m int-array [[1 2] [3 4]] [[5 6] [7 8]])))
@@ -148,7 +159,7 @@
     (ndarray-to-vector (ndarray m int-array [[1 2] [3 4]])))
 
 
-(defn process-shape 
+(defn process-shape
   "Turns a vector/Shape/[Shape into a Shape or [Shape\\
    -> Shape or [Shape"
   [s & {:keys [array?]
@@ -163,7 +174,7 @@
 
 #_(process-shape [1 2] :array true)
 
-(defn process-activation 
+(defn process-activation
   "Turns an activation iFn/Function into a java Function\\
    -> Function"
   [a]
@@ -177,7 +188,7 @@
   "Turns a string or DataType into a DataType\\
    -> DataType"
   [d]
-  (if (string? d) 
+  (if (string? d)
     (get-djl-type d)
     d))
 
@@ -394,7 +405,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;          Models         ;;
+;;    Model Functions      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn initialize-model
@@ -418,8 +429,6 @@
       (.optBias bias?)
       (.build)))
 
-
-
 (defn forward
   "Does a forward pass of the model using the input NDList.\\
    model - Block\\
@@ -433,44 +442,91 @@
                         params nil}}]
   (.forward model param-store inputs training params))
 
-(with-open [m (nd/new-base-manager)]
-  (let [model (linear 3)]
-    (initialize-model model m "float" [1 2])
-    (println (.singletonOrThrow (forward model (ndlist m float-array [[1 2]]))))))
+#_(with-open [m (nd/new-base-manager)]
+    (let [model (linear 3)]
+      (initialize-model model m "float" [1 2])
+      (println (.singletonOrThrow (forward model (ndlist m float-array [[1 2]]))))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;          Blocks         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn transformer-decoder-block
-  "Creates and initializes transformer decoder block.\\
-   Manager: controls lifecycle of NDArrays\\
+  "Creates a transformer decoder block.\\
+   Decoder block returns the attention mask along with its output.\\
    embedding-size: length of embedded vectors\\
    head-count: number of attention heads\\
    hidden-size: number of hidden units in positional feed-forward network\\
-   input-shape ([Shape/Shape/collection): Shape of input [B F E]\\
    activation-function (ifn/Function): activation function of positional feed-forward network\\
-   datatype (string/DataType): datatype of transformer block\\
-   -> TransformerDecoderBlock"
-  [manager
-   embedding-size
+   -> TransformerDecoderBlock (B, F, E), (B, F, F) -> (B, F, E), (B, F, F)"
+  [embedding-size
    head-count
    hidden-size
-   input-shape
-   & {:keys [activation-function dropout-probability datatype]
+   & {:keys [activation-function dropout-probability]
       :or {activation-function (utils/make-function #(Activation/relu %))
-           dropout-probability 0.1
-           datatype DataType/FLOAT32}}]
-  (let [input-shape (process-shape input-shape :array? true)
-        activation-function (process-activation activation-function)
-        datatype (process-datatype datatype)
-        b (TransformerDecoderBlock. embedding-size
-                                    head-count
-                                    hidden-size
-                                    dropout-probability
-                                    activation-function)]
-    (.initializeChildBlocks b
-                            manager
-                            datatype
-                            input-shape)
-    b))
+           dropout-probability 0.1}}]
+  (let [activation-function (process-activation activation-function)]
+    (TransformerDecoderBlock. embedding-size
+                              head-count
+                              hidden-size
+                              dropout-probability
+                              activation-function)))
 
+
+
+(with-open [m (nd/new-base-manager)]
+  (let [d (transformer-decoder-block 2 1 2 :activation-function identity)]
+    (.setRandomSeed (ai.djl.engine.Engine/getEngine "MXNet") 1)
+    (initialize-model d m "float" [1 2 2])
+    (let [result (forward d (ndlist m [[[1 2] [1 1]]]
+                                    [[[0 0] [0 0]]]))]
+      #_(println (get-parameters d))
+      (println (.get result 0))
+      (println (.get result 1)))))
+
+(matrix/mmul [[[1 2] [1 1]]]
+             (matrix/transpose [[-0.7298, -0.2213],
+                                [-2.0401, -1.8047]]))
+
+(with-open [m (nd/new-base-manager)]
+  (let [attn (-> (ai.djl.nn.transformer.ScaledDotProductAttentionBlock/builder)
+                 (.optAttentionProbsDropoutProb 0.1)
+                 (.setEmbeddingSize 2)
+                 (.setHeadCount 1)
+                 (.build))]
+    (.setRandomSeed (ai.djl.engine.Engine/getEngine "MXNet") 1)
+    (initialize-model attn m "float" [1 2 2])
+    (let [result (forward attn (ndlist m [[[1 2] [1 1]]]
+                                    [[[1 0] [0 1]]]))]
+      (println (get-parameters attn))
+      (println (.get result 0)))))
+
+(matrix/mmul [[1 2] [1 1]]
+             (matrix/transpose [[-0.7298, -0.2213],
+                                [-2.0401, -1.8047]])
+             (matrix/transpose [[1.4821, -0.8064],
+                                [1.0408,  1.2203]]))
+
+
+#_(defn embed-block
+  "Creates an embedding block that turns a one/multi-hot encoded vector of length dictionary-size
+   into a vector of length embedding-size\\
+   (B, F, D) -> (B, F, E)"
+  [dictionary-size embedding-size]
+  (-> (EmbedBlock/builder)
+      (.setEmbeddingSize embedding-size)
+      (.setDictionarySize dictionary-size)
+      (.build)))
+
+(defn linear-embedding
+  "Creates an embedding block that turns a one/multi-hot encoded vector of length dictionary-size
+   into a vector of length embedding-size\\
+   (B, F, D) -> (B, F, E)"
+  [embedding-size]
+  (-> (LinearEmbedding/builder)
+      (.setUnits embedding-size)
+      (.build)))
 
 (defn mul-block
   "Builds and returns a multiplication block\\
@@ -492,6 +548,31 @@
   (LambdaBlock.
    (utils/make-function #(nd/ndlist (.squeeze (.singletonOrThrow %) axis)))))
 
+(defn unembed-block 
+  "Uses an Embedding block to create an unembedding block with shared weights\\
+   Unembedding multiplies input by the transpose of the embedding matrix\\
+   Block -> Block"
+  [embed-block]
+  (.setEmbedding (UnembedBlock.) embed-block))
+
+;;see parallel-embedding
+
+(defn sequential-block
+  "Creates a sequential block that applies each given block in order\\
+   [Block ...] -> Block"
+  [& blocks]
+  (let [s (SequentialBlock.)]
+    (.addAll s blocks)
+    s))
+
+(defn parallel-block
+  "Given a Function<List<NDList>, NDList> fn and an optional List<Block> blocks, \\
+   returns a parallel block that applies each block to the inputs and combines the outputs using the given function\\
+   Function, List<Blocks> -> Block"
+  ([fn blocks]
+   (assert (instance? Function fn))
+   (ParallelBlock. fn blocks))
+  ([fn] (ParallelBlock. fn)))
 
 (defn mask-block
   "Creates and initializes a mul-squeeze block for masking\\
@@ -500,11 +581,11 @@
    -> Block"
   [manager input-shape & {:keys [datatype]
                           :or {datatype DataType/FLOAT32}}]
-  (assert (>= (count input-shape) 3) (str "Shape size too small. Must be at least [B F E]. Shape: " input-shape))
   (let [s (SequentialBlock.)]
     (.add s (mul-block))
     (.add s (squeeze-block))
     (initialize-model s manager datatype input-shape :childblocks? true)
+    (.freezeParameters s true)
     s))
 
 #_(with-open [m (nd/new-base-manager)]
@@ -519,22 +600,24 @@
                           :or {datatype DataType/FLOAT32
                                axis -2
                                arrfn float-array}}]
-  (assert (>= (count input-shape) 3) (str "Shape size too small. Must be at least [B F E]. Shape: " input-shape))
+  (assert (>= (count input-shape) 3) (str "Shape size too small. Must be at least [B F1 F2]. Shape: " input-shape))
   (let [m (mask-block manager input-shape :datatype datatype)]
     (set-parameter! m
                     "01Multiplication_weight"
                     (arrfn
                      (flatten
                       (causal-mask (drop 1 input-shape)
-                                 axis))))
+                                   axis))))
+    (.freezeParameters m true)
     m))
 
 #_(with-open [m (nd/new-base-manager)]
     (clojure.pprint/pprint (get-parameters (causal-mask-block m [2 3 3]))))
 
-
 (defn n-fold-mask-block
   "Creates a parallel mask to zero out every nth item starting from an i<n\\
+   axis: axis to apply parallel mask along\\
+   arrfn: function to convert clojure collection into java array\\
    input-shape: vector [B F] or higher dimension\\
    creates a [1 1 F] or more parallel masking block\\
    -> Block"
@@ -545,26 +628,29 @@
                                i 0
                                arrfn float-array}}]
   (let [m (mask-block manager input-shape :datatype datatype)]
-  (assert (>= (count input-shape) 2) (str "Shape size too small. Must be at least [B F]. Shape: " input-shape))
+    (assert (>= (count input-shape) 2) (str "Shape size too small. Must be at least [B F]. Shape: " input-shape))
     (set-parameter! m
                     "01Multiplication_weight"
                     (arrfn
                      (flatten
                       (n-fold-mask (drop 1 input-shape) axis n i))))
+    (.freezeParameters m true)
     m))
 
 #_(with-open [m (nd/new-base-manager)]
-    (clojure.pprint/pprint (get-parameters (parallel-mask-block m [2 6 3]))))
+    (println (get-parameters (n-fold-mask-block m [2 6 3]))))
 
-(defn create-mlp 
+(defn create-mlp
   "Given an output size and any number of hidden-sizes, creates but does not initialize a multilayer perceptron\\
    Structure: sequential Nx(Linear -> Activation) -> Linear\\
+   hidden-sizes: list of the number of units in each hidden layer\\
+   activation-function: activation function to be applied after each hidden layer\\
    bias: Whether to include bias for all linear blocks\\
    -> Block"
   [output-size & {:keys [hidden-sizes activation-function bias?]
-                                 :or {hidden-sizes []
-                                      bias? true
-                                      activation-function relu-function}}]
+                  :or {hidden-sizes []
+                       bias? true
+                       activation-function relu-function}}]
   (let [s (SequentialBlock.)]
     (run! #(.add s %)
           (reduce #(conj %1
@@ -582,56 +668,117 @@
       (initialize-model mlp m "float" [2 2] :childblocks? true)
       (println (get-parameters mlp))))
 
-(defn n-fold-embedding-block
-  "A block that applies a multilayer perceptron to every nth item along the given axis\\
-   input -> parallel nx(mask - mlp) -> add-fn -> output\\
-   -> Block"
-  [manager input-shape output-size & {:keys [datatype axis arrfn n hidden-sizes activation-function bias?]
-                                      :or {datatype DataType/FLOAT32
-                                           axis -2
-                                           n 3
-                                           hidden-sizes (into [] (repeat n []))
-                                           activation-function (utils/make-function #(Activation/relu %))
-                                           arrfn float-array
-                                           bias? false}}]
-  (let [nfold (map (fn [i]
-                     (let [s (SequentialBlock.)]
-                       (.add s (n-fold-mask-block manager
-                                                  input-shape
-                                                  :datatype datatype
-                                                  :axis axis
-                                                  :arrfn arrfn
-                                                  :n n
-                                                  :i i))
-                       (.add s (create-mlp output-size
-                                           :hidden-sizes (hidden-sizes i)
-                                           :activation-function activation-function
-                                           :bias? bias?))
-                       s))
-                   (range n))
-        p (ParallelBlock. (utils/make-function add-NDArrays)
-                          nfold)]
-    (initialize-model p manager datatype input-shape)
-    p))
+
+(defn parallel-embedding
+  "Creates a parallel embedding block given the embedding blocks"
+  [axis & embeddings]
+  (let [pe (ParallelEmbedding.)]
+    (.setAxis pe axis)
+    (.setEmbeddings pe embeddings)
+    pe))
 
 #_(with-open [m (nd/new-base-manager)]
-    (let [p (n-fold-embedding-block m [1 3 2] 2)]
-      (set-parameter! p "01SequentialBlock_02SequentialBlock_01Linear_weight"
-                      (float-array [1 0 0 1]))
-      (set-parameter! p "02SequentialBlock_02SequentialBlock_01Linear_weight"
-                      (float-array [1 1 1 1]))
-      (set-parameter! p "03SequentialBlock_02SequentialBlock_01Linear_weight"
-                      (float-array [-1 0 0 -1]))
-      (println (get-parameters p))
-      (println
-       (.singletonOrThrow
-        (forward p
-                 (ndlist m float-array [[[1 2] [3 4] [5 6]]]))))))
+    (let [e1 (linear-embedding 2)
+          e2 (linear-embedding 2)
+          pe (parallel-embedding 1 e1 e2)
+          reverse-pe (unembed-block pe)]
+      (initialize-model pe m "float" (into-array Shape [(nd/shape [1 3 2])
+                                                        (nd/shape [1 2 1])]))
+      (println (get-parameters pe))
+      (let [f (forward pe (ndlist m [[[1 1] [1 0] [0 -1] [-1 -1]]]
+                                  [[[1] [-1] [2] [3]]]))]
+        (println (.head f))
+        (println (.head (forward reverse-pe f)))
+        (println (.get (forward reverse-pe f) 1)))))
+
+;;distinction between finished models and building blocks
+
+(defn decision-transformer [state-embedding action-embedding positional-encoding transformer-block]
+  ;;parallel-embedding 1 state-embedding action-embedding
+  ;;positional encoding
+  ;;parallel-inputs positional-encoding parallel-embedding
+  ;;transformer
+  ;;unembed parallel-embedding
+  ;;sequential-block parallel-inputs transformer unembed
+  )
+
+
+#_(defn n-fold-embedding-blocks
+  "A block that applies a multilayer perceptron to every nth item along the given axis\\
+   input -> parallel nx(linear -> mask) -> add -> (log-softmax) -> output
+
+   input-shape - vector of input dimensions: (B, F)\\
+   datatype - data type of NDArrays\\
+   axis - axis to apply parallel embedding to\\
+   n - number of parallel embedding blocks\\
+   arrfn - function to convert clojure collections to java arrays\\
+
+   embedding: (B, F, D) -> (B, F, E), axis = -2 (F)\\
+   unembedding: (B, F, E) -> (B, F, D), axis = -2 (F)\\
+   -> Block"
+  [manager input-shape dictionary-sizes embedding-size & {:keys [datatype axis arrfn n]
+                                                          :or {datatype DataType/FLOAT32
+                                                               axis -2
+                                                               n 3
+                                                               arrfn float-array}}]
+  (let [dictionary-sizes (if (number? dictionary-sizes)
+                           (into [] (repeat n dictionary-sizes))
+                           dictionary-sizes)
+        embeddings (into []
+                         (map #(embed-block (dictionary-sizes %) embedding-size)
+                              (range n)))
+        unembeddings (into [] (map unembed-block embeddings))
+        embed-maskings (into [] (map (fn [i]
+                                       (n-fold-mask-block manager
+                                                          (conj input-shape embedding-size)
+                                                          :datatype datatype
+                                                          :axis axis
+                                                          :arrfn arrfn
+                                                          :n n
+                                                          :i i))
+                                     (range n)))
+        #_unembed-maskings #_(into [] (map (fn [i]
+                                       (n-fold-mask-block manager
+                                                          (conj input-shape (dictionary-sizes i))
+                                                          :datatype datatype
+                                                          :axis axis
+                                                          :arrfn arrfn
+                                                          :n n
+                                                          :i i))
+                                     (range n)))
+        parallel-embed (parallel-block (utils/make-function add-NDArrays)
+                                       (map sequential-block
+                                            embeddings
+                                            embed-maskings))
+        parallel-unembed (parallel-block (utils/make-function add-NDArrays)
+                                         (map sequential-block
+                                              embed-maskings
+                                              unembeddings))]
+    (initialize-model parallel-embed manager datatype input-shape)
+    {:embedding parallel-embed
+     :unembedding parallel-unembed}))
+
+#_(with-open [m (nd/new-base-manager)]
+    (let [{e :embedding
+           u :unembedding} (n-fold-embedding-blocks m [1 6 3] 3 2)
+          input [[[1 0 0] [1 0 0] [1 0 0] [0 0 0] [0 1 0] [0 1 0]]]]
+      (set-parameter! e "01SequentialBlock_01EmbedBlock_embedding"
+                      (float-array [1 0 1 1 1 0]))
+      (set-parameter! e "02SequentialBlock_01EmbedBlock_embedding"
+                      (float-array [1 1 0 0 1 1]))
+      (set-parameter! e "03SequentialBlock_01EmbedBlock_embedding"
+                      (float-array [-1 0 0 0 0 -1]))
+      (let [emb (forward e (ndlist m float-array input))
+            unemb (forward u emb)]
+        (println "parameters" (get-parameters e))
+        (println "input" input)
+        (println "embedded input" (.singletonOrThrow emb))
+        (println "unembedded embedded input" (.singletonOrThrow unemb)))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       Individuals       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (defn initialize-stdevs
   "For each parameter NDArray of nnet, creates an array of ones with the same shape 
@@ -690,7 +837,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;         Runtime         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 
 

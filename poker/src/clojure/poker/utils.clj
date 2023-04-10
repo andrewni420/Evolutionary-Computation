@@ -14,6 +14,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmacro print-verbose
+  "When verbosity is more than 0, merges and prints the first verbosity maps in maps without
+   evaluating the other maps.\\
+   -> nil"
   [verbosity & maps]
   `(when (>= ~verbosity 1)
      (pprint/pprint
@@ -21,28 +24,70 @@
                               `(when (>= ~verbosity ~(inc idx#)) ~item#))
                             maps)))))
 
-(defn print-return [x & {:keys [pprint?]
-                         :or {pprint? true}}]
-  (if pprint? 
+#_(print-verbose 2 
+                 {:print1 "First map"}
+                 {:print2 "Second map"}
+                 {:print3 "Third map"})
+
+(defmacro benchmark
+  "Evaluates the body num-times times, prints the elapsed time, and returns nil.\\
+   -> nil"
+  [num-times body]
+  `(time (loop [i# 0]
+           (if (= i# ~num-times)
+             nil
+             (do ~body
+                 (recur (inc i#)))))))
+
+#_(benchmark 300000000
+             (+ 1 2))
+
+(defn print-return
+  "Print x and return it\\
+   -> x"
+  [x & {:keys [pprint?]
+        :or {pprint? true}}]
+  (if pprint?
     (pprint/pprint x)
     (println x))
   x)
 
-(defn make-consumer [f]
+#_(print-return {:hi "hi"})
+
+(defn make-consumer 
+  "Make the given ifn implement java.util.function.Consumer\\
+   IFn -> Consumer"
+  [f]
   (reify java.util.function.Consumer
     (accept [_ x] (f x))))
 
-(defn make-supplier [f]
+#_(instance? java.util.function.Consumer
+             (make-consumer #(println %)))
+
+(defn make-supplier 
+  "Make the given ifn implement java.util.function.Supplier\\
+   IFn -> Supplier"
+  [f]
   (reify java.util.function.Supplier
     (get [_] (f))))
 
-(defn make-function [f]
+#_(instance? java.util.function.Supplier
+             (make-supplier (constantly 2)))
+
+(defn make-function 
+  "Make the given ifn implement java.util.function.Function\\
+   IFn -> Function"
+  [f]
   (reify java.util.function.Function
     (apply [_ x] (f x))))
 
+#_(instance? java.util.function.Function
+             (make-function inc))
+
 (defn choose
   "Returns number of ways to choose k objects from n distinct objects
-   Returns 0 when k>n"
+   Returns 0 when k>n\\
+   integer, integer -> integer"
   [n k]
   (if (< n k)
     0
@@ -54,8 +99,11 @@
                  (dec n)
                  (inc k)))))))
 
+#_(choose 6 2)
+
 (defn permute
-  "Returns the number of permutations of k objects from n distinct objects"
+  "Returns the number of permutations of k objects from n distinct objects\\
+   integer, integer-> integer"
   [n k]
   (let [k (- n k)]
     (loop [res 1 n n]
@@ -63,26 +111,31 @@
         res
         (recur (* res n) (dec n))))))
 
+#_(permute 6 2)
 
 (defn square
-  "Square input with autopromotion"
+  "Square input with autopromotion\\
+   number -> number"
   [n] (*' n n))
 
 (defn round
-  "Rounds x to num-digits number of digits after the decimal place"
+  "Rounds x to num-digits number of digits after the decimal place\\
+   number, integer -> number"
   [x num-digits]
   (let [e (Math/pow 10 num-digits)]
     (/ (Math/round (* x e)) e)))
 
 (defn dot
-  "Dot product.
-   [a b] -> a.b
-   [a] -> a.a"
+  "Dot product.\\
+   [a b] -> a.b\\
+   [a] -> a.a\\
+   [number ...], ([number ...]) -> number"
   ([a b] (reduce + (map * a b)))
   ([a] (dot a a)))
 
 (defn pd
-  "Protected division"
+  "Protected division - dividing by 0 returns 0\\
+  number, number-> number"
   [a b]
   (try (if (zero? b)
          0
@@ -90,20 +143,23 @@
        (catch Exception _ 0)))
 
 (defn mean
-  "Takes the average of dataset"
+  "Takes the average of the given collection\\
+   [number ...] -> number"
   [data]
   (pd
    (reduce + 0 data)
    (float (count data))))
 
 (defn de-mean 
-  "Shifts data so that the mean is 0"
+  "Shifts data so that the mean is 0\\
+   [number ...] -> [number ...]"
   [data]
   (let [m (mean data)]
     (map #(- % m) data)))
 
 (defn stdev
-  "Takes the standard deviation of the arguments"
+  "Takes the standard deviation of the arguments\\
+   [number ...] -> number"
   [data]
   (let [x (mean data)]
     (Math/sqrt (pd
@@ -111,7 +167,8 @@
                 (count data)))))
 
 (defn de-std
-  "Scales the data to have a stdev of 1."
+  "Scales the data to have a stdev of 1.\\
+   [number ...] -> [number ...]"
   [data]
   (let [s (stdev data)]
     (if (zero? s)
@@ -119,7 +176,8 @@
       (map #(/ % s) data))))
 
 (defn cov
-  "Takes the covariance of two sequences"
+  "Takes the covariance of two sequences\\
+   [number ...n] [number ...n] -> number"
   [x y]
   (let [xmean (mean x)
         ymean (mean y)]
@@ -130,13 +188,15 @@
        (count x))))
 
 (defn corr
-  "Takes the pearson correlation coefficient of two sequences"
+  "Takes the pearson correlation coefficient of two sequences\\
+   [number ...n] [number ...n] -> number"
   [x y]
   (/ (cov x y) (* (stdev x) (stdev y))))
 
 (defn s-corr
   "Spearman correlation coefficient of two sequences. \\
-   Assumes x and y have all distinct values"
+   Assumes x and y have all distinct values\\
+   [number ...n] [number ...n] -> number"
   [x y]
   (let [x (sort-by first (map vector x (range)))
         x (sort-by second (map conj x (range)))
@@ -153,27 +213,35 @@
 
 (defn sigmoid 
   "Sigmoid function.\\
-   Maps (-inf, inf) -> (-1,1)"
+   number∈(-inf, inf) -> number∈(-1,1)\\"
   [x] (/ 1 (+ 1 (Math/exp (- x)))))
 
 (defn logit 
   "Inverse sigmoid function, aka log odds function.\\
-   Maps (0,1) -> (-inf, +inf)\\
-   Returns -inf and inf when x is in (-inf, -1] or [1, +inf), respectively"
+   Returns -inf and inf when x is in (-inf, -1] or [1, +inf), respectively\\
+   number∈(0,1) -> number∈(-inf, +inf)\\"
   [x] (if (and (< x 1) (> x 0))
                   (Math/log (/ x (- 1 x)))
                   (* x ##Inf)))
 
 (defn relu 
-  "Rectified linear activation"
+  "Rectified linear activation\\
+   number -> number"
   [x] (if (< x 0) 0.0 x))
 
-(defn softmax 
-  "Softmax function"
+(defn softmax
+  "Softmax function\\
+   [number ...] -> [number(0, 1) ...]"
   [args]
   (let [e (map #(Math/exp %) args)
         s (reduce + e)]
     (map #(/ % s) e)))
+
+(defn log-softmax
+  "Log-Softmax function\\
+   [number ...] -softmax> [number(0, 1) ...] -log> [number(-∞, 0) ...]"
+  [args]
+  (map #(Math/log %) (softmax args)))
 
 (defn random-weighted 
   "Randomly chooses an element of coll with probabilities weighted by (f element)"
@@ -362,7 +430,7 @@
 (defn pairs
   "Given a collection, returns all sets of distinct pairs from that collection.
    If the collection only has one element, returns a set of that element.\\
-   -> [pair ...]"
+   -> [#{e1 e2} ...]"
   [coll]
   (if (= 1 (count coll))
     (list #{(first coll)})
@@ -375,7 +443,8 @@
   [2 3 4 5 6 7 8 9 10 11 12 13 14])
 
 (def suits
-  "Suits in a deck: Clubs, Diamonds, Hearts, and Spades"
+  "Suits in a deck: \\
+   Clubs, Diamonds, Hearts, and Spades"
   ["Clubs" "Diamonds" "Hearts" "Spades"])
 
 (def deck
@@ -397,7 +466,9 @@
 
 (def type-rankings
   "Map from the name of a hand type to an integer representing its strength.
-   Hands with higher strengths beat hands with lower strengths"
+   Hands with higher strengths beat hands with lower strengths:\\
+   Straight Flush > Four of a Kind > Full House > Flush > 
+   Straight > Three of a Kind > Two Pair > Pair > High Card"
   {"Straight Flush" 9
    "Four of a Kind" 8
    "Full House" 7
@@ -409,11 +480,13 @@
    "High Card" 1})
 
 (def betting-rounds 
-  "The four betting rounds in poker"
+  "The four betting rounds in poker:\\
+   Pre-Flop, Flop, Turn, River"
   ["Pre-Flop" "Flop" "Turn" "River"])
 
 (def possible-actions 
-  "Possible actions in poker"
+  "Possible actions in poker:\\
+   Check, Call, Fold, Bet, Raise, All-In"
   ["Check" "Call" "Fold" "Bet" "Raise" "All-In"])
 
 (def hand-qualities
