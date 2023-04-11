@@ -1,4 +1,4 @@
-(ns poker.Andrew.headsupTest
+(ns poker.onehot
   (:require [poker.headsup :refer :all]
             [poker.utils :as utils]))
 
@@ -54,14 +54,19 @@
   [action-type]
   (one-hot (.indexOf action-types action-type) 5))
 
-(defn encode-position 
-  [position]
-  (one-hot position 10))
-
 (defn encode-money-bb
   ""
   [amount]
   )
+
+(defn encode-player 
+  "Encodes either a player-number (different from cur-player) or a player-id with a list
+   of the player ids as a one-hot vector of length 10, since at most 10 players are usually at a poker table\\
+   -> [int ...10]"
+  ([player]
+  (one-hot player 10))
+  ([player-id ids]
+   (one-hot (.indexOf ids player-id) 10)))
 
 (defn encode-money-stack
   [])
@@ -69,7 +74,8 @@
 (defn encode-money-pot
   [])
 
-(init-game)
+;; positional encoding: [game#, round#, action#]
+;; How to encode? inf games, 4 rounds, up to 10 actions
 
 (defn encode-state [game-state]
   (let [{active-players :active-players} game-state]

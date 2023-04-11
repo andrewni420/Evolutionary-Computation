@@ -87,10 +87,7 @@ public class ParallelEmbedding extends AbstractBlock implements Embedding{
                 embeddings.size() + 
                 " Input: " + 
                 inputs.size();
-            /* ----------------------------------------------------------------
-             * ------------------------------TODO------------------------------ 
-             * ----------------------------------------------------------------
-             * (B, F1, D1), (B, F2, D2) ... -embed> 
+            /* (B, F1, D1), (B, F2, D2) ... -embed> 
              * (B, F1, E), (B, F2, E) ...   -interleave> 
              * (B, F, E)
             */
@@ -122,10 +119,7 @@ public class ParallelEmbedding extends AbstractBlock implements Embedding{
     /** {@inheritDoc} */
     @Override
     public NDList reverse(ParameterStore ps, NDList inputs, boolean training, PairList<String, Object> params){
-            /* ----------------------------------------------------------------
-             * ------------------------------TODO------------------------------ 
-             * ----------------------------------------------------------------
-             * (B, F, E) -split> (final outputShape)
+            /* (B, F, E) -split> (final outputShape)
              * (B, F1, E), (B, F2, E) ...   -unembed> (outputShapes of embeddings)
              * (B, F1, D1), (B, F2, D2) ...  (inputShapes)
             */

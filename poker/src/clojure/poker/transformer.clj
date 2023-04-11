@@ -19,12 +19,15 @@
            ai.djl.ndarray.types.DataType
            ai.djl.ndarray.types.Shape
            ai.djl.ndarray.NDArray
+           ai.djl.ndarray.NDList
            ai.djl.nn.SequentialBlock
            ai.djl.nn.ParallelBlock
            ai.djl.nn.LambdaBlock
            ai.djl.nn.Activation
            poker.UnembedBlock
+           poker.SinglePositionEncoding
            poker.LinearEmbedding
+           poker.PositionalEncoding
            java.util.function.Function
            poker.ParallelEmbedding
            java.lang.Class))
@@ -436,11 +439,15 @@
    training - boolean\\
    params - PairList\\
    -> NDList"
-  [model inputs & {:keys [param-store training params]
+  [model inputs & {:keys [param-store training params NDArray?]
                    :or {param-store (ai.djl.training.ParameterStore.)
                         training false
-                        params nil}}]
-  (.forward model param-store inputs training params))
+                        params nil
+                        NDArray? false}}]
+  (let [result (.forward model param-store inputs training params)]
+    (if NDArray?
+      (.singletonOrThrow result)
+      result)))
 
 #_(with-open [m (nd/new-base-manager)]
     (let [model (linear 3)]
@@ -775,6 +782,40 @@
         (println "embedded input" (.singletonOrThrow emb))
         (println "unembedded embedded input" (.singletonOrThrow unemb)))))
 
+(defn single-position-encoding 
+  "Given an array where arr[i] is the position encoding of the ith position,
+   creates a block to create position encoding from integer positions\\
+   -> Block (... F) -> (... F, E)"
+  [arr]
+  (SinglePositionEncoding. arr))
+
+(let [em1 (SinglePositionEncoding. (ndarray m [[1 2 3] [2 3 4] [4 5 6] [5 6 7]]))
+      em2 (SinglePositionEncoding. (ndarray m [[0.1 0.2] [0.3 0.4] [0.5 0.6]]))
+      input (ndlist m [[1 0] [1 1] [3 2]])
+      pe (PositionalEncoding.)]
+  (.setEmbeddingSizes pe [3 2])
+  (.setEmbeddings pe [em1 em2])
+  (println (forward pe input :NDArray? true)))
+
+(defn positional-encoding 
+  "Given a list of embedding sizes [E0 ...n] and a list of embeddings [Block0 ...n],
+   creates a hierarchical positional encoding block that separately embeds each position using each block,
+   and then concatenates them together to obtain a final positional embedding of size ΣEi = E\\
+   -> Block (... F, n) -> (... F, E)"
+  [embedding-sizes embeddings]
+  (let [p (PositionalEncoding.)]
+    (.setEmbeddingSizes p embedding-sizes)
+    (.setEmbeddings p embeddings)
+    p))
+
+(let [em1 (SinglePositionEncoding. (ndarray m [[1 2 3] [2 3 4] [4 5 6] [5 6 7]]))
+      em2 (SinglePositionEncoding. (ndarray m [[0.1 0.2] [0.3 0.4] [0.5 0.6]]))
+      input (ndlist m [[1 0] [1 1] [3 2]])
+      pe (PositionalEncoding.)]
+  (.setEmbeddingSizes pe [3 2])
+  (.setEmbeddings pe [em1 em2])
+  (println (forward pe input :NDArray? true)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       Individuals       ;;
@@ -838,4 +879,19 @@
 ;;         Runtime         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+  ;;parallel-embedding 1 state-embedding action-embedding
+  ;;positional encoding
+  ;;parallel-inputs positional-encoding parallel-embedding
+  ;;transformer
+  ;;unembed parallel-embedding
+  ;;sequential-block parallel-inputs transformer unembed
+
+(defn infer [individual states actions positions]
+  (let [{embedding :embedding
+         core :core
+         unembedding :unembedding
+         positional-encoding :positional-encoding} individual
+        embedded (forward embedding (NDList. states actions))
+        encoded (encode-positions positions positional-encoding)]
+    ()))
 

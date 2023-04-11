@@ -64,6 +64,27 @@
 #_(instance? java.util.function.Consumer
              (make-consumer #(println %)))
 
+(defn positional-encoding
+  "Encodes a position as an embedding-size length vector. \\
+   PE = sin(k/n^(2i/d)) or cos(k/n^(2i/d)) depending on whether column = 2i or 2i+1\\
+   (embedding-size position column (n)) -> number\\
+   (embedding-size position (n)) -> [number ...embedding-size]\\
+   (embedding-size num-positions (n)) -> [[number ...embedding-size] ...num-positions]"
+  [embedding-size & {:keys [position column n num-positions]
+                     :or {n 10000 num-positions 100}}]
+  (cond (not position) (mapv #(positional-encoding embedding-size
+                                                   :position %
+                                                   :n n)
+                             (range num-positions))
+        (not column) (mapv #(positional-encoding embedding-size
+                                                 :position position
+                                                 :column %
+                                                 :n n)
+                           (range embedding-size))
+        :else (if (even? column)
+                (Math/sin (/ position (Math/pow n (/ column embedding-size))))
+                (Math/cos (/ position (Math/pow n (/ (dec column) embedding-size)))))))
+
 (defn make-supplier 
   "Make the given ifn implement java.util.function.Supplier\\
    IFn -> Supplier"
