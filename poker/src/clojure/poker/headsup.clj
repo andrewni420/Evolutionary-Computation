@@ -497,7 +497,7 @@
                            :or {verbosity 0}}]
   net-gain)
 
-(defn state-to-history 
+#_(defn state-to-history 
   "Summarizes end-of-game state into fields to put into game history.\\
    hands: cards dealt to each player\\
    visible-hands: cards shown at showdown\\
@@ -547,14 +547,15 @@
                          {:final-state new-state}
                          {:initial-state {}})
     [(:players new-state) 
-     (conj game-history (state-to-history game-state new-state))])))
+     game-history
+     #_(conj game-history (state-to-history game-state new-state))])))
 
 
 #_(play-game [(utils/init-player utils/random-agent :p0)
               (utils/init-player utils/random-agent :p1)]
              []
              :verbosity 2)
-
+(init-game)
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;   Multiple Games  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;

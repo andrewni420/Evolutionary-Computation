@@ -4,7 +4,6 @@
  * Could not load the following classes:
  *  ai.djl.Device
  *  ai.djl.ndarray.BytesSupplier
- *  ai.djl.ndarray.NDArray
  *  ai.djl.ndarray.NDManager
  *  ai.djl.ndarray.NDResource
  *  ai.djl.ndarray.NDSerializer

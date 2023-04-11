@@ -15,12 +15,17 @@
   (let [i-coll (into #{} i-coll)]
     (into [] (map #(if (i-coll %) 1 0) (range n)))))
 
-(defn encode-card [card]
+
+(defn encode-card 
+  "Encodes a card just like in AlphaHoldem"
+  [card]
     (one-hot (utils/card-index card) 52))
+
 
 #_(encode-card [3 "Clubs"])
 
 #_(defn one-hot-hand 
+    "This doesn't work because it encodes a hand as one of 52^2 hands, but half of these are identical"
   [hand]
   (let [[[value1 suit1] [value2 suit2]] hand
         [s1 s2] (map (partial .indexOf utils/suits) [suit1 suit2])
@@ -29,6 +34,15 @@
     (into [] (concat (repeat i 0)
                      [1]
                      (repeat (- 52 i 1) 0)))))
+
+(defn encode-hand 
+  "Encodes hand as one of (52 choose 2) = 1326 possible hands\\
+   Cards should be ordered from 2 to 14 and from Clubs to Spades (arbitrarily chosen suit order) as in utils/suits.\\
+   Maybe sort cards by ascending order:\\
+   [1 2] ... [1 52] [2 3] ... [50 51] [50 52] [51 52]\\
+   In terms of cards this would look like:\\
+   [2 \"Clubs\", 2\"Diamonds\"] ... [2 \"Clubs\", 14 \"Spades\"], [2 \"Diamonds\", 2\"Hearts\"] ... [14 \"Diamonds\", 14\"Hearts\"], [14 \"Diamonds\", 14\"Spades\"], [14\"Hearts\", 14\"Spades\"]"
+  [hand])
 
 (defn encode-round 
   [round]
@@ -55,24 +69,42 @@
   (one-hot (.indexOf action-types action-type) 5))
 
 (defn encode-money-bb
-  ""
-  [amount]
+  "Specify the buckets for a linear / logscale progression\\
+   One hot encodes the amount into the closest bucket by distance or distance of logs if logscale? is true"
+  [amount & {:keys [logscale? buckets]
+                         :or {logscale? false
+                              buckets (range 1 10)}}]
   )
 
-(defn encode-player 
+(defn encode-money-stack
+  "Same as encode-money-bb, just divide by the pot first"
+  [amount stack & {:keys [buckets logscale?]
+                   :or {buckets [0.5 0.75 1 1.5 2]
+                        logscale? false}}])
+
+(defn encode-money-pot
+  "Same as encode-money-bb, just divide by the stack first"
+  [amount pot & {:keys [buckets logscale?]
+                   :or {buckets [0.05 0.1 0.2 0.3 0.4]
+                        logscale? false}}])
+
+(defn encode-money
+  [amount pot stack & {:keys [buckets logscale? multi-hot?]
+                       :or {buckets [nil nil nil]
+                            logscale? [false false false]
+                            multi-hot? true}}]
+  (assert (or multi-hot (boolean? logscale?)) 
+          "Can only have one scale when multi-hot? is false for accurate comparison of buckets"))
+
+
+(defn encode-player
   "Encodes either a player-number (different from cur-player) or a player-id with a list
    of the player ids as a one-hot vector of length 10, since at most 10 players are usually at a poker table\\
    -> [int ...10]"
   ([player]
-  (one-hot player 10))
+   (one-hot player 10))
   ([player-id ids]
    (one-hot (.indexOf ids player-id) 10)))
-
-(defn encode-money-stack
-  [])
-
-(defn encode-money-pot
-  [])
 
 ;; positional encoding: [game#, round#, action#]
 ;; How to encode? inf games, 4 rounds, up to 10 actions
@@ -83,10 +115,10 @@
 
 
 
-(utils/benchmark 10000 (play-game [utils/random-agent utils/random-agent]
+#_(utils/benchmark 10000 (play-game [utils/random-agent utils/random-agent]
                                  []))
 
-(utils/benchmark 10000
+#_(utils/benchmark 10000
                  (let [{hands :hands community :community} (utils/deal-hands 2 (shuffle utils/deck))]
                    (utils/highest-hand (map #(vector %
                                                      (concat (nth hands %)
@@ -94,25 +126,3 @@
                                             (range 2))))
                  #_(utils/deal-hands 2 (shuffle utils/deck))
                  #_(utils/process-players [utils/random-agent utils/random-agent]))
-
-;; 1000 games per game
-;; 50 agents 
-;; 1225 or 50 games per generation
-;; 10 actions per game
-;; 20 cores
-;; 100 generations
-;;10 hours  = 36000 seconds
-;; bottom line = do a lot more sequence modeling than acquisition of information
-;; start maybe with random actions for information acquisition
-
-(float (/ (* 5000 60 60 1000) 50 100 1000 10))
-(float (/ 210 8))
-(float (/ 5000 100))
-
-
-;;;; 80,000 games for Deepstack vs Humans
-;;;; 135,000 games for Deepstack vs LBR
-;;;; 405,000 games for Hyperborean vs LBR
-
-;;;; 1,000,000 $0.08-$0.16 HUNL games for $6 
-;;;; 5,000,000 $0.08-0.16 6p or less NL games for $6 

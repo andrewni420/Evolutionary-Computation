@@ -264,6 +264,7 @@
   [args]
   (map #(Math/log %) (softmax args)))
 
+
 (defn random-weighted 
   "Randomly chooses an element of coll with probabilities weighted by (f element)"
   [f coll]

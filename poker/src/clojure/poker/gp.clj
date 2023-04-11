@@ -1,4 +1,4 @@
-(ns poker.Andrew.gp
+(ns poker.gp
   (:require [propeller.push.state :as state]
             [poker.utils :as utils] 
             [poker.headsup :as headsup]

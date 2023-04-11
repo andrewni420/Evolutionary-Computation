@@ -456,8 +456,9 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;          Blocks         ;;
+;;  Uninitialized Blocks   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (defn transformer-decoder-block
   "Creates a transformer decoder block.\\
@@ -482,49 +483,49 @@
 
 
 
-(with-open [m (nd/new-base-manager)]
-  (let [d (transformer-decoder-block 2 1 2 :activation-function identity)]
-    (.setRandomSeed (ai.djl.engine.Engine/getEngine "MXNet") 1)
-    (initialize-model d m "float" [1 2 2])
-    (let [result (forward d (ndlist m [[[1 2] [1 1]]]
-                                    [[[0 0] [0 0]]]))]
-      #_(println (get-parameters d))
-      (println (.get result 0))
-      (println (.get result 1)))))
+#_(with-open [m (nd/new-base-manager)]
+    (let [d (transformer-decoder-block 2 1 2 :activation-function identity)]
+      (.setRandomSeed (ai.djl.engine.Engine/getEngine "MXNet") 1)
+      (initialize-model d m "float" [1 2 2])
+      (let [result (forward d (ndlist m [[[1 2] [1 1]]]
+                                      [[[0 0] [0 0]]]))]
+        #_(println (get-parameters d))
+        (println (.get result 0))
+        (println (.get result 1)))))
 
-(matrix/mmul [[[1 2] [1 1]]]
-             (matrix/transpose [[-0.7298, -0.2213],
-                                [-2.0401, -1.8047]]))
+#_(matrix/mmul [[[1 2] [1 1]]]
+               (matrix/transpose [[-0.7298, -0.2213],
+                                  [-2.0401, -1.8047]]))
 
-(with-open [m (nd/new-base-manager)]
-  (let [attn (-> (ai.djl.nn.transformer.ScaledDotProductAttentionBlock/builder)
-                 (.optAttentionProbsDropoutProb 0.1)
-                 (.setEmbeddingSize 2)
-                 (.setHeadCount 1)
-                 (.build))]
-    (.setRandomSeed (ai.djl.engine.Engine/getEngine "MXNet") 1)
-    (initialize-model attn m "float" [1 2 2])
-    (let [result (forward attn (ndlist m [[[1 2] [1 1]]]
-                                    [[[1 0] [0 1]]]))]
-      (println (get-parameters attn))
-      (println (.get result 0)))))
+#_(with-open [m (nd/new-base-manager)]
+    (let [attn (-> (ai.djl.nn.transformer.ScaledDotProductAttentionBlock/builder)
+                   (.optAttentionProbsDropoutProb 0.1)
+                   (.setEmbeddingSize 2)
+                   (.setHeadCount 1)
+                   (.build))]
+      (.setRandomSeed (ai.djl.engine.Engine/getEngine "MXNet") 1)
+      (initialize-model attn m "float" [1 2 2])
+      (let [result (forward attn (ndlist m [[[1 2] [1 1]]]
+                                         [[[1 0] [0 1]]]))]
+        (println (get-parameters attn))
+        (println (.get result 0)))))
 
-(matrix/mmul [[1 2] [1 1]]
-             (matrix/transpose [[-0.7298, -0.2213],
-                                [-2.0401, -1.8047]])
-             (matrix/transpose [[1.4821, -0.8064],
-                                [1.0408,  1.2203]]))
+#_(matrix/mmul [[1 2] [1 1]]
+               (matrix/transpose [[-0.7298, -0.2213],
+                                  [-2.0401, -1.8047]])
+               (matrix/transpose [[1.4821, -0.8064],
+                                  [1.0408,  1.2203]]))
 
 
 #_(defn embed-block
-  "Creates an embedding block that turns a one/multi-hot encoded vector of length dictionary-size
+    "Creates an embedding block that turns a one/multi-hot encoded vector of length dictionary-size
    into a vector of length embedding-size\\
    (B, F, D) -> (B, F, E)"
-  [dictionary-size embedding-size]
-  (-> (EmbedBlock/builder)
-      (.setEmbeddingSize embedding-size)
-      (.setDictionarySize dictionary-size)
-      (.build)))
+    [dictionary-size embedding-size]
+    (-> (EmbedBlock/builder)
+        (.setEmbeddingSize embedding-size)
+        (.setDictionarySize dictionary-size)
+        (.build)))
 
 (defn linear-embedding
   "Creates an embedding block that turns a one/multi-hot encoded vector of length dictionary-size
@@ -555,14 +556,6 @@
   (LambdaBlock.
    (utils/make-function #(nd/ndlist (.squeeze (.singletonOrThrow %) axis)))))
 
-(defn unembed-block 
-  "Uses an Embedding block to create an unembedding block with shared weights\\
-   Unembedding multiplies input by the transpose of the embedding matrix\\
-   Block -> Block"
-  [embed-block]
-  (.setEmbedding (UnembedBlock.) embed-block))
-
-;;see parallel-embedding
 
 (defn sequential-block
   "Creates a sequential block that applies each given block in order\\
@@ -580,6 +573,73 @@
    (assert (instance? Function fn))
    (ParallelBlock. fn blocks))
   ([fn] (ParallelBlock. fn)))
+
+
+(defn unembed-block
+  "Uses an Embedding block to create an unembedding block with shared weights\\
+   Unembedding multiplies input by the transpose of the embedding matrix\\
+   Block -> Block"
+  [embed-block]
+  (.setEmbedding (UnembedBlock.) embed-block))
+
+;;see parallel-embedding
+
+
+(defn create-mlp
+  "Given an output size and any number of hidden-sizes, creates but does not initialize a multilayer perceptron\\
+   Structure: sequential Nx(Linear -> Activation) -> Linear\\
+   hidden-sizes: list of the number of units in each hidden layer\\
+   activation-function: activation function to be applied after each hidden layer\\
+   bias: Whether to include bias for all linear blocks\\
+   -> Block"
+  [output-size & {:keys [hidden-sizes activation-function bias?]
+                  :or {hidden-sizes []
+                       bias? true
+                       activation-function relu-function}}]
+  (let [s (SequentialBlock.)]
+    (run! #(.add s %)
+          (reduce #(conj %1
+                         (linear %2 :bias? bias?)
+                         (process-activation activation-function))
+                  []
+                  hidden-sizes))
+    (.add s (linear output-size :bias?  bias?))
+    s))
+
+#_(with-open [m (nd/new-base-manager)]
+    (let [mlp (create-mlp 2 :hidden-sizes [4] :bias? true)]
+      (initialize-model mlp m "float" [2 2] :childblocks? true)
+      (println (get-parameters mlp))
+      (initialize-model mlp m "float" [2 2] :childblocks? true)
+      (println (get-parameters mlp))))
+
+
+(defn parallel-embedding
+  "Creates a parallel embedding block given the embedding blocks"
+  [axis & embeddings]
+  (let [pe (ParallelEmbedding.)]
+    (.setAxis pe axis)
+    (.setEmbeddings pe embeddings)
+    pe))
+
+#_(with-open [m (nd/new-base-manager)]
+    (let [e1 (linear-embedding 2)
+          e2 (linear-embedding 2)
+          pe (parallel-embedding 1 e1 e2)
+          reverse-pe (unembed-block pe)]
+      (initialize-model pe m "float" (into-array Shape [(nd/shape [1 3 2])
+                                                        (nd/shape [1 2 1])]))
+      (println (get-parameters pe))
+      (let [f (forward pe (ndlist m [[[1 1] [1 0] [0 -1] [-1 -1]]]
+                                  [[[1] [-1] [2] [3]]]))]
+        (println (.head f))
+        (println (.head (forward reverse-pe f)))
+        (println (.get (forward reverse-pe f) 1)))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;          Blocks         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn mask-block
   "Creates and initializes a mul-squeeze block for masking\\
@@ -647,58 +707,6 @@
 #_(with-open [m (nd/new-base-manager)]
     (println (get-parameters (n-fold-mask-block m [2 6 3]))))
 
-(defn create-mlp
-  "Given an output size and any number of hidden-sizes, creates but does not initialize a multilayer perceptron\\
-   Structure: sequential Nx(Linear -> Activation) -> Linear\\
-   hidden-sizes: list of the number of units in each hidden layer\\
-   activation-function: activation function to be applied after each hidden layer\\
-   bias: Whether to include bias for all linear blocks\\
-   -> Block"
-  [output-size & {:keys [hidden-sizes activation-function bias?]
-                  :or {hidden-sizes []
-                       bias? true
-                       activation-function relu-function}}]
-  (let [s (SequentialBlock.)]
-    (run! #(.add s %)
-          (reduce #(conj %1
-                         (linear %2 :bias? bias?)
-                         (process-activation activation-function))
-                  []
-                  hidden-sizes))
-    (.add s (linear output-size :bias?  bias?))
-    s))
-
-#_(with-open [m (nd/new-base-manager)]
-    (let [mlp (create-mlp 2 :hidden-sizes [4] :bias? true)]
-      (initialize-model mlp m "float" [2 2] :childblocks? true)
-      (println (get-parameters mlp))
-      (initialize-model mlp m "float" [2 2] :childblocks? true)
-      (println (get-parameters mlp))))
-
-
-(defn parallel-embedding
-  "Creates a parallel embedding block given the embedding blocks"
-  [axis & embeddings]
-  (let [pe (ParallelEmbedding.)]
-    (.setAxis pe axis)
-    (.setEmbeddings pe embeddings)
-    pe))
-
-#_(with-open [m (nd/new-base-manager)]
-    (let [e1 (linear-embedding 2)
-          e2 (linear-embedding 2)
-          pe (parallel-embedding 1 e1 e2)
-          reverse-pe (unembed-block pe)]
-      (initialize-model pe m "float" (into-array Shape [(nd/shape [1 3 2])
-                                                        (nd/shape [1 2 1])]))
-      (println (get-parameters pe))
-      (let [f (forward pe (ndlist m [[[1 1] [1 0] [0 -1] [-1 -1]]]
-                                  [[[1] [-1] [2] [3]]]))]
-        (println (.head f))
-        (println (.head (forward reverse-pe f)))
-        (println (.get (forward reverse-pe f) 1)))))
-
-;;distinction between finished models and building blocks
 
 (defn decision-transformer [state-embedding action-embedding positional-encoding transformer-block]
   ;;parallel-embedding 1 state-embedding action-embedding
@@ -789,13 +797,9 @@
   [arr]
   (SinglePositionEncoding. arr))
 
-(let [em1 (SinglePositionEncoding. (ndarray m [[1 2 3] [2 3 4] [4 5 6] [5 6 7]]))
-      em2 (SinglePositionEncoding. (ndarray m [[0.1 0.2] [0.3 0.4] [0.5 0.6]]))
-      input (ndlist m [[1 0] [1 1] [3 2]])
-      pe (PositionalEncoding.)]
-  (.setEmbeddingSizes pe [3 2])
-  (.setEmbeddings pe [em1 em2])
-  (println (forward pe input :NDArray? true)))
+#_(let [em (SinglePositionEncoding. (ndarray m [[1 2 3] [2 3 4] [4 5 6] [5 6 7]]))
+      input (ndlist m [[1 0] [1 1] [3 2]])]
+  (println (forward em input :NDArray? true)))
 
 (defn positional-encoding 
   "Given a list of embedding sizes [E0 ...n] and a list of embeddings [Block0 ...n],
@@ -808,7 +812,7 @@
     (.setEmbeddings p embeddings)
     p))
 
-(let [em1 (SinglePositionEncoding. (ndarray m [[1 2 3] [2 3 4] [4 5 6] [5 6 7]]))
+#_(let [em1 (SinglePositionEncoding. (ndarray m [[1 2 3] [2 3 4] [4 5 6] [5 6 7]]))
       em2 (SinglePositionEncoding. (ndarray m [[0.1 0.2] [0.3 0.4] [0.5 0.6]]))
       input (ndlist m [[1 0] [1 1] [3 2]])
       pe (PositionalEncoding.)]
@@ -886,7 +890,7 @@
   ;;unembed parallel-embedding
   ;;sequential-block parallel-inputs transformer unembed
 
-(defn infer [individual states actions positions]
+#_(defn infer [individual states actions positions]
   (let [{embedding :embedding
          core :core
          unembedding :unembedding
