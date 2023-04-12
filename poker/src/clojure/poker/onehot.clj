@@ -109,6 +109,14 @@
 ;; positional encoding: [game#, round#, action#]
 ;; How to encode? inf games, 4 rounds, up to 10 actions
 
+;; Temp. putting cap of 10000 on the game number cap instead of inf. --> Discuss later
+(defn encode-position
+  "Encodes the position of the current player in the game"
+  [game-number round-number action-type]
+  (vec (concat (one-hot game-number 10000)
+          (encode-round round-number)
+          (encode-action-type action-type))))
+
 (defn encode-state [game-state]
   (let [{active-players :active-players} game-state]
     ()))

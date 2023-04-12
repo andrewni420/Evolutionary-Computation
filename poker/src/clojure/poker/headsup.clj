@@ -1,6 +1,7 @@
 (ns poker.headsup
   (:require [poker.utils :as utils]
-            [clojure.pprint :as pprint])
+            [clojure.pprint :as pprint]
+            [poker.onehot :as onehot])
   (:gen-class))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -147,7 +148,7 @@
   "Updates game state based on action. Does not check for legality of action\\
    action: [move-type amount]\\
    -> game-state"
-  [action game-state & {:keys [verbosity]
+  [action game-state game-history & {:keys [verbosity]
                         :or {verbosity 0}}]
   (let [{current-player :current-player
          active-players :active-players
@@ -164,7 +165,12 @@
                                                (conj (last action-history)
                                                      [(:id (players current-player))
                                                       action]))
-                         :players players)]
+                         :players players)
+        {person :person
+         positions :positions
+         states :states
+         actions :actions
+         rewards :rewards} game-history]
     (utils/print-verbose verbosity
                          {:fn "parse-action"}
                          {:action action
@@ -172,7 +178,7 @@
                           :current-bet current-bet
                           :current-player current-player
                           :current-player-id (:id (players current-player))}
-                         {:final-state (parse-action action game-state :verbosity 0)}
+                         {:final-state (parse-action action game-state game-history :verbosity 0)}
                          {:initial-state game-state})
     (condp utils/in? type
       ["Fold"] (check-active-players (assoc new-state
@@ -189,9 +195,17 @@
                                      :bet-values (update bet-values current-player (partial + amount))
                                      :pot (+ pot amount)
                                      :current-bet (max current-bet (+ amount (bet-values current-player)))
-                                     :min-raise (max min-raise (- (+ amount (bet-values current-player)) current-bet))))))
+                                     :min-raise (max min-raise (- (+ amount (bet-values current-player)) current-bet))))
+    ;; Adding to game-history
+    (assoc game-history
+           :person (vec (conj person (onehot/encode-player current-player)))
+          ;;  :positions (vec (conj positions (onehot/encode-position game-number round-number action)))
+           :states (vec (conj states (onehot/encode-state game-state)))
+           :actions (vec (conj actions (onehot/encode-action-type action))))
+          ;;  :rewards (vec (conj rewards (onehot/encode-reward reward)
+    ))
 
-#_(parse-action ["Fold" 0.0] (init-game) :verbosity 2)
+#_(parse-action ["Fold" 0.0] (init-game) [] :verbosity 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Single Round   ;;
@@ -332,6 +346,7 @@
                              :verbosity verbosity)
           new-state (parse-action p1-move
                                   game-state
+                                  game-history
                                   :verbosity verbosity)]
       (if (or (:game-over new-state)
               (round-over-checkone new-state
@@ -548,7 +563,8 @@
                          {:initial-state {}})
     [(:players new-state) 
      game-history
-     #_(conj game-history (state-to-history game-state new-state))])))
+     #_(conj game-history (state-to-history game-state new-state))]
+    (spit "game-history.txt" (with-out-str (prn game-history)) :append true))))
 
 
 #_(play-game [(utils/init-player utils/random-agent :p0)
