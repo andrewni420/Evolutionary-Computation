@@ -30,7 +30,7 @@ import javax.swing.text.Position;
 
 public class PositionalEncoding extends AbstractBlock{
 
-    /* Input shapes: (F, numEncodings) */
+    /* Input shapes: (B, F, numEncodings) */
     /* embeddings[i] must have the signature (F) -> (F, embeddingSizes[i])*/
     /* Overall has the signature (F, numEncodings) -> (F, ΣembeddingSizes)*/
     private List<Integer> embeddingSizes;
@@ -67,10 +67,10 @@ public class PositionalEncoding extends AbstractBlock{
     @Override
     public Shape[] getOutputShapes(Shape[] inputShapes) {
         int outputSize = 0;
-        for(int i : embeddingSizes){
-            outputSize+=i;
+        for(long i : embeddingSizes){
+            outputSize+= (int) i;
         }
-        return new Shape[] {inputShapes[0].add(outputSize)};
+        return new Shape[] {Shape.update(inputShapes[0], inputShapes[0].dimension()-1, outputSize)};
     }
 
     /** {@inheritDoc} */
@@ -82,8 +82,13 @@ public class PositionalEncoding extends AbstractBlock{
         NDArray input = inputs.singletonOrThrow();
         NDArray[] inputArrays = new NDArray[numEncodings];
 
+        String startOfIndex = "";// ":, ... ,"
+        for (int i=0;i<input.getShape().dimension()-1 ;i++) {
+            startOfIndex += ":,";
+        }
+
         for(int i=0;i<numEncodings;i++){
-            inputArrays[i] = inputs.singletonOrThrow().get(new NDIndex(":, "+i));
+            inputArrays[i] = input.get(new NDIndex(":, "+i));
         }
 
         NDArray[] outputArrays = new NDArray[numEncodings];
@@ -94,8 +99,11 @@ public class PositionalEncoding extends AbstractBlock{
         }
 
         NDArray outputArray = outputArrays[0];
+        int axis = outputArray.getShape().dimension()-1;
+        //System.out.println(outputArrays[0]);
         for(int i=1;i<numEncodings;i++){
-            outputArray = outputArray.concat(outputArrays[i], -1);
+            //System.out.println(outputArrays[i]);
+            outputArray = outputArray.concat(outputArrays[i], axis);
         }
 
         return new NDList(outputArray);

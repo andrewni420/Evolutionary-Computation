@@ -14,10 +14,36 @@
    [clj-djl.dataframe.column-filters :as cf]
    [clj-djl.dataframe.functional :as dfn]
    [poker.utils :as utils]
+   [poker.headsup :as headsup]
    [clojure.core.matrix :as matrix])
   (:import poker.TransformerDecoderBlock
            poker.Test
            poker.Utils))
+
+
+(utils/benchmark 10000 (headsup/play-game [utils/random-agent utils/random-agent]
+                                  []))
+
+(utils/benchmark 10000
+                 (let [{hands :hands community :community} (utils/deal-hands 2 (shuffle utils/deck))
+                       player-cards (map #(vector %
+                                                  (concat (nth hands %)
+                                                          community))
+                                         (range 2))]
+                   (utils/highest-hand player-cards)
+                   #_(let [hands (map #(assoc % 1 (utils/hand-value (second %))) player-cards)
+                           #_(utils/hand-value (utils/sfirst player-cards))
+                           #_(utils/hand-value (utils/ssecond player-cards))
+                           h1 (first hands)
+                           h2 (second hands)
+                           c (utils/lex-compare-vec h1 h2)]
+                       #_(cond
+                           (= c 0) 2
+                           (> c 0) 1
+                           :else 1)))
+                 #_(utils/deal-hands 2 (shuffle utils/deck))
+                 #_(utils/process-players [utils/random-agent utils/random-agent]))
+
 
 (def m (nd/new-base-manager))
 
