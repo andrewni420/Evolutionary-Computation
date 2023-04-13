@@ -23,16 +23,12 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class SinglePositionEncoding extends AbstractBlock{
-    private Parameter PETable;
+    private NDArray PETable;
     private int embeddingSize;
     private int numEmbeddings;
 
     public SinglePositionEncoding(NDArray embedding){
-        this.PETable = addParameter(Parameter.builder()
-            .setName("PETable")
-            .setType(Parameter.Type.WEIGHT)
-            .build());
-        this.PETable.setArray(embedding);
+        this.PETable = embedding;
         inputShapes = new Shape[]{new Shape(-1)};
         numEmbeddings = Math.toIntExact(PETable.getShape().get(0));
         embeddingSize = Math.toIntExact(PETable.getShape().get(1));
@@ -47,8 +43,7 @@ public class SinglePositionEncoding extends AbstractBlock{
         PairList<String, Object> params) {
             NDArray input = inputs.head();
             Device device = input.getDevice();
-            NDArray weightArr = parameterStore.getValue(PETable, device, training);
-            return embedding(input, weightArr);
+            return embedding(input, PETable);
     }
 
     /** {@inheritDoc} */

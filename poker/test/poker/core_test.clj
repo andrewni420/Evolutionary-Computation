@@ -17,7 +17,7 @@
            ai.djl.nn.ParallelBlock
            ai.djl.nn.LambdaBlock
            ai.djl.nn.Activation
-           ))
+           ai.djl.nn.Block))
 
 (deftest action-encoding-opt
   (testing "Optional Action Encoding"
@@ -87,20 +87,32 @@
         "The indices of the 4 of hearts and the 6 of diamonds are 28 and 17, so their position in all possible hands 
          should be equal to (51 + 50 + ...(17-1) terms... + 36)  + (28 - 17 - 1) = 706")))
 
+(deftest person-encoding
+  (testing "Person Encoding"
+    (is (= (onehot/encode-id :id2 [:id0 :id1 :id2 :id3]) [0 0 1 0 0 0 0 0 0 0])
+        ":id2 is the third person")
+    (is (= (onehot/encode-id 1) [0 1 0 0 0 0 0 0 0 0])
+        "index 1 is the second person. Do not use cur-player for this, but rather (.indexOf ids player-id)")))
+
+(deftest gra-encoding
+  (testing "Game, Round, and Action"
+    (is (= (count (onehot/position-encode (headsup/init-game))) 3)
+        "There should always be three positional integers for the state of a game: gamenum, roundnum, actionnum")
+    (is (= (drop 1 (onehot/position-encode (headsup/init-game))) [0 0])
+        "Iterate-games-reset should control the game-num, but init-game should
+           set the round-num and action-num both back to 0")))
+
 (deftest one-hot
   (testing "One-Hot Encoding"
     (is (= (onehot/one-hot 2 4) [0 0 1 0]))
     (is (= (onehot/multi-hot [1 3] 4) [0 1 0 1]))
     (action-encoding)
     (testing "State"
-      (card-encoding))
-    (testing "Person"
-      ()))
+      ;;pot encoding is probably just going to be encode-money-bb with maybe a logarithmic scale
+      (card-encoding)))
   (testing "Positional Encoding"
-    (testing "Person"
-      ())
-    (testing "Game, Round, and Action"
-      ())))
+    (person-encoding)
+    (gra-encoding)))
 
 (deftest game-history
   ;;appending one-hot encoded states and actions, positional encodings, and rewards to the game history
@@ -112,21 +124,28 @@
 (deftest probability-parsing
   (testing "Parsing Action Probabilities"
     (is (= (interface/parse-weights-as-actions [["Check" 0.0 0.0]]
-                                               (repeat 10 1)
-                                               [1 2 3 4 5])
+                                               (repeat 10 0)
+                                               :buckets [1 2 3 4 5])
            ["Check" 0.0])
-        "Check is the only possible action-type, and it automatically puts 0.0bb into the pot. 
-         Recall that headsup/legal-actions returns a list of [action-type min-amount-spent max-amount-spent]")
+        "Check is the only possible action-type, and it automatically puts 0.0bb into the pot. \\
+         Recall that headsup/legal-actions returns a list of [action-type min-amount-spent max-amount-spent].\\
+         Also recall that a pre-softmax 0 isn't really special, and only -infinity goes to post-softmax 0")
     (is (= (interface/parse-weights-as-actions [["Raise" 10.0 200.0]]
-                                               (repeat 10 1)
-                                               [1 2 3 4 15])
+                                               (repeat 10 0)
+                                               :buckets [1 2 3 4 15])
            ["Raise" 15.0])
         "Raise is the only possible action-type, and with a minimum raise of 10bb, 15 is the only valid amount to raise by")
     (is (= (interface/parse-weights-as-actions [["Raise" 10.0 200.0]]
-                                               (repeat 10 1)
-                                               [1 2 3 4 5])
+                                               (repeat 10 0)
+                                               :buckets [1 2 3 4 5])
            ["Fold" 0.0])
         "We can always fold, so if nothing matches, then fold. This will never occur in practice, because [\"Fold\" 0.0 0.0] will always be in legal-actions")
+    (is (= (interface/parse-weights-as-actions [["Raise" 10.0 200.0]]
+                                               [0 0 0 0 0
+                                                ##-Inf ##-Inf ##-Inf ##-Inf ##-Inf 0 ##-Inf ##-Inf ##-Inf ##-Inf ##-Inf])
+           ["Raise" (Math/sqrt 200)])
+        "In the default buckets, only the one at index 5 has a non -inf weight, so that's the one we choose. It corresponds to the 5th power of the 10th root of 200, i.e.
+         the square root of 200")
     (is (thrown? AssertionError (interface/parse-weights-as-actions [["Check" 0.0 0.0]]
                                                                     (repeat 10 1)
                                                                     [1 2 3]))
@@ -136,15 +155,50 @@
 
 (deftest transformer-like;;input shapes and output shapes. Mostly just build, then print (get-parameters model)
   (testing "Transformer-like model"
-    ()))
+    (is (instance? (with-open [manager (nd/new-base-manager)]
+                     (let [batch-size 1
+                           sequence-length 4
+                           embedding-size 3
+                           model-dimension 5
+                           model (interface/make-transformer-like
+                                  manager
+                                  model-dimension
+                                  (nd/new-shape [batch-size
+                                                 sequence-length
+                                                 embedding-size]))]
+                       model))
+                   Block)
+        "The transformer-like model should implement Block")
+    (is (= (with-open [manager (nd/new-base-manager)]
+             (let [batch-size 1
+                   sequence-length 4
+                   embedding-size 3
+                   model-dimension 5
+                   model (interface/make-transformer-like
+                          manager
+                          model-dimension
+                          (nd/new-shape [batch-size
+                                         sequence-length
+                                         embedding-size]))]
+               (.getOutputShapes model (into-array Shape [(nd/new-shape [1 4 3])]))))
+           (nd/new-shape [1 4 5]))
+        "The transformer-like model should take an input and apply a linear transformation along the last
+         dimension to turn it from embedding-size to model-dimension")))
 
 
-(deftest evolution;;idk how to test this
+(deftest evolution;;idk how to test this. Maybe just add some print statements and see if it's working as expected
   (testing "Evolutionary Cycle"
-    ()))
+    ))
 
+(deftest kek
+  (testing "kek"
+    (is (= 2 2))))
+
+(kek)
 
 (defn test-ns-hook []
   (one-hot)
   (game-history)
-  (probability-parsing))
+  (probability-parsing)
+  (transformer-like)
+  (evolution))

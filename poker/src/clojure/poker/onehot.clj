@@ -97,17 +97,21 @@
           "Can only have one scale when multi-hot? is false for accurate comparison of buckets"))
 
 
-(defn encode-player
+(defn encode-id
   "Encodes either a player-number (different from cur-player) or a player-id with a list
    of the player ids as a one-hot vector of length 10, since at most 10 players are usually at a poker table\\
    -> [int ...10]"
-  ([player]
-   (one-hot player 10))
+  ([player-number]
+   (one-hot player-number 10))
   ([player-id ids]
    (one-hot (.indexOf ids player-id) 10)))
 
+
 ;; positional encoding: [game#, round#, action#]
 ;; How to encode? inf games, 4 rounds, up to 10 actions
+(defn position-encode 
+  [game-state]
+  )
 
 ;; Temp. putting cap of 10000 on the game number cap instead of inf. --> Discuss later
 ;; I think the game number would probably need to be fed in when calling playGame in headsup. As such, it should be an argument here

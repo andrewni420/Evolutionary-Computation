@@ -24,10 +24,13 @@
            ai.djl.nn.ParallelBlock
            ai.djl.nn.LambdaBlock
            ai.djl.nn.Activation
+           ai.djl.nn.norm.LayerNorm
+           ai.djl.nn.norm.BatchNorm
            poker.UnembedBlock
            poker.SinglePositionEncoding
            poker.LinearEmbedding
            poker.PositionalEncoding
+           poker.SeparateParallelBlock
            java.util.function.Function
            poker.ParallelEmbedding
            java.lang.Class))
@@ -170,12 +173,12 @@
   (if array?
     (if (instance? (Class/forName "[Lai.djl.ndarray.types.Shape;") s)
       s
-      (into-array Shape [(process-shape s false)]))
+      (into-array Shape [(process-shape s)]))
     (if (instance? Shape s)
       s
       (nd/new-shape (vec s)))))
 
-#_(process-shape [1 2] :array true)
+#_(process-shape [1 2] :array? true)
 
 (defn process-activation
   "Turns an activation iFn/Function into a java Function\\
@@ -270,25 +273,35 @@
   (into [] (.keys (.getParameters block))))
 
 #_(with-open [m (nd/new-base-manager)]
-    (get-pnames (transformer-decoder-block m 2 1 3 [1 2 2])))
+    (clojure.pprint/pprint
+     (get-pnames (causal-mask-block m [1 2 3]))))
 
 (defn get-parameters
   "Given a block, returns a map from the name of a parameter to the value, either as an NDArray or as a nested vector, of that parameter\\
    -> {pname pvalue}"
   [block & {:keys [as-array?]
-            :or {as-array? false}}]
+            :or {as-array? true}}]
   (let [p (.getParameters block)
         k (.keys p)]
     (zipmap k
             (for [n k]
               ((if as-array?
-                 ()
+                 #(.getArray %)
                  identity)
-               (.getArray (.get p n)))))))
+               (.get p n))))))
 
 #_(with-open [m (nd/new-base-manager)]
     (clojure.pprint/pprint
-     (get-parameters (transformer-decoder-block m 2 1 3 [1 2 2]))))
+     (get-parameters (causal-mask-block m [1 2 3]) :as-array? true)))
+
+(defn get-pcount
+  "Given a block, gets the number of learnable parameters"
+  [block]
+  (reduce #(+ %1 (.size (second %2))) 0 (get-parameters block)))
+
+#_(with-open [m (nd/new-base-manager)]
+    (clojure.pprint/pprint
+     (get-pcount (causal-mask-block m [1 2 3]))))
 
 (defn identical-array
   "Creates a vector array with a shape populated by only the given value\\
@@ -339,12 +352,11 @@
           second-identical (drop (+ 2 axis) shape)
           m (shape axis)
           n (shape (inc axis))]
-
       (identical-array first-identical
                        (mask-2d (identical-array [m n] (identical-array second-identical 1))
                                 :value (identical-array second-identical 0))))))
 
-#_(causal-mask [3 3 3] 0)
+#_(causal-mask [1 3 3] 1)
 
 (defn n-fold-mask
   "Sets everything to 0 except every nth item of an array\\
@@ -371,6 +383,8 @@
 
 
 (defn add-NDArrays
+  "Function that takes a list of singleton NDLists and adds all their NDArrays up elementwise\\
+   -> IFn"
   [ndlist]
   (let [[array & rest] (map #(.singletonOrThrow %) ndlist)]
     (nd/ndlist (reduce #(.add %1 %2) array rest))))
@@ -380,6 +394,19 @@
           l2 (ndlist m float-array [[0.1 0.2] [0.3 0.4]])
           l3 (ndlist m float-array [[10 20] [30 40]])]
       (println (.singletonOrThrow (add-NDArrays (java.util.ArrayList. [l1 l2 l3]))))))
+
+(defn concat-NDArrays
+  "Function that takes a list of NDLists and returns an NDList containing all of their NDArrays\\
+   -> IFn"
+  [ndlist]
+  (reduce #(.addAll %1 %2) ndlist))
+
+
+#_(with-open [m (nd/new-base-manager)]
+    (let [l1 (ndlist m float-array [[1 2] [3 4]])
+          l2 (ndlist m float-array [[0.1 0.2] [0.3 0.4]])
+          l3 (ndlist m float-array [[10 20] [30 40]])]
+      (println (into [] (concat-NDArrays (java.util.ArrayList. [l1 l2 l3]))))))
 
 
 (defn add-gaussian-noise!
@@ -414,13 +441,13 @@
 (defn initialize-model
   "Initializes a model\\
    childblocks? - whether to initialize self or child blocks"
-  [model manager datatype input-shape & {:keys [childblocks?]
+  [model manager datatype input-shapes & {:keys [childblocks?]
                                          :or {childblocks? false}}]
   (.initialize
    model
    manager
    (process-datatype datatype)
-   (process-shape input-shape :array? true)))
+   (process-shape input-shapes :array? true)))
 
 (defn linear
   "Creates a linear block with a given amount of units\\
@@ -459,6 +486,13 @@
 ;;  Uninitialized Blocks   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn lambda-block
+  "Creates a lambda block using a function or ifn: NDList -> NDList\\
+   -> block"
+  ([function name]
+  (LambdaBlock. (process-activation function) name))
+  ([function]
+   (LambdaBlock. (process-activation function))))
 
 (defn transformer-decoder-block
   "Creates a transformer decoder block.\\
@@ -568,11 +602,21 @@
 (defn parallel-block
   "Given a Function<List<NDList>, NDList> fn and an optional List<Block> blocks, \\
    returns a parallel block that applies each block to the inputs and combines the outputs using the given function\\
+   In contrast to separate-parallel-block, each block is applied to the same input NDList.\\
    Function, List<Blocks> -> Block"
   ([fn blocks]
    (assert (instance? Function fn))
    (ParallelBlock. fn blocks))
   ([fn] (ParallelBlock. fn)))
+
+#_(defn add-input-block
+  "Given an NDList of additional inputs and a Block, creates a block that takes an NDList of inputs,
+   appends the additional inputs, and feeds it to the block.\\
+   -> Block"
+  [additional-inputs block]
+  (-> (AddInput.)
+      (.setAdditionalInputs additional-inputs)
+      (.setCoreBlock block)))
 
 
 (defn unembed-block
@@ -583,6 +627,25 @@
   (.setEmbedding (UnembedBlock.) embed-block))
 
 ;;see parallel-embedding
+
+
+(defn separate-parallel-block
+  "Creates a parallel block that process separate inputs in parallel and then combines them to 
+   form a final NDArray output.\\
+   function: List<NDList> -> NDList function to combine parallel outputs at the end\\
+   numInputs: list of the number of NDArray inputs to each parallel block\\
+   blocks: The parallel blocks to apply separately to each set of input NDArrays. 
+   Each block should correspond to an element of numInputs. \\
+   -> Block"
+  [function numInputs & blocks]
+  (let [function (if (instance? Function function) 
+                   function 
+                   (utils/make-function function))
+        p (SeparateParallelBlock. function)]
+    (.setNumInputs p (map int numInputs))
+    (when (seq blocks) (.addAll p blocks))
+    p))
+
 
 
 (defn create-mlp
@@ -615,7 +678,10 @@
 
 
 (defn parallel-embedding
-  "Creates a parallel embedding block given the embedding blocks"
+  "Creates a parallel embedding block given the embedding blocks\\
+   axis: axis along which to interleave output NDArrays\\
+   embeddings: embeddings to be applied in parallel to the input NDArrays\\
+   -> Block"
   [axis & embeddings]
   (let [pe (ParallelEmbedding.)]
     (.setAxis pe axis)
@@ -794,8 +860,10 @@
   "Given an array where arr[i] is the position encoding of the ith position,
    creates a block to create position encoding from integer positions\\
    -> Block (... F) -> (... F, E)"
-  [arr]
+  ([arr]
   (SinglePositionEncoding. arr))
+  ([manager arrfn arr]
+   (SinglePositionEncoding. (ndarray manager arrfn arr))))
 
 #_(let [em (SinglePositionEncoding. (ndarray m [[1 2 3] [2 3 4] [4 5 6] [5 6 7]]))
       input (ndlist m [[1 0] [1 1] [3 2]])]
@@ -805,10 +873,10 @@
   "Given a list of embedding sizes [E0 ...n] and a list of embeddings [Block0 ...n],
    creates a hierarchical positional encoding block that separately embeds each position using each block,
    and then concatenates them together to obtain a final positional embedding of size ΣEi = E\\
-   -> Block (... F, n) -> (... F, E)"
+   -> Block: (... F, n) -> (... F, E)"
   [embedding-sizes embeddings]
   (let [p (PositionalEncoding.)]
-    (.setEmbeddingSizes p embedding-sizes)
+    (.setEmbeddingSizes p (map int embedding-sizes))
     (.setEmbeddings p embeddings)
     p))
 
@@ -819,6 +887,70 @@
   (.setEmbeddingSizes pe [3 2])
   (.setEmbeddings pe [em1 em2])
   (println (forward pe input :NDArray? true)))
+
+
+(defn transformer
+  "Creates a transformer model\\
+   manager: NDManager controls lifecycle of models and NDArrays\\
+   input-shapes: The shapes of the inputs. \\
+   Default <state: [B F1 D1], action: [B F2 D2] position: [B F 3] mask: [B F F]>\\
+   The three hierarchical positions are: [game-num, round-num, action-num]\\
+   d-model: The model / embedding dimension E. The transformer layer takes an input of 
+   shape [B F d_model] = [B F E] and returns and input of shape [B F d_model] = [B F E]\\
+   d-ff: The number of hidden units in the pointwise feed-forward layers. Traditionally 4xd_model\\
+   num-layers: The number of transformer layers\\
+   d-pe: The dimensions of each positional encoding (game, round, action). Should be a vector of 3 integers, each around d_model/3\\
+   max-seq-length: The maximum context length of the model. Runtime scales as seq-length squared\\
+   -> Block: input-shapes -> (take 2 input-shapes)"
+  [manager input-shapes & {:keys [d-model d-ff num-layers num-heads d-pe max-seq-length activation-function dropout-probability]
+                           :or {d-model 512
+                                d-ff 2048
+                                num-layers 6
+                                num-heads 8
+                                d-pe [256 128 128]
+                                max-seq-length 1024
+                                activation-function (utils/make-function #(Activation/relu %))
+                                dropout-probability 0.1}
+                           :as argmap}]
+  (assert (and d-model d-ff num-layers d-pe max-seq-length) (str "Must specify all parameters. unspecified: " (filter #(not %) (map second argmap))))
+  (assert (= d-model (reduce + d-pe)) 
+          (str "The sum of positional encoding dimensions must equal the model dimension. 
+                d-model: " d-model ", d-pe: " d-pe))
+  (assert (= 0 (mod d-model num-heads)) 
+          (str "The number of attention heads must evenly divide the model dimension. 
+                d-model: " d-model ", num-heads: " num-heads))
+  (let [input-shapes (process-shape input-shapes :array? true)
+        activation-function (process-activation activation-function)
+        embedding (apply parallel-embedding
+                         1
+                         (repeatedly 2 #(linear-embedding d-model)))
+        pos-encoding (positional-encoding d-pe
+                                          (map #(single-position-encoding
+                                                 (ndarray manager
+                                                          (utils/positional-encoding
+                                                           %1
+                                                           :num-positions max-seq-length)))
+                                               d-pe))
+        input-layer (separate-parallel-block concat-NDArrays
+                                             [3 1]
+                                             (separate-parallel-block add-NDArrays
+                                                                      [2 1]
+                                                                      embedding pos-encoding)
+                                             (lambda-block identity))
+        core-layer (apply sequential-block
+                          (repeatedly num-layers #(transformer-decoder-block
+                                                   d-model
+                                                   num-heads
+                                                   d-ff
+                                                   :activation-function activation-function
+                                                   :dropout-probability dropout-probability)))
+        output-layer (separate-parallel-block 
+                      #(.get % 0)
+                      [1]
+                      (unembed-block embedding))
+        model (sequential-block input-layer core-layer output-layer)]
+    (initialize-model model manager "float" input-shapes)
+    model))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -890,6 +1022,56 @@
   ;;unembed parallel-embedding
   ;;sequential-block parallel-inputs transformer unembed
 
+
+(with-open [manager (nd/new-base-manager)]
+  (let [input-shapes (into-array Shape (map nd/new-shape [[1 4 4]
+                                                          [1 3 2]
+                                                          [7 3]
+                                                          [1 7 7]]))
+        model (transformer manager input-shapes 
+                           :d-model 10 
+                           :d-ff 20 
+                           :num-layers 1 
+                           :num-heads 2 
+                           :d-pe [4 3 3] 
+                           :max-seq-length 10)]
+    #_(get-pnames model)
+    (println (into [] (forward model (ndlist manager
+                                             [[[-1 -2 -3 -4] [-5 -6 -7 -8] [-1 -3 -5 -7] [1 1 1 1]]]
+                                             [[[0 1] [1 0] [1 1]]]
+                                             [[1 2 3] [2 3 4] [3 4 5] [4 5 6] [5 6 7] [6 7 8] [1 3 4]]
+                                             (causal-mask [1 7 7] 0)))))))
+;;model parameters: 
+(def model-parameters
+  ["01SeparateParallelBlock_01SeparateParallelBlock_01ParallelEmbedding_01LinearEmbedding_weight"
+   "01SeparateParallelBlock_01SeparateParallelBlock_01ParallelEmbedding_02LinearEmbedding_weight"
+   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_01keyProjection_weight"
+   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_01keyProjection_bias"
+   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_02queryProjection_weight"
+   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_02queryProjection_bias"
+   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_03valueProjection_weight"
+   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_03valueProjection_bias"
+   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_04resultProjection_weight"
+   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_04resultProjection_bias"
+   "02SequentialBlock_01TransformerDecoderBlock_02attentionNorm_gamma"
+   "02SequentialBlock_01TransformerDecoderBlock_02attentionNorm_beta"
+   "02SequentialBlock_01TransformerDecoderBlock_03outputBlock_01Linear_weight"
+   "02SequentialBlock_01TransformerDecoderBlock_03outputBlock_01Linear_bias"
+   "02SequentialBlock_01TransformerDecoderBlock_03outputBlock_03Linear_weight"
+   "02SequentialBlock_01TransformerDecoderBlock_03outputBlock_03Linear_bias"
+   "02SequentialBlock_01TransformerDecoderBlock_04outputNorm_gamma"
+   "02SequentialBlock_01TransformerDecoderBlock_04outputNorm_beta"
+   "03SeparateParallelBlock_01UnembedBlock_01ParallelEmbedding_01LinearEmbedding_weight"
+   "03SeparateParallelBlock_01UnembedBlock_01ParallelEmbedding_02LinearEmbedding_weight"])
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+
+(java.lang.reflect.Array/getLength (float-array [1 2]))
 #_(defn infer [individual states actions positions]
   (let [{embedding :embedding
          core :core
@@ -898,4 +1080,30 @@
         embedded (forward embedding (NDList. states actions))
         encoded (encode-positions positions positional-encoding)]
     ()))
+
+(with-open [manager (nd/new-base-manager)]
+  (let [model1 (SeparateParallelBlock. (utils/make-function add-NDArrays))
+        model2 (SeparateParallelBlock. (utils/make-function add-NDArrays))]
+    (.setNumInputs model1 (map int [1 1]))
+    (.addAll model1 [(linear 2) (linear 2)])
+    (.setNumInputs model2 (map int [2 1]))
+    (.addAll model2 [model1 (linear 2)])
+    (initialize-model model2 manager "float" (into-array Shape [(nd/new-shape [1 2])
+                                                               (nd/new-shape [1 3])
+                                                                (nd/new-shape [1 1])]))
+    (println (get-parameters model2))
+    (println (.singletonOrThrow (forward model2 (ndlist manager [[1 0]] [[1 0 0]] [[1]]))))))
+
+(with-open [manager (nd/new-base-manager)]
+  (let [n (-> (LayerNorm/builder)
+              (.axis (int-array [2]))
+              (.build))
+        b (-> (BatchNorm/builder)
+              (.optAxis 2)
+              (.build))]
+    (initialize-model n manager "float" (into-array Shape [(nd/shape [1 2 3])]))
+    (println (into [] (forward n (ndlist manager [[[1 2 3] [3 4 5]]]))))
+    (initialize-model b manager "float" (into-array Shape [(nd/shape [1 2 3])]))
+    (println (into [] (forward b (ndlist manager [[[1 2 3] [3 4 5]]]))))))
+
 

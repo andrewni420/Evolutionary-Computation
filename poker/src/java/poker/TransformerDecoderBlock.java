@@ -18,7 +18,7 @@ import ai.djl.ndarray.NDManager;
 import ai.djl.ndarray.types.DataType;
 import ai.djl.ndarray.types.Shape;
 import ai.djl.nn.AbstractBlock;
-import ai.djl.nn.norm.BatchNorm;
+import ai.djl.nn.norm.LayerNorm;
 import ai.djl.nn.norm.Dropout;
 import ai.djl.training.ParameterStore;
 import ai.djl.util.PairList;
@@ -36,13 +36,13 @@ public class TransformerDecoderBlock extends AbstractBlock {
     /** Dropout before residual & layer normalization. */
     private Dropout selfAttentionDropout;
     /** Normalization of attention output and residual. */
-    private BatchNorm attentionNorm;
+    private LayerNorm attentionNorm;
     /** Fully connected pointwise block for output projection. */
     private PointwiseFeedForwardBlock pointWisefullyConnected;
     /** Dropout after fully connected and before last residual & layer normalization. */
     private Dropout fullyConnectedDropout;
     /** Another normalization for the output and residual. */
-    private BatchNorm outputNorm;
+    private LayerNorm outputNorm;
 
     /**
      * Creates a transformer decoder block.
@@ -68,7 +68,7 @@ public class TransformerDecoderBlock extends AbstractBlock {
                                 .optAttentionProbsDropoutProb(dropoutProbability)
                                 .build());
         this.selfAttentionDropout = Dropout.builder().optRate(dropoutProbability).build();
-        this.attentionNorm = addChildBlock("attentionNorm", BatchNorm.builder().optAxis(2).build());
+        this.attentionNorm = addChildBlock("attentionNorm", LayerNorm.builder().axis(new int[]{2}).build());
         this.pointWisefullyConnected =
                 addChildBlock(
                         "outputBlock",
@@ -77,7 +77,7 @@ public class TransformerDecoderBlock extends AbstractBlock {
                                 embeddingSize,
                                 activationFunction));
         this.fullyConnectedDropout = Dropout.builder().optRate(dropoutProbability).build();
-        this.outputNorm = addChildBlock("outputNorm", BatchNorm.builder().optAxis(2).build());
+        this.outputNorm = addChildBlock("outputNorm", LayerNorm.builder().axis(new int[]{2}).build());
     }
 
     /** {@inheritDoc} */
@@ -90,57 +90,9 @@ public class TransformerDecoderBlock extends AbstractBlock {
     @Override
     public void initializeChildBlocks(NDManager manager, DataType dataType, Shape... inputShapes) {
         selfAttentionBlock.initialize(manager, dataType, inputShapes);
-        attentionNorm.initialize(manager, dataType, inputShapes);
-        pointWisefullyConnected.initialize(manager, dataType, inputShapes);
-        outputNorm.initialize(manager, dataType, inputShapes);
-    }
-
-    protected NDList setAttentionMask(NDList inputs){
-        NDArray attentionMask = null;
-        if ((inputs.size() == 2) || (inputs.size() == 4)) attentionMask = inputs.get(1);
-        if (attentionMask != null) {
-                // B=batch size
-                long B = inputs.head().getShape().get(0);
-                // F=from sequence length
-                long F = inputs.head().getShape().get(1);
-                // T=to sequence length
-                long T;
-
-                if (inputs.size() < 3) T = F;
-                else T = inputs.get(1).getShape().get(1);
-
-                NDArray maskOffset;
-            
-                // The input mask is initially given as a list of integers with a 1 for each existing
-                // token. In order to apply it to the attention result, it needs to be expanded and the
-                // values turned into offsets for the softmax calculation. For stacked models, this
-                // can be done once and reused - hence we check for the number of dimensions if we
-                // have to do this locally or whether it was done for us.
-                if (attentionMask.getShape().dimension() != 4) {
-                        // expand mask to be used on all heads at once
-                        NDArray expandedMask = attentionMask.reshape(B, 1, T, F);
-                        // we turn the mask from ints into floats and turn all 1s into 0s and all
-                        // 0s int o a value of -10000. Adding this to the scores will push all unwanted                            // values towards -inf and keep the unmasked values unchanged
-                        maskOffset = expandedMask
-                                .toType(DataType.FLOAT32, false)
-                                .mul(expandedMask.getManager().create(-1f)) // turn 1 into -1
-                                .add(expandedMask
-                                        .getManager()
-                                        .create(1f)) // turn 0s to 1s, -1s to 0s
-                                .mul(expandedMask
-                                        .getManager()
-                                        .create(-100000f)); // turn 1s (original 0s) into
-                        // -100000
-                } else {
-                        maskOffset = attentionMask;
-                }
-                if (inputs.size()==2){
-                        inputs.set(1,maskOffset);
-                } else {
-                        inputs.set(3, maskOffset);
-                }
-        }
-        return inputs;
+        attentionNorm.initialize(manager, dataType, new Shape[]{inputShapes[0]});
+        pointWisefullyConnected.initialize(manager, dataType, new Shape[]{inputShapes[0]});
+        outputNorm.initialize(manager, dataType, new Shape[]{inputShapes[0]});
     }
 
     //Still need to include possible attention on encoder output
@@ -148,8 +100,6 @@ public class TransformerDecoderBlock extends AbstractBlock {
     @Override
     protected NDList forwardInternal(
             ParameterStore ps, NDList inputs, boolean training, PairList<String, Object> params) {
-
-        inputs = setAttentionMask(inputs);
 
         NDArray embedding = inputs.head();
         // perform attention lookup

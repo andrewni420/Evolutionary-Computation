@@ -81,4 +81,10 @@ public class UnembedBlock extends AbstractBlock{
         return embedding.getInputShapes();
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void initializeChildBlocks(NDManager manager, DataType dataType, Shape... inputShapes) {
+        
+    }
+
 }
