@@ -148,7 +148,7 @@
   "Updates game state based on action. Does not check for legality of action\\
    action: [move-type amount]\\
    -> game-state"
-  [action game-state game-history & {:keys [verbosity]
+  [action game-state game-history game-num & {:keys [verbosity]
                         :or {verbosity 0}}]
   (let [{current-player :current-player
          active-players :active-players
@@ -170,7 +170,9 @@
          positions :positions
          states :states
          actions :actions
-         rewards :rewards} game-history]
+         rewards :rewards} game-history
+        round-number 0 ;;temp
+        ]
     (utils/print-verbose verbosity
                          {:fn "parse-action"}
                          {:action action
@@ -178,34 +180,69 @@
                           :current-bet current-bet
                           :current-player current-player
                           :current-player-id (:id (players current-player))}
-                         {:final-state (parse-action action game-state game-history :verbosity 0)}
+                         {:final-state (parse-action action game-state game-history game-num :verbosity 0)}
                          {:initial-state game-state})
     (condp utils/in? type
-      ["Fold"] (check-active-players (assoc new-state
-                                            :active-players (remove (partial = current-player)
-                                                                    active-players))
-                                     :verbosity verbosity)
-      ["Check"] new-state
-      ["Raise"] (assoc new-state
-                       :bet-values (update bet-values current-player (partial + amount))
-                       :pot (+ pot amount)
-                       :current-bet (+ amount (bet-values current-player))
-                       :min-raise (- (+ amount (bet-values current-player)) current-bet))
-      ["Bet" "All-In" "Call"] (assoc new-state
-                                     :bet-values (update bet-values current-player (partial + amount))
-                                     :pot (+ pot amount)
-                                     :current-bet (max current-bet (+ amount (bet-values current-player)))
-                                     :min-raise (max min-raise (- (+ amount (bet-values current-player)) current-bet))))
-    ;; Adding to game-history
-    (assoc game-history
-           :person (vec (conj person (onehot/encode-player current-player)))
-          ;;  :positions (vec (conj positions (onehot/encode-position game-number round-number action)))
-           :states (vec (conj states (onehot/encode-state game-state)))
-           :actions (vec (conj actions (onehot/encode-action-type action))))
-          ;;  :rewards (vec (conj rewards (onehot/encode-reward reward)
-    ))
+      ["Fold"] (let [updated-new-state (check-active-players (assoc new-state
+                                              :active-players (remove (partial = current-player)
+                                                                      active-players))
+                                       :verbosity verbosity)
+                     updated-game-history (assoc game-history
+                                              :person (vec (conj person (onehot/encode-player current-player)))
+                                              ;; positions should be a bunch of [game-num round-num action-num] vectors
+                                              :positions (vec (conj positions (onehot/encode-position game-num round-number action)))
+                                              ;;  states should be a bunch of vectors, where each vector is the one-hot encoded state information
+                                              :states (vec (conj states (onehot/encode-state updated-new-state)))
+                                              ;;  actions should be a bunch of vectors, where each vector is the one-hot encoded action information
+                                              :actions (vec (conj actions (onehot/encode-action-type action)))
+                                              ;; Reward is 0 since folded
+                                              :rewards (vec (conj rewards (onehot/encode-reward 0))))]
+                 [updated-new-state, updated-game-history])
+      ["Check"] (let [updated-game-history (assoc game-history
+                        :person (vec (conj person (onehot/encode-player current-player)))
+                        ;; positions should be a bunch of [game-num round-num action-num] vectors
+                        :positions (vec (conj positions (onehot/encode-position game-num round-number action)))
+                        ;;  states should be a bunch of vectors, where each vector is the one-hot encoded state information
+                        :states (vec (conj states (onehot/encode-state new-state)))
+                        ;;  actions should be a bunch of vectors, where each vector is the one-hot encoded action information
+                        :actions (vec (conj actions (onehot/encode-action-type action)))
+                        ;; Reward is 0 since checked
+                        :rewards (vec (conj rewards (onehot/encode-reward 0))))]
+                  [new-state, updated-game-history])
+      ["Raise"] (let [updated-new-state (assoc new-state
+                                               :bet-values (update bet-values current-player (partial + amount))
+                                               :pot (+ pot amount)
+                                               :current-bet (+ amount (bet-values current-player))
+                                               :min-raise (- (+ amount (bet-values current-player)) current-bet))
+                      updated-game-history (assoc game-history
+                                                :person (vec (conj person (onehot/encode-player current-player)))
+                                            ;; positions should be a bunch of [game-num round-num action-num] vectors
+                                                :positions (vec (conj positions (onehot/encode-position game-num round-number action)))
+                                            ;;  states should be a bunch of vectors, where each vector is the one-hot encoded state information
+                                                :states (vec (conj states (onehot/encode-state new-state)))
+                                            ;;  actions should be a bunch of vectors, where each vector is the one-hot encoded action information
+                                                :actions (vec (conj actions (onehot/encode-action-type action)))
+                                            ;; Reward is [!NEED TO ADD!]
+                                                :rewards (vec (conj rewards (onehot/encode-reward 0))))]
+                  [updated-new-state, updated-game-history])
+      ["Bet" "All-In" "Call"] (let [updated-new-state (assoc new-state
+                                                          :bet-values (update bet-values current-player (partial + amount))
+                                                          :pot (+ pot amount)
+                                                          :current-bet (max current-bet (+ amount (bet-values current-player)))
+                                                          :min-raise (max min-raise (- (+ amount (bet-values current-player)) current-bet)))
+                                    updated-game-history (assoc game-history
+                                                          :person (vec (conj person (onehot/encode-player current-player)))
+                                                      ;; positions should be a bunch of [game-num round-num action-num] vectors
+                                                          :positions (vec (conj positions (onehot/encode-position game-num round-number action)))
+                                                      ;;  states should be a bunch of vectors, where each vector is the one-hot encoded state information
+                                                          :states (vec (conj states (onehot/encode-state new-state)))
+                                                      ;;  actions should be a bunch of vectors, where each vector is the one-hot encoded action information
+                                                          :actions (vec (conj actions (onehot/encode-action-type action)))
+                                                      ;; Reward is [!NEED TO ADD!]
+                                                          :rewards (vec (conj rewards (onehot/encode-reward 0))))]
+                                [updated-new-state, updated-game-history]))))
 
-#_(parse-action ["Fold" 0.0] (init-game) [] :verbosity 2)
+#_(parse-action ["Fold" 0.0] (init-game) {} :verbosity 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Single Round   ;;
@@ -330,35 +367,40 @@
 
 (defn bet-round
   "Runs betting for one round"
-  [game-state game-history & {:keys [verbosity]
+  [game-state game-history game-num & {:keys [verbosity]
                               :or {verbosity 0}}]
   (utils/print-verbose verbosity
                        {:fn "bet-round"}
                        {:game-over (:game-over game-state)
                         :round (:betting-round game-state)}
-                       {:final-state nil #_(bet-round game-state game-history :verbosity 0)}
+                       {:final-state nil #_(bet-round game-state game-history game-num :verbosity 0)}
                        {:initial-state game-state})
   (if (or (:game-over game-state)
           (all-in? game-state :verbosity verbosity))
-    game-state
+    [game-state, game-history]
     (let [p1-move (make-move game-state
                              game-history
                              :verbosity verbosity)
-          new-state (parse-action p1-move
+          parsed-action (parse-action p1-move
                                   game-state
                                   game-history
-                                  :verbosity verbosity)]
+                                  game-num
+                                  :verbosity verbosity)
+          new-state (first parsed-action)
+          updated-game-history (second parsed-action)]
       (if (or (:game-over new-state)
               (round-over-checkone new-state
                                    :verbosity verbosity))
-        new-state
+        [new-state, updated-game-history]
         (recur new-state
-               game-history
+               updated-game-history
+               game-num
               {:verbosity verbosity})))))
 
 #_(bet-round (init-game :players [(utils/init-player utils/random-agent :p0)
                                   (utils/init-player utils/random-agent :p1)])
-             []
+             {}
+             0
              :verbosity 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -469,28 +511,32 @@
 
 (defn bet-game
   "Runs betting from initialization of game until showdown"
-  [game-state game-history & {:keys [verbosity]
+  [game-state game-history game-num & {:keys [verbosity]
                               :or {verbosity 0}}]
   (utils/print-verbose verbosity
                        {:fn "bet-game"}
                        {}
-                       {:final-state (bet-game game-state game-history :verbosity 0)}
+                       {:final-state (bet-game game-state game-history game-num :verbosity 0)}
                        {:initial-state game-state})
-  (let [new-state (bet-round game-state game-history :verbosity verbosity)]
+  (let [bet-round-results (bet-round game-state game-history game-num :verbosity verbosity)
+        new-state (first bet-round-results)
+        updated-game-history (second bet-round-results)]
     (if (:game-over new-state)
-      new-state
+      [new-state, updated-game-history]
       (let [next-round (next-round new-state :verbosity verbosity)]
         (if (:game-over next-round)
-          next-round
+          [next-round, updated-game-history]
           (recur next-round
-                 game-history
+                 updated-game-history
+                 game-num
                  {:verbosity verbosity}))))))
 
 
 #_(bet-game (pay-blinds
            (init-game :players [(utils/init-player utils/random-agent :p0)
                                 (utils/init-player utils/random-agent :p1)]))
-          []
+          {}
+          0
           :verbosity 2)
 
 #_(defn var-reduce 
@@ -546,15 +592,18 @@
 (defn play-game 
   "Initializes and plays a game of poker, updating players and game-history in the process.
    -> [players game-history]"
-  ([players game-history & {:keys [deck verbosity]
+  ([players game-history game-num & {:keys [deck verbosity]
                             :or {deck (shuffle utils/deck)
                                  verbosity 0}}]
   (let [game-state (init-game :players players 
                               :deck deck 
                               :verbosity verbosity)
-        new-state (bet-game (pay-blinds game-state :verbosity verbosity) 
+        bet-game-results (bet-game (pay-blinds game-state :verbosity verbosity) 
                             game-history
-                            :verbosity verbosity)]
+                            game-num
+                            :verbosity verbosity)
+        new-state (first bet-game-results)
+        updated-game-history (second bet-game-results)]
     (utils/print-verbose verbosity
                          {:fn "play-game"}
                          {:players players
@@ -562,14 +611,15 @@
                          {:final-state new-state}
                          {:initial-state {}})
     [(:players new-state) 
-     game-history
+     updated-game-history
      #_(conj game-history (state-to-history game-state new-state))]
-    (spit "game-history.txt" (with-out-str (prn game-history)) :append true))))
+    (spit "game-history.txt" (with-out-str (prn updated-game-history)) :append true))))
 
 
 #_(play-game [(utils/init-player utils/random-agent :p0)
               (utils/init-player utils/random-agent :p1)]
-             []
+             {}
+             0
              :verbosity 2)
 (init-game)
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -585,11 +635,13 @@
   [players num-games game-history & {:keys [verbosity]
                                      :or {verbosity 0}}]
   (let [players (utils/process-players players)
-        num-games (int num-games)]
+        num-games (int num-games)
+        og-num-games (int num-games)]
     (if (or (zero? num-games)
           (some zero? (map :money players)))
     [players game-history]
-    (let [[players history] (play-game players game-history)]
+    (let [curr-num-game (int (- og-num-games num-games))
+          [players history] (play-game players game-history curr-num-game)]
       (recur (into [] (reverse players)) 
              (dec num-games) 
              history
@@ -598,7 +650,7 @@
 #_(first (iterate-games [utils/random-agent
                          utils/rule-agent]
                         100
-                        []))
+                        {}))
 
 ;;Plays up to 100 games until a player has no money and returns the history of the "interesting" ones
 ;;"interesting" determined by more than one action, at least one bet, and significant money exchange (>10bb)
@@ -608,7 +660,7 @@
                                                     #_(not (utils/in? (flatten (:action-history %)) "Fold"))) h))))
          (iterate-games [utils/random-agent
                          utils/rule-agent]
-                        100 []))
+                        100 {}))
 
 
 (defn iterate-games-reset
@@ -623,7 +675,8 @@
                                      :or {list? false
                                           decks nil
                                           verbosity 0}}]
-  (let [players (utils/process-players players)]
+  (let [players (utils/process-players players)
+        og-num-games (int num-games)]
     (loop [net-gain (zipmap (map :id players) (if list? [[] []] [0.0 0.0]))
            n (int num-games)
            players players
@@ -639,7 +692,8 @@
                                (/ (second %) num-games)))
                     net-gain))
          history]
-        (let [[[p1 p2] h] (play-game players history (first decks))]
+        (let [curr-num-game (int (- og-num-games n))
+              [[p1 p2] h] (play-game players history curr-num-game (first decks))]
           (recur (update (update net-gain
                                  (:id p1)
                                  #((if list? conj +) % (- (:money p1) (:money (first players)))))
@@ -652,7 +706,7 @@
 
 #_(take 2 (iterate-games-reset  [utils/rule-agent utils/random-agent] 
                                 10000 
-                                [] 
+                                {} 
                                 :list? true))
 
 (defn iterate-games-significantly
@@ -693,7 +747,8 @@
   (loop [net-gain (zipmap (map :id players) (if list? [[] []] [0.0 0.0]))
          n (int num-games)
          players players
-         history game-history]
+         history game-history
+         curr-game-num 0]
     (if (zero? n)
       [players
        (into {}
@@ -705,8 +760,8 @@
                   net-gain))
        history]
       (let [deck (shuffle utils/deck)
-            [[p11 p21] h1] (play-game players history deck)
-            [[p22 p12] h2] (play-game (vec (reverse players)) h1 deck)]
+            [[p11 p21] h1] (play-game players history curr-game-num deck)
+            [[p22 p12] h2] (play-game (vec (reverse players)) h1 curr-game-num deck)]
         (recur (update (update net-gain
                                (:id p11)
                                #((if list? conj +) % (- (+ (:money p11) (:money p12))
@@ -716,7 +771,8 @@
                                                 (* 2 (:money (second players))))))
                (dec n)
                players
-               h2)))))
+               h2
+               (inc curr-game-num))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;         Runtime       ;;;
