@@ -1,0 +1,12 @@
+[]
+{:person [[1 0 0 0 0 0 0 0 0 0] [0 1 0 0 0 0 0 0 0 0] [0 1 0 0 0 0 0 0 0 0] [1 0 0 0 0 0 0 0 0 0] [0 1 0 0 0 0 0 0 0 0]], :positions [nil nil nil nil nil], :states [() () () () ()], :actions [[1 0 0 0 0 0] [1 0 0 0 0 0] [1 0 0 0 0 0] [1 0 0 0 0 0] [1 0 0 0 0 0]], :rewards [nil nil nil nil nil]}
+{:person [[1 0 0 0 0 0 0 0 0 0] [0 1 0 0 0 0 0 0 0 0]], :positions [nil nil], :states [() ()], :actions [[1 0 0 0 0 0] [1 0 0 0 0 0]], :rewards [nil nil]}
+{:person [[1 0 0 0 0 0 0 0 0 0]], :positions [nil], :states [()], :actions [[1 0 0 0 0 0]], :rewards [nil]}
+{:person [[1 0 0 0 0 0 0 0 0 0] [0 1 0 0 0 0 0 0 0 0]], :positions [nil nil], :states [() ()], :actions [[1 0 0 0 0 0] [1 0 0 0 0 0]], :rewards [nil nil]}
+{:person [[1 0 0 0 0 0 0 0 0 0] [0 1 0 0 0 0 0 0 0 0]], :positions [nil nil], :states [() ()], :actions [[1 0 0 0 0 0] [1 0 0 0 0 0]], :rewards [nil nil]}
+{:person [[1 0 0 0 0 0 0 0 0 0] [0 1 0 0 0 0 0 0 0 0]], :positions [nil nil], :states [() ()], :actions [[1 0 0 0 0 0] [1 0 0 0 0 0]], :rewards [nil nil]}
+{:person [[1 0 0 0 0 0 0 0 0 0] [0 1 0 0 0 0 0 0 0 0]], :positions [nil nil], :states [() ()], :actions [[1 0 0 0 0 0] [1 0 0 0 0 0]], :rewards [nil nil]}
+{:person [[1 0 0 0 0 0 0 0 0 0]], :positions [nil], :states [()], :actions [[1 0 0 0 0 0]], :rewards [nil]}
+{:person [[1 0 0 0 0 0 0 0 0 0]], :positions [nil], :states [()], :actions [[1 0 0 0 0 0]], :rewards [nil]}
+{:person [[1 0 0 0 0 0 0 0 0 0]], :positions [nil], :states [()], :actions [[1 0 0 0 0 0]], :rewards [nil]}
+{:person [[1 0 0 0 0 0 0 0 0 0] [0 1 0 0 0 0 0 0 0 0]], :positions [nil nil], :states [() ()], :actions [[1 0 0 0 0 0] [1 0 0 0 0 0]], :rewards [nil nil]}

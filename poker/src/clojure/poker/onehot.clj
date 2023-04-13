@@ -1,5 +1,5 @@
 (ns poker.onehot
-  (:require [poker.headsup :refer :all]
+  (:require #_[poker.headsup :refer :all]
             [poker.utils :as utils]))
 
 (defn one-hot 
@@ -113,10 +113,24 @@
   [game-state]
   )
 
+;; Temp. putting cap of 10000 on the game number cap instead of inf. --> Discuss later
+;; I think the game number would probably need to be fed in when calling playGame in headsup. As such, it should be an argument here
+(defn encode-position
+  "Encodes the position of the current player in the game"
+  [game-number round-number action-type]
+  #_(vec (concat (one-hot game-number 10000)
+          (encode-round round-number)
+          (encode-action-type action-type)))
+  )
+
 (defn encode-state [game-state]
   (let [{active-players :active-players} game-state]
     ()))
 
+;; Placeholder
+(defn encode-reward [reward]
+  #_(if (pos? reward) 1 0)
+  )
 
 
 #_(utils/benchmark 10000 (play-game [utils/random-agent utils/random-agent]
