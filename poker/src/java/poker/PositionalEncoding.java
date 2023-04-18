@@ -31,8 +31,8 @@ import javax.swing.text.Position;
 public class PositionalEncoding extends AbstractBlock{
 
     /* Input shapes: (B, F, numEncodings) */
-    /* embeddings[i] must have the signature (F) -> (F, embeddingSizes[i])*/
-    /* Overall has the signature (F, numEncodings) -> (F, ΣembeddingSizes)*/
+    /* embeddings[i] must have the signature (B, F) -> (B, F, embeddingSizes[i])*/
+    /* Overall has the signature (B, F, numEncodings) -> (B, F, ΣembeddingSizes)*/
     private List<Integer> embeddingSizes;
     private List<Block> embeddings;
 
@@ -88,7 +88,7 @@ public class PositionalEncoding extends AbstractBlock{
         }
 
         for(int i=0;i<numEncodings;i++){
-            inputArrays[i] = input.get(new NDIndex(":, "+i));
+            inputArrays[i] = input.get(new NDIndex(startOfIndex+i));
         }
 
         NDArray[] outputArrays = new NDArray[numEncodings];

@@ -8,7 +8,6 @@
  *  ai.djl.ndarray.NDManager
  *  ai.djl.ndarray.NDResource
  *  ai.djl.ndarray.NDSerializer
- *  ai.djl.ndarray.index.NDIndex
  *  ai.djl.ndarray.internal.NDArrayEx
  *  ai.djl.ndarray.internal.NDFormat
  *  ai.djl.ndarray.types.SparseFormat
@@ -275,7 +274,7 @@ BytesSupplier {
     }
 
     default public void set(NDArray index, Number value) {
-        this.set(new NDIndex("{}", new Object[]{index}), value);
+        this.set(new NDIndex("{}", index), value);
     }
 
     default public void setScalar(NDIndex index, Number value) {
@@ -291,7 +290,7 @@ BytesSupplier {
     }
 
     default public NDArray get(NDArray index) {
-        return this.get(new NDIndex("{}", new Object[]{index}));
+        return this.get(new NDIndex("{}", index));
     }
 
     default public NDArray get(String indices, Object ... args) {

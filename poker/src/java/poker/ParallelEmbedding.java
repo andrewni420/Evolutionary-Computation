@@ -10,6 +10,7 @@ import ai.djl.ndarray.types.Shape;
 import ai.djl.nn.AbstractBlock;
 import ai.djl.nn.Block;
 import ai.djl.nn.Parameter;
+import ai.djl.ndarray.types.Shape;
 import ai.djl.training.ParameterStore;
 import ai.djl.util.PairList;
 
@@ -91,6 +92,12 @@ public class ParallelEmbedding extends AbstractBlock implements Embedding{
              * (B, F1, E), (B, F2, E) ...   -interleave> 
              * (B, F, E)
             */
+            // System.out.println("ParallelEmbedding");
+            // for (int i=0;i<inputs.size();i++){
+            //     System.out.println(inputs.get(i));
+            // }
+            // System.out.println("ParallelEmbeddingDone");
+
             Shape[] inputShapes = new Shape[inputs.size()];
             for (int i=0;i<inputShapes.length;i++) inputShapes[i] = inputs.get(i).getShape();
         
@@ -98,8 +105,6 @@ public class ParallelEmbedding extends AbstractBlock implements Embedding{
             Shape outputshape = getOutputShapes(inputShapes)[0];
             NDArray firstInput = inputs.head();
             NDArray output = firstInput.getManager().create(outputshape, firstInput.getDataType());
-
-            
 
             for (int i=0;i<embeddings.size();i++){
                 String index = startOfIndex + i + endOfIndex;
@@ -125,8 +130,16 @@ public class ParallelEmbedding extends AbstractBlock implements Embedding{
             */
             NDList outputs = new NDList();
             for (int i=0; i<embeddings.size();i++){
-                outputs.add(embeddings.get(i).reverse(ps, new NDList(inputs.singletonOrThrow()
-                                                            .get(new NDIndex(startOfIndex + i + endOfIndex))), 
+                NDArray input = inputs.singletonOrThrow()
+                .get(new NDIndex(startOfIndex + ((i+1)%embeddings.size()) + endOfIndex));
+                if (input.size()==0) {
+                    NDManager manager = input.getManager();
+                    Shape shape = inputs.singletonOrThrow().getShape();
+                    shape = Shape.update(shape, axis, 0);
+                    input = manager.create(new float[]{}, shape);
+                }
+
+                outputs.add(embeddings.get(i).reverse(ps, new NDList(input), 
                                                             training, 
                                                             params).singletonOrThrow());
             }
@@ -163,14 +176,23 @@ public class ParallelEmbedding extends AbstractBlock implements Embedding{
 
         Shape[] input = new Shape[] {inputShapes[0]};
         //System.out.println(input);
+        //System.out.println("Kek");
         Shape outputShape = embeddings.get(0).getOutputShapes(new Shape[] {inputShapes[0]})[0];
-        //System.out.println(outputShape);
-        //System.out.println("For");
+       for (int i=0;i<inputShapes.length;i++){
+        //System.out.println (inputShapes[i]);
+       }
+       //System.out.println("Yee");
         for (int i=1;i<embeddingsLength;i++) {
             input[0] = inputShapes[i];
             //System.out.println(embeddings.get(i).getOutputShapes(input)[0].get(axis));
             //System.out.println(outputShape.get(axis));
-            outputShape = Shape.update(outputShape, axis, outputShape.get(axis) + embeddings.get(i).getOutputShapes(input)[0].get(axis));
+            Shape nextShape = embeddings.get(i).getOutputShapes(input)[0];
+            if (nextShape.dimension() > axis){
+                //System.out.println(nextShape);
+                //System.out.println(outputShape);
+                outputShape = Shape.update(outputShape, axis, outputShape.get(axis) + nextShape.get(axis));
+            }
+            
             //System.out.println(outputShape);
         }
 

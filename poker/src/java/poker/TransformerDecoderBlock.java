@@ -106,6 +106,7 @@ public class TransformerDecoderBlock extends AbstractBlock {
         Shape shape = embedding.getShape();
         
         NDList attentionOutput = selfAttentionBlock.forward(ps, inputs, training);
+        //System.out.println(attentionOutput.head());
         // add dropout to attention Output
         NDList attentionOutputAfterDropout =
                 selfAttentionDropout.forward(ps, attentionOutput, training);

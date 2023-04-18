@@ -78,14 +78,14 @@
     (is (= (onehot/encode-cards [[12 "Clubs"] [4 "Diamonds"]])
            (concat (repeat 10 0) [1] (repeat 4 0) [1] (repeat 36 0)))
         "The indices of the 12 of Clubs and the 4 of Diamonds are 10 and 15, so 1s should appear at those positions")
-    (is (= (onehot/encode-hand [[2 "Clubs"] [2 "Diamonds"]]) (concat [1] (repeat 1325 0)))
-        "The indices of the 2 of Clubs and the 2 of Diamonds are 1 and 2, so this is the lowest hand possible, so it should appear at position 0")
-    (is (= (onehot/encode-hand [[14 "Spades"] [14 "Hearts"]]) (concat (repeat 1325 0) [1]))
-        "The indices of the 14 of Spades and the 14 of Hearts are 52 and 51, so this is the highest hand possible, so it should appear at position 1336. 
+    (is (= (onehot/encode-hand [[2 "Clubs"] [3 "Clubs"]]) (concat [1] (repeat 1325 0)))
+        "The indices of the 2 of Clubs and the 3 of Clubs are 1 and 2, so this is the lowest hand possible, so it should appear at position 0")
+    (is (= (onehot/encode-hand [[14 "Spades"] [13 "Spades"]]) (concat (repeat 1325 0) [1]))
+        "The indices of the 14 of Spades and the 13 of Spades are 52 and 51, so this is the highest hand possible, so it should appear at position 1336. 
              Note that a hand is an unordered set in real life, so the specific spade-heart ordering of this hand doesn't matter.")
     (is (= (onehot/encode-hand [[4 "Hearts"] [6 "Diamonds"]]) (concat (repeat 706 0) [1] (repeat 619 0)))
         "The indices of the 4 of hearts and the 6 of diamonds are 28 and 17, so their position in all possible hands 
-         should be equal to (51 + 50 + ...(17-1) terms... + 36)  + (28 - 17 - 1) = 706")))
+         should be equal to (51 + 50 + ...(17) terms... + 35)  + (28 - 17 - 1) = 706")))
 
 (deftest person-encoding
   (testing "Person Encoding"

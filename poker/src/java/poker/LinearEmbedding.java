@@ -95,7 +95,9 @@ public class LinearEmbedding extends AbstractBlock implements Embedding {
         NDArray input = inputs.singletonOrThrow();
         Device device = input.getDevice();
         NDArray weightArr = parameterStore.getValue(weight, device, training);
-        return linear(input, weightArr.transpose());
+        NDArray weightTranspose = weightArr.transpose();
+        input.getManager().attachAll(weightTranspose);
+        return linear(input,weightTranspose);
     }
 
     /** {@inheritDoc} */

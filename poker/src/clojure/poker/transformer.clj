@@ -13,12 +13,18 @@
    [clj-djl.nn.parameter :as param]
    [clj-djl.dataframe.column-filters :as cf]
    [clj-djl.dataframe.functional :as dfn]
-   [poker.utils :as utils])
+   [poker.utils :as utils]
+   [poker.onehot :as onehot]
+   [clojure.set :as set]
+   [poker.ndarray :as ndarray]
+   [propeller.push.state :as state])
   (:import poker.TransformerDecoderBlock
            poker.Utils
            ai.djl.ndarray.types.DataType
            ai.djl.ndarray.types.Shape
+           ai.djl.training.initializer.Initializer
            ai.djl.ndarray.NDArray
+           poker.TransformerTranslator
            ai.djl.ndarray.NDList
            ai.djl.nn.SequentialBlock
            ai.djl.nn.ParallelBlock
@@ -26,16 +32,19 @@
            ai.djl.nn.Activation
            ai.djl.nn.norm.LayerNorm
            ai.djl.nn.norm.BatchNorm
+           ai.djl.nn.transformer.ScaledDotProductAttentionBlock
            poker.UnembedBlock
            poker.SinglePositionEncoding
            poker.LinearEmbedding
            poker.PositionalEncoding
+           ai.djl.nn.Parameter
            poker.SeparateParallelBlock
            java.util.function.Function
            poker.ParallelEmbedding
+           ai.djl.Model
            java.lang.Class))
 
-
+;;1 second per 1000000 gaussian noises. 
 
 (def self-attention-reference
   "E = embedding size\\
@@ -72,367 +81,6 @@
 ;;Parallel block to process one-hot encoded parts of state
 ;;Parallel? block with masking for (R S A) 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Auxiliaries and Constants;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defn get-djl-type
-  [type]
-  (condp = (clojure.string/lower-case type)
-    "float32" DataType/FLOAT32
-    "float16" DataType/FLOAT16
-    "float64" DataType/FLOAT64
-    "float" DataType/FLOAT32
-    "bool" DataType/BOOLEAN
-    "boolean" DataType/BOOLEAN
-    "complex" DataType/COMPLEX64
-    "complex64" DataType/COMPLEX64
-    "int8" DataType/INT8
-    "int32" DataType/INT32
-    "int64" DataType/INT64
-    "int" DataType/INT32
-    "string" DataType/STRING
-    "uint8" DataType/UINT8
-    DataType/UNKNOWN))
-
-(def relu-function
-  "Returns a java Function that applies the relu activation function"
-  (utils/make-function #(Activation/relu %)))
-
-(defn new-default-manager
-  "Defines m as a new base manager"
-  []
-  (def m (nd/new-base-manager)))
-
-(defn close-default-manager
-  "Closes the manager m"
-  []
-  (when m (.close m)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  NDArrays and NDLists   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defn shape
-  "Turns a vector into a Shape object\\
-   -> Shape"
-  [arr]
-  (nd/new-shape (utils/shape arr)))
-
-#_(shape [[1 2] [3 4] [5 6]])
-
-(defn ndarray
-  "Given a manager, a function, and a vector array, creates an NDArray object\\
-   Applies the function to the vector array\\
-   NDManager, arr -> NDArray"
-  ([manager arrfn arr]
-  (nd/create manager
-             (arrfn (flatten arr))
-             (utils/shape arr)))
-  ([manager arr] (ndarray manager float-array arr)))
-
-#_(with-open [m (nd/new-base-manager)]
-    (println (ndarray m int-array [[1 2] [3 4]])))
-
-(defn random-array [shape]
-  (let [fns (map (fn [len]
-                   #(fn [] (into [] (repeatedly len %)))) shape)]
-    (((apply comp fns) rand))))
-
-(defn ndlist
-  "Given a manager, an optional function (default float-array), and any number of vector arrays, creates an NDList object
-   holding all of the arrays in order.\\
-   Applies optional function to each vector array\\
-   NDManager, (arrfn), arr1, arr2, ... -> NDList"
-  [manager & args]
-  (let [[arrfn arrs] (if (coll? (first args)) 
-                       [float-array args] 
-                       [(first args) (rest args)])
-        ndarrays (map (partial ndarray manager arrfn) arrs)]
-    (apply nd/ndlist ndarrays)))
-
-
-#_(with-open [m (nd/new-base-manager)]
-    (println (ndlist m int-array [[1 2] [3 4]] [[5 6] [7 8]])))
-
-(defn ndarray-to-vector
-  "Given an nd-array, converts it into a clojure nested vector of the same dimensions."
-  [ndarr]
-  (matrix/reshape (nd/to-array ndarr)
-                  (nd/to-array (nd/shape ndarr))))
-
-#_(with-open [m (nd/new-base-manager)]
-    (ndarray-to-vector (ndarray m int-array [[1 2] [3 4]])))
-
-
-(defn process-shape
-  "Turns a vector/Shape/[Shape into a Shape or [Shape\\
-   -> Shape or [Shape"
-  [s & {:keys [array?]
-        :or {array? false}}]
-  (if array?
-    (if (instance? (Class/forName "[Lai.djl.ndarray.types.Shape;") s)
-      s
-      (into-array Shape [(process-shape s)]))
-    (if (instance? Shape s)
-      s
-      (nd/new-shape (vec s)))))
-
-#_(process-shape [1 2] :array? true)
-
-(defn process-activation
-  "Turns an activation iFn/Function into a java Function\\
-   -> Function"
-  [a]
-  (if (ifn? a)
-    (utils/make-function a)
-    a))
-
-#_(process-activation #(Activation/relu %))
-
-(defn process-datatype
-  "Turns a string or DataType into a DataType\\
-   -> DataType"
-  [d]
-  (if (string? d)
-    (get-djl-type d)
-    d))
-
-#_(process-datatype "float")
-
-
-(defn concat-ndlist
-  "Given an list of singleton NDLists, concatenates the NDArray 
-   at the head of each NDList by the given axis and returns the result 
-   as another NDList\\
-   todo: reframe as transduce\\
-   java.lang.List<NDList> -> NDList"
-  [ndlist-list axis]
-  (let [flist (.singletonOrThrow (.get ndlist-list 0))
-        len (.size ndlist-list)]
-    (loop [flist flist
-           i 1]
-      (if (= i len)
-        (nd/ndlist flist)
-        (recur (.concat flist
-                        (.singletonOrThrow (.get ndlist-list i))
-                        axis)
-               (inc i))))))
-
-
-#_(with-open [m (nd/new-base-manager)]
-    (concat-ndlist [(ndlist m float-array [[1 2] [3 4]])
-                    (ndlist m float-array [[5 6] [7 8]])]
-                   0))
-
-(defn interleave-ndlist
-  "Given a list of singleton NDLists where each NDArray has the same shape, 
-   expands them to get a new axis along axis, concatenates them along the new axis,
-   and reshapes to target-shape.\\
-   axis 1 = interleave (B f E)xn -> (B nf E)\\
-   [[3 2] [3 2]], 0 -> [[3 1 2] [3 1 2]] -> [3 2 2] -> [6 2] \"interleaving\" along axis 0\\
-   [[1 2] [3 4] [5 6]] [[11 2] [31 4] [51 6]] -> [[1 2] [11 2] [3 4] [31 4] [5 6] [51 6]]\\
-   todo: reframe as transduce\\
-   java.lang.Iterable<NDList> -> NDList"
-  [ndlist-list axis]
-  (let [extra-axis (inc axis)
-        flist (.expandDims (.singletonOrThrow (.get ndlist-list 0)) extra-axis)
-        s (.getShape (.singletonOrThrow (.get ndlist-list 0)))
-        s (Shape/update s axis (* (.size ndlist-list)
-                                  (.get s axis)))
-        len (.size ndlist-list)]
-    (loop [flist flist
-           i 1]
-      (if (= i len)
-        (nd/ndlist (nd/reshape flist s))
-        (recur (.concat flist
-                        (.expandDims (.singletonOrThrow (.get ndlist-list i)) extra-axis)
-                        extra-axis)
-               (inc i))))))
-
-;;(2 2 2)x3 -> (2 6 2)
-#_(with-open [m (nd/new-base-manager)]
-    (println (.head (interleave-ndlist [(ndlist m int-array [[[1 2] [3 4]] [[11 21] [31 41]]])
-                                        (ndlist m int-array [[[5 6] [7 8]] [[51 61] [71 81]]])
-                                        (ndlist m int-array [[[9 10] [11 12]] [[91 101] [111 121]]])]
-                                       1))))
-
-
-(defn set-parameter!
-  "Given a block, the name of a parameter, and an array of the values in the parameter,
-   sets the values of that parameter to the values in the array.\\
-   Block, String, java array -> Block"
-  [block pname pvalues]
-  (.set (.getArray (.get (.getParameters block) pname)) pvalues)
-  block)
-
-(defn get-pnames
-  "Given a block, returns a vector of the names of the parameters in the block\\
-   -> [names ...]"
-  [block]
-  (into [] (.keys (.getParameters block))))
-
-#_(with-open [m (nd/new-base-manager)]
-    (clojure.pprint/pprint
-     (get-pnames (causal-mask-block m [1 2 3]))))
-
-(defn get-parameters
-  "Given a block, returns a map from the name of a parameter to the value, either as an NDArray or as a nested vector, of that parameter\\
-   -> {pname pvalue}"
-  [block & {:keys [as-array?]
-            :or {as-array? true}}]
-  (let [p (.getParameters block)
-        k (.keys p)]
-    (zipmap k
-            (for [n k]
-              ((if as-array?
-                 #(.getArray %)
-                 identity)
-               (.get p n))))))
-
-#_(with-open [m (nd/new-base-manager)]
-    (clojure.pprint/pprint
-     (get-parameters (causal-mask-block m [1 2 3]) :as-array? true)))
-
-(defn get-pcount
-  "Given a block, gets the number of learnable parameters"
-  [block]
-  (reduce #(+ %1 (.size (second %2))) 0 (get-parameters block)))
-
-#_(with-open [m (nd/new-base-manager)]
-    (clojure.pprint/pprint
-     (get-pcount (causal-mask-block m [1 2 3]))))
-
-(defn identical-array
-  "Creates a vector array with a shape populated by only the given value\\
-  vector value -> vector"
-  [shape value]
-  ((apply comp
-          (map #(fn [v] (into [] (repeat % v)))
-               shape))
-   value))
-
-#_(identical-array [3 3] 2)
-
-(defn mask-2d
-  "Given an mxn array and a length m vector, sets everything in the mxn array 
-   that exceeds the sequence lengths in the seq-length vector to a given value\\
-   [[... n]... m] [... m]-> [[... n]... m]"
-  [array & {:keys [seq-length value]
-            :or {seq-length nil
-                 value 0}}]
-  (let [m (count array)
-        n (count (first array))
-        seq-length (if seq-length
-                     seq-length
-                     (range 1 (inc m)))]
-    (into []
-          (map #(into []
-                      (concat (take %2 %1)
-                              (repeat (- n %2) value)))
-               array
-               seq-length))))
-
-#_(mask-2d [[1 2 3 4] [1 2 3 4] [1 2 3 4] [1 2 3 4]]
-           :seq-length [4 2 3 2]
-           :value 0)
-
-(defn causal-mask
-  "Given a shape and an axis, constructs a mask for that axis.\\
-   axis: start dimension for mask - for a nd shape, (axis-1)d [2d mask] (n-axis-1)d\\
-   vector, integer -> vector of 0s and 1s"
-  [shape axis]
-  (let [shape (vec shape)
-        axis (if (< axis 0)
-               (+ axis (count shape))
-               axis)]
-    (assert (<= 2 (count shape)) (str "Shape dimension is too small: shape = " shape))
-    (assert (<= axis (- (count shape) 2)) (str "Axis is too large: axis = " axis))
-    (let [first-identical (take axis shape)
-          second-identical (drop (+ 2 axis) shape)
-          m (shape axis)
-          n (shape (inc axis))]
-      (identical-array first-identical
-                       (mask-2d (identical-array [m n] (identical-array second-identical 1))
-                                :value (identical-array second-identical 0))))))
-
-#_(causal-mask [1 3 3] 1)
-
-(defn n-fold-mask
-  "Sets everything to 0 except every nth item of an array\\
-   axis: axis to apply parallel mask to\\
-   n: every nth item is nonzero\\
-   i: every i (mod n) item is nonzero\\
-   vector, int, int, int -> vector"
-  [shape axis n i]
-  (let [shape (vec shape)
-        axis (if (< axis 0)
-               (+ axis (count shape))
-               axis)
-        m (shape axis)
-        i (mod i n)
-        first-identical (take axis shape)
-        second-identical (drop (inc axis) shape)
-        get-value #(if (= i (mod % n))
-                     (identical-array second-identical 1)
-                     (identical-array second-identical 0))]
-    (identical-array first-identical
-                     (into [] (map get-value (range m))))))
-
-#_(n-fold-mask [3 6 3] 1 3 1)
-
-
-(defn add-NDArrays
-  "Function that takes a list of singleton NDLists and adds all their NDArrays up elementwise\\
-   -> IFn"
-  [ndlist]
-  (let [[array & rest] (map #(.singletonOrThrow %) ndlist)]
-    (nd/ndlist (reduce #(.add %1 %2) array rest))))
-
-#_(with-open [m (nd/new-base-manager)]
-    (let [l1 (ndlist m float-array [[1 2] [3 4]])
-          l2 (ndlist m float-array [[0.1 0.2] [0.3 0.4]])
-          l3 (ndlist m float-array [[10 20] [30 40]])]
-      (println (.singletonOrThrow (add-NDArrays (java.util.ArrayList. [l1 l2 l3]))))))
-
-(defn concat-NDArrays
-  "Function that takes a list of NDLists and returns an NDList containing all of their NDArrays\\
-   -> IFn"
-  [ndlist]
-  (reduce #(.addAll %1 %2) ndlist))
-
-
-#_(with-open [m (nd/new-base-manager)]
-    (let [l1 (ndlist m float-array [[1 2] [3 4]])
-          l2 (ndlist m float-array [[0.1 0.2] [0.3 0.4]])
-          l3 (ndlist m float-array [[10 20] [30 40]])]
-      (println (into [] (concat-NDArrays (java.util.ArrayList. [l1 l2 l3]))))))
-
-
-(defn add-gaussian-noise!
-  "Adds gaussian noise to an ndarray\\
-   Either uses a common mean and stdev or a mean of 0 and an ndarray of the same size as the stdev\\
-   -> ndarray"
-  ([ndarray mean stdev arrfn]
-   (let [v (nd/to-array ndarray)
-         newv (map #(+ % (utils/rand-normal mean stdev))
-                   v)]
-     (.set ndarray (arrfn newv))
-     ndarray))
-  ([value-array stdev-array arrfn]
-   (let [v (nd/to-array value-array)
-         s (nd/to-array stdev-array)
-         new-s (map (partial utils/rand-normal 0) s)]
-     (println (into-array (map + v new-s)))
-     (.set value-array (arrfn (map + v new-s)))
-     value-array)))
-
-#_(with-open [m (nd/new-base-manager)]
-    (println (add-gaussian-noise!
-              (ndarray m float-array [[1 2] [3 4]])
-              (ndarray m float-array [[0 0.001] [0.01 0.1]])
-              float-array)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Model Functions      ;;
@@ -446,8 +94,8 @@
   (.initialize
    model
    manager
-   (process-datatype datatype)
-   (process-shape input-shapes :array? true)))
+   (ndarray/process-datatype datatype)
+   (ndarray/process-shape input-shapes :array? true)))
 
 (defn linear
   "Creates a linear block with a given amount of units\\
@@ -490,9 +138,9 @@
   "Creates a lambda block using a function or ifn: NDList -> NDList\\
    -> block"
   ([function name]
-  (LambdaBlock. (process-activation function) name))
+  (LambdaBlock. (ndarray/process-activation function) name))
   ([function]
-   (LambdaBlock. (process-activation function))))
+   (LambdaBlock. (ndarray/process-activation function))))
 
 (defn transformer-decoder-block
   "Creates a transformer decoder block.\\
@@ -508,7 +156,7 @@
    & {:keys [activation-function dropout-probability]
       :or {activation-function (utils/make-function #(Activation/relu %))
            dropout-probability 0.1}}]
-  (let [activation-function (process-activation activation-function)]
+  (let [activation-function (ndarray/process-activation activation-function)]
     (TransformerDecoderBlock. embedding-size
                               head-count
                               hidden-size
@@ -646,7 +294,21 @@
     (when (seq blocks) (.addAll p blocks))
     p))
 
-
+#_(with-open [manager (nd/new-base-manager)]
+    (let [model1 (SeparateParallelBlock. (utils/make-function ndarray/add-NDArrays))
+          model2 (SeparateParallelBlock. (utils/make-function ndarray/add-NDArrays))]
+      (.setNumInputs model1 (map int [1 1]))
+      (.addAll model1 [(linear 2) (linear 2)])
+      (.setNumInputs model2 (map int [2 1]))
+      (.addAll model2 [model1 (linear 2)])
+      (initialize-model model2 manager "float" (into-array Shape [(nd/new-shape [1 2])
+                                                                  (nd/new-shape [1 3])
+                                                                  (nd/new-shape [1 1])]))
+      #_(println (ndarray/get-parameters model2))
+      (println (count (.getManagedArrays manager)))
+      (forward model2 (ndarray/ndlist manager [[1 0]] [[1 0 0]] [[1]]))
+      (println (count (.getManagedArrays manager)))
+      #_(println (.singletonOrThrow (forward model2 (ndarray/ndlist manager [[1 0]] [[1 0 0]] [[1]]))))))
 
 (defn create-mlp
   "Given an output size and any number of hidden-sizes, creates but does not initialize a multilayer perceptron\\
@@ -658,12 +320,12 @@
   [output-size & {:keys [hidden-sizes activation-function bias?]
                   :or {hidden-sizes []
                        bias? true
-                       activation-function relu-function}}]
+                       activation-function ndarray/relu-function}}]
   (let [s (SequentialBlock.)]
     (run! #(.add s %)
           (reduce #(conj %1
                          (linear %2 :bias? bias?)
-                         (process-activation activation-function))
+                         (ndarray/process-activation activation-function))
                   []
                   hidden-sizes))
     (.add s (linear output-size :bias?  bias?))
@@ -703,6 +365,28 @@
         (println (.get (forward reverse-pe f) 1)))))
 
 
+(defn scaled-dot-product-attention-block
+  "Creates a scaled dot product attention block\\
+   -> Block"
+  [embedding-size & {:keys [dropout-prob head-count]
+                     :or {dropout-prob 0.1
+                          head-count 1}}]
+  (-> (ScaledDotProductAttentionBlock/builder)
+      (.optAttentionProbsDropoutProb dropout-prob)
+      (.setEmbeddingSize embedding-size)
+      (.setHeadCount head-count)
+      (.build)))
+
+#_(with-open [manager (nd/new-base-manager)]
+    (let [m (scaled-dot-product-attention-block 4)]
+      (initialize-model m manager "float" (into-array Shape [(nd/shape [1 2 4])
+                                                             (nd/shape [1 2 2])]))
+      #_(set-all-parameters m 1 float-array)
+      #_(println (get-parameters m))
+      (println (into [] (forward m (ndlist manager
+                                           [[[1 2 3 4] [3 4 5 6]]]
+                                           [[[1 0] [1 1]]]))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;          Blocks         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -735,11 +419,11 @@
                                arrfn float-array}}]
   (assert (>= (count input-shape) 3) (str "Shape size too small. Must be at least [B F1 F2]. Shape: " input-shape))
   (let [m (mask-block manager input-shape :datatype datatype)]
-    (set-parameter! m
+    (ndarray/set-parameter! m
                     "01Multiplication_weight"
                     (arrfn
                      (flatten
-                      (causal-mask (drop 1 input-shape)
+                      (ndarray/causal-mask (drop 1 input-shape)
                                    axis))))
     (.freezeParameters m true)
     m))
@@ -762,11 +446,11 @@
                                arrfn float-array}}]
   (let [m (mask-block manager input-shape :datatype datatype)]
     (assert (>= (count input-shape) 2) (str "Shape size too small. Must be at least [B F]. Shape: " input-shape))
-    (set-parameter! m
+    (ndarray/set-parameter! m
                     "01Multiplication_weight"
                     (arrfn
                      (flatten
-                      (n-fold-mask (drop 1 input-shape) axis n i))))
+                      (ndarray/n-fold-mask (drop 1 input-shape) axis n i))))
     (.freezeParameters m true)
     m))
 
@@ -774,14 +458,6 @@
     (println (get-parameters (n-fold-mask-block m [2 6 3]))))
 
 
-(defn decision-transformer [state-embedding action-embedding positional-encoding transformer-block]
-  ;;parallel-embedding 1 state-embedding action-embedding
-  ;;positional encoding
-  ;;parallel-inputs positional-encoding parallel-embedding
-  ;;transformer
-  ;;unembed parallel-embedding
-  ;;sequential-block parallel-inputs transformer unembed
-  )
 
 
 #_(defn n-fold-embedding-blocks
@@ -863,7 +539,7 @@
   ([arr]
   (SinglePositionEncoding. arr))
   ([manager arrfn arr]
-   (SinglePositionEncoding. (ndarray manager arrfn arr))))
+   (SinglePositionEncoding. (ndarray/ndarray manager arrfn arr))))
 
 #_(let [em (SinglePositionEncoding. (ndarray m [[1 2 3] [2 3 4] [4 5 6] [5 6 7]]))
       input (ndlist m [[1 0] [1 1] [3 2]])]
@@ -901,40 +577,38 @@
    num-layers: The number of transformer layers\\
    d-pe: The dimensions of each positional encoding (game, round, action). Should be a vector of 3 integers, each around d_model/3\\
    max-seq-length: The maximum context length of the model. Runtime scales as seq-length squared\\
+   activation-function: the activation function of the feedforward layers\\
+   initializer: The initializer to use for the weights\\
+   component-map? Whether to return the final model, or a map of {component-name component-block} of each part of the model\\
    -> Block: input-shapes -> (take 2 input-shapes)"
-  [manager input-shapes & {:keys [d-model d-ff num-layers num-heads d-pe max-seq-length activation-function dropout-probability]
-                           :or {d-model 512
-                                d-ff 2048
-                                num-layers 6
-                                num-heads 8
-                                d-pe [256 128 128]
-                                max-seq-length 1024
-                                activation-function (utils/make-function #(Activation/relu %))
-                                dropout-probability 0.1}
+  [manager input-shapes & {:keys [d-model d-ff num-layers num-heads d-pe max-seq-length activation-function dropout-probability initializer component-map?]
+                           :or {activation-function (utils/make-function #(Activation/relu %))
+                                dropout-probability 0.1
+                                initializer Initializer/ZEROS}
                            :as argmap}]
-  (assert (and d-model d-ff num-layers d-pe max-seq-length) (str "Must specify all parameters. unspecified: " (filter #(not %) (map second argmap))))
+  (assert (and d-model d-ff num-layers d-pe max-seq-length) (str "Must specify all parameters. unspecified: " (filterv #(not (contains? argmap %)) [:d-model :d-ff :num-layers :d-pe :max-seq-length])))
   (assert (= d-model (reduce + d-pe)) 
           (str "The sum of positional encoding dimensions must equal the model dimension. 
                 d-model: " d-model ", d-pe: " d-pe))
   (assert (= 0 (mod d-model num-heads)) 
           (str "The number of attention heads must evenly divide the model dimension. 
                 d-model: " d-model ", num-heads: " num-heads))
-  (let [input-shapes (process-shape input-shapes :array? true)
-        activation-function (process-activation activation-function)
+  (let [input-shapes (ndarray/process-shape input-shapes :array? true)
+        activation-function (ndarray/process-activation activation-function)
         embedding (apply parallel-embedding
-                         1
+                         1;;interleaving axis = F
                          (repeatedly 2 #(linear-embedding d-model)))
         pos-encoding (positional-encoding d-pe
                                           (map #(single-position-encoding
-                                                 (ndarray manager
+                                                 (ndarray/ndarray manager
                                                           (utils/positional-encoding
                                                            %1
                                                            :num-positions max-seq-length)))
                                                d-pe))
-        input-layer (separate-parallel-block concat-NDArrays
-                                             [3 1]
-                                             (separate-parallel-block add-NDArrays
-                                                                      [2 1]
+        input-layer (separate-parallel-block ndarray/concat-NDArrays
+                                             [3 1];;3 inputs and 1 mask
+                                             (separate-parallel-block ndarray/add-NDArrays
+                                                                      [2 1];;2 embeddings and 1 position
                                                                       embedding pos-encoding)
                                              (lambda-block identity))
         core-layer (apply sequential-block
@@ -945,17 +619,94 @@
                                                    :activation-function activation-function
                                                    :dropout-probability dropout-probability)))
         output-layer (separate-parallel-block 
-                      #(.get % 0)
-                      [1]
+                      #(.get % 0);;get the only NDList in the List<NDList>
+                      [1];;only take the first input, ignore the mask.
                       (unembed-block embedding))
         model (sequential-block input-layer core-layer output-layer)]
+    (when initializer (nn/set-initializer model initializer ai.djl.nn.Parameter$Type/WEIGHT))
     (initialize-model model manager "float" input-shapes)
-    model))
+    (if component-map? 
+      {:embedding embedding :pos-encoding pos-encoding :input-layer input-layer :core-layer core-layer :output-layer output-layer :model model}
+      model)))
+
+
+#_(with-open [manager (nd/new-base-manager)]
+    (let [input-shapes (into-array Shape (map nd/new-shape [[1 4 4]
+                                                            [1 3 2]
+                                                            [7 3]
+                                                            [1 7 7]]))
+          model (transformer manager input-shapes
+                             :d-model 10
+                             :d-ff 20
+                             :num-layers 1
+                             :num-heads 2
+                             :d-pe [4 3 3]
+                             :max-seq-length 10)]
+      #_(get-pnames model)
+      (println (into [] (forward model (ndlist manager
+                                               [[[-1 -2 -3 -4] [-5 -6 -7 -8] [-1 -3 -5 -7] [1 1 1 1]]]
+                                               [[[0 1] [1 0] [1 1]]]
+                                               [[1 2 3] [2 3 4] [3 4 5] [4 5 6] [5 6 7] [6 7 8] [1 3 4]]
+                                               (causal-mask [1 7 7] 0)))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       Individuals       ;;
+;; A pre-transformer individual is a big vector of parameters..? Maybe
+;; a big map of parameter name to float array. It's constructed into a 
+;; transformer model before evaluation.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defn mutate
+  "Given an individual whose :parameter-map is {:pname :pvalues}, perturbs each
+   of the pvalues with gaussian noise."
+  [individual]
+  (transduce (map (fn [[k v]]
+                    [k (mapv #(+ % (utils/rand-normal 0 1)) v)]))
+             conj
+             {}
+             (:parameter-map individual)))
+
+(defn individual-to-transformer
+  [individual]
+  ())
+
+(defn set-parameters!
+  "Given a neural net and a map of {parameter-name float-array}, where the float-array
+   has the same number of elements as the corresponding parameter, sets the data of the neural
+   net to the data in the float-arrays\\
+   -> nnet"
+  [nnet parameter-map]
+  (let [params (ndarray/get-parameters nnet :as-array? true)]
+    (run! #(nd/set (params %) (parameter-map %))
+          (map first params))
+    nnet))
+
+(defn add-gaussian-model!
+  "Adds gaussian noise to an individual\\
+   Either uses a common mean and stdev or a mean of 0 and an ndarray of the same size as the stdev\\
+   -> ndarray"
+  ([nnet mean stdev arrfn]
+   (run! #(ndarray/add-gaussian-noise! % mean stdev arrfn)
+         (map second (ndarray/get-parameters nnet :as-array? true)))
+   nnet)
+  ([model stdev arrfn]
+   (let [p (ndarray/get-parameters model :as-array? true)
+         pnames (map first p)]
+     (run! #(ndarray/add-gaussian-noise! (get p %) (get stdev %) arrfn)
+           pnames)
+     model)))
+
+#_(with-open [m (nd/new-base-manager)]
+    (let [model (linear 2 :bias? false)]
+      (initialize-model model m "float" [1 2])
+      (println (get-parameters model))
+      (add-gaussian-model!
+       model
+       {"weight" (ndarray m float-array [[0 0.001] [0.01 0.1]])}
+       float-array)
+      (println (get-parameters model))))
 
 (defn initialize-stdevs
   "For each parameter NDArray of nnet, creates an array of ones with the same shape 
@@ -972,29 +723,91 @@
                                (.getShape)))
                  k))))
 
+#_(with-open [m (nd/new-base-manager)]
+    (let [model (linear 2)]
+      (initialize-model model m "float" [1 2])
+      (println (initialize-stdevs model m))))
+
+(defn current-transformer
+  "The current transformer model being evolved. Subject to change based on 
+   computing constraints, meta-evolution, and ablation studies.\\
+   -> Block"
+  [manager]
+  (transformer manager
+               (into-array Shape
+                           (map nd/new-shape
+                                [[1 256 onehot/state-length];;state
+                                 [1 256 onehot/action-length];;action
+                                 [1 512 4];;position
+                                 [1 512 512]]));;mask
+               :d-model 64
+               :d-ff 256
+               :num-layers 6
+               :num-heads 8
+               :d-pe [16 16 16 16]
+               :max-seq-length 512))
+
+
+
+
+#_(with-open [manager (nd/new-base-manager)
+            model (Model/newInstance "transformer")]
+  (let [s (into-array Shape [(nd/shape [1 2 3])])
+        arr [(ndarray/ndarray manager [[[1 2 3] [4 5 6]]])]
+        l (linear 10)]
+    (initialize-model l manager "float" s)
+    (.setBlock model l)
+    (println (.getManagedArrays manager))
+    (with-open [p (.newPredictor model (TransformerTranslator. manager))]
+      (println p)
+      (println "prediction: " (map vec (into [] (.predict p arr)))))
+    (println "________NEWLINE________")
+    (println (.getManagedArrays manager))))
+
+
+(defn close-individual
+  "Closes the manager of the individual\\
+   -> individual"
+  [individual]
+  (.close (:manager individual))
+  (.close (:model individual))
+  individual)
+
 (defn initialize-individual
   "Creates an individual of the form {:nnet :stdev} 
    with the neural net and possibly also the standard deviations for 
    mutating each of the nnet parameters"
-  [individual nnet & {:keys [stdev?]
-                      :or {stdev? true}}]
-  (if stdev?
-    {:nnet nnet
-     :stdev (initialize-stdevs nnet (:manager individual))}
-    {:nnet nnet}))
+  [& {:keys [initial manager nn-factory mask max-seq-length id stdev?]
+      :or {initial {}
+           stdev? false}
+      :as argmap}]
+  (assert (every? #(or (% argmap) (% initial)) [:id :manager :nn-factory :mask :max-seq-length])
+          (str "Incomplete information provided. Unset variables: "
+               (filterv #(not (or (% argmap) (% initial))) [:id :manager :nn-factory :mask :max-seq-length])))
+  (let [[manager nn-factory mask max-seq-length id]
+        (mapv #(or (% argmap) (% initial))
+              [:manager :nn-factory :mask :max-seq-length :id])
+        model (Model/newInstance (str "transformer " id))]
+    (.setBlock model (nn-factory))
+    (merge initial
+           {:model model
+            :mask mask
+            :manager manager
+            :max-seq-length max-seq-length
+            :id id}
+           (when stdev?
+             {:stdev (initialize-stdevs (.getBlock model) manager)}))))
 
-(defn create-individual
-  "Given a manager, assigns a new submanager of that manager to a new individual.\\
-   Given a function (fn [manager] nnet), also initializes the individual\\
-   -> {:manager :nnet? :stdev?}"
-  ([manager & {:keys [nn-factory stdev?]
-               :or {stdev? true}}]
-   (if nn-factory
-     (initialize-individual (create-individual manager)
-                            (nn-factory manager)
-                            stdev?)
-     {:manager (.newSubManager manager)})))
+(def individual-keys {:mandatory #{:manager :nn-factory :mask :max-seq-length :id}
+                      :optional #{:stdev}})
 
+
+
+#_(with-open [m (nd/new-base-manager)]
+  (initialize-individual :manager m :nn-factory #(current-transformer m)
+                         :mask (ndarray/ndarray m (ndarray/causal-mask [1 7 7] -2))
+                         :id :p0
+                         :max-seq-length 7))
 
 (defn error-function
   "NOT FINISHED\\
@@ -1003,107 +816,261 @@
   (assoc individual :error 0))
 
 
-(defn close-individual
-  "Closes the manager of the individual\\
-   -> individual"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;    Gameplay Interface   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn parse-action-encoding-type
+  "Helper method for parse-action-encoding\\
+   Dynamically interprets Bet as either Bet or Raise as appropriate\\
+   -> string ∈ [Bet Raise Call Fold All-In Check]"
+  [encoding preprocessing sampler legal-actions]
+  (let [legal-types (set (map first legal-actions))
+        type-mask (onehot/multi-hot (mapv onehot/action-type-idx legal-types)
+                                    (count onehot/action-types))
+        chosen-type (sampler (mapv vector
+                                   onehot/action-types
+                                   (preprocessing (take 5 encoding) type-mask)))]
+    (if (and (= chosen-type "Bet")
+             (contains? legal-types "Raise")
+             (not (contains? legal-types "Bet")))
+      "Raise"
+      chosen-type)))
+
+#_(parse-action-encoding-type (onehot/encode-action-type "Bet")
+                              #(mapv * (into [] %1) %2)
+                              #(first (apply max-key second %))
+                              [["All-In" 200.0 200.0] ["Check" 0.0 0.0] ["Raise" 1.0 199.0] ["Fold" 0.0 0.0]])
+
+(defn parse-action-encoding-amount
+  "Helper method for parse-action-encoding\\
+   -> float ∈ (1,200) or (1,400)"
+  [encoding preprocessing sampler legal-actions buckets]
+  (let [[min-amt max-amt] (first (filter #(< (first %) (second %))
+                                         (map rest legal-actions)))
+        money-mask (mapv #(if (utils/in-range % min-amt max-amt) 1 0) buckets)]
+    (sampler (mapv vector buckets (preprocessing (drop 5 encoding) money-mask)))))
+
+;;Mean squared error for information loss upon encoding then decoding a range of monetary amounts 
+#_(reduce +
+          (map utils/square
+               (for [i (utils/log-scale 1 200 :num-buckets 20)]
+                 (let [amount (parse-action-encoding-amount (concat [1 1 1 1 1] (onehot/encode-money i 10 200 onehot/default-action-buckets :multi-hot? false :logscale? false))
+                                                            #(mapv * (into [] %1) %2)
+                                                            #(first (apply max-key second %))
+                                                            [["All-In" 200.0 200.0] ["Check" 0.0 0.0] ["Bet" 1.0 199.0] ["Fold" 0.0 0.0]]
+                                                            (onehot/buckets-to-money onehot/default-action-buckets 10 200))]
+                   (/ (abs (- i amount))
+                      i)))))
+
+(defn parse-action-encoding
+  [encoding game-state & {:keys [buckets sample? need-softmax? need-exp?]
+                          :or {buckets onehot/default-action-buckets
+                               sample? true
+                               need-softmax? true}}]
+  (assert (not (and need-exp? need-softmax?)) "Encoding cannot simultaneously represent log-softmax and unsoftmaxed weights")
+  (let [legal-actions (utils/legal-actions game-state)
+        converter (if (or need-exp? need-softmax?) #(if (zero? %) ##-Inf %) identity)
+        preprocessing #((comp (if need-softmax? utils/softmax identity)
+                              (if need-exp? (partial mapv (fn [x] (Math/exp x))) identity))
+                        (mapv (if (or need-softmax? need-exp?) + *) 
+                              %1 
+                              (map converter %2)))
+        sampler #(first ((if sample?
+                           utils/random-weighted
+                           (partial apply max-key))
+                         second
+                         %))
+        chosen-type (parse-action-encoding-type encoding
+                                                preprocessing
+                                                sampler
+                                                legal-actions)
+        chosen-amount (if (contains? #{"Bet" "Raise"} chosen-type)
+                        (parse-action-encoding-amount encoding
+                                                      preprocessing
+                                                      sampler
+                                                      legal-actions
+                                                      (onehot/buckets-to-money buckets game-state))
+                        (utils/sfirst (filter #(= chosen-type (first %)) legal-actions)))]
+    [chosen-type chosen-amount]))
+
+#_(let [g (poker.headsup/init-game)]
+    #_(onehot/encode-action ["Fold" 0.0] g)
+    (parse-action-encoding (onehot/encode-action ["Bet" 100.0] g)
+                           g
+                           (utils/legal-actions g)))
+
+(defn slice-inputs
+  "Given a set of inputs for the decision transformer, slices them so that they
+   do not exceed the maximum sequence length of the transformer and returns them in order 
+   as a vector\\
+   If the maximum sequence length n is odd, there will be at most ⌊n/2⌋ actions and ⌈n/2⌉ states\\
+   -> [state actions positions mask]"
+  [state actions position mask max-seq-length]
+  (let [[state-shape action-shape position-shape] (map nd/get-shape [state actions position])
+        get-slice (fn [arr idx]
+                    (if (zero? (nd/size arr))
+                      (nd/create (.getManager arr) (.getShape arr))
+                      (nd/get arr (nd/index (str "...," (int idx) ":,:")))))
+        position-slice (get-slice position
+                                  (max 0 (- (ndarray/get-axis position-shape -2)
+                                            max-seq-length)))
+        mask-start (max 0 (- (ndarray/get-axis (nd/get-shape mask) -2)
+                             (ndarray/get-axis (nd/get-shape position-slice) -2)))
+        mask-slice (nd/get mask (nd/index (str "...," mask-start ":," mask-start ":")))]
+    [(get-slice state (max 0 (- (ndarray/get-axis state-shape -2)
+                                (Math/ceil (/ max-seq-length 2.0)))))
+     (get-slice actions (max 0 (- (ndarray/get-axis action-shape -2)
+                                  (Math/floor (/ max-seq-length 2.0)))))
+     position-slice
+     mask-slice]))
+
+
+#_(with-open [manager (nd/new-base-manager)
+            model (Model/newInstance "transformer")]
+  (let [actions (ndarray/ndarray manager (ndarray/identical-array [10 onehot/action-length] 1))
+        state (ndarray/ndarray manager (ndarray/identical-array [10 onehot/state-length] 1))
+        position (ndarray/ndarray manager (ndarray/identical-array [20 onehot/position-length] 1))
+        mask (ndarray/ndarray manager (ndarray/identical-array [20 20] 1))
+        embedded (ndarray/ndarray manager (ndarray/identical-array [1 64] 1))
+        {embedding :embedding
+         pos-encoding :pos-encoding
+         input-layer :input-layer
+         core-layer :core-layer
+         output-layer :output-layer
+         m :model} (transformer manager
+                                (into-array Shape
+                                            (map nd/new-shape
+                                                 [[1 256 onehot/state-length];;state
+                                                  [1 256 onehot/action-length];;action
+                                                  [1 512 4];;position
+                                                  [1 512 512]]));;mask
+                                :d-model 64
+                                :d-ff 256
+                                :num-layers 6
+                                :num-heads 8
+                                :d-pe [16 16 16 16]
+                                :max-seq-length 512
+                                :component-map? true)]
+    (.setBlock model m #_(unembed-block embedding))
+    #_(println (forward m (ndarray/ndlist manager state actions position mask)))
+    (let [first-arrays (.getManagedArrays manager)]
+      (with-open [p (.newPredictor model (TransformerTranslator. manager))]
+        (println "prediction: " (map vec (into [] (.predict p [state actions position mask])))))
+      (println (- (count (.getManagedArrays manager)) (count first-arrays))))))
+
+
+#_(with-open [manager (nd/new-base-manager)
+            model (Model/newInstance "transformer")]
+  (let [m1 (linear-embedding 4)
+        m2 (linear-embedding 4)
+        m (parallel-embedding 1 m1 m2)
+        arr1 (ndarray/ndarray manager [[1 2]])
+        arr2 (ndarray/ndarray manager [[1 2 3]])
+        arr3 (ndarray/ndarray manager [[[1 2 3 4]]])]
+    (initialize-model m manager "float" (into-array Shape [(nd/shape [1 2])
+                                                           (nd/shape [1 3])]))
+    (.setBlock model (unembed-block m))
+    #_(println (into [] (.getManagedArrays manager)))
+    #_(println (forward (unembed-block m) (nd/ndlist arr3)))
+    (let [first-arrays (.getManagedArrays manager)]
+      (with-open [p (.newPredictor model (TransformerTranslator. manager))]
+        (println "prediction: " (map vec (into [] (.predict p [arr3])))))
+      (println (- (count (.getManagedArrays manager)) (count first-arrays)))
+      #_(println (into [] (.getManagedArrays manager))))
+    ))
+
+(defn as-agent
+  "Given an individual, returns a function that uses the individual's
+   neural net to make a decision based on a game-state and game-encoding\\
+   -> IFn"
   [individual]
-  (.close (:manager individual))
-  individual)
+  (fn [game-state game-encoding]
+    (let [{{state (:id individual)} :state
+           actions :actions
+           positions :position} game-encoding
+          {mask :mask
+           max-seq-length :max-seq-length
+           model :model
+           manager :manager} individual
+          arrcount (count (.getManagedArrays manager))
+          input (slice-inputs state
+                              actions
+                              positions
+                              mask
+                              max-seq-length)
+          
+          encoded-action (utils/sfirst
+                          (with-open [p (.newPredictor
+                                         model
+                                         (TransformerTranslator. manager))]
+                            (.batchPredict p [input])))
+          _ (when (> (count (.getManagedArrays manager)) arrcount)
+              (println "encode-action Leak"))]
+      (parse-action-encoding encoded-action game-state))))
+
+(defn as-player
+  "Given an individual, returns a player with the individual's id\\
+   -> player"
+  [individual]
+  (utils/init-player (as-agent individual) (:id individual)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;         Runtime         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  ;;parallel-embedding 1 state-embedding action-embedding
-  ;;positional encoding
-  ;;parallel-inputs positional-encoding parallel-embedding
-  ;;transformer
-  ;;unembed parallel-embedding
-  ;;sequential-block parallel-inputs transformer unembed
-
-
-(with-open [manager (nd/new-base-manager)]
-  (let [input-shapes (into-array Shape (map nd/new-shape [[1 4 4]
-                                                          [1 3 2]
-                                                          [7 3]
-                                                          [1 7 7]]))
-        model (transformer manager input-shapes 
-                           :d-model 10 
-                           :d-ff 20 
-                           :num-layers 1 
-                           :num-heads 2 
-                           :d-pe [4 3 3] 
-                           :max-seq-length 10)]
+#_(with-open [manager (nd/new-base-manager)]
+  (time (let [[B F E] [1 2 64];;[10 10 512] 
+        [D1 D2] [64 183];;[1024 256]
+        input (ndarray/ndlist manager
+                      (ndarray/identical-array [B (/ F 2) D1] 1);;state = [B F/2 D1]
+                      (ndarray/identical-array [B (/ F 2) D2] 1);;[B F/2 D2]
+                      (ndarray/identical-array [B F 4] 1);;B F 3
+                      (ndarray/causal-mask [B F F] 1))
+              
+        input-shapes #_(into-array Shape (map nd/new-shape [[1 4 4]
+                                                            [1 3 2]
+                                                            [7 3]
+                                                            [1 7 7]]))
+        (into-array Shape (map nd/new-shape [[B (/ F 2) D1]
+                                             [B (/ F 2) D2]
+                                             [B F 4]
+                                             [B F F]]))
+              
+        model (transformer manager input-shapes
+                           :d-model 64;;512
+                           :d-ff 256;;2048
+                           :num-layers 6;;6
+                           :num-heads 8;;8
+                           :d-pe [16 16 16 16];;[256 128 128]
+                           :dropout-probability 0.1
+                           :max-seq-length 256;;1024
+                           :component-map? true)
+        {embedding :embedding
+         pos-encoding :pos-encoding
+         input-layer :input-layer
+         core-layer :core-layer
+         output-layer :output-layer
+         model :model} model];;B F F
+    #_(set-all-parameters model 1 float-array)
     #_(get-pnames model)
-    (println (into [] (forward model (ndlist manager
-                                             [[[-1 -2 -3 -4] [-5 -6 -7 -8] [-1 -3 -5 -7] [1 1 1 1]]]
-                                             [[[0 1] [1 0] [1 1]]]
-                                             [[1 2 3] [2 3 4] [3 4 5] [4 5 6] [5 6 7] [6 7 8] [1 3 4]]
-                                             (causal-mask [1 7 7] 0)))))))
-;;model parameters: 
-(def model-parameters
-  ["01SeparateParallelBlock_01SeparateParallelBlock_01ParallelEmbedding_01LinearEmbedding_weight"
-   "01SeparateParallelBlock_01SeparateParallelBlock_01ParallelEmbedding_02LinearEmbedding_weight"
-   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_01keyProjection_weight"
-   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_01keyProjection_bias"
-   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_02queryProjection_weight"
-   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_02queryProjection_bias"
-   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_03valueProjection_weight"
-   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_03valueProjection_bias"
-   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_04resultProjection_weight"
-   "02SequentialBlock_01TransformerDecoderBlock_01selfAttention_04resultProjection_bias"
-   "02SequentialBlock_01TransformerDecoderBlock_02attentionNorm_gamma"
-   "02SequentialBlock_01TransformerDecoderBlock_02attentionNorm_beta"
-   "02SequentialBlock_01TransformerDecoderBlock_03outputBlock_01Linear_weight"
-   "02SequentialBlock_01TransformerDecoderBlock_03outputBlock_01Linear_bias"
-   "02SequentialBlock_01TransformerDecoderBlock_03outputBlock_03Linear_weight"
-   "02SequentialBlock_01TransformerDecoderBlock_03outputBlock_03Linear_bias"
-   "02SequentialBlock_01TransformerDecoderBlock_04outputNorm_gamma"
-   "02SequentialBlock_01TransformerDecoderBlock_04outputNorm_beta"
-   "03SeparateParallelBlock_01UnembedBlock_01ParallelEmbedding_01LinearEmbedding_weight"
-   "03SeparateParallelBlock_01UnembedBlock_01ParallelEmbedding_02LinearEmbedding_weight"])
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (println manager)
+    (time (forward model input))
+    (println manager)
+    #_(time (add-gaussian-model! model 0 1 float-array))
+    #_(type model)
+    #_(get-pcount model)
+    #_(println (into [] (forward core-layer (ndlist manager input-output (causal-mask [1 7 7] 1)
+                                                    #_(into [] (repeat 7 (into [] (repeat 7 1))))))))
+    #_(println (into [] (forward input-layer (ndlist manager
+                                                     [[[-1 -2 -3 -4] [-5 -6 -7 -8] [-1 -3 -5 -7] [1 1 1 1]]]
+                                                     [[[0 1] [1 0] [1 1]]]
+                                                     [[[1 2 3] [2 3 4] [3 4 5] [4 5 6] [5 6 7] [6 7 8] [1 3 4]]]
+                                                     (causal-mask [1 7 7] 1))))))))
 
 
 
-
-
-(java.lang.reflect.Array/getLength (float-array [1 2]))
-#_(defn infer [individual states actions positions]
-  (let [{embedding :embedding
-         core :core
-         unembedding :unembedding
-         positional-encoding :positional-encoding} individual
-        embedded (forward embedding (NDList. states actions))
-        encoded (encode-positions positions positional-encoding)]
-    ()))
-
-(with-open [manager (nd/new-base-manager)]
-  (let [model1 (SeparateParallelBlock. (utils/make-function add-NDArrays))
-        model2 (SeparateParallelBlock. (utils/make-function add-NDArrays))]
-    (.setNumInputs model1 (map int [1 1]))
-    (.addAll model1 [(linear 2) (linear 2)])
-    (.setNumInputs model2 (map int [2 1]))
-    (.addAll model2 [model1 (linear 2)])
-    (initialize-model model2 manager "float" (into-array Shape [(nd/new-shape [1 2])
-                                                               (nd/new-shape [1 3])
-                                                                (nd/new-shape [1 1])]))
-    (println (get-parameters model2))
-    (println (.singletonOrThrow (forward model2 (ndlist manager [[1 0]] [[1 0 0]] [[1]]))))))
-
-(with-open [manager (nd/new-base-manager)]
-  (let [n (-> (LayerNorm/builder)
-              (.axis (int-array [2]))
-              (.build))
-        b (-> (BatchNorm/builder)
-              (.optAxis 2)
-              (.build))]
-    (initialize-model n manager "float" (into-array Shape [(nd/shape [1 2 3])]))
-    (println (into [] (forward n (ndlist manager [[[1 2 3] [3 4 5]]]))))
-    (initialize-model b manager "float" (into-array Shape [(nd/shape [1 2 3])]))
-    (println (into [] (forward b (ndlist manager [[[1 2 3] [3 4 5]]]))))))
 
 

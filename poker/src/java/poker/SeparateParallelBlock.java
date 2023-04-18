@@ -176,6 +176,11 @@ public class SeparateParallelBlock extends AbstractBlock {
             NDList inputs,
             boolean training,
             PairList<String, Object> params) {
+                // System.out.println("SeparateParallel");
+                // for (int i=0;i<inputs.size();i++){
+                //     System.out.println(inputs.get(i));
+                // }
+                // System.out.println("EndSeparateParallel");
         List<NDList> outputs = new ArrayList<NDList>();
         int j=0;
         for (int i = 0;i<children.size();i++){

@@ -12,6 +12,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Math and Auxiliary ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
+(defmacro set-seed [seed]
+  `(def random-seed ~seed)
+  `(defn rand
+    ([] (.nextDouble r))
+    ([n] (.nextInt r n))))
+
+(defmacro make-fn
+  "Turns a macro into a function"
+  [m]
+  `(fn [& args#]
+     (eval
+      (cons '~m args#))))
 
 (defmacro print-verbose
   "When verbosity is more than 0, merges and prints the first verbosity maps in maps without
@@ -104,6 +116,17 @@
 
 #_(instance? java.util.function.Function
              (make-function inc))
+
+(defn make-closeable
+  "Make the given item implement java.lang.AutoCloseable\\
+   Supply an item and a function to be called to close it\\
+   item, f -> AutoCloseable"
+  [item f]
+  (reify java.lang.AutoCloseable
+    (close [_] (f item))))
+
+#_(instance? java.lang.AutoCloseable
+             (make-closeable 1 identity))
 
 (defn choose
   "Returns number of ways to choose k objects from n distinct objects
@@ -258,12 +281,28 @@
         s (reduce + e)]
     (map #(/ % s) e)))
 
+(defn L1-normalize
+  "Normalizes by the L1 sum"
+  [data]
+  (let [s (reduce + data)]
+    (map #(pd % s) data)))
+
 (defn log-softmax
   "Log-Softmax function\\
    [number ...] -softmax> [number(0, 1) ...] -log> [number(-∞, 0) ...]"
   [args]
   (map #(Math/log %) (softmax args)))
 
+
+(defn log-scale
+  "Like range but with a logarithmic scale\\
+   -> vector"
+  [x-min x-max & {:keys [pow num-buckets]}]
+  (assert (or pow num-buckets) "Must specify at least one optional argument")
+  (assert (every? (partial < 0) [x-min x-max]) "Arguments must be positive")
+  (if pow
+    (mapv #(Math/exp %) (range (Math/log x-min) (Math/log x-max) (Math/log pow)))
+    (mapv #(* x-min (Math/pow (/ x-max x-min) (/ % num-buckets))) (range num-buckets))))
 
 (defn random-weighted 
   "Randomly chooses an element of coll with probabilities weighted by (f element)"
@@ -279,6 +318,61 @@
         :else (recur (rest p)
                (rest coll)
                (- c (first p)))))))
+
+(defn nonuniform-mutation
+  "A nonuniform mutation from Michalewicz 1992 Genetic Algorithms + Data Structures = Evolution Programs\\
+   c ∈ [c-min, c-max]: the parameter to be mutated\\
+   b: User defined parameter quantifying the dependency of mutation on generation\\
+   g <= g-max: generation\\
+   y = (c-max - c) or (c - c-min)\\
+   c' = (c or 0) + y (1 - (rand)^[(1 - g/g-max)^b])\\
+   -> mutated c"
+  [c c-min c-max b g g-max]
+  (let [gamma (rand-int 2)
+        f ([+ -] gamma)
+        y (if (zero? gamma) (- c-max c) (- c c-min))]
+    (f c
+       (* y
+          (- 1
+             (Math/pow (rand)
+                       (Math/pow (- 1
+                                    (/ g g-max))
+                                 b)))))))
+
+(defn power-mutation
+  "Mutation according to a power distribution\\
+   x ∈ [x-min,x-max]: the parameter to be mutated\\
+   p: the strength of the mutation\\
+   x' = x - p(x - x-min)^(p-1) or x + p(x-max - x)^(p-1) depending on whether (x - x-min)/(x-max - x-min) < (rand)\\
+   -> mutated x"
+  [p x x-min x-max]
+  (let [power #(* p (Math/pow % (dec p)))
+        down (- x x-min)
+        t (/ down (- x-max x-min))]
+    (if (< t (rand))
+      (- x (power down))
+      (+ x (power (- x-max x))))))
+
+(defn laplace-random
+  "Laplace distributed random variable\\
+   b: smaller b means closer to 0\\
+   -> number"
+  [a b]
+  (let [[u1 u2] (repeatedly 2 rand)]
+    (if (<= u1 0.5)
+      (- a (* b (Math/log u2)))
+      (+ a (* b (Math/log u2))))))
+
+(defn lapplace-crossover
+  "Uniform crossover using a laplace distribution\\
+   a, b: parameters for laplace distribution\\
+   x1, x2: parents\\
+   -> [y1 y2]"
+  [a b x1 x2]
+  (let [diff (* (laplace-random a b)
+                (abs (- x1 x2)))]
+    [(+ x1 diff)
+   (+ x2 diff)]))
 
 
 (defn protected-prob-addn
@@ -307,6 +401,15 @@
       true
       false)))
 
+(defn in-range 
+  "Is x in the range [x-min x-max]?\\
+   min-exclusive: x ≠ x-min\\
+   max-exclusive: x ≠ x-max\\
+   -> boolean"
+  [x x-min x-max & {:keys [min-exclusive? max-exclusive?]}]
+  (and ((if min-exclusive? > >=) x x-min) 
+       ((if max-exclusive? < <=) x x-max)))
+
 (defn clamp
   "Clamps a number to a range\\
    range: [min max] the outputted value must be in this range\\
@@ -319,20 +422,66 @@
           :else num)))
 
 (defn rand-normal
-  "Marsaglia polar method for normal random variable\\
-   -> float"
-  [m std]
+  "Marsaglia polar method for a pair of independent normal random variables\\
+   If pair? is false, throws away the second generated number.\\
+   -> [float1 float2]"
+  [m std & {:keys [pair?]}]
   (loop [u (-> (rand) (* 2) (- 1))
          v (-> (rand) (* 2) (- 1))]
-    (let [s (+ (square u) (square v))]
+    (let [s (+ (square u) (square v))
+          s1 (Math/sqrt
+              (/
+               (* (- 2) (Math/log s))
+               s))]
       (if (and (< s 1) (> s 0))
-        (+ m
-           (* std u
-              (Math/sqrt
-               (/
-                (* (- 2) (Math/log s))
-                s))))
+        (if pair?
+          [(+ m (* std u s1))
+           (+ m (* std v s1))]
+          (+ m (* std u s1)))
         (recur (rand) (rand))))))
+
+(defn rand-normal-length
+  "Returns a vector of normally distributed numbers with a given length\\
+   about 3x slower than the primitive method\\
+   -> [float ...]"
+  [m std length]
+  (into [] (concat (apply concat
+                          (repeatedly (/ length 2)
+                                      #(rand-normal m std :pair? true)))
+                   (when (odd? length) [(rand-normal m std)]))))
+
+(defn rand-normal-primitive
+  "Returns a float array of given length, composed of normally distributed random
+   entries\\
+   -> [F"
+  [m std length]
+  (let [arr (float-array length)]
+    (loop [i 0]
+      (if (>= i length)
+        arr
+        (do (loop [u (-> (rand) (* 2) (- 1))
+                   v (-> (rand) (* 2) (- 1))]
+              (let [s (+ (square u) (square v))
+                    s1 (Math/sqrt (/ (* (- 2) (Math/log s)) s))]
+                (if (and (< s 1) (> s 0))
+                  (do (aset-float arr i (+ m (* std u s1)))
+                      (when (< i (dec length))
+                        (aset-float arr (inc i) (+ m (* std v s1)))))
+                  (recur (rand) (rand)))))
+            (recur (+ 2 i)))))))
+
+(defn rand-primitive
+  "Creates a primitive array of random numbers from 0 to 1\\
+   -> [F"
+  [length]
+  (let [arr (float-array length)]
+    (loop [i 0]
+      (if (= i length)
+        arr
+        (do (aset-float arr i (rand))
+            (recur (inc i)))))))
+
+
 
 (defn rand-log 
   "Lograndom number between min and max"
@@ -342,6 +491,28 @@
     (let [d (Math/log (/ max min))]
       (* min (Math/exp (rand d))))))
 
+(defn log-normal
+  "lognormal random variable"
+  [m s t]
+  (->>
+   (rand-normal m s)
+   (* t)
+   (Math/exp)))
+
+(defn rand-cauchy
+  "Cauchy-distributed random variable. Rejects denominators smaller than 10^-10"
+  [a b]
+  (loop [u (rand-normal a b) v (rand-normal a b)]
+    (if (< (abs v) (Math/pow 10 (- 10)))
+      (recur (rand-normal a b) (rand-normal a b))
+      (/ u v))))
+
+(defn geom-mean
+  "Takes the geometric mean of a dataset"
+  [data]
+  (Math/pow
+   (reduce * data)
+   (/ 1 (count data))))
 
 (defn in?
   "Is e in the collection coll?\\
@@ -425,7 +596,22 @@
   (let [samples (read-string (str "[" (slurp txt) "]"))]
     (spit txt (with-out-str (clojure.pprint/pprint (into [] (mapcat identity samples)))))))
 
+
+(defn closest-index
+  "Returns the index of the element in buckets closest to amount\\
+   -> integer"
+  [amount buckets]
+  (cond
+    (empty? buckets) nil
+    (infinite? amount) (apply (if (neg? amount) min max)
+                              (range (count buckets)))
+    :else (apply min-key #(abs (- amount (buckets %))) (range (count buckets)))))
+
+#_(closest-index 1.49 [-1 0 1 2])
+
 (defn shape
+  "Returns the shape of a nested vector\\
+   -> vector"
   [arr]
   (loop [s []
          arr arr]
@@ -436,6 +622,8 @@
          (conj s (count arr))
          (first arr)))
       s)))
+
+#_(shape [[[1 1 1] [1 1 1]]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;     Constants     ;;
@@ -950,7 +1138,7 @@
    Given a collection of players, returns them.\\
    -> players"
   [players]
-  (into [] (map-indexed #(if (and (map? %2) (:money %2) (:id %2))
+  (into [] (map-indexed #(if (and (:money %2) (:id %2))
                            %2
                            (init-player %2 (keyword (str "p" %1))))
                         players)))
@@ -1704,26 +1892,34 @@
 
 (defn legal-actions
   "The possible actions and their conditions are as follows:\\
-   Fold - always possible, but not allowed when check is possible\\
+   Fold - always possible, except when already all-in.
+   If suppress-fold? is true, fold is not allowed when check is possible\\
    Check - only possible when no one has betted\\
-   Call - Only possible when at least one person has betted\\
-   Raise - Must raise by at least the previous bet or amount by which bet was raised\\
-   Bet - Only possible when no one has betted. Must be at least 1bb\\
+   Call - only possible when at least one person has betted\\
+   Raise - must raise by at least the previous bet or amount by which bet was raised\\
+   If suppress-raise? is true, then does not allow raising wars to proceed beyond 7 actions\\
+   Bet - only possible when no one has betted. Must be at least 1bb\\
    All-In - always possible\\
+   Returns a list of possible action types, as well as the minimum and maximum amount
+   of money that can be put into the pot while performing that action type\\
    -> [[type least most] ...]"
-  [game-state]
+  [game-state & {:keys [suppress-fold? suppress-raise?]
+                 :or {suppress-raise? true}}]
   (let [{min-bet :min-bet
          min-raise :min-raise
          bet-values :bet-values
          current-bet :current-bet
          current-player :current-player
+         action-history :action-history
          players :players} game-state
         p (players current-player)
         {money :money} p
+        raise? (and (not suppress-raise?) (< (count (last action-history)) 7))
         call-cost (- current-bet (bet-values current-player))]
     (#(cond
-        (in? % ["Check" 0.0 0.0]) %
         (in? % ["All-In" 0.0 0.0]) %
+        (not suppress-fold?) (concat % [["Fold" 0.0 0.0]])
+        (in? % ["Check" 0.0 0.0]) %
         :else (concat % [["Fold" 0.0 0.0]]))
      (concat [["All-In" money money]]
              (cond
@@ -1740,7 +1936,7 @@
                            [["Call" call-cost call-cost]]))
                        (let [amount (- (+ current-bet min-raise)
                                        (bet-values current-player))]
-                         (when (>= money amount)
+                         (when (and (>= money amount) raise?)
                            [["Raise" amount (dec money)]]))))))))
 
 #_(legal-actions (init-game [{:money 10.0} {:money 0.0}]))
@@ -1836,19 +2032,19 @@
       "Pre-Flop" (let [q (hand-quality (hands current-player))]
                    (if (and (in? ["Premium" "Strong" "Drawing"] q)
                             (< current-bet 10))
-                     (take 2 (prefer-action ["Check" "Call" "Fold"] actions))
-                     (take 2 (prefer-action ["Check" "Fold"] actions))))
+                     (vec (take 2 (prefer-action ["Check" "Call" "Fold"] actions)))
+                     (vec (take 2 (prefer-action ["Check" "Fold"] actions)))))
       "River" (if (= type "Made")
                 (let [a (prefer-action ["Bet" "Call" "All-In"] actions)]
                   (if (= "Bet" (first a))
                     ["Bet" (float (/ money 10.0))]
-                    (take 2 a)))
-                (take 2 (prefer-action ["Check" "Fold"] actions)))
+                    (vec (take 2 a))))
+                (vec (take 2 (prefer-action ["Check" "Fold"] actions))))
       (if (= type "Made")
         (let [a (prefer-action ["Bet" "Call" "All-In"] actions)]
           (if (= "Bet" (first a))
             ["Bet" (float (/ money 10.0))]
-            (take 2 a)))
+            (vec (take 2 a))))
         (if (in? (map first actions) "Check")
           ["Check" 0.0]
           (if (> (/ num-outs (if (= betting-round "Flop") 47 46))
@@ -1856,10 +2052,10 @@
             ;;this is checking to see if I have no money left. So I can't just prefer it.
             (if (in? actions ["All-In" 0.0 0.0])
               ["All-In" 0.0]
-              (take 2 (prefer-action ["Call" "Fold"] actions)))
+              (vec (take 2 (prefer-action ["Call" "Fold"] actions))))
             (if (in? actions ["All-In" 0.0 0.0])
               ["All-In" 0.0]
-              (take 2 (prefer-action ["Fold"] actions)))))))))
+              (vec (take 2 (prefer-action ["Fold"] actions))))))))))
 
 
 (defn -main
