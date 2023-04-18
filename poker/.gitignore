@@ -18,3 +18,5 @@ pom.xml.asc
 */Carson/
 */output-window/
 python.edn
+.lsp/.cache/
+.lsp/sqlite.*.db
