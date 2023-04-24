@@ -382,3 +382,56 @@
   (* 4 (.getFloat (.evaluate sm-loss
                              (nd/ndlist label)
                              (nd/ndlist pred)) (long-array []))))
+
+
+
+;;;        MPI          ;;;
+#_(req/require-python '[mpi4py :as mpi])
+#_(println (py/get-attr mpi/rc "finalize"))
+#_(println (py/get-attr mpi/rc "initialize"))
+#_(py/set-attr! mpi/rc "initialize" false)
+#_(py/set-attr! mpi/rc "finalize" false)
+#_(req/require-python '[mpi4py.MPI :as MPI])
+
+(defn test-mpi []
+  #_(MPI/Init)
+  #_(let [comm mpi4py.MPI/COMM_WORLD
+          rank (py/call-attr comm "Get_rank")]
+      "if rank == 0:
+    data = {'a': 7, 'b': 3.14}
+    comm.send(data, dest=1, tag=11)
+elif rank == 1:
+    data = comm.recv(source=0, tag=11)"
+      (cond (= 0 rank) (do (println "sending data " rank)
+                           (py/py. comm send (py/->py-dict {"a" 7 "b" 3.14}) :dest 1 :tag 11)
+                           (println "data sent"))
+            (= 1 rank) (do (println "receiving data " rank)
+                           (let [d (py/py. comm recv :source 0 :tag 11)]
+                             (println "data received " d)))))
+  #_(MPI/Finalize))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn test-gpu []
+  #_(println (into [] (.getDevices (ai.djl.engine.Engine/getEngine "PyTorch"))))
+  #_(println (.getGpuCount (Engine/getInstance)))
+  #_(println (ai.djl.pytorch.jni.JniUtils/getFeatures)))
+
+(def run-load "
+#! /bin/sh              
+cd ~/mxnet/build
+module load cuda11.2/toolkit
+module load cudnn8.1-cuda11.2
+module load nccl2-cuda11.2-gcc9
+cmake ..
+cmake --build .")
+
+"from mpi4py import MPI; print(MPI.COMM_WORLD.Get_rank())"
+
+(def sftp-command
+  "lcd /Users/andrewni/Evolutionary-Computation
+   put -r poker ERL")
+
+(def delete-files 
+  ;;"ls | grep -P "^slurm" | xargs -d "\n" r"
+  )
+         

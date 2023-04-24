@@ -2,8 +2,8 @@
   (:require [poker.ERL :as ERL]
             [clj-djl.ndarray :as nd]
             [clojure.pprint :as pprint]
-            #_[libpython-clj2.python :as py]
-            #_[libpython-clj2.require :as require]
+            [libpython-clj2.python :as py]
+            [libpython-clj2.require :as req]
             [poker.utils :as utils]
             [poker.concurrent :as concurrent]
             [poker.transformer :as transformer]
@@ -13,51 +13,6 @@
            ai.djl.engine.Engine
            java.lang.Thread
            java.lang.Runtime))
-
-(defn multiply-matrices
-  [manager]
-  (doseq [_ (range 400)]
-    (let [m (nd/new-base-manager)
-          arr1 (nd/ones m (nd/shape [200 200 200]))
-          arr2 (nd/ones m (nd/shape [200 200 200]))]
-      (.matMul arr1 arr2)
-      nil)))
-
-#_(with-open [m (nd/new-base-manager)]
-    (let [arr1 (nd/ones m (nd/shape [200 100 100]))
-          arr2 (nd/ones m (nd/shape [200 100 100]))]
-      (time (multiply-matrices m))))
-
-(defn repeat-n
-  [& args]
-  (doseq [x (repeat 600000000 0)]
-    (inc x))
-  nil)
-
-#_(poker.utils/benchmark 50 (multiply-matrices))
-
-
-
-#_(time
-   (let [a (doall (repeatedly 10 #(agent 0)))]
-     (mapv #(send-off % multiply-matrices) a)
-     (apply await a)
-     nil))
-
-
-
-#_(time (let [r (doall (repeatedly 10 #(future (multiply-matrices))))]
-          (mapv deref r)
-          nil))
-
-#_(time (let [r (doall (repeatedly 10 #(future (repeat-n))))]
-          (mapv deref r)
-          nil))
-#_(require/require-python 'math)
-#_(require/require-python '[mpi4py.MPI :as MPI])
-
-#_(println (-> (Runtime/getRuntime)
-               (.availableProcessors)))
 
 
 (defn update-individual
@@ -108,24 +63,6 @@
             pop
             (map deref (concat res1 res2)))))
 
-(defn djl-vs-native
-  []
-  #_(with-open [m (nd/new-base-manager)]
-      (let [ms (repeatedly 5 #(.newSubManager m))]
-        (time (let [r (doall (repeatedly 10 #(identity (multiply-matrices m))))]
-                (mapv identity r)
-                nil))))
-  (with-open [m (nd/new-base-manager)]
-    (let [ms (repeatedly 5 #(.newSubManager m))]
-      (time (let [r (doall (repeatedly 5 #(future (multiply-matrices m))))]
-              (mapv deref r)
-              nil))))
-  #_(time (let [r (doall (repeatedly 5 #(identity (repeat-n))))]
-            (mapv identity r)
-            nil))
-  #_(time (let [r (doall (repeatedly 5 #(future (repeat-n))))]
-            (mapv deref r)
-            nil)))
 
 (def parent-seeds [{:seeds [-1155869325], :id :p0}
                    {:seeds [431529176], :id :p1}
@@ -146,7 +83,6 @@
                                            :id (keyword (str "p" (.indexOf res s) "-" id))})
                                  (range 10))))))
 
-(children 5)
 
 #_(with-open [m (nd/new-base-manager)]
   (ERL/versus-other {:seeds [-1155869325], :id :p0} 
@@ -157,16 +93,10 @@
                   :symmetrical? false)
   (println (count (.getManagedArrays m))))
 
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (cond (not (= "NaiveEngine" (System/getenv "MXNET_ENGINE_TYPE"))) (println "Need to set mxnet engine to naive")
-        (not (= "1" (System/getenv "OMP_NUM_THREADS"))) (println "Need to set omp thread number to 1"))
-  #_(println (into [] (.getDevices (ai.djl.engine.Engine/getEngine "PyTorch"))))
-  #_(println (.getGpuCount (Engine/getInstance)))
-  #_(println (ai.djl.pytorch.jni.JniUtils/getFeatures))
-  #_(let [comm MPI/COMM_WORLD]
-      (println (py/call-attr comm "Get_rank")))
   #_(mapv #(do (println %)
                (println (ERL/versus (parent-seeds %)
                                     (parent-seeds (mod (inc %) (count parent-seeds)))
@@ -175,7 +105,6 @@
                                     :net-gain? true
                                     :as-list? true)))
           (range 10))
-  #_(deref (concurrent/msubmit (deref (concurrent/msubmit (+ 1 2)))))
   #_(benchmark [{:seeds [-2003437247 1540470339], :id :p5-0}]
                [(utils/init-player utils/wait-and-bet :wait-and-bet)]
                10
@@ -196,7 +125,7 @@
   #_(ERL/versus-other {:seeds [-2003437247 1540470339], :id :p5-0}
                       (utils/init-player utils/wait-and-bet :wait-and-bet) 10 10 :reverse? false :decks (repeatedly 10
                                                                                                                     #(shuffle utils/deck)))
-  (time (let [futures (doall (for [i (range 10)]
+  #_(time (let [futures (doall (for [i (range 10)]
                                  (concurrent/msubmit (benchmark (nth children i)
                                                                 [(utils/init-player utils/random-agent :random)
                                                                  (utils/init-player utils/rule-agent :rule)
@@ -237,22 +166,6 @@
 
 
 
-#_(for [i (range 10)]
-    (do (println i)
-        (println (ERL/versus (parent-seeds i)
-                             (parent-seeds (mod (inc i) (count parent-seeds)))
-                             10
-                             1000
-                             :net-gain? true
-                             :as-list? true))))
-(def run-load "
-#! /bin/sh              
-cd ~/mxnet/build
-module load cuda11.2/toolkit
-module load cudnn8.1-cuda11.2
-module load nccl2-cuda11.2-gcc9
-cmake ..
-cmake --build .")
 (def results
   [{:seeds [-1155869325],
     :id :p0,
@@ -326,23 +239,4 @@ cmake --build .")
 #_(map #(/ (:mean %) (/ (:stdev %) 100)) (map :wait-and-bet (map :error results)))
 
 
-;;ls | grep -P "^slurm" | xargs -d "\n" rm
-
-(def sftp-command
-  "lcd /Users/andrewni/Evolutionary-Computation
-   put -r poker ERL")
-
-
-
-
-#_(-> (java.lang.Runtime/getRuntime)
-      (.availableProcessors))
-
-#_(.getTotalStartedThreadCount
-   (java.lang.management.ManagementFactory/getThreadMXBean))
-
-#_(.getBlockedCount
-   (.getThreadInfo
-    (java.lang.management.ManagementFactory/getThreadMXBean)
-    383))
 
