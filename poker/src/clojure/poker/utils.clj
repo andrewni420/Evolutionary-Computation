@@ -792,6 +792,7 @@
   (let [{win :win
          draw :draw
          total :total} (rollout (into #{} hand))]
+    (assert (and win draw total) (str "Values must not be null. win/draw/total: " win draw total hand))
     (float (/ (+ win (/ draw 2)) total))))
 
 (defn facecard-from-value
@@ -1971,7 +1972,7 @@
                (every? zero? bet-values)
                (concat [["Check" 0.0 0.0]]
                        (when (>= money min-bet)
-                         [["Bet" min-bet (dec money)]]))
+                         [["Bet" min-bet money]]))
                :else
                (concat []
                        (if (pre-flop-bb? game-state)
@@ -1981,7 +1982,7 @@
                        (let [amount (- (+ current-bet min-raise)
                                        (bet-values current-player))]
                          (when (and (>= money amount) raise?)
-                           [["Raise" amount (dec money)]]))))))))
+                           [["Raise" amount money]]))))))))
 
 #_(legal-actions (init-game [{:money 10.0} {:money 0.0}]))
 
@@ -2013,6 +2014,8 @@
          hands :hands
          community :community} game-state
         actions (legal-actions game-state)]
+    (assert (= (count (hands current-player)) 2) 
+            (str "Player must have 2 cards " (hands current-player) game-state ))
     (if (= betting-round "River")
       ;;not quite right - doesn't use community cards
       (if (> (preflop-win-chance (hands current-player)) 0.5)

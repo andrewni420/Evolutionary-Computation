@@ -919,9 +919,10 @@
    -> float ∈ (1,200) or (1,400)"
   [encoding preprocessing sampler legal-actions buckets]
   (assert (every? identity buckets) "Cannot have a nil bucket")
+  (assert (every? #(every? identity %) legal-actions) 
+          (str "Cannot have nils in legal-actions " legal-actions))
   (let [[min-amt max-amt] (first (filter #(< (first %) (second %))
                                          (map rest legal-actions)))
-        _ (run! #(if % nil (println buckets)) buckets)
         money-mask (mapv #(if (utils/in-range % min-amt max-amt) 1 0) buckets)]
     (sampler (mapv vector buckets (preprocessing (drop 5 encoding) money-mask)))))
 

@@ -4,7 +4,11 @@
             [clojure.pprint :as pprint]
             #_[libpython-clj2.python :as py]
             #_[libpython-clj2.require :as require]
-            [poker.utils :as utils])
+            [poker.utils :as utils]
+            [poker.concurrent :as concurrent]
+            [poker.transformer :as transformer]
+            [poker.headsup :as headsup]
+            [poker.ndarray :as ndarray])
   (:import ai.djl.Device
            ai.djl.engine.Engine
            java.lang.Thread
@@ -93,12 +97,12 @@
         res1 (doall
               (for [ind1 pop
                     ind2 benchmark :when (not (= ind1 ind2))]
-                (future (vs ind1 ind2 false))))
+                (concurrent/msubmit (vs ind1 ind2 false))))
         res2 (when symmetrical?
                (doall
                 (for [ind1 pop
                       ind2 benchmark :when (not (= ind1 ind2))]
-                  (future (vs ind1 ind2 true)))))]
+                  (concurrent/msubmit (vs ind1 ind2 true)))))]
     (reduce (fn [p res]
               (map #(update-individual % res) p))
             pop
@@ -142,7 +146,9 @@
                                            :id (keyword (str "p" (.indexOf res s) "-" id))})
                                  (range 10))))))
 
-(with-open [m (nd/new-base-manager)]
+(children 5)
+
+#_(with-open [m (nd/new-base-manager)]
   (ERL/versus-other {:seeds [-1155869325], :id :p0} 
                   (utils/init-player utils/rule-agent :rule)
                   10
@@ -162,44 +168,62 @@
   #_(let [comm MPI/COMM_WORLD]
       (println (py/call-attr comm "Get_rank")))
   #_(mapv #(do (println %)
-             (println (ERL/versus (parent-seeds %)
-                                  (parent-seeds (mod (inc %) (count parent-seeds)))
-                                  10
-                                  1000
-                                  :net-gain? true
-                                  :as-list? true)))
-        (range 10))
-  (try (time (let [manager (nd/new-base-manager)
-                futures (doall (for [i (range 10)]
-                                 (future (benchmark (nth children i)
-                                                    [(utils/init-player utils/random-agent :random)
-                                                     (utils/init-player utils/rule-agent :rule)
-                                                     (utils/init-player utils/wait-and-bet :wait-and-bet)]
-                                                    10
-                                                    10
-                                                    :manager manager
-                                                    :symmetrical? false))))]
-            (println (with-out-str (run! pprint/pprint (mapcat deref futures))))
-               (println (count (.getManagedArrays manager))))
-            #_(benchmark
-               [{:seeds [-1155869325], :id :p0}
-                {:seeds [431529176], :id :p1}
-                {:seeds [1761283695], :id :p2}
-                {:seeds [1749940626], :id :p3}
-                {:seeds [892128508], :id :p4}
-                {:seeds [-2003437247], :id :p5}
-                {:seeds [1487394176], :id :p6}
-                {:seeds [1049991269], :id :p7}
-                {:seeds [-1224600590], :id :p8}
-                {:seeds [-1437495699], :id :p9}]
-               (list (utils/init-player utils/random-agent :random)
-                     (utils/init-player utils/rule-agent :rule)
-                     (utils/init-player utils/wait-and-bet :wait-and-bet))
+               (println (ERL/versus (parent-seeds %)
+                                    (parent-seeds (mod (inc %) (count parent-seeds)))
+                                    10
+                                    1000
+                                    :net-gain? true
+                                    :as-list? true)))
+          (range 10))
+  #_(deref (concurrent/msubmit (deref (concurrent/msubmit (+ 1 2)))))
+  #_(benchmark [{:seeds [-2003437247 1540470339], :id :p5-0}]
+               [(utils/init-player utils/wait-and-bet :wait-and-bet)]
                10
                10
-               :manager manager
-               :symmetrical? false))
-               (catch Exception e (println (str e (.getCause e) (.getCause (.getCause e))))))
+               :symmetrical? false)
+  #_(with-open [manager (nd/new-base-manager)]
+    (let [mask (ndarray/ndarray manager (ndarray/causal-mask [1 10 10] -2))
+          i1 (transformer/model-from-seeds {:seeds [-2003437247 1540470339], :id :p5-0} 10 manager mask)]
+      (with-open [_i1 (utils/make-closeable i1 transformer/close-individual)]
+        (:net-gain (headsup/iterate-games-reset
+                    [(transformer/as-player i1)
+                     (utils/init-player utils/wait-and-bet :wait-and-bet)]
+                    manager
+                    10
+                    :as-list? false
+                    :decks (repeatedly 10
+                                       #(shuffle utils/deck)))))))
+  #_(ERL/versus-other {:seeds [-2003437247 1540470339], :id :p5-0}
+                      (utils/init-player utils/wait-and-bet :wait-and-bet) 10 10 :reverse? false :decks (repeatedly 10
+                                                                                                                    #(shuffle utils/deck)))
+  (time (let [futures (doall (for [i (range 10)]
+                                 (concurrent/msubmit (benchmark (nth children i)
+                                                                [(utils/init-player utils/random-agent :random)
+                                                                 (utils/init-player utils/rule-agent :rule)
+                                                                 (utils/init-player utils/wait-and-bet :wait-and-bet)]
+                                                                10
+                                                                20
+                                                                :symmetrical? false))))]
+            (println (with-out-str (run! pprint/pprint (mapcat deref futures)))))
+          #_(benchmark
+             [{:seeds [-1155869325], :id :p0}
+              {:seeds [431529176], :id :p1}
+              {:seeds [1761283695], :id :p2}
+              {:seeds [1749940626], :id :p3}
+              {:seeds [892128508], :id :p4}
+              {:seeds [-2003437247], :id :p5}
+              {:seeds [1487394176], :id :p6}
+              {:seeds [1049991269], :id :p7}
+              {:seeds [-1224600590], :id :p8}
+              {:seeds [-1437495699], :id :p9}]
+             (list (utils/init-player utils/random-agent :random)
+                   (utils/init-player utils/rule-agent :rule)
+                   (utils/init-player utils/wait-and-bet :wait-and-bet))
+             10
+             10
+             :manager manager
+             :symmetrical? false))
+  #_(catch Exception e (println (str e (.getCause e) (.getCause (.getCause e)))))
   #_(ERL/ERL :pop-size 10
              :num-generations 2
              :num-games 500
@@ -210,6 +234,8 @@
 
 
 #_(-main)
+
+
 
 #_(for [i (range 10)]
     (do (println i)

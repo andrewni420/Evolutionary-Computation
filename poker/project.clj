@@ -15,7 +15,7 @@
                  [ai.djl.pytorch/pytorch-engine "0.22.1"]
                  [ai.djl.pytorch/pytorch-native-cpu "2.0.0"]
                  [ai.djl.pytorch/pytorch-jni "2.0.0-0.22.1"]
-                 [ai.djl.pytorch/pytorch-native-cu102 "1.12.1"]
+                 ;;[ai.djl.pytorch/pytorch-native-cu102 "1.12.1"]
                  [ai.djl.mxnet/mxnet-engine "0.22.1"]
                  [ai.djl.mxnet/mxnet-native-mkl "1.9.1"]
 
