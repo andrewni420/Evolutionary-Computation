@@ -23,16 +23,24 @@ import java.util.List;
 
 
 /** 
- * Takes an Embedding block and calls reverse() on its input instead of forward() 
+ * Takes a reversible, weight sharing Embedding block and calls reverse() 
+ * on its input instead of forward() 
+ * Used for weight sharing
+ * 
+ * Attention is All You Need:
+ *  https://arxiv.org/abs/1706.03762
+ * Using the Output Embedding to Improve Language Models 
+ *  https://arxiv.org/abs/1608.05859
  * **/
 
 public class UnembedBlock extends AbstractBlock{
+    /* UnembedBlock is a modified SequentialBlock that only
+     * has one child. Not a very good design choice.
+     * 
+     * Calls reverse() on the first child in forwardInternal()
+     */
     private static final byte VERSION = 3;
 
-    /**
-     * Creates an empty sequential block. Use {@code add} and {@code addAll} to add blocks to be
-     * executed in sequence.
-     */
     public UnembedBlock() {
         super(VERSION);
     }

@@ -1,6 +1,5 @@
 (ns poker.utils
   (:require [clojure.set :as set]
-            ;;[clojure.core.matrix :as matrix]
             [clojure.pprint :as pprint]))
 
 
@@ -12,11 +11,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Math and Auxiliary ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
-(defmacro set-seed [seed]
-  `(def random-seed ~seed)
-  `(defn rand
-    ([] (.nextDouble r))
-    ([n] (.nextInt r n))))
 
 (defmacro make-fn
   "Turns a macro into a function"
@@ -24,6 +18,7 @@
   `(fn [& args#]
      (eval
       (cons '~m args#))))
+
 
 (defmacro print-verbose
   "When verbosity is more than 0, merges and prints the first verbosity maps in maps without
@@ -193,6 +188,30 @@
   (pd
    (reduce + 0 data)
    (float (count data))))
+
+(defn quickselect
+  "Average O(n) selection of the ith element from the lowest in the data\\
+   -> element"
+  [data idx]
+  (loop [data data
+         idx idx]
+    (let [pivot (rand-nth data)
+          l (filter (partial > pivot) data)
+          eq (filter (partial = pivot) data)
+          g (filter (partial < pivot) data)]
+      (cond (> (count l) idx) (recur l idx)
+            (> (+ (count l) (count eq)) idx) (first eq)
+            :else (recur g
+                         (- idx (count l) (count eq)))))))
+
+(defn median
+  "Computes the median of the dataset"
+  [data]
+  (if (even? (count data))
+    (/ (+ (quickselect data (/ (count data) 2))
+          (quickselect data (dec (/ (count data) 2)))) 
+       2.0)
+    (quickselect data (/ (count data) 2))))
 
 (defn de-mean 
   "Shifts data so that the mean is 0\\
@@ -407,8 +426,12 @@
    max-exclusive: x ≠ x-max\\
    -> boolean"
   [x x-min x-max & {:keys [min-exclusive? max-exclusive?]}]
+  (assert x "X cannot be nil")
+  (assert x-min "X-min cannot be nil")
+  (assert x-max "X-max cannot be nil")
   (and ((if min-exclusive? > >=) x x-min) 
        ((if max-exclusive? < <=) x x-max)))
+
 
 (defn clamp
   "Clamps a number to a range\\
@@ -440,45 +463,63 @@
           (+ m (* std u s1)))
         (recur (rand) (rand))))))
 
-(defn rand-normal-length
-  "Returns a vector of normally distributed numbers with a given length\\
-   about 3x slower than the primitive method\\
-   -> [float ...]"
-  [m std length]
-  (into [] (concat (apply concat
-                          (repeatedly (/ length 2)
-                                      #(rand-normal m std :pair? true)))
-                   (when (odd? length) [(rand-normal m std)]))))
+(defn random 
+  "Returns a java.util.Random object\\
+   -> Random"
+  [seed]
+  (if seed
+    (java.util.Random. seed)
+    (java.util.Random.)))
 
-(defn rand-normal-primitive
+(defn rand-normal-length
   "Returns a float array of given length, composed of normally distributed random
    entries\\
-   -> [F"
-  [m std length]
-  (let [arr (float-array length)]
-    (loop [i 0]
+   -> [F or Vector"
+  [m std length & {:keys [seed vector?]}]
+  (let [r (random seed)]
+    (loop [i 0
+           arr (transient [])]
       (if (>= i length)
-        arr
-        (do (loop [u (-> (rand) (* 2) (- 1))
-                   v (-> (rand) (* 2) (- 1))]
-              (let [s (+ (square u) (square v))
-                    s1 (Math/sqrt (/ (* (- 2) (Math/log s)) s))]
-                (if (and (< s 1) (> s 0))
-                  (do (aset-float arr i (+ m (* std u s1)))
-                      (when (< i (dec length))
-                        (aset-float arr (inc i) (+ m (* std v s1)))))
-                  (recur (rand) (rand)))))
-            (recur (+ 2 i)))))))
+        ((if vector? float-array identity) (persistent! arr))
+        (recur (+ 2 i)
+               (conj! arr (+ m (* std (.nextGaussian r)))))))))
 
-(defn rand-primitive
+(defn make-vector
+  "Make a vector by repeatedly calling f length times\\
+   About 2x faster than repeatedly\\
+   -> vector"
+  [f length]
+  (loop [i 0
+         v (transient [])]
+    (if (= i length)
+      (persistent! v)
+      (recur (inc i)
+             (conj! v (f))))))
+
+(defn rand-length
   "Creates a primitive array of random numbers from 0 to 1\\
-   -> [F"
-  [length]
-  (let [arr (float-array length)]
-    (loop [i 0]
+   -> [F or Vector"
+  [length & {:keys [seed vector?]}]
+  (let [r (random seed)]
+    (loop [i 0
+           arr (transient [])]
       (if (= i length)
-        arr
-        (do (aset-float arr i (rand))
+        ((if vector? float-array identity) (persistent! arr))
+        (recur (inc i)
+               (conj! arr (.nextFloat r)))))))
+
+
+
+#_(defn transient-add
+    "slower than mapv +"
+    [arr1 arr2]
+    (let [arr (transient [])
+          c (min (count arr2) (count arr1))]
+      (loop [i 0]
+        (if (>= i c)
+          (persistent! arr)
+          (do
+            (conj! arr (+ (nth arr1 i) (nth arr2 i)))
             (recur (inc i)))))))
 
 
@@ -543,7 +584,9 @@
 
 (defn recursive-copy
   "Recursively copy over elements of a collection.\\
-   Used to convert from python objects to clojure objects."
+   Used to convert from python objects to clojure objects.\\
+   Supports hashmaps and collections\\
+   -> clojure object"
   [coll]
   (into (empty coll)
         (map #(cond
@@ -563,13 +606,14 @@
   "Lexicographical comparison of vectors. For vectors with the same initial values, longer ones are considered larger.\\
    vec1 > vec2 -> 1\\
    vec1 < vec2 -> -1\\
-   vec1 = vec2 -> 0"
-  [vec1 vec2]
-  (let [m (min (count vec1) (count vec2))]
+   vec1 = vec2 -> 0\\
+   Can only input vectors"
+  [^clojure.lang.IPersistentVector vec1 ^clojure.lang.IPersistentVector vec2]
+  (let [m (min (.count vec1) (.count vec2))]
     (loop [i 0]
       (if (>= i m)
-        (compare (count vec1) (count vec2))
-        (let [c (compare (nth vec1 i) (nth vec2 i))]
+        (compare (.count vec1) (.count vec2))
+        (let [c (compare (.nth vec1 i) (.nth vec2 i))]
           (if (= c 0)
             (recur (inc i))
             c))))))
@@ -1579,8 +1623,8 @@
                                     (<= (+ sh c2-size) 4)
                                     (not= v1 v2))]
                      [[(+ fh c1-size) v1] [(+ sh c2-size) v2]])
-        candidates (filter #(>= (lex-compare-vec (concat (map first %)
-                                                         (map second %))
+        candidates (filter #(>= (lex-compare-vec (into [] (concat (map first %)
+                                                         (map second %)))
                                                  [size1 size2 val1 val2])
                                 0)
                            candidates)]
@@ -1977,13 +2021,6 @@
                                actions)))
       (take 2 (prefer-action ["Check" "Call" "Fold"]
                              actions)))))
-
-[:betting-round 3 :integer_eq 
- :exec_if :holecard-winrate {:type :probability :literal 0.5} :probability_gte
-     :exec_if :all-in 'close 
-     :fold :total-weight :inc-log :check 'close 
- 'close
- :fold :total-weight :inc-log :call :total-weight :inc-log :check]
 
 (defn random-agent
   "Agent that chooses randomly between available action types"

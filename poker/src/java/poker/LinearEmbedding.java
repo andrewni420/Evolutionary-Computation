@@ -52,6 +52,12 @@ import java.util.Collections;
  *
  * <p>The Linear block should be constructed using {@link Linear.Builder}.
  */
+
+ /* A Linear Embedding Block is a modified Linear Block (without bias parameters)
+  * that implements the reverse() method in the Embedding interface
+  *
+  * reverse() multiplies the input by the transpose of the weight matrix
+  */
 public class LinearEmbedding extends AbstractBlock implements Embedding {
 
     private static final byte VERSION = 4;
@@ -61,6 +67,11 @@ public class LinearEmbedding extends AbstractBlock implements Embedding {
     private Shape inputShape;
     private Parameter weight;
 
+    /* Builds a linear embedding block from an instance of the Builder subclass
+     * Modified from Linear to not construct bias parameter
+     * 
+     * Example usage: LinearEmbedding.Builder().setUnits(10).build()
+     */
     protected LinearEmbedding(Builder builder) {
         super(VERSION);
         units = builder.units;
@@ -72,6 +83,10 @@ public class LinearEmbedding extends AbstractBlock implements Embedding {
                                 .build());
     }
 
+    /* Copied from Linear
+     * Uses ParameterStore to account for NDArrays living on different
+     * CPU or GPU devices
+     */
     /** {@inheritDoc} */
     @Override
     protected NDList forwardInternal(
@@ -85,6 +100,11 @@ public class LinearEmbedding extends AbstractBlock implements Embedding {
         return linear(input, weightArr);
     }
 
+    /* Implementation of Embedding interface
+     * Same as forward, but multiplies by the transpose of the weight matrix
+     * Attaches transpose to the input's NDManager to ensure that the transpose
+     * is closed when inference is finished, preventing memory leaks
+     */
     /** {@inheritDoc} */
     @Override
     public NDList reverse(

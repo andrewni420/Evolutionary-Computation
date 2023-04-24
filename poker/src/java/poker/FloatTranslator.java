@@ -6,8 +6,15 @@ import ai.djl.ndarray.types.Shape;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.Number;
+
 /* A translator to convert between Lists (IPersistentVectors) of float arrays and NDLists
  * for neural net inference
+ * 
+ * Translator converts a list of float arrays to an NDList of NDArrays with shapes
+ * given by inputShapes. 
+ * The model then runs inference on the NDList of inputs
+ * The translator then converts the first NDArray in the output NDList
+ * to a float array and returns it in a singleton list (not a very good design choice)
 */
 
 public class FloatTranslator implements Translator<List<float[]>, List<float[]>> {
@@ -17,6 +24,16 @@ public class FloatTranslator implements Translator<List<float[]>, List<float[]>>
         this.inputShapes = shapes;
     }   
 
+    /* Convert a list of float inputs into an NDList of NDArrays
+     *
+     * Example usage:
+     * input = List<>([1 2 3 4 5 6], [1 2 3], [1])
+     * inputShapes = [Shape(2,3), Shape(3), Shape(1,1,1)]
+     * ->
+     * NDList( NDArray [[1 2 3] [4 5 6]],
+     *         NDArray [1 2 3],
+     *         NDArray [[[1]]])
+     */
     @Override
     public NDList processInput(TranslatorContext ctx, List<float[]> input){
         NDManager manager = ctx.getNDManager();
@@ -27,6 +44,16 @@ public class FloatTranslator implements Translator<List<float[]>, List<float[]>>
         return inputs;
     }
 
+    /* Converts an NDList output into a singleton list containing the first
+     * NDArray in the output as a float array
+     * 
+     * Example usage:
+     * NDList( NDArray [[1 2 3] [4 5 6]],
+     *         NDArray [1 2 3],
+     *         NDArray [[[1]]])
+     * ->
+     * List<float[]>([1 2 3 4 5 6])
+     */
     @Override 
     public List<float[]> processOutput(TranslatorContext ctx, NDList list){
         List<float[]> output = new ArrayList<float[]>();

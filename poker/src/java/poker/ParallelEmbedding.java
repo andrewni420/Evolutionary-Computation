@@ -29,6 +29,12 @@ public class ParallelEmbedding extends AbstractBlock implements Embedding{
      * inputShapes - the shapes for each of the embeddings
      * inputs - the inputs to each of the embeddings
      * The input to the core block is the outputs of the embedding blocks summed along the splitting axis
+     * 
+     * How shapes of inputs change through this block:
+     * B = batch size
+     * F = Σ Fi = "From" sequence length of the ith embedder, e.g. number of "state" tokens
+     * Di = Dictionary size of tokens in the ith embedder, e.g. length of one-hot encoded "action" token
+     * E = Embedding size = d_model in Attention is All You Need
      * Forward:
      * (B, F1, D1), (B, F2, D2) ... -embed> 
      * (B, F1, E), (B, F2, E) ...   -interleave> 
@@ -39,7 +45,7 @@ public class ParallelEmbedding extends AbstractBlock implements Embedding{
      * (B, F1, E), (B, F2, E) ...   -unembed>
      * (B, F1, D1), (B, F2, D2) ...
      * 
-     * For multiple embeddings of one vector:
+     * For multiple embeddings of one vector (i.e. axis = -1):
      * Forward:
      * (B, F, D1), (B, F, D2) ... -embed> 
      * (B, F, E1), (B, F, E2) ... -interleave> 

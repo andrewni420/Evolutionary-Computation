@@ -57,14 +57,14 @@
   (let [players (utils/process-players players)
         player-ids (if player-ids player-ids (mapv :id players))
         deal (utils/deal-hands 2 deck)]
+    ;;Printing functionality to help explain how code works
     (utils/print-verbose verbosity
                          {:fn "init-game"}
                          {:players players
                           :deal deal}
-                         {:final-state (init-game :players players
-                                                  :deck deck
-                                                  :verbosity 0)}
+                         {}
                          {:initial-state {}})
+    ;;Initial gamet state
     {:hands (vec (:hands deal))
      :community (vec (:community deal))
      :visible []
@@ -92,6 +92,8 @@
    -> game-history"
   [manager player-ids]
   {:actions (.create manager (nd/shape [0 onehot/action-length]))
+   ;;Each player has their own state encoding, since the information available
+   ;;to each player is different
    :state (zipmap player-ids
                   (repeatedly (count player-ids) #(.create manager (nd/shape [0 onehot/state-length]))))
    :position (.create manager (nd/shape [0 onehot/position-length]))})
@@ -108,12 +110,24 @@
    by appending these encodings onto the appropriate tensors.\\
    -> game-encoding"
   [game-encoding manager & {:keys [state position actions]}]
-  (let [[state position actions] (map #(cond (map? %) (into {} (map (fn [[k v]]
-                                                                      [k (ndarray/ndarray manager [v])])
-                                                                    %))
-                                             % (ndarray/ndarray manager [%])
-                                             :else %)
-                                      [state position actions])
+  (let [;;If some of state, position, and actions are provided, turn them into NDArrays
+        ;;If a map is provided for state, turn it into a map of id to NDArray
+        state (if state (into {} (map (fn [[k v]]
+                                        [k (ndarray/ndarray manager [v])])
+                                      state)) state)
+        engine (ai.djl.engine.Engine/getDefaultEngineName)
+        position (if position (ndarray/ndarray manager
+                                               (if (= "PyTorch" engine)
+                                                 int-array
+                                                 float-array)
+                                               [position]) position)
+        actions (if actions (ndarray/ndarray manager [actions]) actions)
+        #_[state position actions] #_(map #(cond (map? %) (into {} (map (fn [[k v]]
+                                                                          [k (ndarray/ndarray manager [v])])
+                                                                        %))
+                                                 % (ndarray/ndarray manager [%])
+                                                 :else %)
+                                          [state position actions])
         add-encoding #(.concat %1 %2)
         state-update #(assoc % :state (merge-with add-encoding (:state %) state))
         position-update #(update % :position add-encoding position)
@@ -122,6 +136,7 @@
                                 (if position position-update identity)
                                 (if actions actions-update identity))
                           game-encoding)]
+    ;;Close previous, now unused NDArrays to prevent memory loss
     (when state
       (run! #(.close (second %)) state)
       (run! #(.close (second %)) (:state game-encoding)))
@@ -131,6 +146,7 @@
     (when actions
       (.close actions)
       (.close (:actions game-encoding)))
+    ;;Return updated encoding
     updated-encoding))
 
 (defn make-move
@@ -141,12 +157,15 @@
   (let [{current-player :current-player
          players :players} game-state
         player (players current-player)]
+    ;;Printing functionality to help explain how code works
     (utils/print-verbose verbosity
                          {:fn "make-move"}
                          {:current-player current-player
                           :player-id (:id player)}
                          {:final-state (make-move game-state game-encoding :verbosity 0)}
                          {:initial-state game-state})
+    ;;The :agent of the player is a function that takes in a game-state
+    ;;and a game-encoding and returns a move
     ((:agent player) game-state
                      game-encoding)))
 
@@ -163,11 +182,13 @@
          active-players :active-players
          pot :pot} game-state
         i (first active-players)]
+    ;;Printing functionality to help explain how code works
     (utils/print-verbose verbosity
                          {:fn "check-active-players"}
                          {:num-active (count active-players)}
                          {:final-state (check-active-players game-state :verbosity 0)}
                          {:initial-state game-state})
+    ;;If there's only one player that hasn't folded, game over, and that player gets the pot
     (if (= 1 (count active-players))
       (let [player (utils/add-money (players i) pot)]
         (assoc game-state
@@ -184,11 +205,13 @@
                  :or {verbosity 0}}]
   (let [{current-player :current-player
          n :num-players} game-state]
+    ;;Printing functionality to help explain how code works
     (utils/print-verbose verbosity
                          {:fn "next-player"}
                          {:next-player  (mod (inc current-player) n)}
                          {:final-state (next-player game-state :verbosity 0)}
                          {:initial-state game-state})
+    ;;Increment the :current-player field to the next player in line
     (assoc game-state
            :current-player (mod (inc current-player) n))))
 
@@ -213,17 +236,22 @@
          min-raise :min-raise
          manager :manager} game-state
         [type amount] action
+        ;;Subtract the amount betted from the player that betted
         players (update players current-player (fn [p] (update p :money #(- % amount))))
+        ;;Pass action to the next player,
+        ;;add the submitted action to the action history 
         new-state (assoc (next-player game-state :verbosity verbosity)
                          :action-history (conj (into [] (drop-last action-history))
                                                (conj (last action-history)
                                                      [(:id (players current-player))
                                                       action]))
                          :players players)
+        ;;Update game encoding with the submitted action
         new-encoding (update-game-encoding game-encoding
                                           manager
                                           :actions (onehot/encode-action action game-state)
                                           :position (onehot/encode-position game-state))]
+    ;;Printing functionality to help explain how code works
     (utils/print-verbose verbosity
                          {:fn "parse-action"}
                          {:action action
@@ -234,19 +262,17 @@
                          {:final-state nil #_(parse-action action game-state game-encoding :verbosity 0)}
                          {:initial-state game-state})
     (condp utils/in? type
+      ;;If the action was a fold, remove the player from the active players and 
+      ;;check to see if there's only one active player left
       ["Fold"] [(check-active-players (assoc new-state
                                              :active-players (remove (partial = current-player)
                                                                      active-players))
                                       :verbosity verbosity)
                 new-encoding]
       ["Check"] [new-state new-encoding]
-      ["Raise"] [(assoc new-state
-                        :bet-values (update bet-values current-player (partial + amount))
-                        :pot (+ pot amount)
-                        :current-bet (+ amount (bet-values current-player))
-                        :min-raise (- (+ amount (bet-values current-player)) current-bet))
-                 new-encoding]
-      ["Bet" "All-In" "Call"] [(assoc new-state
+      ;;Otherwise, we need to update the pot, the amount betted by each player,
+      ;;(maybe) the minimum raise, and (maybe) the amount players need to bet to stay in the game
+      ["Raise" "Bet" "All-In" "Call"] [(assoc new-state
                                       :bet-values (update bet-values current-player (partial + amount))
                                       :pot (+ pot amount)
                                       :current-bet (max current-bet (+ amount (bet-values current-player)))
@@ -689,15 +715,21 @@
 (defn update-net-gain
   "Updates the net gain based on the amount of money the player has"
   [net-gain players & {:keys [as-list?] :or {as-list? false}}]
-  (reduce (fn [res incr]
-            (update res
-                    (:id incr)
+  (reduce (fn [gain p]
+            (update gain
+                    (:id p)
                     #((if as-list?
                         conj
                         +) %
-                           (- (:money incr) utils/initial-stack))))
+                           (- (:money p) utils/initial-stack))))
           net-gain
           players))
+
+
+#_(update-net-gain {:p1 [], :p2 []} 
+                 [{:agent 1, :money 200.0, :id :p1} 
+                  {:agent 1, :money 200.0, :id :p2}]
+                 :as-list? true)
 
 (defn iterate-games
   "Plays num-games hands of poker with players switching from sb to bb every hand.\\
@@ -756,10 +788,9 @@
    the total gain over all games\\
    Do not print out the last item (game-history) - it can get very big\\
    -> {players, net-gain = [gain ...] or {:mean :stdev}, game-encoding, game-history}"
-  [players manager num-games & {:keys [as-list? decks game-history game-encoding verbosity]
+  [players manager num-games & {:keys [as-list? decks game-history game-encoding]
                                 :or {as-list? false
-                                     decks nil
-                                     verbosity 0}}]
+                                     decks nil}}]
   (loop [players (utils/process-players players)
          net-gain (zipmap (map :id players) (if as-list? [[] []] [0.0 0.0]))
          game-num 0
@@ -780,7 +811,7 @@
                                                     :game-num game-num 
                                                     :deck (first decks))]
         (recur (into [] (reverse players))
-               (update-net-gain net-gain [p1 p2])
+               (update-net-gain net-gain [p1 p2] :as-list? as-list?)
                (inc game-num)
                game-encoding
                game-history
@@ -788,29 +819,31 @@
 
 
 
-(with-open [m (nd/new-base-manager)]
-  (let [max-seq-length 25
-        ind1 (transformer/initialize-individual
-              :manager m
-              :nn-factory #(transformer/current-transformer m)
-              :mask (ndarray/ndarray m (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
-              :max-seq-length max-seq-length
-              :id :p1)
-        ind2 (transformer/initialize-individual
-              :manager m
-              :nn-factory #(transformer/current-transformer m)
-              :mask (ndarray/ndarray m (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
-              :max-seq-length max-seq-length
-              :id :p2)]
+#_(with-open [m (nd/new-base-manager)]
+  (let [max-seq-length 20
+        param-map transformer/initial-parameter-map
+        mask (ndarray/ndarray m (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
+        ind1 (transformer/model-from-seeds {:seeds [2074038742],
+                                            :id :p1}
+                                           max-seq-length
+                                           m
+                                           mask)
+        ind2 (transformer/model-from-seeds {:seeds [-888633566], 
+                                            :id :p2}
+                                           max-seq-length 
+                                           m 
+                                           mask)]
     (with-open [_i1 (utils/make-closeable ind1 transformer/close-individual)
                 _i2 (utils/make-closeable ind2 transformer/close-individual)]
       (let [{game-history :game-history
              game-encoding :game-encoding
              net-gain :net-gain}
-            (time (iterate-games-reset  [utils/random-agent #_(transformer/as-player ind1)
-                                         utils/random-agent #_(transformer/as-player ind2)]
+            (time (iterate-games-reset  [(transformer/as-player ind1)
+                                         (transformer/as-player ind2)]
                                         m
-                                        500))]
+                                        10
+                                        :as-list? true))]
+        (println net-gain)
         (println "actions-per-game:"
                  (float (/ (transduce (map #(/ (count (flatten (:action-history %))) 3.0)) + game-history)
                            (count game-history))))
@@ -821,8 +854,6 @@
 ;;random-agent: 2ms per action
 ;;transformer: 30ms per action
 ;;An order of magnitude difference
-
-(/ 1655.074154 1.982 500)
 
 (def time-per-action
   "Average time per action for a transformer model with different length
@@ -847,11 +878,6 @@
                       :num-heads 8
                       :d-pe [16 16 16 16]
                       :max-seq-length 512}})
-
-
-(/ (- 8093.64231 (* 1.45 200 27)) (* 1.45 200))
-   
-(/ (- 9231.759605 7374.770427) (* (- 1.695 1.35) 200))
 
 
 ;;27ms per action
@@ -929,7 +955,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;         Runtime       ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(with-open [m (nd/new-base-manager)
+#_(with-open [m (nd/new-base-manager)
             m1 (.newSubManager m)]
   (let [arr1 (ndarray/ndarray m [[[1 2 3] [1 2 3]]])
         arr2 (ndarray/ndarray m1 [[[3 4 5]]])]

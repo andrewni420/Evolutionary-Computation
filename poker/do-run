@@ -1,0 +1,24 @@
+#! /bin/sh
+#SBATCH --partition gpu-a100-q
+#SBATCH --gres=gpu:a100:1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=00:30:00
+#SBATCH --mem=3GB
+module load amh-clojure
+module load cuda10.2/toolkit
+export DJL_DEFAULT_ENGINE=MXNet
+export MXNET_ENGINE_TYPE=NaiveEngine
+export OMP_NUM_THREADS=1
+python -c 'import torch; print(torch.cuda.get_device_name(torch.cuda.current_device()))'
+srun ./run-file.clj
+
+#! /bin/sh
+#SBATCH --cpus-per-task=116
+#SBATCH --time=16:00:00
+#SBATCH --output=RandomVersusChildren-%j.out
+#SBATCH --error=RandomVersusChildren-%j-%t.err
+module load amh-clojure
+export DJL_DEFAULT_ENGINE=MXNet
+export MXNET_ENGINE_TYPE=NaiveEngine
+export OMP_NUM_THREADS=1
+srun ./run-file.clj

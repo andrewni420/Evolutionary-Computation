@@ -125,10 +125,16 @@
    buckets are in terms of bb\\
    -> vector"
   ([buckets pot stack]
+   (assert pot "Must have non-nil pot")
+   (assert stack "Must have non-nil stack")
+   (assert (= (count buckets) 3) "Must be  1 group of buckets for bb, pot, and stack")
    (into [] (concat (buckets 0)
                     (map (partial * pot) (buckets 1))
                     (map (partial * stack) (buckets 2)))))
   ([buckets game-state]
+   (assert (and (:pot game-state)
+                (:money ((:players game-state) (:current-player game-state))))
+           (str "Incomplete game-state " game-state))
    (buckets-to-money buckets (:pot game-state) (:money ((:players game-state) (:current-player game-state))))))
 
 #_(buckets-to-money [[1 2 3] [0.5 1] [0.05 0.2]] 10 200)
@@ -219,6 +225,7 @@
          visible-hands :visible-hands} game-state
         current-id (:id (players current-player))
         other-id (:id (players (- 1 current-player)))]
+    (assert (not (= current-id other-id)) "Players cannot have the same id")
     {current-id (into [] (concat (encode-cards visible)
                         ;;my hand
                                  (encode-cards (hands current-player))
