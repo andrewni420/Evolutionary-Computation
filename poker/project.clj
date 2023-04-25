@@ -31,7 +31,7 @@
   :java-source-paths ["src/java"]
   :target-path "target/%s"
   :jvm-opts ["-Dai.djl.pytorch.graph_optimizer=false" 
-             "-Dai.djl.pytorch.num_interop_threads=30"
+             "-Dai.djl.pytorch.num_interop_threads=116"
              "-Dai.djl.disable_close_resource_on_finalize=true"]
   :profiles {:precomp {:prep-tasks ^:replace ["beaver" "compile"]
                        :source-paths ["src/pre/clojure"]

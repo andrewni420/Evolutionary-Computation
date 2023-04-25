@@ -226,6 +226,8 @@
    -> [game-state game-encoding]"
   [action game-state game-encoding & {:keys [verbosity]
                                       :or {verbosity 0}}]
+  (assert (and (first action) (second action)) 
+          (str "Cannot have nil in action "action game-state))
   (let [{current-player :current-player
          active-players :active-players
          pot :pot

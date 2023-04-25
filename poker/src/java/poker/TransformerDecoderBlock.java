@@ -24,15 +24,21 @@ import ai.djl.training.ParameterStore;
 import ai.djl.util.PairList;
 import ai.djl.nn.transformer.*;
 import ai.djl.training.dataset.ArrayDataset;
+import ai.djl.nn.Block;
+import poker.SparseAttentionBlock;
 
 import java.util.Collections;
 import java.util.function.Function;
 
-/** Self-Attention based transformer decoder block. */
+/** Self-Attention based transformer decoder block. 
+ * Adapted from ai.djl.nn.transformer.TransformerEncoderBlock to propagate attention mask to output
+ * and support topK sparse softmaxed attention
+*/
+
 public class TransformerDecoderBlock extends AbstractBlock {
     private Object n = new ArrayDataset.Builder();
     /** The attention mechanism. */
-    private ScaledDotProductAttentionBlock selfAttentionBlock;
+    private Block selfAttentionBlock;
     /** Dropout before residual & layer normalization. */
     private Dropout selfAttentionDropout;
     /** Normalization of attention output and residual. */
@@ -58,8 +64,21 @@ public class TransformerDecoderBlock extends AbstractBlock {
             int headCount,
             int hiddenSize,
             float dropoutProbability,
+            boolean sparse,
+            int topK,
             Function<NDList, NDList> activationFunction) {
-        this.selfAttentionBlock =
+        if (sparse) {
+                this.selfAttentionBlock =
+                addChildBlock(
+                        "selfAttention",
+                        SparseAttentionBlock.builder()
+                                .setEmbeddingSize(embeddingSize)
+                                .setHeadCount(headCount)
+                                .optAttentionProbsDropoutProb(dropoutProbability)
+                                .optTopK(topK)
+                                .build());
+        } else {
+                this.selfAttentionBlock =
                 addChildBlock(
                         "selfAttention",
                         ScaledDotProductAttentionBlock.builder()
@@ -67,6 +86,8 @@ public class TransformerDecoderBlock extends AbstractBlock {
                                 .setHeadCount(headCount)
                                 .optAttentionProbsDropoutProb(dropoutProbability)
                                 .build());
+        }
+        
         this.selfAttentionDropout = Dropout.builder().optRate(dropoutProbability).build();
         this.attentionNorm = addChildBlock("attentionNorm", LayerNorm.builder().axis(new int[]{2}).build());
         this.pointWisefullyConnected =
@@ -79,6 +100,15 @@ public class TransformerDecoderBlock extends AbstractBlock {
         this.fullyConnectedDropout = Dropout.builder().optRate(dropoutProbability).build();
         this.outputNorm = addChildBlock("outputNorm", LayerNorm.builder().axis(new int[]{2}).build());
     }
+
+    public TransformerDecoderBlock(
+            int embeddingSize,
+            int headCount,
+            int hiddenSize,
+            float dropoutProbability,
+            Function<NDList, NDList> activationFunction) {
+                this(embeddingSize, headCount, hiddenSize, dropoutProbability, false, 3, activationFunction);
+            }
 
     /** {@inheritDoc} */
     @Override
@@ -106,7 +136,6 @@ public class TransformerDecoderBlock extends AbstractBlock {
         Shape shape = embedding.getShape();
         
         NDList attentionOutput = selfAttentionBlock.forward(ps, inputs, training);
-        //System.out.println(attentionOutput.head());
         // add dropout to attention Output
         NDList attentionOutputAfterDropout =
                 selfAttentionDropout.forward(ps, attentionOutput, training);

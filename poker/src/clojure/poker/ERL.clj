@@ -11,16 +11,19 @@
            ai.djl.ndarray.NDList))
 
 
+
+
 (defn versus
   "Returns the winning individual, the match results of the individuals, or the 
    individuals updated to contain the match results"
-  [ind1 ind2 max-seq-length num-games & {:keys [manager net-gain? update-error? as-list? decks]}]
+  [ind1 ind2 max-seq-length num-games & {:keys [manager net-gain? update-error? as-list? decks stdev]
+                                         :or {stdev 0.005}}]
   (with-open [manager (if manager
                         (.newSubManager manager)
                         (nd/new-base-manager))]
     (let [mask (ndarray/ndarray manager (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
-          i1 (transformer/model-from-seeds ind1 max-seq-length manager mask :stdev 0.005)
-          i2 (transformer/model-from-seeds ind2 max-seq-length manager mask :stdev 0.005)]
+          i1 (transformer/model-from-seeds ind1 max-seq-length manager mask :stdev stdev)
+          i2 (transformer/model-from-seeds ind2 max-seq-length manager mask :stdev stdev)]
       (with-open [_i1 (utils/make-closeable i1 transformer/close-individual)
                   _i2 (utils/make-closeable i2 transformer/close-individual)]
         (let [{net-gain :net-gain} (apply
@@ -53,12 +56,13 @@
   "Plays a transformer seed individual against another individual.\\
    Returns the winning individual, the match results of the individuals, or the 
    individuals updated to contain the match results"
-  [individual opponent max-seq-length num-games & {:keys [manager reverse? decks]}]
+  [individual opponent max-seq-length num-games & {:keys [manager reverse? decks stdev]
+                                                   :or {stdev 0.005}}]
   (with-open [manager (if manager
                         (.newSubManager manager)
                         (nd/new-base-manager))]
     (let [mask (ndarray/ndarray manager (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
-          i1 (transformer/model-from-seeds individual max-seq-length manager mask)]
+          i1 (transformer/model-from-seeds individual max-seq-length manager mask :stdev stdev)]
       (with-open [_i1 (utils/make-closeable i1 transformer/close-individual)]
         (:net-gain (apply
                     headsup/iterate-games-reset
@@ -101,8 +105,9 @@
    If symmetrical? is true, then initializes a set of shared decks to be played
    for each matchup. Then each matchup is played twice, once \"normal\" and once
    with players in reversed positions, to reduce variance as much as possible\\
-   -> updated population"
-  [pop benchmark max-seq-length num-games & {:keys [decks symmetrical? as-list?]}]
+   -> [updated population, updated benchmark]"
+  [pop benchmark max-seq-length num-games & {:keys [decks symmetrical? as-list? stdev]
+                                             :or {stdev 0.005}}]
   (let [decks (if symmetrical?
                 (or decks
                     (repeatedly num-games
@@ -111,7 +116,8 @@
         vs #(versus %1 %2 max-seq-length num-games 
                     :net-gain? true 
                     :decks decks
-                    :as-list? as-list?)
+                    :as-list? as-list?
+                    :stdev stdev)
         fut #(future (vs %1 %2))
         res1 (doall
               (for [ind1 pop
@@ -122,9 +128,10 @@
                 (for [ind1 pop
                       ind2 benchmark :when (not (= ind1 ind2))]
                   (fut ind2 ind1))))]
-    (reduce (fn [p res]
-              (map #(update-individual % res) p))
-            pop
+    (reduce (fn [[p b] res]
+              [(map #(update-individual % res) p)
+              (map #(update-individual % res) b)])
+            [pop benchmark]
             (map deref (concat res1 res2)))))
 
 
@@ -285,19 +292,18 @@
   (condp = method
     :exp (loop [i 0
                 selected #{}]
-           (if (>= i n) selected
+           (if (>= i n) 
+             selected
                (recur (inc i)
                       (set/union
                        selected
                        (loop [p (shuffle (mapcat identity
                                                  (take-last (int (Math/exp i))
                                                             hof)))]
-                         (println (count p))
                          (cond (empty? p) #{}
                                (selected (first p)) (recur (rest p))
                                :else #{(first p)}))))))
     :random (take n (shuffle (mapcat identity hof)))))
-
 
 #_(select-from-hof 
  [#{{:seeds [1] :id :p0}
@@ -315,22 +321,267 @@
  3)
 
 
-(def error-functions {:round-robin round-robin
-                      :benchmark benchmark})
+(defn merge-errors 
+  "Merge the errors of the individuals, adding together results from 
+   the same opponents"
+  [& individuals]
+  (assert (seq individuals) "Cannot merge zero individuals")
+  (assoc (first individuals) 
+         :error
+         (apply merge-with 
+                +
+                (map :error individuals))))
+
+
+(defn update-hof
+  "Update the hall of fame with the results of individuals serving as benchmarks
+   for the population to play against"
+  [hof individuals]
+  (reduce (fn [h ind]
+            (let [find-id (fn [coll]
+                            (first (filter #(= (:id ind) (:id %)) coll)))
+                  [idx i] (first (keep-indexed
+                                  #(if-let [i (find-id %2)]
+                                     [%1 i]
+                                     nil)
+                                  h))]
+              (if (and idx i)
+                (assoc h
+                       idx
+                       (-> (h idx)
+                           (disj i)
+                           (conj (merge-errors i ind))))
+                h)))
+          hof
+          individuals))
+
+#_(update-hof [] [{:seeds [-1666042088],
+                 :id :p4,
+                 :error
+                 {:p2 -60.95,
+                  :p3 -61.98817841970013,
+                  :p6 18.95}}])
+
+#_(clojure.pprint/pprint 
+(update-hof 
+ [#{{:seeds [-1666042088],
+     :id :p4,
+     :error
+     {:p2 -60.95,
+      :p3 -61.98817841970013,
+      :p6 18.95}}
+    {:seeds [-155068449],
+     :id :p5,
+     :error
+     {:p2 20.0,
+      :p4 42.966722041741015,
+      :p6 -59.45748548507691}}}
+  #{{:seeds [-155068449 1711817472],
+     :id :p5-2,
+     :error
+     {:p5-7 47.93042122905221,
+      :p5-8 -33.193248565138134,}}}]
+      [{:seeds [-1666042088],
+        :id :p4,
+        :error
+        {:p2 -100000
+         :p1023 0}}
+       {:seeds [-155068449 1711817472],
+        :id :p5-2,
+        :error
+        {:p5-7 -100000
+         :p1024 0}}]))
+
+(defn winrate 
+  "Computes the proportion of matches won by this individual\\
+   -> float"
+  [individual]
+  (/ (count (filter #(> (second %) 0) (:error individual))) 
+     (count (:error individual))))
+
+#_(winrate {:seeds [-155068449 1711817472],
+          :id :p5-2,
+          :error
+          {:p5-7 47.93042122905221,
+           :p6-0 19.649609374999997,
+           :p5-8 -33.193248565138134,
+           :p5 -4.095479935856879,
+           :p5-9 -0.7113689019172647,
+           :p4-1 21.4453125,
+           :p8-5 -98.5,
+           :p8-6 -19.55,
+           :p6-4 -0.05000000000000071,
+           :p4-3 -41.98699745027725,
+           :p6 -41.626356839400245}})
+
+(defn cull-hof
+  "Culls individuals with results that are very consistently poor.
+   Probability of getting culled is p(x)=alpha^(x-1) where alpha is a 
+   parameterizable value and x is (matches lost)/(total matches) for a specific individual  
+   This distribution ensures that individuals that win most of their matches 
+   are very unlikely to be culled (lim x→0 p(x) = 1/alpha) and individuals that 
+   lose most of their matches are very likely to be culled (lim x→1 p(x) = 1)\\
+   -> updated hof"
+  [hof & {:keys [alpha cutoff]
+          :or {cutoff 0.1}}]
+  (assert (or alpha cutoff) "Must choose at least one method")
+  (if cutoff
+    (mapv (fn [coll]
+            (into #{}
+                  (filter #(> (winrate %) cutoff)
+                          coll)))
+          hof)
+    (let [prob #(Math/pow alpha (dec (winrate %)))]
+      (mapv (fn [coll]
+              (into #{} (filter #(> (prob %) (rand))) coll))
+            hof))))
+
+#_(clojure.pprint/pprint
+ (cull-hof 
+ [#{{:seeds [-1666042088],
+     :id :p4,
+     :error
+     {:p2 -60.95,
+      :p3 -61.98817841970013,
+      :p5 -42.966722041741015,
+      :p8 -20.75,
+      :p9 -0.8999999999999999,
+      :p1 -0.44999999999999996,
+      :p0 0.44999999999999996,
+      :p7 40.1,
+      :p6 18.95}}
+    {:seeds [-155068449],
+     :id :p5,
+     :error
+     {:p2 20.0,
+      :p4 42.966722041741015,
+      :p3 17.46392114125775,
+      :p8 20.35,
+      :p9 19.95,
+      :p1 40.849999999999994,
+      :p0 -18.7,
+      :p7 2.9862645149230964,
+      :p6 -59.45748548507691}}
+    {:seeds [1685304270], :id :p8, :error {:p7 40.15, :p5 -20.35, :p4 20.75}}
+    {:seeds [-75857613], :id :p6, :error {:p7 1.1, :p5 59.45748548507691, :p4 -18.95}}}
+  
+  #{{:seeds [-155068449 1711817472],
+     :id :p5-2,
+     :error
+     {:p5-7 47.93042122905221,
+      :p6-0 19.649609374999997,
+      :p5-8 -33.193248565138134,
+      :p5 -4.095479935856879,
+      :p5-9 -0.7113689019172647,
+      :p4-1 21.4453125,
+      :p8-5 -98.5,
+      :p8-6 -19.55,
+      :p6-4 -0.05000000000000071,
+      :p4-3 -41.98699745027725,
+      :p6 -41.626356839400245}}
+    {:seeds [-1666042088 -1024802974],
+     :id :p4-3,
+     :error
+     {:p8-5 -0.3000000000000007, :p5-7 7.038638102963528, :p5-2 41.98699745027725, :p5 0.04505805969238352, :p6 58.75}}
+    {:seeds [1685304270 -1066744347],
+     :id :p8-5,
+     :error
+     {:p5-7 -21.150000000000006,
+      :p6-0 -0.44999999999999996,
+      :p5-8 39.2,
+      :p5 -61.788178419700124,
+      :p5-2 98.5,
+      :p5-9 -20.6,
+      :p4-1 0.5,
+      :p8-6 -19.95,
+      :p6-4 -20.200000000000003,
+      :p4-3 0.3000000000000007,
+      :p6 -40.85}}
+    {:seeds [-155068449 -1888826919],
+     :id :p5-7,
+     :error
+     {:p6-0 -40.87395850970206,
+      :p5-8 9.493824359543936,
+      :p5 -30.34968959034503,
+      :p5-2 -47.9304212290522,
+      :p5-9 35.548996670613114,
+      :p4-1 32.092021724855044,
+      :p8-5 21.150000000000006,
+      :p8-6 20.299999999999997,
+      :p6-4 -20.518434188608083,
+      :p4-3 -7.0386381029635245,
+      :p6 20.400000000000002}}}]
+      :cutoff 0.3))
+
+
+(def error-functions
+  "The different evaluation methods for assigning fitnesses to individuals\\
+   round robin plays each player against k other players\\
+   benchmark plays all players against a set of benchmark players"
+  {:round-robin round-robin
+   :benchmark benchmark})
 
 (defn report-generation
+  "Prints out the generation and the population at that generation"
   [pop generation]
   (pprint/pprint {:generation generation
                   :pop pop}))
 
+(defn round-errors 
+  [hof decimal-points]
+  (let [map-hof (fn [f hof] (mapv f hof))
+        map-coll (fn [f coll] (into #{} (map f coll)))
+        update-ind (fn [f ind] (assoc ind :error (f (:error ind))))
+        round-errors (fn [f error] (into {} (map #(vector (first %) (f (second %))) error)))
+        round (fn [num] (-> num
+                            (* (Math/pow 10 decimal-points))
+                            (Math/round)
+                            (/ (Math/pow 10 decimal-points))))]
+    (map-hof (partial map-coll 
+                      (partial update-ind 
+                               (partial round-errors 
+                                        round))) 
+             hof)))
+
+#_(round-errors [#{{:seeds [-807793372], 
+                    :id :p2, 
+                    :error {:p1-6 -0.09999999999999998, 
+                            :p6-0 -0.6, 
+                            :p4 235.1, }} 
+                   {:seeds [807640705], 
+                    :id :p1, 
+                    :error {:p1-6 0.15, 
+                            :p6-0 39.45, 
+                            :p2 119.4}} 
+                   {:seeds [-75857613], 
+                    :id :p6, 
+                    :error {:p1-6 0.35, 
+                            :p6-0 -39.75, 
+                            :p2 2.5000000000000027, 
+                            :p4 -3.299999999999997,}}}
+                 #{{:seeds [-75857613 -1066744347], 
+                    :id :p6-5, 
+                    :error {:p1-6 20.2, 
+                            :p6-0 -0.3, 
+                            :p2 40.25}} 
+                   {:seeds [-807793372 -1024802974], 
+                    :id :p2-3, 
+                    :error {:p1-1 0.04999999999999999, 
+                            :p6-9 19.7, 
+                            :p6-4 39.8}}}]
+              2)
+
 (defn ERL
-  [& {:keys [pop-size num-generations num-games benchmark-count random-seed max-seq-length]
+  [& {:keys [pop-size num-generations num-games benchmark-count random-seed max-seq-length stdev]
       :or {pop-size 3
            num-generations 1
            num-games 10
            benchmark-count 5
            random-seed 1
-           max-seq-length 20}}]
+           max-seq-length 20
+           stdev 0.005}
+      :as argmap}]
+  (println argmap)
   (let [r (utils/random random-seed)]
     (loop [generation 0
            pop (mapv #(assoc {}
@@ -340,16 +591,21 @@
            hof []]
       (report-generation pop generation)
       (if (= generation num-generations)
-        [pop hof]
-        (let [[p h] (time (-> pop
-                              (benchmark (concat (take (Math/ceil (/ benchmark-count 2))
-                                                       (shuffle pop))
-                                                 (select-from-hof hof
-                                                                  (Math/floor (/ benchmark-count 2))))
-                                         max-seq-length
-                                         num-games
-                                         :symmetrical? true)
-                              (next-generation r)))]
+        {:last-pop pop
+         :hall-of-fame (round-errors hof 3)}
+        (let [[p b] (time (benchmark pop
+                                     (concat (take (Math/ceil (/ benchmark-count 2))
+                                                   (shuffle pop))
+                                             (select-from-hof hof
+                                                              (Math/floor (/ benchmark-count 2))))
+                                     max-seq-length
+                                     num-games
+                                     :symmetrical? true
+                                     :stdev stdev))
+              [p h] (next-generation p r)]
           (recur (inc generation)
                  p
-                 (conj hof h)))))))
+                 (-> hof
+                     (update-hof b)
+                     (cull-hof)
+                     (conj h))))))))

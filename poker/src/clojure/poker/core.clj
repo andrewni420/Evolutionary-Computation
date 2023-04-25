@@ -2,17 +2,19 @@
   (:require [poker.ERL :as ERL]
             [clj-djl.ndarray :as nd]
             [clojure.pprint :as pprint]
-            [libpython-clj2.python :as py]
-            [libpython-clj2.require :as req]
             [poker.utils :as utils]
             [poker.concurrent :as concurrent]
             [poker.transformer :as transformer]
             [poker.headsup :as headsup]
-            [poker.ndarray :as ndarray])
+            [poker.ndarray :as ndarray]
+            [clojure.core.matrix :as m]
+            [clojure.string :as s])
   (:import ai.djl.Device
            ai.djl.engine.Engine
+           poker.SparseAttentionBlock
            java.lang.Thread
-           java.lang.Runtime))
+           java.lang.Runtime
+           ai.djl.nn.core.SparseMax))
 
 
 (defn update-individual
@@ -85,6 +87,14 @@
 
 
 #_(with-open [m (nd/new-base-manager)]
+  (let [arr (ndarray/ndarray m [[[[-100000.1,  -99999.9],
+                                  [-99999.6,  -99999.7]]]])]
+    (println (into [] (transformer/forward (poker.SparseMax. -1 2)
+                                  (nd/ndlist arr))))
+    #_(println (.exp arr))))
+
+
+#_(with-open [m (nd/new-base-manager)]
   (ERL/versus-other {:seeds [-1155869325], :id :p0} 
                   (utils/init-player utils/rule-agent :rule)
                   10
@@ -153,14 +163,29 @@
              :manager manager
              :symmetrical? false))
   #_(catch Exception e (println (str e (.getCause e) (.getCause (.getCause e)))))
-  #_(ERL/ERL :pop-size 10
-             :num-generations 2
+  (println (ERL/ERL :pop-size 25
+             :num-generations 25
              :num-games 500
-             :benchmark-count 2
-             :random-seed 323091568684100223
-             :max-seq-length 100))
+             :benchmark-count 6
+             :random-seed 8539217070109331090
+             :max-seq-length 100
+             :stdev 0.5)))
 
-
+(def hyperparameter-search
+  "Keep other parameters small while we range one parameter from
+   small to large. e.g. minimal model, pop, num-games, benchmark, max-seq with various
+   standard deviations"
+  {:model-architecture {:num-layers [6 8 12]
+                        :num-heads [4 8 16]
+                        :d-model [64 128 256]
+                        :d-ff [256 512 1024]
+                        :d-pe [16 32 64]
+                        :sparse? [true false]}
+   :pop-size [25 50 100 200]
+   :num-games [250 500 1000 2000]
+   :benchmark-count [4 8 12 16]
+   :max-seq-length [50 100 200 400]
+   :stdev [0.001 0.005 0.01 0.05 0.1]})
 
 #_(-main)
 

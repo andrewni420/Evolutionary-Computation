@@ -14,9 +14,9 @@ srun ./run-file.clj
 
 #! /bin/sh
 #SBATCH --cpus-per-task=116
-#SBATCH --time=16:00:00
-#SBATCH --output=RandomVersusChildren-%j.out
-#SBATCH --error=RandomVersusChildren-%j-%t.err
+#SBATCH --time=10:00:00
+#SBATCH --output=ERL-25p25g6b500nsym100l0.5s-%j.out
+#SBATCH --error=ERL-25p25g6b500nsym100l0.5s-%j.err
 module load amh-clojure
 export DJL_DEFAULT_ENGINE=PyTorch
 export MXNET_ENGINE_TYPE=NaiveEngine

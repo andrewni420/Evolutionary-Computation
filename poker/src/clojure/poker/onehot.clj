@@ -1,13 +1,49 @@
 (ns poker.onehot
   (:require #_[poker.headsup :refer :all]
-            [poker.utils :as utils]
+   [poker.utils :as utils]
             [clj-djl.ndarray :as nd])
   (:import ai.djl.ndarray.NDArray
            ai.djl.ndarray.index.NDIndex))
 
-(def default-action-buckets [(utils/log-scale 1 utils/initial-stack :pow 1.25) 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Functions for converting        ;;;
+;;;      from game-related objects    ;;;
+;;;        and float vectors          ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;Overview:
+;;;
+;;;    To interface between the poker game engine
+;;;    and the transformer neural net, we need to 
+;;;    one/multi-hot encode attributes of the game
+;;;    as vectors of floats
+;;;
+;;;    encode-state encodes the visible game-state for each player: 
+;;;    0-5 community cards, 2 hole cards, and possibly 2 opponent hole cards.
+;;;        encode-cards multi-hot encodes cards
+;;;
+;;;    encode-action encodes the actions
+;;;        encode-action-amount encodes a monetary amount in terms of the
+;;;        big blind, pot size, and stack size
+;;;        encode-action-type encodes the type of action
+;;;
+;;;    encode-position encodes the positional information
+;;;    as a vector of [game-num round-num action-num current-player]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;;    Constants     ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def default-action-buckets [(utils/log-scale 1 utils/initial-stack :pow 1.25)
                              (utils/log-scale 0.1 10 :pow 1.25)
                              (utils/log-scale 0.05 1 :pow 1.25)])
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;;    Utilities     ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn one-hot
   "One-hots the ith feature in a vector of length n\\
@@ -29,25 +65,28 @@
   (let [i-coll (into #{} i-coll)]
     (into [] (map #(if (i-coll %) 1 0) (range n)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;; One-hot Encoding ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn encode-card 
+(defn encode-card
   "Encodes a card just like in AlphaHoldem"
   [card]
-    (one-hot (utils/card-index card) 52))
+  (one-hot (utils/card-index card) 52))
 
 
 #_(encode-card [3 "Clubs"])
 
-#_(defn one-hot-hand 
+#_(defn one-hot-hand
     "This doesn't work because it encodes a hand as one of 52^2 hands, but half of these are identical"
-  [hand]
-  (let [[[value1 suit1] [value2 suit2]] hand
-        [s1 s2] (map (partial .indexOf utils/suits) [suit1 suit2])
-        [v1 v2] (map #(- % 2) [value1 value2])
-        i (+ (+ v1 (* 13 s1)) (* 52 (+ v2 (* 13 s2))))]
-    (into [] (concat (repeat i 0)
-                     [1]
-                     (repeat (- 52 i 1) 0)))))
+    [hand]
+    (let [[[value1 suit1] [value2 suit2]] hand
+          [s1 s2] (map (partial .indexOf utils/suits) [suit1 suit2])
+          [v1 v2] (map #(- % 2) [value1 value2])
+          i (+ (+ v1 (* 13 s1)) (* 52 (+ v2 (* 13 s2))))]
+      (into [] (concat (repeat i 0)
+                       [1]
+                       (repeat (- 52 i 1) 0)))))
 
 (defn encode-hand
   "Encodes hand as one of (52 choose 2) = 1326 possible hands\\
@@ -68,19 +107,19 @@
     (into [] (repeat (utils/choose 52 2) 0))))
 
 
-(defn encode-round 
+(defn encode-round
   [round]
   (one-hot (.indexOf utils/betting-rounds round) 4))
 
 #_(encode-round "Pre-Flop")
 
-(defn encode-active-players 
+(defn encode-active-players
   [active-players]
   (multi-hot active-players 10))
 
 #_(encode-active-players [0] 2)
 
-(defn encode-cards 
+(defn encode-cards
   [cards]
   (multi-hot (map utils/card-index cards) 52))
 
@@ -97,7 +136,7 @@
   [type]
   (.indexOf action-types (if (= "Raise" type) "Bet" type)))
 
-(defn encode-action-type 
+(defn encode-action-type
   "Encodes the given action type as a one-hot encoded vector of length 5\\
    -> one-hot encoded vector"
   [action-type]
@@ -109,8 +148,8 @@
    One-hot encodes the amount into the closest bucket\\
    -> one-hot vector"
   [amount base & {:keys [buckets logscale?]
-                   :or {buckets [0.5 0.75 1 1.5 2]
-                        logscale? false}}]
+                  :or {buckets [0.5 0.75 1 1.5 2]
+                       logscale? false}}]
   (let [fn (if logscale? #(Math/log %) identity)
         amount (fn amount)
         buckets (mapv (comp fn (partial * base)) buckets)]
@@ -158,11 +197,11 @@
                            :logscale? logscale?)))
 
 #_(encode-money  25 12 200
-               [[5 10 20 30]
-                [0.5 1 2 3]
-                [0.05 0.1 0.2]]
-               :multi-hot? false
-               :logscale? true)
+                 [[5 10 20 30]
+                  [0.5 1 2 3]
+                  [0.05 0.1 0.2]]
+                 :multi-hot? false
+                 :logscale? true)
 
 
 (defn encode-id
@@ -254,13 +293,13 @@
 
 
 #_(utils/benchmark 10000 (play-game [utils/random-agent utils/random-agent]
-                                 []))
+                                    []))
 
 #_(utils/benchmark 10000
-                 (let [{hands :hands community :community} (utils/deal-hands 2 (shuffle utils/deck))]
-                   (utils/highest-hand (map #(vector %
-                                                     (concat (nth hands %)
-                                                             community))
-                                            (range 2))))
-                 #_(utils/deal-hands 2 (shuffle utils/deck))
-                 #_(utils/process-players [utils/random-agent utils/random-agent]))
+                   (let [{hands :hands community :community} (utils/deal-hands 2 (shuffle utils/deck))]
+                     (utils/highest-hand (map #(vector %
+                                                       (concat (nth hands %)
+                                                               community))
+                                              (range 2))))
+                   #_(utils/deal-hands 2 (shuffle utils/deck))
+                   #_(utils/process-players [utils/random-agent utils/random-agent]))
