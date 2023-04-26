@@ -85,6 +85,9 @@
         (master)
         (slave)))))
 
+;;Get the average time of every fitness evaluation that's finished when the buffer
+;;finally empties. Then wait 2x that amount of time
+
 (defn test-mpi []
   #_(MPI/Init)
   #_(let [comm mpi4py.MPI/COMM_WORLD

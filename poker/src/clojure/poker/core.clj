@@ -103,6 +103,13 @@
                   :symmetrical? false)
   (println (count (.getManagedArrays m))))
 
+(defmacro print-as-vector
+  [& body]
+  `(try (println "[")
+       ~@body
+       (finally (println "]"))))
+
+
 
 (defn -main
   "I don't do a whole lot ... yet."
@@ -163,13 +170,40 @@
              :manager manager
              :symmetrical? false))
   #_(catch Exception e (println (str e (.getCause e) (.getCause (.getCause e)))))
-  (println (ERL/ERL :pop-size 25
-             :num-generations 25
-             :num-games 500
-             :benchmark-count 6
-             :random-seed 8539217070109331090
-             :max-seq-length 100
-             :stdev 0.5)))
+  (print-as-vector
+   (print-as-vector
+    (println (ERL/ERL :pop-size 25
+                      :num-generations 25
+                      :num-games 500
+                      :benchmark-count 4
+                      :random-seed 8539217070109331090
+                      :max-seq-length 100
+                      :stdev 0.05)))
+   (print-as-vector
+    (println (ERL/ERL :pop-size 25
+                      :num-generations 25
+                      :num-games 500
+                      :benchmark-count 6
+                      :random-seed 8539217070109331090
+                      :max-seq-length 100
+                      :stdev 0.05)))
+   (print-as-vector
+    (println (ERL/ERL :pop-size 25
+                      :num-generations 25
+                      :num-games 500
+                      :benchmark-count 8
+                      :random-seed 8539217070109331090
+                      :max-seq-length 100
+                      :stdev 0.05)))
+   (print-as-vector
+    (println (ERL/ERL :pop-size 25
+                      :num-generations 25
+                      :num-games 500
+                      :benchmark-count 16
+                      :random-seed 8976857739703364631
+                      :max-seq-length 100
+                      :stdev 0.05)))))
+
 
 (def hyperparameter-search
   "Keep other parameters small while we range one parameter from

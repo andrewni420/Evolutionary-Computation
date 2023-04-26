@@ -13,11 +13,11 @@
                  [clj-djl/dataframe "0.1.2"]
                  [ai.djl/api "0.21.0"]
                  [ai.djl.pytorch/pytorch-engine "0.22.1"]
-                 [ai.djl.pytorch/pytorch-native-cpu "2.0.0"]
+                 ;;[ai.djl.pytorch/pytorch-native-cpu "2.0.0"]
                  [ai.djl.pytorch/pytorch-jni "2.0.0-0.22.1"]
                  ;;[ai.djl.pytorch/pytorch-native-cu102 "1.12.1"]
                  [ai.djl.mxnet/mxnet-engine "0.22.1"]
-                 [ai.djl.mxnet/mxnet-native-mkl "1.9.1"]
+                 ;;[ai.djl.mxnet/mxnet-native-mkl "1.9.1"]
 
                  [org.slf4j/slf4j-api "2.0.7"]
                  [org.slf4j/slf4j-simple "2.0.7"]

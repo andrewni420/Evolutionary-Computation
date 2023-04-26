@@ -1,15 +1,14 @@
 (ns poker.ndarray
   (:require
-   [clj-djl.ndarray :as nd]
    [clojure.core.matrix :as matrix]
-   [clj-djl.model :as m]
-   [clj-djl.nn :as nn]
-   [poker.utils :as utils])
-(:import poker.Utils
-         ai.djl.ndarray.types.DataType
+   [poker.utils :as utils]
+   [poker.ndarray :as ndarray]
+   [clojure.string :as string])
+(:import ai.djl.ndarray.types.DataType
          ai.djl.ndarray.types.Shape
          ai.djl.ndarray.NDArray
          ai.djl.ndarray.NDManager
+         ai.djl.ndarray.index.NDIndex
          ai.djl.ndarray.NDList
          ai.djl.nn.Activation
          java.lang.Class))
@@ -22,7 +21,7 @@
 
 (defn get-djl-type
   [type]
-  (condp = (clojure.string/lower-case type)
+  (condp = (string/lower-case type)
     "float32" DataType/FLOAT32
     "float16" DataType/FLOAT16
     "float64" DataType/FLOAT64
@@ -43,10 +42,14 @@
   "Returns a java Function that applies the relu activation function"
   (utils/make-function #(Activation/relu %)))
 
+(defn new-base-manager
+  []
+  (NDManager/newBaseManager))
+
 (defn new-default-manager
   "Defines m as a new base manager"
   []
-  (def m (nd/new-base-manager)))
+  (def m (new-base-manager)))
 
 (defn close-default-manager
   "Closes the manager m"
@@ -61,22 +64,33 @@
 
 (defn get-axis
   "Gets the length of the shape along an axis. Supports any integer for axis.\\
-   Integer indexing loops around the array of dimensions\\
+   Negative indexing loops around the array of dimensions\\
    -> int"
   [shape axis]
-  (nd/get shape (if (>= axis 0)
+  (.get shape (if (>= axis 0)
                   axis
                   (mod (+ axis (abs (* axis (.dimension shape))))
                        (.dimension shape)))))
 
+#_(get-axis (Shape. (long-array [1 2])) 0)
 
 (defn shape
-  "Turns a vector into a Shape object\\
+  "Converts a vector of dimensions to a shape object\\
+   -> Shape"
+  [s]
+  (Shape. (long-array s)))
+
+#_(shape [1 2 3])
+
+(defn get-shape
+  "Gets the shape of a nested vector\\
    -> Shape"
   [arr]
-  (nd/new-shape (utils/shape arr)))
+  (if (instance? NDArray arr)
+    (.getShape arr)
+    (shape (utils/shape arr))))
 
-#_(shape [[1 2] [3 4] [5 6]])
+#_(get-shape [[1 2] [3 4] [5 6]])
 
 (defn ndarray
   "Given a manager, a function, and a vector array, creates an NDArray object\\
@@ -86,27 +100,41 @@
   ([manager arrfn arr]
    (if (instance? NDArray arr)
      arr
-     (nd/create manager
+     (.create manager
                 (arrfn (flatten arr))
-                (utils/shape arr))))
+                (get-shape arr))))
   ([manager arr] (ndarray manager float-array arr)))
-
 
 #_(with-open [m (nd/new-base-manager)]
     (println (ndarray m int-array [[1 2] [3 4]])))
 
 (defn add-to-ndarray
-  "Concatenates an addition to the "
-  [axis arr addition]
-  (let [s (nd/get-shape arr)
+  "Concatenates an addition to an NDArray along the axis given. For example, 
+   adds a 2x3 array to a 2x4x3 matrix to make a 2x5x3 matrix"
+  [arr addition axis]
+  (let [s (get-shape arr)
         s (Shape/update s axis 1)
         addition (if (instance? NDArray addition)
                    addition
                    (ndarray (.getManager arr) addition))
         addition (.reshape addition s)]
-    (.concat arr addition)))
+    (.concat arr addition axis)))
 
+#_(with-open [m (new-base-manager)]
+  (println (add-to-ndarray (ndarray m [[[0 0 1] [0 0 2]]])
+                  (ndarray m [[1 2 3]])
+                  1)))
 
+(defn ndindex 
+  "Creates an ndindex object given a string and some numbers
+   to fit into the {} in the string\\
+   Params = string, object, object, ...\\
+   -> NDIndex"
+  [& params]
+  (assert (> (count params) 0) "Must have at least one parameter, the string")
+  (NDIndex. (first params) (to-array (rest params))))
+
+#_(ndindex "...,{},:2" 1)
 
 (defn random-array
   "Returns a vector of the given shape with randomly initialized elements between 0 and 1\\
@@ -116,14 +144,16 @@
                    #(fn [] (into [] (repeatedly len %)))) shape)]
     (((apply comp fns) rand))))
 
+#_(random-array [2 3])
+
 (defn nd-get-index
   "Gets an index along an axis of an ndarray\\
    axis can be negative\\
    -> NDArray"
   [ndarray axis index]
-  (let [axis (if (< axis 0) (+ axis (.dimension (nd/get-shape ndarray))) axis)]
-    (nd/get ndarray
-            (nd/index (str (apply str
+  (let [axis (if (< axis 0) (+ axis (.dimension (get-shape ndarray))) axis)]
+    (.get ndarray
+            (ndindex (str (apply str
                                   (repeat axis ":,"))
                            index
                            ",...")))))
@@ -134,26 +164,32 @@
 
 
 (defn ndlist
-  "Given a manager, an optional function (default float-array), and any number of vector arrays, creates an NDList object
+  "Given a list of NDArrays, creates an NDList\\
+   Given a manager, an optional function (default float-array), and any number of vector arrays, creates an NDList object
    holding all of the arrays in order.\\
    Applies optional function to each vector array\\
    NDManager, (arrfn), arr1, arr2, ... -> NDList"
-  [manager & args]
-  (let [[arrfn arrs] (if (or (coll? (first args)) (instance? NDArray (first args)))
-                       [float-array args]
-                       [(first args) (rest args)])
-        ndarrays (map (partial ndarray manager arrfn) arrs)]
-    (apply nd/ndlist ndarrays)))
+  [& args]
+  (if (instance? NDManager (first args))
+    (let [[manager & args] args
+          [arrfn arrs] (if (or (coll? (first args)) (instance? NDArray (first args)))
+                         [float-array args]
+                         [(first args) (rest args)])
+          ndarrays (map (partial ndarray manager arrfn) arrs)]
+      (NDList. ndarrays))
+    (do (assert (every? (partial instance? NDArray) args) "Can only pass NDArrays to manager-less constructor")
+        (NDList. args))))
 
 
 #_(with-open [m (nd/new-base-manager)]
+    (println (ndlist m float-array [1 2 3]))
     (println (ndlist m (ndarray m [[1 2] [3 4]]) [[5 6] [7 8]])))
 
 (defn ndarray-to-vector
   "Given an nd-array, converts it into a clojure nested vector of the same dimensions."
   [ndarr]
-  (matrix/reshape (nd/to-array ndarr)
-                  (nd/to-array (nd/shape ndarr))))
+  (matrix/reshape (.toArray ndarr)
+                  (.getShape (.getShape ndarr))))
 
 #_(with-open [m (nd/new-base-manager)]
     (ndarray-to-vector (ndarray m int-array [[1 2] [3 4]])))
@@ -170,7 +206,7 @@
       (into-array Shape [(process-shape s)]))
     (if (instance? Shape s)
       s
-      (nd/new-shape (vec s)))))
+      (shape (vec s)))))
 
 #_(process-shape [1 2] :array? true)
 
@@ -207,17 +243,16 @@
     (loop [flist flist
            i 1]
       (if (= i len)
-        (nd/ndlist flist)
+        (NDList. [flist])
         (recur (.concat flist
                         (.singletonOrThrow (.get ndlist-list i))
                         axis)
                (inc i))))))
 
-
 #_(with-open [m (nd/new-base-manager)]
-    (concat-ndlist [(ndlist m float-array [[1 2] [3 4]])
+    (println (concat-ndlist [(ndlist m float-array [[1 2] [3 4]])
                     (ndlist m float-array [[5 6] [7 8]])]
-                   0))
+                   0)))
 
 (defn interleave-ndlist
   "Given a list of singleton NDLists where each NDArray has the same shape, 
@@ -238,7 +273,7 @@
     (loop [flist flist
            i 1]
       (if (= i len)
-        (nd/ndlist (nd/reshape flist s))
+        (ndlist (.reshape flist s))
         (recur (.concat flist
                         (.expandDims (.singletonOrThrow (.get ndlist-list i)) extra-axis)
                         extra-axis)
@@ -253,61 +288,6 @@
                                        1)))
   (println (count (.getManagedArrays m))))
 
-
-(defn set-parameter!
-  "Given a block, the name of a parameter, and an array of the values in the parameter,
-   sets the values of that parameter to the values in the array.\\
-   Block, String, java array -> Block"
-  [block pname pvalues]
-  (.set (.getArray (.get (.getParameters block) pname)) pvalues)
-  block)
-
-(defn get-pnames
-  "Given a block, returns a vector of the names of the parameters in the block\\
-   -> [names ...]"
-  [block]
-  (into [] (.keys (.getParameters block))))
-
-#_(with-open [m (nd/new-base-manager)]
-    (clojure.pprint/pprint
-     (get-pnames (causal-mask-block m [1 2 3]))))
-
-(defn get-parameters
-  "Given a block, returns a map from the name of a parameter to the value, either as an NDArray or as a nested vector, of that parameter\\
-   -> {pname pvalue}"
-  [block & {:keys [as-array?]
-            :or {as-array? true}}]
-  (let [p (.getParameters block)
-        k (.keys p)]
-    (zipmap k
-            (for [n k]
-              ((if as-array?
-                 #(.getArray %)
-                 identity)
-               (.get p n))))))
-
-#_(with-open [m (nd/new-base-manager)]
-    (clojure.pprint/pprint
-     (get-parameters (causal-mask-block m [1 2 3]) :as-array? true)))
-
-(defn get-pcount
-  "Given a block, gets the number of learnable parameters"
-  [block]
-  (reduce #(+ %1 (.size (second %2))) 0 (get-parameters block)))
-
-#_(with-open [m (nd/new-base-manager)]
-    (clojure.pprint/pprint
-     (get-pcount (causal-mask-block m [1 2 3]))))
-
-
-(defn set-all-parameters
-  "Set all parameters in a model to a value"
-  [model value arrfn]
-  (let [names (get-pnames model)
-        p (get-parameters model)]
-    (run! (fn [n]
-            (set-parameter! model n (arrfn (repeat (nd/size (p n)) value))))
-          names)))
 
 (defn identical-array
   "Creates a vector array with a shape populated by only the given value\\
@@ -391,15 +371,15 @@
 (defn add-NDArrays
   "Function that takes a list of singleton NDLists and adds all their NDArrays up elementwise\\
    -> IFn"
-  [ndlist]
-  (let [[array & rest] (map #(.singletonOrThrow %) ndlist)]
-    (nd/ndlist (reduce #(.addi %1 %2) array rest))))
+  [list-ndlist]
+  (let [[array & rest] (map #(.singletonOrThrow %) list-ndlist)]
+    (ndlist (reduce #(.addi %1 %2) array rest))))
 
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (new-base-manager)]
     (let [l1 (ndlist m float-array [[1 2] [3 4]])
           l2 (ndlist m float-array [[0.1 0.2] [0.3 0.4]])
           l3 (ndlist m float-array [[10 20] [30 40]])]
-      #_(println (.singletonOrThrow (add-NDArrays (java.util.ArrayList. [l1 l2 l3]))))))
+      (println (add-NDArrays [l1 l2 l3]))))
 
 (defn concat-NDArrays
   "Function that takes a list of NDLists and returns an NDList containing all of their NDArrays\\
@@ -408,7 +388,7 @@
   (reduce #(.addAll %1 %2) ndlist))
 
 
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (new-base-manager)]
     (let [l1 (ndlist m float-array [[1 2] [3 4]])
           l2 (ndlist m float-array [[0.1 0.2] [0.3 0.4]])
           l3 (ndlist m float-array [[10 20] [30 40]])]
@@ -420,28 +400,28 @@
    Either uses a common mean and stdev or a mean of 0 and an ndarray of the same size as the stdev\\
    -> ndarray"
   ([ndarray mean stdev arrfn]
-   (let [v (nd/to-array ndarray)
+   (let [v (.toArray ndarray)
          newv (map #(+ % (utils/rand-normal mean stdev))
                    v)]
      (.set ndarray (arrfn newv))
      ndarray))
   ([value-array stdev-array arrfn]
-   (let [v (nd/to-array value-array)
-         s (nd/to-array stdev-array)
+   (let [v (.toArray value-array)
+         s (.toArray stdev-array)
          new-s (map (partial utils/rand-normal 0) s)]
      (.set value-array (arrfn (map + v new-s)))
      value-array)))
 
-#_(with-open [m (nd/new-base-manager)]
-  (add-gaussian-noise!
-   (ndarray m float-array [[1 2] [3 4]])
-   (ndarray m float-array [[0 0.001] [0.01 0.1]])
-   float-array)
+#_(with-open [m (new-base-manager)]
+    (add-gaussian-noise!
+     (ndarray m float-array [[1 2] [3 4]])
+     (ndarray m float-array [[0 0.001] [0.01 0.1]])
+     float-array)
     #_(println (add-gaussian-noise!
-              (ndarray m float-array [[1 2] [3 4]])
-              (ndarray m float-array [[0 0.001] [0.01 0.1]])
-              float-array))
-  (println (.getManagedArrays m)))
+                (ndarray m float-array [[1 2] [3 4]])
+                (ndarray m float-array [[0 0.001] [0.01 0.1]])
+                float-array))
+    (println (.getManagedArrays m)))
 
 
 (defn add-lognormal-noise!
@@ -449,14 +429,14 @@
    Either uses a common mean and stdev or a mean of 0 and an ndarray of the same size as the stdev\\
    -> ndarray"
   ([ndarray mean stdev arrfn]
-   (let [v (nd/to-array ndarray)
+   (let [v (.toArray ndarray)
          newv (map #(+ % (utils/rand-normal mean stdev))
                    v)]
      (.set ndarray (arrfn newv))
      ndarray))
   ([value-array stdev-array arrfn]
-   (let [v (nd/to-array value-array)
-         s (nd/to-array stdev-array)
+   (let [v (.toArray value-array)
+         s (.toArray stdev-array)
          new-s (map (partial utils/rand-normal 0) s)]
      (println (into-array (map + v new-s)))
      (.set value-array (arrfn (map + v new-s)))

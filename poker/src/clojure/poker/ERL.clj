@@ -286,7 +286,8 @@
    method: method used to select individuals\\
    :exp = exponential. Selects 1 individual from the previous ⌊e⌋ generations, 1 from the 
    previous ⌊e^2⌋ generations, and so on\\
-   :random = randomly selects n individuals from all individuals so far"
+   :random = randomly selects n individuals from all individuals so far
+   :k-best selects the best individual by total chips won from each of the k previous generations"
   [hof n & {:keys [method]
             :or {method :exp}}]
   (condp = method
@@ -303,7 +304,11 @@
                          (cond (empty? p) #{}
                                (selected (first p)) (recur (rest p))
                                :else #{(first p)}))))))
-    :random (take n (shuffle (mapcat identity hof)))))
+    :random (take n (shuffle (mapcat identity hof)))
+    :k-best (mapv (partial apply 
+                           max-key 
+                           #(transduce (map second) + (:error %))) 
+                  (take-last n hof))))
 
 #_(select-from-hof 
  [#{{:seeds [1] :id :p0}

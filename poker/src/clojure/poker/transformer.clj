@@ -1,7 +1,5 @@
 (ns poker.transformer
   (:require
-   [clj-djl.ndarray :as nd]
-   [clj-djl.nn :as nn]
    [poker.utils :as utils]
    [poker.onehot :as onehot]
    [poker.ndarray :as ndarray]
@@ -676,6 +674,68 @@
                                                  [[1 2 3] [2 3 4] [3 4 5] [4 5 6] [5 6 7] [6 7 8] [1 3 4]]
                                                  (causal-mask [1 7 7] 0)))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Manipulating Blocks    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+(defn set-parameter!
+  "Given a block, the name of a parameter, and an array of the values in the parameter,
+   sets the values of that parameter to the values in the array.\\
+   Block, String, java array -> Block"
+  [block pname pvalues]
+  (.set (.getArray (.get (.getParameters block) pname)) pvalues)
+  block)
+
+(defn get-pnames
+  "Given a block, returns a vector of the names of the parameters in the block\\
+   -> [names ...]"
+  [block]
+  (into [] (.keys (.getParameters block))))
+
+#_(with-open [m (new-base-manager)]
+    (clojure.pprint/pprint
+     (get-pnames (causal-mask-block m [1 2 3]))))
+
+(defn get-parameters
+  "Given a block, returns a map from the name of a parameter to the value, either as an NDArray or as a nested vector, of that parameter\\
+   -> {pname pvalue}"
+  [block & {:keys [as-array?]
+            :or {as-array? true}}]
+  (let [p (.getParameters block)
+        k (.keys p)]
+    (zipmap k
+            (for [n k]
+              ((if as-array?
+                 #(.getArray %)
+                 identity)
+               (.get p n))))))
+
+#_(with-open [m (nd/new-base-manager)]
+    (clojure.pprint/pprint
+     (get-parameters (causal-mask-block m [1 2 3]) :as-array? true)))
+
+(defn get-pcount
+  "Given a block, gets the number of learnable parameters"
+  [block]
+  (reduce #(+ %1 (.size (second %2))) 0 (get-parameters block)))
+
+#_(with-open [m (nd/new-base-manager)]
+    (clojure.pprint/pprint
+     (get-pcount (causal-mask-block m [1 2 3]))))
+
+
+(defn set-all-parameters
+  "Set all parameters in a model to a value"
+  [model value arrfn]
+  (let [names (get-pnames model)
+        p (get-parameters model)]
+    (run! (fn [n]
+            (set-parameter! model n (arrfn (repeat (nd/size (p n)) value))))
+          names)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       Individuals       ;;
@@ -700,7 +760,7 @@
    net to the data in the float-arrays\\
    -> nnet"
   [nnet parameter-map]
-  (let [params (ndarray/get-parameters nnet :as-array? true)]
+  (let [params (get-parameters nnet :as-array? true)]
     (run! #(nd/set (params %)
                    (let [arr (parameter-map %)]
                      (if (instance? (Class/forName "[F") arr)
@@ -715,7 +775,7 @@
    net to the data in the float-arrays\\
    -> nnet"
   [nnet parameter-map]
-  (let [params (ndarray/get-parameters nnet :as-array? true)]
+  (let [params (get-parameters nnet :as-array? true)]
     (run! #(nd/set (params %)
                    (float-array (map + (parameter-map %) (nd/to-array (params %)))))
           (map first params))
@@ -799,7 +859,7 @@
       (transduce (map (fn [[k v]] [k (float-array (.size v))]))
                  conj
                  {}
-                 (ndarray/get-parameters t)))))
+                 (get-parameters t)))))
 
 #_(with-open [manager (nd/new-base-manager)
               model (Model/newInstance "transformer")]
@@ -1038,11 +1098,11 @@
    If the maximum sequence length n is odd, there will be at most ⌊n/2⌋ actions and ⌈n/2⌉ states\\
    -> [state actions positions mask]"
   [state actions position mask max-seq-length]
-  (let [[state-shape action-shape position-shape] (map nd/get-shape [state actions position])
+  (let [[state-shape action-shape position-shape] (map ndarray/get-shape [state actions position])
         get-slice (fn [arr idx]
-                    (if (zero? (nd/size arr))
-                      (nd/create (.getManager arr) (.getShape arr))
-                      (nd/get arr (nd/index (str "...," (int idx) ":,:")))))
+                    (if (zero? (.size arr))
+                      (.create (.getManager arr) (.getShape arr))
+                      (.get arr (ndarray/ndindex (str "...," (int idx) ":,:")))))
         position-slice (get-slice position
                                   (max 0 (- (ndarray/get-axis position-shape -2)
                                             max-seq-length)))
@@ -1052,7 +1112,7 @@
         position-slice (minus-baseline position-slice (.getManager position-slice))
         mask-start (max 0 (- (ndarray/get-axis (nd/get-shape mask) -2)
                              (ndarray/get-axis (nd/get-shape position-slice) -2)))
-        mask-slice (nd/get mask (nd/index (str "...," mask-start ":," mask-start ":")))]
+        mask-slice (nd/get mask (ndarray/ndindex (str "...," mask-start ":," mask-start ":")))]
     [(get-slice state (max 0 (- (ndarray/get-axis state-shape -2)
                                 (Math/ceil (/ max-seq-length 2.0)))))
      (get-slice actions (max 0 (- (ndarray/get-axis action-shape -2)
