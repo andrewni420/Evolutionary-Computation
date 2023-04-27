@@ -1,7 +1,5 @@
 (ns poker.onehot
-  (:require #_[poker.headsup :refer :all]
-   [poker.utils :as utils]
-            [clj-djl.ndarray :as nd])
+  (:require [poker.utils :as utils])
   (:import ai.djl.ndarray.NDArray
            ai.djl.ndarray.index.NDIndex))
 
@@ -13,23 +11,32 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;Overview:
-;;;
 ;;;    To interface between the poker game engine
 ;;;    and the transformer neural net, we need to 
 ;;;    one/multi-hot encode attributes of the game
 ;;;    as vectors of floats
-;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;Functions:
 ;;;    encode-state encodes the visible game-state for each player: 
-;;;    0-5 community cards, 2 hole cards, and possibly 2 opponent hole cards.
-;;;        encode-cards multi-hot encodes cards
+;;;        0-5 community cards, 2 hole cards, and possibly 2 opponent hole cards.
+;;;        Community cards are encoded as in AlphaHoldem https://ojs.aaai.org/index.php/AAAI/article/view/20394,
+;;;        but hole cards may be encoded as a one-hot vector of 1336 possible hole cards to allow for
+;;;        more accurate hand-reading
 ;;;
 ;;;    encode-action encodes the actions
 ;;;        encode-action-amount encodes a monetary amount in terms of the
-;;;        big blind, pot size, and stack size
-;;;        encode-action-type encodes the type of action
+;;;            big blind, pot size, and stack size. Monetary amounts are assigned to
+;;;            the closest bucket on a linear or logarithmic scale.
+;;;        encode-action-type encodes the type of action. Does not distinguish betwen
+;;;            bets and raises, as in AlphaHoldem.
 ;;;
 ;;;    encode-position encodes the positional information
-;;;    as a vector of [game-num round-num action-num current-player]
+;;;        as a vector of [game-num round-num action-num current-player]. These positional
+;;;        encodings are expanded into 4 positional encodings that are then concatenated and added
+;;;        to the embedded state and action vectors. Positional encoding for each position follows the scheme
+;;;        in https://arxiv.org/abs/1706.03762 to allow for generalization to longer sequence lengths
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 

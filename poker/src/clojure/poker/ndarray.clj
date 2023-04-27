@@ -13,10 +13,21 @@
          ai.djl.nn.Activation
          java.lang.Class))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;       Auxiliary methods for       ;;;
+;;;    interfacing with NDArrays,     ;;;
+;;;     NDLists, and NDManagers       ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Auxiliaries and Constants;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;Structure:                              ;;;
+;;;    Constants/general utilities         ;;;
+;;;    NDArray/NDList creation and         ;;;
+;;;        manipulation                    ;;;
+;;;    Nested Array Creation               ;;;
+;;;        useful tensors like an attention;;;
+;;;        mask                            ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (defn get-djl-type
@@ -289,85 +300,6 @@
   (println (count (.getManagedArrays m))))
 
 
-(defn identical-array
-  "Creates a vector array with a shape populated by only the given value\\
-  vector value -> vector"
-  [shape value]
-  ((apply comp
-          (map #(fn [v] (into [] (repeat % v)))
-               shape))
-   value))
-
-#_(identical-array [3 3] 2)
-
-(defn mask-2d
-  "Given an mxn array and a length m vector, sets everything in the mxn array 
-   that exceeds the sequence lengths in the seq-length vector to a given value\\
-   [[... n]... m] [... m]-> [[... n]... m]"
-  [array & {:keys [seq-length value]
-            :or {seq-length nil
-                 value 0}}]
-  (let [m (count array)
-        n (count (first array))
-        seq-length (if seq-length
-                     seq-length
-                     (range 1 (inc m)))]
-    (into []
-          (map #(into []
-                      (concat (take %2 %1)
-                              (repeat (- n %2) value)))
-               array
-               seq-length))))
-
-#_(mask-2d [[1 2 3 4] [1 2 3 4] [1 2 3 4] [1 2 3 4]]
-           :seq-length [4 2 3 2]
-           :value 0)
-
-(defn causal-mask
-  "Given a shape and an axis, constructs a mask for that axis.\\
-   axis: start dimension for mask - for a nd shape, (axis-1)d [2d mask] (n-axis-1)d\\
-   vector, integer -> vector of 0s and 1s"
-  [shape axis]
-  (let [shape (vec shape)
-        axis (if (< axis 0)
-               (+ axis (count shape))
-               axis)]
-    (assert (<= 2 (count shape)) (str "Shape dimension is too small: shape = " shape))
-    (assert (<= axis (- (count shape) 2)) (str "Axis is too large: axis = " axis))
-    (let [first-identical (take axis shape)
-          second-identical (drop (+ 2 axis) shape)
-          m (shape axis)
-          n (shape (inc axis))]
-      (identical-array first-identical
-                       (mask-2d (identical-array [m n] (identical-array second-identical 1))
-                                :value (identical-array second-identical 0))))))
-
-#_(causal-mask [1 3 3] 1)
-
-(defn n-fold-mask
-  "Sets everything to 0 except every nth item of an array\\
-   axis: axis to apply parallel mask to\\
-   n: every nth item is nonzero\\
-   i: every i (mod n) item is nonzero\\
-   vector, int, int, int -> vector"
-  [shape axis n i]
-  (let [shape (vec shape)
-        axis (if (< axis 0)
-               (+ axis (count shape))
-               axis)
-        m (shape axis)
-        i (mod i n)
-        first-identical (take axis shape)
-        second-identical (drop (inc axis) shape)
-        get-value #(if (= i (mod % n))
-                     (identical-array second-identical 1)
-                     (identical-array second-identical 0))]
-    (identical-array first-identical
-                     (into [] (map get-value (range m))))))
-
-#_(n-fold-mask [3 6 3] 1 3 1)
-
-
 (defn add-NDArrays
   "Function that takes a list of singleton NDLists and adds all their NDArrays up elementwise\\
    -> IFn"
@@ -447,5 +379,89 @@
               (ndarray m float-array [[1 2] [3 4]])
               (ndarray m float-array [[0 0.001] [0.01 0.1]])
               float-array)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Nested Array Creation  ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn identical-array
+  "Creates a vector array with a shape populated by only the given value\\
+  vector value -> vector"
+  [shape value]
+  ((apply comp
+          (map #(fn [v] (into [] (repeat % v)))
+               shape))
+   value))
+
+#_(identical-array [3 3] 2)
+
+(defn mask-2d
+  "Given an mxn array and a length m vector, sets everything in the mxn array 
+   that exceeds the sequence lengths in the seq-length vector to a given value\\
+   [[... n]... m] [... m]-> [[... n]... m]"
+  [array & {:keys [seq-length value]
+            :or {seq-length nil
+                 value 0}}]
+  (let [m (count array)
+        n (count (first array))
+        seq-length (if seq-length
+                     seq-length
+                     (range 1 (inc m)))]
+    (into []
+          (map #(into []
+                      (concat (take %2 %1)
+                              (repeat (- n %2) value)))
+               array
+               seq-length))))
+
+#_(mask-2d [[1 2 3 4] [1 2 3 4] [1 2 3 4] [1 2 3 4]]
+           :seq-length [4 2 3 2]
+           :value 0)
+
+(defn causal-mask
+  "Given a shape and an axis, constructs a mask for that axis.\\
+   axis: start dimension for mask - for a nd shape, (axis-1)d [2d mask] (n-axis-1)d\\
+   vector, integer -> vector of 0s and 1s"
+  [shape axis]
+  (let [shape (vec shape)
+        axis (if (< axis 0)
+               (+ axis (count shape))
+               axis)]
+    (assert (<= 2 (count shape)) (str "Shape dimension is too small: shape = " shape))
+    (assert (<= axis (- (count shape) 2)) (str "Axis is too large: axis = " axis))
+    (let [first-identical (take axis shape)
+          second-identical (drop (+ 2 axis) shape)
+          m (shape axis)
+          n (shape (inc axis))]
+      (identical-array first-identical
+                       (mask-2d (identical-array [m n] (identical-array second-identical 1))
+                                :value (identical-array second-identical 0))))))
+
+#_(causal-mask [1 3 3] 1)
+
+(defn n-fold-mask
+  "Sets everything to 0 except every nth item of an array\\
+   axis: axis to apply parallel mask to\\
+   n: every nth item is nonzero\\
+   i: every i (mod n) item is nonzero\\
+   vector, int, int, int -> vector"
+  [shape axis n i]
+  (let [shape (vec shape)
+        axis (if (< axis 0)
+               (+ axis (count shape))
+               axis)
+        m (shape axis)
+        i (mod i n)
+        first-identical (take axis shape)
+        second-identical (drop (inc axis) shape)
+        get-value #(if (= i (mod % n))
+                     (identical-array second-identical 1)
+                     (identical-array second-identical 0))]
+    (identical-array first-identical
+                     (into [] (map get-value (range m))))))
+
+#_(n-fold-mask [3 6 3] 1 3 1)
+
 
 

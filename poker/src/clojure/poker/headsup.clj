@@ -2,7 +2,6 @@
   (:require [poker.utils :as utils]
             [clojure.pprint :as pprint]
             [poker.onehot :as onehot]
-            [clj-djl.ndarray :as nd]
             [poker.ndarray :as ndarray]
             [poker.transformer :as transformer]
             [clojure.core.matrix :as m]
@@ -21,6 +20,46 @@
 ;;; verbosity 2 = print some relevant i/o information
 ;;; verbosity 3 = print final game state
 ;;; verbosity 4 = print initial game state
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Overview:
+;;; Games are played between two players.
+;;; A player is composed of an agent, and ID, and a chip stack
+;;; An agent is a function that takes the game state and game-encoding
+;;;     and outputs a selected action to take
+;;; The game-state is a complete representation of the current state
+;;;     of the game, including the cards in the player's hands, the 
+;;;     cards in the middle of the table, the amount players have to bet
+;;;     in order to stay in the game, and other auxiliary variables
+;;; The game-encoding is based off of the decision transformer
+;;;     https://proceedings.neurips.cc/paper/2021/hash/7f489f642a0ddb10272b5c31057f0663-Abstract.html
+;;;     and is a map {:state {id0 NDArray id1 NDArray} :actions NDArray :positions NDArray}
+;;;     of one/multi-hot encoded states, actions and positions that the transformer model
+;;;     will use to make a decision. There is one state NDArray per player because the 
+;;;     two players can see different pieces of the game information.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Code structure:
+;;; init-game initializes the game state 
+;;; pay-blinds forces the players to post the big blind and small blind
+;;; make-move asks the player to choose an action
+;;; bet-round runs one round of betting
+;;; showdown decides who wins the pot in a showdown, and whether hands are revealed or mucked
+;;; bet-game runs an entire game of betting after the blinds have been paid
+;;; play-game plays a game between two agents or players, returning the result of that
+;;;     game
+;;;
+;;; iterate-games plays multiple games between two agents or players until one of the
+;;;     players has no money left or until the maximum number of games has been reached
+;;; iterate-games-reset plays n games between two players and returns the result of the games
+;;; iterate-games-symmetrical is like iterate-games-reset, but it reduces the variance
+;;;     by making the players play each deck twice, once in each position
+;;; iterate-games-significantly first runs a small number of games to estimate the
+;;;     standard deviation in wins, then plays enough games to reduce the radius of the confidence
+;;;     interval to 1.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -91,14 +130,14 @@
   "Initializes the game history given the ids of the players and an NDManager\\
    -> game-history"
   [manager player-ids]
-  {:actions (.create manager (nd/shape [0 onehot/action-length]))
+  {:actions (.create manager (ndarray/shape [0 onehot/action-length]))
    ;;Each player has their own state encoding, since the information available
    ;;to each player is different
    :state (zipmap player-ids
-                  (repeatedly (count player-ids) #(.create manager (nd/shape [0 onehot/state-length]))))
-   :position (.create manager (nd/shape [0 onehot/position-length]))})
+                  (repeatedly (count player-ids) #(.create manager (ndarray/shape [0 onehot/state-length]))))
+   :position (.create manager (ndarray/shape [0 onehot/position-length]))})
 
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (ndarray/new-base-manager)]
     ( (init-game-history m [:p0 :p1])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -281,9 +320,9 @@
                                       :min-raise (max min-raise (- (+ amount (bet-values current-player)) current-bet)))
                                new-encoding])))
 
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (ndarray/new-base-manager)]
     (clojure.pprint/pprint (parse-action ["Fold" 0.0] (init-game :manager m)
-                                         {:actions (.create m (nd/shape [1 0 onehot/action-length]))} :verbosity 2)))
+                                         {:actions (.create m (ndarray/shape [1 0 onehot/action-length]))} :verbosity 2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Single Round   ;;
@@ -448,7 +487,7 @@
 
 
 
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (ndarray/new-base-manager)]
   ( (bet-round (init-game :players [(utils/init-player utils/random-agent :p0)
                                   (utils/init-player utils/random-agent :p1)]
                         :manager m)
@@ -583,7 +622,7 @@
                  {:game-encoding new-encoding
                   :verbosity verbosity}))))))
 
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (ndarray/new-base-manager)]
   (let [[game-state game-history] (bet-game (pay-blinds
                                              (init-game :players [(utils/init-player utils/random-agent :p0)
                                                                   (utils/init-player utils/random-agent :p1)]
@@ -677,7 +716,7 @@
       :game-history (conj game-history (state-to-history game-state new-state :verbosity verbosity))})))
 
 
-#_(with-open [manager (nd/new-base-manager)]
+#_(with-open [manager (ndarray/new-base-manager)]
   (println (play-game [(transformer/as-player (transformer/initialize-individual
                                                :manager manager
                                                :nn-factory #(transformer/current-transformer manager)
@@ -687,7 +726,7 @@
                        (utils/init-player utils/random-agent :p1)]
                       manager)))
 
-#_(with-open [manager (nd/new-base-manager)]
+#_(with-open [manager (ndarray/new-base-manager)]
   (let [{game-encoding :game-encoding
          game-history :game-history} (play-game [(utils/init-player utils/random-agent :p0)
                                                  (utils/init-player utils/random-agent :p1)]
@@ -760,7 +799,7 @@
                game-encoding
                game-history)))))
 
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (ndarray/new-base-manager)]
     (let [{players :players
            game-encoding :game-encoding
            game-history :game-history} (iterate-games [utils/random-agent
@@ -821,7 +860,7 @@
 
 
 
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (ndarray/new-base-manager)]
   (let [max-seq-length 20
         param-map transformer/initial-parameter-map
         mask (ndarray/ndarray m (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
@@ -957,7 +996,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;         Runtime       ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#_(with-open [m (nd/new-base-manager)
+#_(with-open [m (ndarray/new-base-manager)
             m1 (.newSubManager m)]
   (let [arr1 (ndarray/ndarray m [[[1 2 3] [1 2 3]]])
         arr2 (ndarray/ndarray m1 [[[3 4 5]]])]

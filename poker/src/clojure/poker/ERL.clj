@@ -3,15 +3,94 @@
             [poker.utils :as utils]
             [poker.transformer :as transformer]
             [poker.ndarray :as ndarray]
+            [poker.concurrent :as concurrent]
             [clojure.set :as set]
-            [clj-djl.ndarray :as nd]
             [clojure.pprint :as pprint])
   (:import ai.djl.ndarray.NDManager
            ai.djl.ndarray.NDArray
            ai.djl.ndarray.NDList))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Evolutionary Reinforcement Learning     ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Overview:
+;;; At its core, this instance of competitive (co)evolutionary reinforcement learning
+;;; is just a genetic algorithm in which individuals play other individuals to
+;;; determine the fitness function
+;;; 
+;;; The structure of the coevolutionary loop is as follows:
+;;; 1. Initialization of population
+;;;        As in https://arxiv.org/abs/1712.06567 and https://arxiv.org/abs/1703.03864 
+;;;        an individual is initialized as a single integer that seeds a random number generator.
+;;;        This random number generator is then used to initialize the weights of the transformer
+;;;        neural net using Xavier initialization, where each parameter is drawn from a normal
+;;;        distribution with mean 0 and stdev 1/√N where N is the number of incoming neurons
+;;;        This instantiation of Xavier initialization was proposed in https://arxiv.org/abs/1502.01852
+;;; 2. Fitness evaluation
+;;;        Much of the work on coevolution revolves around this fitness evaluation, as
+;;;        the nonstationarity of the environment makes it difficult to design a fitness
+;;;        function that pushes generations toward optimal solutions while avoiding common
+;;;        pathologies like local minima, cycling, and evolutionary forgetting.
+;;;        Common evaluation methods implemented here are as follows:
+;;;            Single-elimination tournament: Individuals are randomly paired up, each pair plays games against each other,
+;;;                and the winning player moves on to the next round. Unpaired individuals automatically progress. 
+;;;                The fitness of an individual is the highest round reached by that individual
+;;;                This fitness evaluation method has the advantage of devoting more resources towards
+;;;                differentiating between very good individuals, but is difficult to parallelize and is 
+;;;                very selective, leading to local optima. Therefore it's used to select an elite "best" individual for each generation
+;;;            Benchmarking: A group of individuals, from the current population and/or a hall of fame, are chosen as
+;;;                benchmarks. Every individual in the current population plays against every benchmark individual, and the
+;;;                fitness function is the amount of money won/lost against each benchmark individual.
+;;;                This fitness function is easily parallelizable and highly tunable to different distributions
+;;;                of benchmark individuals, and so is used as the main fitness evaluation function.
+;;;            K-Random: Each individual plays against K random other individuals in the population, as in http://gpbib.cs.ucl.ac.uk/gecco2002/GA155.pdf
+;;;                Matches may contribute to the fitness functions of just one of the players or to both. This is just
+;;;                as parallelizable as benchmarking, but makes it difficult to tell which individuals are better due to 
+;;;                each individual having a unique set of opponents. This is mostly used in the round-robin extreme during
+;;;                hyperparameter search to compare the best individuals evolved by multiple hyperparameter settings
+;;; 3. Parent selection
+;;;        Generic epsilon lexicase selection, treating the benchmark individuals as test cases, is used here
+;;;        When selecting each parent, the benchmarking individuals are randomly shuffled. Then proceeding down
+;;;        the sequence of benchmarking individuals, the average amount won against that benchmark is calculated 
+;;;        over the whole population. Then the median absolute deviation from the mean is calculated. The cutoff 
+;;;        winning amount against this individual is computed by the highest amount won less the median absolute deviation.
+;;;        Any individual winning more than this cutoff survives to the next test case. This process is then repeated
+;;;        until only one individual is left, or until the test cases are exhausted, in which case a random individual is
+;;;        selected from those remaining
+;;; 4. Mutation
+;;;        As in the two papers cited above, https://arxiv.org/abs/1712.06567 and https://arxiv.org/abs/1703.03864, a mutation is 
+;;;        represented as the concatenation of another int to the individual's growing collection of random seeds. This sequence
+;;;        of seeds, along with a preset global mutation standard deviation, is a compact representation of the uniform gaussian
+;;;        mutations taken to reach this point. This representation lends itself much more easily to distributed computing, as 
+;;;        only a couple hundred integers need to be communicated per individual, instead of millions of parameter weights.
+;;;        It is also possible to implement an annealing schedule for the mutation strength, as in https://dl.acm.org/doi/abs/10.1145/3205455.3205589
+;;; 5. Repeat until the end of the cycle
+;;;        As ERL is very computationally intensive, I will try to train mostly at night when no one new is going to need a HPC node.
+;;;        To facilitate this, I'll need to be able to pick up and leave off evolution at any time. That functionality will either be
+;;;        in this file or in process-result.clj
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Functions: 
+;;; versus plays two individuals against each other and returns the match results
+;;; benchmark implements the benchmark fitness evaluation described above
+;;; single-elim implements the single-elimination tournament fitness evaluation
+;;;     described above
+;;; round-robin implements the K-random fitness evaluation described above
+;;; lexicase-selection implements the epsilon-lexicase selection described above
+;;; cull-hof attempts to remove consistently bad, and therefore unhelpful, individuals
+;;;    from the hall of fame
+;;; select-from-hof implements random selection, k-best as in https://arxiv.org/pdf/2104.05610.pdf, or 
+;;;    exponential selection, in which hof individuals from later generations are exponentially more
+;;;    likely to be selected as benchmarks to maintain a balance between skilled individuals providing
+;;;    selection pressure and earlier individuals preventing evolutionary forgetting and smoothing out convergence.
+;;; ERL implements the evolutionary reinforcement learning cycle, reporting out at each generation the
+;;;    generation number, the current population, and the time taken for fitness evaluations. I will have
+;;;    to implement truncation of game length as in https://arxiv.org/abs/1703.03864 for better CPU utilization
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn versus
   "Returns the winning individual, the match results of the individuals, or the 
@@ -20,7 +99,7 @@
                                          :or {stdev 0.005}}]
   (with-open [manager (if manager
                         (.newSubManager manager)
-                        (nd/new-base-manager))]
+                        (ndarray/new-base-manager))]
     (let [mask (ndarray/ndarray manager (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
           i1 (transformer/model-from-seeds ind1 max-seq-length manager mask :stdev stdev)
           i2 (transformer/model-from-seeds ind2 max-seq-length manager mask :stdev stdev)]
@@ -60,7 +139,7 @@
                                                    :or {stdev 0.005}}]
   (with-open [manager (if manager
                         (.newSubManager manager)
-                        (nd/new-base-manager))]
+                        (ndarray/new-base-manager))]
     (let [mask (ndarray/ndarray manager (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
           i1 (transformer/model-from-seeds individual max-seq-length manager mask :stdev stdev)]
       (with-open [_i1 (utils/make-closeable i1 transformer/close-individual)]
@@ -98,6 +177,13 @@
               #(merge-with + % {id gain}))
       individual)))
 
+(defn process-decks
+  "If the list of decks doesn't exist, create one"
+  [decks num-games]
+  (or decks
+      (repeatedly num-games
+                  #(shuffle utils/deck))))
+
 (defn benchmark
   "Given a population and a set of benchmark individuals possibly drawn
    from the population, plays each individual in the population against each
@@ -107,12 +193,9 @@
    with players in reversed positions, to reduce variance as much as possible\\
    -> [updated population, updated benchmark]"
   [pop benchmark max-seq-length num-games & {:keys [decks symmetrical? as-list? stdev]
-                                             :or {stdev 0.005}}]
-  (let [decks (if symmetrical?
-                (or decks
-                    (repeatedly num-games
-                                #(shuffle utils/deck)))
-                decks)
+                                             :or {stdev 0.005
+                                                  symmetrical? true}}]
+  (let [decks (process-decks decks num-games)
         vs #(versus %1 %2 max-seq-length num-games 
                     :net-gain? true 
                     :decks decks
@@ -174,6 +257,70 @@
                  1000
                  :symmetrical? true))
 
+(defn single-elim
+  "Single elimination tournament of the population. If update-error? is true, then 
+   sets the fitness of each individual to the max tournament round reached. Otherwise
+   returns all individuals remaining after max-rounds or the only individual left.\\
+   Decks are automatically standardized between all games. Provide a list of decks to 
+   standardize with other functions\\
+   :update-error? - whether to return the last individuals left or the population updated with
+   the last round reached as their fitness function\\
+   :symmetrical? - whether to standardize games by playing each set of decks from both sides\\
+   :stdev - the standard devation used to construct the models"
+  [pop max-rounds max-seq-length num-games & {:keys [update-error? symmetrical? stdev decks]
+                                              :or {symmetrical? true
+                                                   stdev 0.005}}]
+  (loop [pop pop
+         cur-pop pop
+         i 0]
+    (if (or (>= i max-rounds) (= 1 (count cur-pop)))
+      (if update-error?
+        pop
+        cur-pop)
+      (let [vs #(versus %1 %2 max-seq-length num-games
+                        :net-gain? true
+                        :stdev stdev
+                        :decks (process-decks decks num-games))
+            matches (partition-all 2 (shuffle cur-pop))
+            pass (filter #(= 1 (count %)) matches)
+            matches (filter #(= 2 (count %)) matches)
+            res-1 (mapv #(future (vs (first %) (second %))) matches)
+            res-2 (if symmetrical?
+                    (mapv #(future (vs (second %) (first %))) matches)
+                    (repeat (count matches) {}))
+            results (apply merge
+                           (concat
+                            (map #(merge-with + (deref %1) ((if symmetrical?
+                                                              deref
+                                                              identity) %2))
+                                 res-1
+                                 res-2)
+                            (map #(assoc {} (:id (first %)) ##Inf) pass)))
+            next-round (filter #(pos? (get results (:id %) ##-Inf)) cur-pop)]
+        (if update-error?
+          (recur (mapv (fn [ind]
+                         (condp #(%1 %2) (results (:id ind))
+                           nil? ind
+                           pos? (assoc ind :error (inc i))
+                           neg? (assoc ind :error i)
+                           ind))
+                       pop)
+                 next-round
+                 (inc i))
+          (recur pop next-round (inc i)))))))
+
+#_(single-elim [{:seeds [1] :id :p0}
+             {:seeds [2] :id :p2}
+             {:seeds [3] :id :p3}
+             {:seeds [4] :id :p4}
+              {:seeds [5] :id :p5}
+              {:seeds [6] :id :p6}
+              {:seeds [7] :id :p7}]
+             3
+             10
+             10
+             :update-error? true)
+
 
 (defn get-challengers 
   "Get the index of players to compete with each other for round robin 
@@ -201,23 +348,38 @@
    round-robin-count other players. Updates each player with the match 
    results against other players\\
    -> updated population"
-  [pop num-games round-robin-count max-seq-length]
-  (loop [challengers (get-challengers (count pop) round-robin-count)
-         pop pop]
-    (if (empty? challengers)
-      pop
-      (recur (rest challengers)
-             (let [[p1 & others] (first challengers)]
-               (loop [o others
-                      pop pop]
-                 (if (empty? o)
-                   pop
-                   (recur (rest o)
-                          (let [p2 (first o)
-                                [ind1 ind2] (versus (pop p1) (pop p2) max-seq-length num-games)]
-                            (assoc pop 
-                                   p1 ind1
-                                   p2 ind2))))))))))
+  [pop num-games round-robin-count max-seq-length & {:keys [decks symmetrical? as-list? stdev]
+                                                     :or {stdev 0.005
+                                                          symmetrical? true}}]
+  (assert (not (and as-list? symmetrical?)) "Does not currently support reporting standard deviations for symmetrized competition")
+  (let [challengers (get-challengers (count pop) round-robin-count)
+        matches (mapcat #(map (partial vector (first %)) (rest %)) challengers)
+        decks (process-decks decks num-games)
+        vs #(versus %1 %2 max-seq-length num-games
+                    :net-gain? true
+                    :decks decks
+                    :stdev stdev
+                    :as-list? as-list?)
+        res1 (mapv #(future (vs (pop (first %)) (pop (second %)))) matches)
+        res2 (if symmetrical? 
+               (mapv #(future (vs (pop (second %)) (pop (first %)))) matches)
+                 [])]
+    (reduce (fn [p res]
+              (map #(update-individual % res) p))
+            pop
+            (map deref (concat res1 res2)))))
+
+#_(round-robin-parallel [{:seeds [1] :id :p0}
+                       {:seeds [2] :id :p1}
+                       {:seeds [3] :id :p2}
+                       {:seeds [4] :id :p3}
+                       {:seeds [5] :id :p4}
+                       {:seeds [6] :id :p5}]
+                      10
+                      5
+                      10
+                        :as-list? true
+                      :symmetrical? false)
 
 (defn lexicase-selection
   "Lexicase selection using the individuals as test cases. Picks a random individual,

@@ -1,6 +1,5 @@
 (ns poker.core
   (:require [poker.ERL :as ERL]
-            [clj-djl.ndarray :as nd]
             [clojure.pprint :as pprint]
             [poker.utils :as utils]
             [poker.concurrent :as concurrent]
@@ -172,38 +171,23 @@
   #_(catch Exception e (println (str e (.getCause e) (.getCause (.getCause e)))))
   (print-as-vector
    (print-as-vector
-    (println (ERL/ERL :pop-size 25
-                      :num-generations 25
-                      :num-games 500
-                      :benchmark-count 4
-                      :random-seed 8539217070109331090
-                      :max-seq-length 100
-                      :stdev 0.05)))
-   (print-as-vector
-    (println (ERL/ERL :pop-size 25
-                      :num-generations 25
+    (println (ERL/ERL :pop-size 5
+                      :num-generations 2
+                      :num-games 10
+                      :benchmark-count 2
+                      :random-seed -3057099454162971707
+                      :max-seq-length 10
+                      :stdev 0.005)))
+   #_(print-as-vector
+    (println (ERL/ERL :pop-size 10
+                      :num-generations 60
                       :num-games 500
                       :benchmark-count 6
-                      :random-seed 8539217070109331090
+                      :random-seed -3057099454162971707
                       :max-seq-length 100
-                      :stdev 0.05)))
-   (print-as-vector
-    (println (ERL/ERL :pop-size 25
-                      :num-generations 25
-                      :num-games 500
-                      :benchmark-count 8
-                      :random-seed 8539217070109331090
-                      :max-seq-length 100
-                      :stdev 0.05)))
-   (print-as-vector
-    (println (ERL/ERL :pop-size 25
-                      :num-generations 25
-                      :num-games 500
-                      :benchmark-count 16
-                      :random-seed 8976857739703364631
-                      :max-seq-length 100
-                      :stdev 0.05)))))
+                      :stdev 0.005)))))
 
+#_(-main)
 
 (def hyperparameter-search
   "Keep other parameters small while we range one parameter from
@@ -221,7 +205,7 @@
    :max-seq-length [50 100 200 400]
    :stdev [0.001 0.005 0.01 0.05 0.1]})
 
-#_(-main)
+
 
 
 

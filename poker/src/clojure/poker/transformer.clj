@@ -255,7 +255,7 @@
   [& {:keys [axis]
       :or {axis 0}}]
   (LambdaBlock.
-   (utils/make-function #(nd/ndlist (.squeeze (.singletonOrThrow %) axis)))))
+   (utils/make-function #(ndarray/ndlist (.squeeze (.singletonOrThrow %) axis)))))
 
 
 (defn sequential-block
@@ -396,18 +396,157 @@
       (.setHeadCount head-count)
       (.build)))
 
-#_(with-open [manager (nd/new-base-manager)]
+#_(with-open [manager (ndarray/new-base-manager)]
     (let [m (scaled-dot-product-attention-block 4)]
-      (initialize-model m manager "float" (into-array Shape [(nd/shape [1 2 4])
-                                                             (nd/shape [1 2 2])]))
+      (initialize-model m manager "float" (into-array Shape [(ndarray/shape [1 2 4])
+                                                             (ndarray/shape [1 2 2])]))
       #_(set-all-parameters m 1 float-array)
       #_(println (get-parameters m))
-      (println (into [] (forward m (ndlist manager
+      (println (into [] (forward m (ndarray/ndlist manager
                                            [[[1 2 3 4] [3 4 5 6]]]
                                            [[[1 0] [1 1]]]))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;          Blocks         ;;
+;;  Manipulating Blocks    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+(defn set-parameter!
+  "Given a block, the name of a parameter, and an array of the values in the parameter,
+   sets the values of that parameter to the values in the array.\\
+   Block, String, java array -> Block"
+  [block pname pvalues]
+  (.set (.getArray (.get (.getParameters block) pname)) pvalues)
+  block)
+
+(defn get-pnames
+  "Given a block, returns a vector of the names of the parameters in the block\\
+   -> [names ...]"
+  [block]
+  (into [] (.keys (.getParameters block))))
+
+#_(with-open [m (ndarray/new-base-manager)]
+    (clojure.pprint/pprint
+     (get-pnames (causal-mask-block m [1 2 3]))))
+
+(defn get-parameters
+  "Given a block, returns a map from the name of a parameter to the value, either as an NDArray or as a nested vector, of that parameter\\
+   -> {pname pvalue}"
+  [block & {:keys [as-array?]
+            :or {as-array? true}}]
+  (let [p (.getParameters block)
+        k (.keys p)]
+    (zipmap k
+            (for [n k]
+              ((if as-array?
+                 #(.getArray %)
+                 identity)
+               (.get p n))))))
+
+#_(with-open [m (ndarray/new-base-manager)]
+    (clojure.pprint/pprint
+     (get-parameters (causal-mask-block m [1 2 3]) :as-array? true)))
+
+(defn get-pcount
+  "Given a block, gets the number of learnable parameters"
+  [block]
+  (reduce #(+ %1 (.size (second %2))) 0 (get-parameters block)))
+
+#_(with-open [m (ndarray/new-base-manager)]
+    (clojure.pprint/pprint
+     (get-pcount (causal-mask-block m [1 2 3]))))
+
+
+(defn set-all-parameters
+  "Set all parameters in a model to a value"
+  [model value arrfn]
+  (let [names (get-pnames model)
+        p (get-parameters model)]
+    (run! (fn [n]
+            (set-parameter! model n (arrfn (repeat (.size (p n)) value))))
+          names)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       Individuals       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#_(defn mutate
+    "Given an individual whose :parameter-map is {:pname :pvalues}, perturbs each
+   of the pvalues with gaussian noise."
+    [individual]
+    (update individual
+            :parameter-map
+            #(into {}
+                   (map (fn [[key value]]
+                          [key (mapv +
+                                     value
+                                     (utils/rand-normal-length 0 1 (count value)))]))
+                   %)))
+
+(defn set-parameters!
+  "Given a neural net and a map of {parameter-name float-array}, where the float-array or vector
+   has the same number of elements as the corresponding parameter, sets the data of the neural
+   net to the data in the float-arrays\\
+   -> nnet"
+  [nnet parameter-map]
+  (let [params (get-parameters nnet :as-array? true)]
+    (run! #(.set (params %)
+                   (let [arr (parameter-map %)]
+                     (if (instance? (Class/forName "[F") arr)
+                       arr
+                       (float-array arr))))
+          (map first params))
+    nnet))
+
+(defn add-parameters!
+  "Given a neural net and a map of {parameter-name float-array}, where the float-array or vector
+   has the same number of elements as the corresponding parameter, sets the data of the neural
+   net to the data in the float-arrays\\
+   -> nnet"
+  [nnet parameter-map]
+  (let [params (get-parameters nnet :as-array? true)]
+    (run! #(.set (params %)
+                   (float-array (map + (parameter-map %) (.toArray (params %)))))
+          (map first params))
+    nnet))
+
+#_(with-open [m (nd/new-base-manager)]
+    (let [l (linear 4)]
+      (initialize-model l m "float" [1 2])
+      (add-parameters! l {"weight" [10 10 10 10 10 10 10 10]
+                          "bias" [-10 -10 -10 -10]})
+      (println (ndarray/get-parameters l))))
+
+#_(defn add-gaussian-model!
+    "Adds gaussian noise to an individual\\
+   Either uses a common mean and stdev or a mean of 0 and an ndarray of the same size as the stdev\\
+   -> ndarray"
+    ([nnet mean stdev arrfn]
+     (run! #(ndarray/add-gaussian-noise! % mean stdev arrfn)
+           (map second (ndarray/get-parameters nnet :as-array? true)))
+     nnet)
+    ([model stdev arrfn]
+     (let [p (ndarray/get-parameters model :as-array? true)
+           pnames (map first p)]
+       (run! #(ndarray/add-gaussian-noise! (get p %) (get stdev %) arrfn)
+             pnames)
+       model)))
+
+#_(with-open [m (nd/new-base-manager)]
+    (let [model (linear 2 :bias? false)]
+      (initialize-model model m "float" [1 2])
+      (println (get-parameters model))
+      (add-gaussian-model!
+       model
+       {"weight" (ndarray m float-array [[0 0.001] [0.01 0.1]])}
+       float-array)
+      (println (get-parameters model))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   Initialized Blocks    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn mask-block
@@ -438,7 +577,7 @@
                                arrfn float-array}}]
   (assert (>= (count input-shape) 3) (str "Shape size too small. Must be at least [B F1 F2]. Shape: " input-shape))
   (let [m (mask-block manager input-shape :datatype datatype)]
-    (ndarray/set-parameter! m
+    (set-parameter! m
                             "01Multiplication_weight"
                             (arrfn
                              (flatten
@@ -447,7 +586,7 @@
     (.freezeParameters m true)
     m))
 
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (ndarray/new-base-manager)]
     (clojure.pprint/pprint (get-parameters (causal-mask-block m [2 3 3]))))
 
 (defn n-fold-mask-block
@@ -465,15 +604,15 @@
                                arrfn float-array}}]
   (let [m (mask-block manager input-shape :datatype datatype)]
     (assert (>= (count input-shape) 2) (str "Shape size too small. Must be at least [B F]. Shape: " input-shape))
-    (ndarray/set-parameter! m
-                            "01Multiplication_weight"
-                            (arrfn
-                             (flatten
-                              (ndarray/n-fold-mask (drop 1 input-shape) axis n i))))
+    (set-parameter! m
+                    "01Multiplication_weight"
+                    (arrfn
+                     (flatten
+                      (ndarray/n-fold-mask (drop 1 input-shape) axis n i))))
     (.freezeParameters m true)
     m))
 
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (ndarray/new-base-manager)]
     (println (get-parameters (n-fold-mask-block m [2 6 3]))))
 
 
@@ -647,7 +786,7 @@
                       [1];;only take the first input, ignore the mask.
                       (unembed-block embedding))
         model (sequential-block input-layer core-layer output-layer)]
-    (when initializer (nn/set-initializer model initializer ai.djl.nn.Parameter$Type/WEIGHT))
+    (when initializer (.setInitializer model initializer ai.djl.nn.Parameter$Type/WEIGHT))
     (initialize-model model manager "float" input-shapes)
     (if component-map?
       {:embedding embedding :pos-encoding pos-encoding :input-layer input-layer :core-layer core-layer :output-layer output-layer :model model}
@@ -655,8 +794,8 @@
 
 
 
-#_(with-open [manager (nd/new-base-manager)]
-    (let [input-shapes (into-array Shape (map nd/new-shape [[1 4 4]
+#_(with-open [manager (ndarray/new-base-manager)]
+    (let [input-shapes (into-array Shape (map ndarray/shape [[1 4 4]
                                                             [1 3 2]
                                                             [7 3]
                                                             [1 7 7]]))
@@ -667,151 +806,14 @@
                              :num-heads 2
                              :d-pe [4 3 3]
                              :max-seq-length 10)]
-      (println (ndarray/get-parameters model))
+      (println (get-parameters model))
       #_(println (into [] (forward model (ndlist manager
                                                  [[[-1 -2 -3 -4] [-5 -6 -7 -8] [-1 -3 -5 -7] [1 1 1 1]]]
                                                  [[[0 1] [1 0] [1 1]]]
                                                  [[1 2 3] [2 3 4] [3 4 5] [4 5 6] [5 6 7] [6 7 8] [1 3 4]]
                                                  (causal-mask [1 7 7] 0)))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Manipulating Blocks    ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
-
-(defn set-parameter!
-  "Given a block, the name of a parameter, and an array of the values in the parameter,
-   sets the values of that parameter to the values in the array.\\
-   Block, String, java array -> Block"
-  [block pname pvalues]
-  (.set (.getArray (.get (.getParameters block) pname)) pvalues)
-  block)
-
-(defn get-pnames
-  "Given a block, returns a vector of the names of the parameters in the block\\
-   -> [names ...]"
-  [block]
-  (into [] (.keys (.getParameters block))))
-
-#_(with-open [m (new-base-manager)]
-    (clojure.pprint/pprint
-     (get-pnames (causal-mask-block m [1 2 3]))))
-
-(defn get-parameters
-  "Given a block, returns a map from the name of a parameter to the value, either as an NDArray or as a nested vector, of that parameter\\
-   -> {pname pvalue}"
-  [block & {:keys [as-array?]
-            :or {as-array? true}}]
-  (let [p (.getParameters block)
-        k (.keys p)]
-    (zipmap k
-            (for [n k]
-              ((if as-array?
-                 #(.getArray %)
-                 identity)
-               (.get p n))))))
-
-#_(with-open [m (nd/new-base-manager)]
-    (clojure.pprint/pprint
-     (get-parameters (causal-mask-block m [1 2 3]) :as-array? true)))
-
-(defn get-pcount
-  "Given a block, gets the number of learnable parameters"
-  [block]
-  (reduce #(+ %1 (.size (second %2))) 0 (get-parameters block)))
-
-#_(with-open [m (nd/new-base-manager)]
-    (clojure.pprint/pprint
-     (get-pcount (causal-mask-block m [1 2 3]))))
-
-
-(defn set-all-parameters
-  "Set all parameters in a model to a value"
-  [model value arrfn]
-  (let [names (get-pnames model)
-        p (get-parameters model)]
-    (run! (fn [n]
-            (set-parameter! model n (arrfn (repeat (nd/size (p n)) value))))
-          names)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       Individuals       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#_(defn mutate
-  "Given an individual whose :parameter-map is {:pname :pvalues}, perturbs each
-   of the pvalues with gaussian noise."
-  [individual]
-  (update individual
-          :parameter-map
-          #(into {}
-                 (map (fn [[key value]]
-                        [key (mapv +
-                                   value
-                                   (utils/rand-normal-length 0 1 (count value)))]))
-                 %)))
-
-(defn set-parameters!
-  "Given a neural net and a map of {parameter-name float-array}, where the float-array or vector
-   has the same number of elements as the corresponding parameter, sets the data of the neural
-   net to the data in the float-arrays\\
-   -> nnet"
-  [nnet parameter-map]
-  (let [params (get-parameters nnet :as-array? true)]
-    (run! #(nd/set (params %)
-                   (let [arr (parameter-map %)]
-                     (if (instance? (Class/forName "[F") arr)
-                       arr
-                       (float-array arr))))
-          (map first params))
-    nnet))
-
-(defn add-parameters!
-  "Given a neural net and a map of {parameter-name float-array}, where the float-array or vector
-   has the same number of elements as the corresponding parameter, sets the data of the neural
-   net to the data in the float-arrays\\
-   -> nnet"
-  [nnet parameter-map]
-  (let [params (get-parameters nnet :as-array? true)]
-    (run! #(nd/set (params %)
-                   (float-array (map + (parameter-map %) (nd/to-array (params %)))))
-          (map first params))
-    nnet))
-
-#_(with-open [m (nd/new-base-manager)]
-    (let [l (linear 4)]
-      (initialize-model l m "float" [1 2])
-      (add-parameters! l {"weight" [10 10 10 10 10 10 10 10]
-                          "bias" [-10 -10 -10 -10]})
-      (println (ndarray/get-parameters l))))
-
-#_(defn add-gaussian-model!
-    "Adds gaussian noise to an individual\\
-   Either uses a common mean and stdev or a mean of 0 and an ndarray of the same size as the stdev\\
-   -> ndarray"
-    ([nnet mean stdev arrfn]
-     (run! #(ndarray/add-gaussian-noise! % mean stdev arrfn)
-           (map second (ndarray/get-parameters nnet :as-array? true)))
-     nnet)
-    ([model stdev arrfn]
-     (let [p (ndarray/get-parameters model :as-array? true)
-           pnames (map first p)]
-       (run! #(ndarray/add-gaussian-noise! (get p %) (get stdev %) arrfn)
-             pnames)
-       model)))
-
-#_(with-open [m (nd/new-base-manager)]
-    (let [model (linear 2 :bias? false)]
-      (initialize-model model m "float" [1 2])
-      (println (get-parameters model))
-      (add-gaussian-model!
-       model
-       {"weight" (ndarray m float-array [[0 0.001] [0.01 0.1]])}
-       float-array)
-      (println (get-parameters model))))
 
 #_(defn initialize-stdevs
     "For each parameter NDArray of nnet, creates an array of ones with the same shape 
@@ -840,7 +842,7 @@
   [manager]
   (transformer manager
                (into-array Shape
-                           (map nd/new-shape
+                           (map ndarray/shape
                                 [[1 256 onehot/state-length];;state
                                  [1 256 onehot/action-length];;action
                                  [1 512 4];;position
@@ -854,14 +856,14 @@
 
 (def initial-parameter-map
   "The initial parameter map based on the current transformer"
-  (with-open [m (nd/new-base-manager)]
+  (with-open [m (ndarray/new-base-manager)]
     (let [t (current-transformer m)]
       (transduce (map (fn [[k v]] [k (float-array (.size v))]))
                  conj
                  {}
                  (get-parameters t)))))
 
-#_(with-open [manager (nd/new-base-manager)
+#_(with-open [manager (ndarray/new-base-manager)
               model (Model/newInstance "transformer")]
     (let [s (into-array Shape [(nd/shape [1 2 3])])
           arr [(ndarray/ndarray manager [[[1 2 3] [4 5 6]]])]
@@ -1087,7 +1089,7 @@
   (with-open [m (.newSubManager manager)]
     (.tempAttachAll m (into-array ai.djl.ndarray.NDResource [pos-encoding]))
     (.set pos-encoding
-          (nd/ndindex "...,0")
+          (ndarray/ndindex "...,0")
           (utils/make-function #(do (.addi % (.muli (.min %) -1)) %)))
     pos-encoding))
 
@@ -1107,12 +1109,12 @@
                                   (max 0 (- (ndarray/get-axis position-shape -2)
                                             max-seq-length)))
         position-slice (if (= "PyTorch" (ai.djl.engine.Engine/getDefaultEngineName))
-                         (nd/to-type position-slice (DataType/INT32) false)
+                         (.toType position-slice DataType/INT32 false)
                          position-slice)
         position-slice (minus-baseline position-slice (.getManager position-slice))
-        mask-start (max 0 (- (ndarray/get-axis (nd/get-shape mask) -2)
-                             (ndarray/get-axis (nd/get-shape position-slice) -2)))
-        mask-slice (nd/get mask (ndarray/ndindex (str "...," mask-start ":," mask-start ":")))]
+        mask-start (max 0 (- (ndarray/get-axis (ndarray/get-shape mask) -2)
+                             (ndarray/get-axis (ndarray/get-shape position-slice) -2)))
+        mask-slice (.get mask (ndarray/ndindex (str "...," mask-start ":," mask-start ":")))]
     [(get-slice state (max 0 (- (ndarray/get-axis state-shape -2)
                                 (Math/ceil (/ max-seq-length 2.0)))))
      (get-slice actions (max 0 (- (ndarray/get-axis action-shape -2)

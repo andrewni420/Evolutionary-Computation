@@ -9,8 +9,6 @@
                  [net.mikera/core.matrix "0.63.0"]
                  [cnuernber/dtype-next "10.000-beta-39"]
                  [techascent/tech.ml.dataset "7.000-beta-31"]
-                 [clj-djl "0.1.9"]
-                 [clj-djl/dataframe "0.1.2"]
                  [ai.djl/api "0.21.0"]
                  [ai.djl.pytorch/pytorch-engine "0.22.1"]
                  ;;[ai.djl.pytorch/pytorch-native-cpu "2.0.0"]

@@ -4,6 +4,21 @@
             [poker.ERL :as ERL]
             [poker.headsup :as headsup]))
 
+;;;;;;;;;
+;;; Message Passing Interface (MPI) allows for distributed training across 
+;;; multiple nodes. Allows for a lot of flexibility in compute architecture 
+;;; such as beowulf clusters, and can take advantage of leftover compute power
+;;; MPI is only officially available for fortran, C++, and python, so I decided to 
+;;; use libpython and mpi4py instead of MPJ, the java MPI implementation
+;;;;;;;;;
+
+;;;;;;;;;
+;;; The master-slave architecture is used, in which a central MPI thread
+;;; controls the evolutionary loop, and delegates fitness function evaluations
+;;; to worker threads, which await a signal from the master thread, evaluate the 
+;;; fitness, send the result to the master thread, and await another task.
+;;;;;;;;;
+
 ;;; MPI Import and Environment Variables ;;;
 (require-python '[mpi4py :as mpi])
 #_(println (py/get-attr mpi/rc "finalize"))

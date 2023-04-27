@@ -15,10 +15,10 @@ python -c 'import torch; print(torch.cuda.get_device_name(torch.cuda.current_dev
 srun ./run-file.clj
 
 #! /bin/sh
-#SBATCH --cpus-per-task=116
-#SBATCH --time=10:00:00
-#SBATCH --output=ERL-benchmark-comparison-%j.out
-#SBATCH --error=ERL-benchmark-comparison-%j.err
+#SBATCH --cpus-per-task=100
+#SBATCH --time=8:00:00
+#SBATCH --output=ERL-pop-gen-ablation-%j.out
+#SBATCH --error=ERL-pop-gen-ablation-%j.err
 module load amh-clojure
 export DJL_DEFAULT_ENGINE=PyTorch
 export MXNET_ENGINE_TYPE=NaiveEngine

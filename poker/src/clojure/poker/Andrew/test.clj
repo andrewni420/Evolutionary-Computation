@@ -1,18 +1,7 @@
 (ns poker.Andrew.test
   (:require
-   [clj-djl.ndarray :as nd]
-   [clj-djl.model :as m]
-   [clj-djl.nn :as nn]
-   [clj-djl.training :as t]
-   [clj-djl.training.dataset :as ds]
-   [clj-djl.training.loss :as loss]
-   [clj-djl.training.optimizer :as optimizer]
-   [clj-djl.training.tracker :as tracker]
-   [clj-djl.training.listener :as listener]
    [tech.v3.dataset :as df]
-   [clj-djl.nn.parameter :as param]
-   [clj-djl.dataframe.column-filters :as cf]
-   [clj-djl.dataframe.functional :as dfn]
+   [poker.ndarray :as ndarray]
    [poker.utils :as utils]
    [poker.headsup :as headsup]
    [clojure.core.matrix :as matrix])
@@ -45,7 +34,7 @@
                  #_(utils/process-players [utils/random-agent utils/random-agent]))
 
 
-(def m (nd/new-base-manager))
+(def m (ndarray/new-base-manager))
 
 (def mulblock (.build
                (.setUnits
@@ -53,7 +42,7 @@
                 1)))
 
 (def squeeze (ai.djl.nn.LambdaBlock.
-              (utils/make-function #(nd/ndlist (.squeeze (.singletonOrThrow %) 0)))))
+              (utils/make-function #(ndarray/ndlist (.squeeze (.singletonOrThrow %) 0)))))
 
 (def mask-block (let [s (ai.djl.nn.SequentialBlock.)]
                   (.addAll s [mulblock squeeze])
@@ -74,7 +63,7 @@
  mask-block
  m
  ai.djl.ndarray.types.DataType/FLOAT32
- (into-array ai.djl.ndarray.types.Shape [(nd/new-shape [1 1 2])]))
+ (into-array ai.djl.ndarray.types.Shape [(ndarray/shape [1 1 2])]))
 
 (.forward
  mask-block
@@ -105,7 +94,7 @@
 (def d (TransformerDecoderBlock. 10 5 20 0.2 (utils/make-function #(ai.djl.nn.Activation/relu %))))
 
 
-(def transformer (let [t (nn/sequential-block)]
+(def transformer (let [t (ai.djl.nn.SequentialBlock.)]
                    (.addAll t (into-array ai.djl.nn.Block [(TransformerDecoderBlock. 10 5 20 0.2 (utils/make-function #(ai.djl.nn.Activation/relu %)))
                                                            (TransformerDecoderBlock. 10 5 20 0.2 (utils/make-function #(ai.djl.nn.Activation/relu %)))]))
                    t))
@@ -115,11 +104,11 @@
 (.initializeChildBlocks d
                         m
                         ai.djl.ndarray.types.DataType/FLOAT32
-                        (into-array ai.djl.ndarray.types.Shape [(nd/new-shape [2 3 10])]))
+                        (into-array ai.djl.ndarray.types.Shape [(ndarray/shape [2 3 10])]))
 
 
 (println (.head (.forward transformer (ai.djl.training.ParameterStore.)
-                          (nd/ndlist (.create m
+                          (ndarray/ndlist (.create m
                                               (->> [[[1 0 0 0 0 0 0 0 0 0]
                                                      [0 0 0 0 1 0 0 0 0 0]
                                                      [0 0 0 0 0 0 0 0 1 0]]
@@ -129,7 +118,7 @@
                                                    (flatten)
                                                    (map float)
                                                    (float-array))
-                                              (nd/new-shape [2 3 10])))
+                                              (ndarray/shape [2 3 10])))
                           false
                           nil)))
 
@@ -139,14 +128,14 @@
     (.keys)
     (println))
 
-(def o (nd/ones m (nd/new-shape [2 2])))
+(def o (.ones m (ndarray/shape [2 2])))
 (def s (.create m (float-array (flatten [[0.001 1] [10 0.001]]))
-                (nd/new-shape [2 2])))
+                (ndarray/shape [2 2])))
 
-(nd/to-array (nd/shape (poker.ERL/ndarray m float-array [[1 2] [3 4]])))
+(.toArray (ndarray/shape (poker.ERL/ndarray m float-array [[1 2] [3 4]])))
 
-(matrix/reshape (nd/to-array (poker.ERL/ndarray m float-array [[1 2] [3 4]]))
-                (nd/to-array (nd/shape (poker.ERL/ndarray m float-array [[1 2] [3 4]]))))
+(matrix/reshape (.toArray (poker.ERL/ndarray m float-array [[1 2] [3 4]]))
+                (.toArray (ndarray/shape (poker.ERL/ndarray m float-array [[1 2] [3 4]]))))
 
 (def e (ai.djl.nn.transformer.TransformerEncoderBlock. 10 5 20 0.2 (reify java.util.function.Function
                                                                      (apply [_ x] (ai.djl.nn.Activation/relu x)))))
@@ -182,16 +171,16 @@
 
 (.initializeChildBlocks seqblock m
                         ai.djl.ndarray.types.DataType/FLOAT32
-                        (into-array ai.djl.ndarray.types.Shape [(nd/new-shape [2 6])]))
+                        (into-array ai.djl.ndarray.types.Shape [(ndarray/shape [2 6])]))
 
-(.getOutputShapes seqblock (into-array ai.djl.ndarray.types.Shape [(nd/new-shape [2 6])]))
+(.getOutputShapes seqblock (into-array ai.djl.ndarray.types.Shape [(ndarray/shape [2 6])]))
 
 (.keys (.getParameters seqblock))
 
 (println (.getArray (.get (.getParameters seqblock) "01Linear_bias")))
 
 (.forward seqblock (ai.djl.training.ParameterStore.)
-          (ai.djl.ndarray.NDList. [(.ones m (nd/new-shape [2 6]))])
+          (ai.djl.ndarray.NDList. [(.ones m (ndarray/shape [2 6]))])
           false
           nil)
 
@@ -219,7 +208,7 @@
       (.setSampling batch-size shuffle?)
       (.build)))
 
-(let [m (nd/new-base-manager)
+(let [m (ndarray/new-base-manager)
       trueW (.create m (float-array [2,-3.4]))
       trueB 4.2
       {features :x labels :y} (datapoints m trueW trueB 1000)
@@ -282,7 +271,7 @@
 
 
 (def model
-  (let [m (nd/new-base-manager)
+  (let [m (ndarray/new-base-manager)
         net (ai.djl.nn.SequentialBlock.)
         linearBlock1 (-> (ai.djl.nn.core.Linear/builder)
                          (.optBias true)
@@ -343,15 +332,15 @@
     (sgd params lr batch-size)
     (.close batch)))
 
-(let [m (nd/new-base-manager)
+(let [m (ndarray/new-base-manager)
       trueW (.create m (float-array [2,-3.4]))
       trueB 4.2
       {features :x labels :y} (datapoints m trueW trueB 1000)
       batch-size 20
       dataset (load-array features labels batch-size false)
-      w (.randomNormal m 0 0.01 (nd/new-shape [2 1]) ai.djl.ndarray.types.DataType/FLOAT32)
-      b (.zeros m (nd/new-shape [1]))
-      params (nd/ndlist w b)
+      w (.randomNormal m 0 0.01 (ndarray/shape [2 1]) ai.djl.ndarray.types.DataType/FLOAT32)
+      b (.zeros m (ndarray/shape [1]))
+      params (ndarray/ndlist w b)
       lr 0.03
       _ (.forEach params (utils/make-consumer #(.setRequiresGradient % true)))]
   (loop [epoch 0]
@@ -374,14 +363,14 @@
 
 (let [sm-loss (ai.djl.training.loss.SoftmaxCrossEntropyLoss.
                "softmax1" 1 -1 false true)
-      m (nd/new-base-manager)
+      m (ndarray/new-base-manager)
       label (.create m (float-array (flatten [[1 0] [1 0] [0 1] [0 1]]))
-                     (nd/new-shape [4 2]))
+                     (ndarray/shape [4 2]))
       pred (.create m (float-array (flatten [[0.1 0.9] [0.2 0.8] [0.3 0.7] [0.4 0.6]]))
-                    (nd/new-shape [4 2]))]
+                    (ndarray/shape [4 2]))]
   (* 4 (.getFloat (.evaluate sm-loss
-                             (nd/ndlist label)
-                             (nd/ndlist pred)) (long-array []))))
+                             (ndarray/ndlist label)
+                             (ndarray/ndlist pred)) (long-array []))))
 
 
 
@@ -432,6 +421,6 @@ cmake --build .")
    put -r poker ERL")
 
 (def delete-files 
-  ;;ls | grep -P "^slurm" | xargs -d "\n" rm
+  ;;ls | grep -P "^ERL-" | xargs -d "\n" rm
   )
          
