@@ -10,6 +10,10 @@ The main function of the repository. Runs the evolutionary loop and outputs a tr
 
 Implementation of the transformer neural network. Functions for model creation, weight initialization, weight manipulation, and inference.
 
+## ndarray.clj
+
+Various utility methods for interfacing with the DJL implementation of ndarrays
+
 The following java classes were created to fill in functionality not available in the DJL library:
 
 
@@ -46,10 +50,6 @@ Interface specifying a reverse method that implements the output unembedding in 
 Implementation of weight sharing, as proposed in https://arxiv.org/pdf/1608.05859.pdf. Inputs are multiplied by the transpose of the embedding matrix. 
 ### Utils.java
 I think this is unused and should be deleted. I will check later.
-
-## ndarray.clj
-
-Various utility methods for interfacing with the DJL implementation of ndarrays
 
 ## headsup.clj
 
