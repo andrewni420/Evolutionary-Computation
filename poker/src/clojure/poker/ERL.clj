@@ -5,10 +5,7 @@
             [poker.ndarray :as ndarray]
             [poker.concurrent :as concurrent]
             [clojure.set :as set]
-            [clojure.pprint :as pprint])
-  (:import ai.djl.ndarray.NDManager
-           ai.djl.ndarray.NDArray
-           ai.djl.ndarray.NDList))
+            [clojure.pprint :as pprint]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Evolutionary Reinforcement Learning     ;;;
@@ -164,8 +161,11 @@
   "Update the map of match results of an individual\\
    If the indiviudal already contains match results against this opponent,
    adds the match results together\\
+   Optionally specify a function to use to merge the results of multiple matches
+   against a single opponent\\
    -> individual"
-  [individual net-gain]
+  [individual net-gain & {:keys [merge-fn]
+                          :or {merge-fn +}}]
   (let [[p1 p2] (keys net-gain)
         [id gain] (condp = (:id individual)
                     p1 [p2 (net-gain p1)]
@@ -174,7 +174,7 @@
     (if id
       (update individual
               :error
-              #(merge-with + % {id gain}))
+              #(merge-with merge-fn % {id gain}))
       individual)))
 
 (defn process-decks
@@ -201,7 +201,7 @@
                     :decks decks
                     :as-list? as-list?
                     :stdev stdev)
-        fut #(future (vs %1 %2))
+        fut #(concurrent/msubmit (vs %1 %2))
         res1 (doall
               (for [ind1 pop
                     ind2 benchmark :when (not (= ind1 ind2))]
@@ -284,9 +284,9 @@
             matches (partition-all 2 (shuffle cur-pop))
             pass (filter #(= 1 (count %)) matches)
             matches (filter #(= 2 (count %)) matches)
-            res-1 (mapv #(future (vs (first %) (second %))) matches)
+            res-1 (mapv #(concurrent/msubmit (vs (first %) (second %))) matches)
             res-2 (if symmetrical?
-                    (mapv #(future (vs (second %) (first %))) matches)
+                    (mapv #(concurrent/msubmit (vs (second %) (first %))) matches)
                     (repeat (count matches) {}))
             results (apply merge
                            (concat
@@ -360,9 +360,9 @@
                     :decks decks
                     :stdev stdev
                     :as-list? as-list?)
-        res1 (mapv #(future (vs (pop (first %)) (pop (second %)))) matches)
+        res1 (mapv #(concurrent/msubmit (vs (pop (first %)) (pop (second %)))) matches)
         res2 (if symmetrical? 
-               (mapv #(future (vs (pop (second %)) (pop (first %)))) matches)
+               (mapv #(concurrent/msubmit (vs (pop (second %)) (pop (first %)))) matches)
                  [])]
     (reduce (fn [p res]
               (map #(update-individual % res) p))

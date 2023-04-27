@@ -715,6 +715,16 @@
                                                :position position-encoding))
       :game-history (conj game-history (state-to-history game-state new-state :verbosity verbosity))})))
 
+(def h (with-open [m (ndarray/new-base-manager)]
+  (play-game [(utils/init-player utils/random-agent :p0)
+            (utils/init-player utils/random-agent :p1)]
+           m
+             :game-history [{:hands [[:p0 [[8 "Clubs"] [9 "Diamonds"]]] [:p1 [[10 "Hearts"] [5 "Spades"]]]],
+                             :playerIDs [:p0 :p1],
+                             :action-history [[[:p0 ["All-In" 199.5]] [:p1 ["Fold" 0.0]]]],
+                             :visible-cards [],
+                             :visible-hands [],
+                             :net-gain [[:p0 1.0] [:p1 -1.0]]}])))
 
 #_(with-open [manager (ndarray/new-base-manager)]
   (println (play-game [(transformer/as-player (transformer/initialize-individual
@@ -829,20 +839,23 @@
    the total gain over all games\\
    Do not print out the last item (game-history) - it can get very big\\
    -> {players, net-gain = [gain ...] or {:mean :stdev}, game-encoding, game-history}"
-  [players manager num-games & {:keys [as-list? decks game-history game-encoding]
+  [players manager num-games & {:keys [as-list? decks game-history game-encoding max-actions]
                                 :or {as-list? false
-                                     decks nil}}]
+                                     decks nil
+                                     max-actions ##Inf}}]
   (loop [players (utils/process-players players)
          net-gain (zipmap (map :id players) (if as-list? [[] []] [0.0 0.0]))
          game-num 0
          game-encoding (or game-encoding (init-game-encoding manager (mapv :id players)))
          game-history (or game-history [])
-         decks (if decks decks (repeatedly #(shuffle utils/deck)))]
-    (if (<= num-games game-num)
+         decks (if decks decks (repeatedly #(shuffle utils/deck)))
+         action-count 0]
+    (if (or (<= num-games game-num) (<= max-actions action-count))
       {:players players
        :net-gain (process-net-gain net-gain num-games :as-list? as-list?)
        :game-encoding game-encoding
-       :game-history game-history}
+       :game-history game-history
+       :action-count action-count}
       (let [{[p1 p2] :players
              game-encoding :game-encoding
              game-history :game-history} (play-game players
@@ -856,7 +869,17 @@
                (inc game-num)
                game-encoding
                game-history
-               (rest decks))))))
+               (rest decks)
+               (+ action-count (/ (count (flatten (:action-history (last game-history)))) 3)))))))
+
+#_(def k (with-open [m (ndarray/new-base-manager)]
+  (iterate-games-reset [(utils/init-player utils/random-agent :p0)
+                       (utils/init-player utils/random-agent :p1)]
+                       m
+                       10
+                       :max-actions 3
+                       )))
+
 
 
 

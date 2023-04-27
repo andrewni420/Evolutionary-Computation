@@ -6,25 +6,25 @@
    [clojure.pprint :as pprint]
    [clojure.core.matrix :as m])
   (:import poker.TransformerDecoderBlock
-           ai.djl.ndarray.types.DataType
-           ai.djl.ndarray.types.Shape
-           ai.djl.training.initializer.Initializer
-           ai.djl.training.initializer.XavierInitializer
-           poker.TransformerTranslator
-           ai.djl.nn.SequentialBlock
-           ai.djl.nn.ParallelBlock
-           ai.djl.engine.Engine
-           ai.djl.nn.LambdaBlock
-           ai.djl.nn.Activation
-           ai.djl.nn.transformer.ScaledDotProductAttentionBlock
            poker.UnembedBlock
            poker.SinglePositionEncoding
            poker.LinearEmbedding
            poker.PositionalEncoding
            poker.SeparateParallelBlock
-           java.util.function.Function
+           poker.TransformerTranslator
            poker.ParallelEmbedding
+           ai.djl.engine.Engine
            ai.djl.Model
+           ai.djl.ndarray.types.DataType
+           ai.djl.ndarray.types.Shape
+           ai.djl.nn.SequentialBlock
+           ai.djl.nn.ParallelBlock
+           ai.djl.nn.LambdaBlock
+           ai.djl.nn.Activation
+           ai.djl.nn.transformer.ScaledDotProductAttentionBlock
+           ai.djl.training.initializer.Initializer
+           ai.djl.training.initializer.XavierInitializer
+           java.util.function.Function
            java.lang.Class))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

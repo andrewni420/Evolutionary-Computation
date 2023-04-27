@@ -1,7 +1,5 @@
 (ns poker.onehot
-  (:require [poker.utils :as utils])
-  (:import ai.djl.ndarray.NDArray
-           ai.djl.ndarray.index.NDIndex))
+  (:require [poker.utils :as utils]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Functions for converting        ;;;

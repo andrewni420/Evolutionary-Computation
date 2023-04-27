@@ -16,23 +16,6 @@
            ai.djl.nn.core.SparseMax))
 
 
-(defn update-individual
-  "Update the map of match results of an individual\\
-   If the indiviudal already contains match results against this opponent,
-   adds the match results together\\
-   -> individual"
-  [individual net-gain]
-  (let [[p1 p2] (keys net-gain)
-        [id gain] (condp = (:id individual)
-                    p1 [p2 (net-gain p1)]
-                    p2 [p1 (net-gain p2)]
-                    [nil nil])]
-    (if id
-      (update individual
-              :error
-              #(merge-with conj % {id gain}))
-      individual)))
-
 (defn benchmark
   "Given a population and a set of benchmark individuals possibly drawn
    from the population, plays each individual in the population against each
@@ -60,7 +43,7 @@
                       ind2 benchmark :when (not (= ind1 ind2))]
                   (concurrent/msubmit (vs ind1 ind2 true)))))]
     (reduce (fn [p res]
-              (map #(update-individual % res) p))
+              (map #(ERL/update-individual % res :merge-fn conj) p))
             pop
             (map deref (concat res1 res2)))))
 
@@ -177,17 +160,11 @@
                       :benchmark-count 2
                       :random-seed -3057099454162971707
                       :max-seq-length 10
-                      :stdev 0.005)))
-   #_(print-as-vector
-    (println (ERL/ERL :pop-size 10
-                      :num-generations 60
-                      :num-games 500
-                      :benchmark-count 6
-                      :random-seed -3057099454162971707
-                      :max-seq-length 100
                       :stdev 0.005)))))
 
+
 #_(-main)
+
 
 (def hyperparameter-search
   "Keep other parameters small while we range one parameter from

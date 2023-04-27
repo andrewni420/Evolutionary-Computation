@@ -17,6 +17,9 @@
 ;;; controls the evolutionary loop, and delegates fitness function evaluations
 ;;; to worker threads, which await a signal from the master thread, evaluate the 
 ;;; fitness, send the result to the master thread, and await another task.
+;;;
+;;; In master-slave communication, a tag of 0 indicates a task. A tag of 1 indicates
+;;; a termination message.
 ;;;;;;;;;
 
 ;;; MPI Import and Environment Variables ;;;
@@ -67,11 +70,11 @@
    Evaluate fitness of two opponents\\
    Stop evaluation early and return result\\
    Terminate thread"
-  []
+  [comm]
   (assert (MPI/Is_initialized) "MPI must be initialized for master thread to run")
   ())
 
-(defn slave 
+(defn slave
   "Code executed by a worker MPI thread with rank>0\\
    Computes fitness functions and then queries the main thread
    for more work\n
@@ -81,13 +84,17 @@
    Terminate thread\n
    Sends the following messages to the master thread:\\
    Fitness evaluation results"
-  []
+  [comm]
   (assert (MPI/Is_initialized) "MPI must be initialized for slave thread to run")
-  (loop [terminate? false
-        early-stop? false]
-    (cond early-stop? ()
-          terminate? nil
-          :else ())));;irecv and test for completion
+  (loop [task (py. comm irecv :source 0 :tag 0)
+         terminate (py. comm irecv :source 0 :tag 1)]
+    (cond (py. terminate test) (do (py. test cancel)
+                                   (py. terminate cancel)
+                                   nil)
+          (py. task test) (do ()
+                              (recur (py. comm irecv :source 0 :tag 0)
+                                     terminate))
+          :else (recur task terminate))));;irecv and test for completion
 
 (defn main
   "Main function assigning the master-slave roles to MPI threads
@@ -97,8 +104,8 @@
     (let [comm mpi4py.MPI/COMM_WORLD
           rank (py. comm Get_rank)]
       (if (= 0 rank)
-        (master)
-        (slave)))))
+        (master comm)
+        (slave comm)))))
 
 ;;Get the average time of every fitness evaluation that's finished when the buffer
 ;;finally empties. Then wait 2x that amount of time
