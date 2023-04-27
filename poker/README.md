@@ -1,4 +1,4 @@
-## poker
+### Poker
 
 Using evolutionary reinforcement learning to create a superhuman poker AI. Code breakdown is described below:
 
