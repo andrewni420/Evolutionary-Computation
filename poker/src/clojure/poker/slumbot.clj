@@ -135,7 +135,6 @@
   [action-history]
   (string/join "/" (map-indexed #(encode-round %2 (if (= 0 %1) [0.5 1.0] [0.0 0.0])) action-history)))
 
-
 (defn decode-action
   "Decode an incremental action from SlumBot\\
    -> action"
@@ -276,7 +275,7 @@
            :game-over true)))
 
 
-(defn parse-incr-action
+#_(defn parse-incr-action
   "Takes a response from slumbot, converts it into the incremental actions occurring
    since the last update, parses these incremental actions, and applies them to the game-state.\\
    If the game has ended, calls parse-winnings to return the final game-state.\\

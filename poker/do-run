@@ -17,17 +17,24 @@ srun ./run-file.clj
 #! /bin/sh
 #SBATCH --cpus-per-task=116
 #SBATCH --time=12:00:00
-#SBATCH --output=ERL-pop-gen-1200-15-%j.out
-#SBATCH --error=ERL-pop-gen-1200-15-%j.err
+#SBATCH --output=generational-fitness-%j.out
+#SBATCH --error=generational-fitness-%j.err
 module load amh-clojure
 export DJL_DEFAULT_ENGINE=PyTorch
 export MXNET_ENGINE_TYPE=NaiveEngine
 export OMP_NUM_THREADS=1
 srun ./run-file.clj
 
+
 #!/bin/sh
-#SBATCH -n 200
+#SBATCH -n 117
+#SBATCH --time=12:00:00
+#SBATCH --output=MPI-block-test-%j.out
+#SBATCH --error=MPI-block-test-%j.err
 module load cm-pmix4/4.1.1
 module load openmpi4/gcc/4.1.
 module load amh-clojure
-srun --mpi=pmix python -c "from mpi4py import MPI; print(MPI.COMM_WORLD.Get_rank())"
+export DJL_DEFAULT_ENGINE=PyTorch
+export MXNET_ENGINE_TYPE=NaiveEngine
+export OMP_NUM_THREADS=1
+srun --mpi pmix ./run-file.clj

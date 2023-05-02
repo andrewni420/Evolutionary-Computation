@@ -373,6 +373,80 @@
                              (ndarray/ndlist pred)) (long-array []))))
 
 
+  #_(mapv #(do (println %)
+               (println (ERL/versus (parent-seeds %)
+                                    (parent-seeds (mod (inc %) (count parent-seeds)))
+                                    10
+                                    1000
+                                    :net-gain? true
+                                    :as-list? true)))
+          (range 10))
+#_(benchmark [{:seeds [-2003437247 1540470339], :id :p5-0}]
+             [(utils/init-player utils/wait-and-bet :wait-and-bet)]
+             10
+             10
+             :symmetrical? false)
+#_(with-open [manager (nd/new-base-manager)]
+    (let [mask (ndarray/ndarray manager (ndarray/causal-mask [1 10 10] -2))
+          i1 (transformer/model-from-seeds {:seeds [-2003437247 1540470339], :id :p5-0} 10 manager mask)]
+      (with-open [_i1 (utils/make-closeable i1 transformer/close-individual)]
+        (:net-gain (headsup/iterate-games-reset
+                    [(transformer/as-player i1)
+                     (utils/init-player utils/wait-and-bet :wait-and-bet)]
+                    manager
+                    10
+                    :as-list? false
+                    :decks (repeatedly 10
+                                       #(shuffle utils/deck)))))))
+#_(ERL/versus-other {:seeds [-2003437247 1540470339], :id :p5-0}
+                    (utils/init-player utils/wait-and-bet :wait-and-bet) 10 10 :reverse? false :decks (repeatedly 10
+                                                                                                                  #(shuffle utils/deck)))
+#_(time (let [futures (doall (for [i (range 10)]
+                               (concurrent/msubmit (benchmark (nth children i)
+                                                              [(utils/init-player utils/random-agent :random)
+                                                               (utils/init-player utils/rule-agent :rule)
+                                                               (utils/init-player utils/wait-and-bet :wait-and-bet)]
+                                                              10
+                                                              20
+                                                              :symmetrical? false))))]
+          (println (with-out-str (run! pprint/pprint (mapcat deref futures)))))
+        #_(benchmark
+           [{:seeds [-1155869325], :id :p0}
+            {:seeds [431529176], :id :p1}
+            {:seeds [1761283695], :id :p2}
+            {:seeds [1749940626], :id :p3}
+            {:seeds [892128508], :id :p4}
+            {:seeds [-2003437247], :id :p5}
+            {:seeds [1487394176], :id :p6}
+            {:seeds [1049991269], :id :p7}
+            {:seeds [-1224600590], :id :p8}
+            {:seeds [-1437495699], :id :p9}]
+           (list (utils/init-player utils/random-agent :random)
+                 (utils/init-player utils/rule-agent :rule)
+                 (utils/init-player utils/wait-and-bet :wait-and-bet))
+           10
+           10
+           :manager manager
+           :symmetrical? false))
+#_(catch Exception e (println (str e (.getCause e) (.getCause (.getCause e)))))
+
+#_(println (with-redefs
+            [transformer/current-transformer
+             (fn [manager]
+               (transformer/transformer manager
+                                        (into-array Shape
+                                                    (map ndarray/shape
+                                                         [[1 256 onehot/state-length];;state
+                                                          [1 256 onehot/action-length];;action
+                                                          [1 512 4];;position
+                                                          [1 512 512]]));;mask
+                                        :d-model 64
+                                        :d-ff 256
+                                        :num-layers 6
+                                        :num-heads 8
+                                        :d-pe [32 16 8 8]
+                                        :max-seq-length 512))]
+             (do-erl)))
 
 ;;;        MPI          ;;;
 #_(req/require-python '[mpi4py :as mpi])

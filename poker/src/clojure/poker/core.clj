@@ -1,19 +1,23 @@
 (ns poker.core
   (:require [poker.ERL :as ERL]
+            [poker.MPI :as MPI]
             [clojure.pprint :as pprint]
             [poker.utils :as utils]
             [poker.concurrent :as concurrent]
             [poker.transformer :as transformer]
             [poker.headsup :as headsup]
+            [poker.onehot :as onehot]
             [poker.ndarray :as ndarray]
             [clojure.core.matrix :as m]
+            [poker.Andrew.processresult :as processresult]
             [clojure.string :as s])
   (:import ai.djl.Device
            ai.djl.engine.Engine
            poker.SparseAttentionBlock
            java.lang.Thread
            java.lang.Runtime
-           ai.djl.nn.core.SparseMax))
+           ai.djl.nn.core.SparseMax
+           ai.djl.ndarray.types.Shape))
 
 
 (defn benchmark
@@ -86,81 +90,51 @@
   (println (count (.getManagedArrays m))))
 
 (defmacro print-as-vector
+  "Prints [, then prints the body, then prints ]"
   [& body]
   `(try (println "[")
-       ~@body
+       (println ~@body)
        (finally (println "]"))))
 
-
+(defn do-erl []
+  (ERL/ERL :pop-size 25
+           :num-generations 25
+           :num-games 500
+           :benchmark-count 6
+           :random-seed -3057099454162971707
+           :max-seq-length 100
+           :stdev 0.005))
 
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  #_(mapv #(do (println %)
-               (println (ERL/versus (parent-seeds %)
-                                    (parent-seeds (mod (inc %) (count parent-seeds)))
-                                    10
-                                    1000
-                                    :net-gain? true
-                                    :as-list? true)))
-          (range 10))
-  #_(benchmark [{:seeds [-2003437247 1540470339], :id :p5-0}]
-               [(utils/init-player utils/wait-and-bet :wait-and-bet)]
-               10
-               10
-               :symmetrical? false)
-  #_(with-open [manager (nd/new-base-manager)]
-    (let [mask (ndarray/ndarray manager (ndarray/causal-mask [1 10 10] -2))
-          i1 (transformer/model-from-seeds {:seeds [-2003437247 1540470339], :id :p5-0} 10 manager mask)]
-      (with-open [_i1 (utils/make-closeable i1 transformer/close-individual)]
-        (:net-gain (headsup/iterate-games-reset
-                    [(transformer/as-player i1)
-                     (utils/init-player utils/wait-and-bet :wait-and-bet)]
-                    manager
-                    10
-                    :as-list? false
-                    :decks (repeatedly 10
-                                       #(shuffle utils/deck)))))))
-  #_(ERL/versus-other {:seeds [-2003437247 1540470339], :id :p5-0}
-                      (utils/init-player utils/wait-and-bet :wait-and-bet) 10 10 :reverse? false :decks (repeatedly 10
-                                                                                                                    #(shuffle utils/deck)))
-  #_(time (let [futures (doall (for [i (range 10)]
-                                 (concurrent/msubmit (benchmark (nth children i)
-                                                                [(utils/init-player utils/random-agent :random)
-                                                                 (utils/init-player utils/rule-agent :rule)
-                                                                 (utils/init-player utils/wait-and-bet :wait-and-bet)]
-                                                                10
-                                                                20
-                                                                :symmetrical? false))))]
-            (println (with-out-str (run! pprint/pprint (mapcat deref futures)))))
-          #_(benchmark
-             [{:seeds [-1155869325], :id :p0}
-              {:seeds [431529176], :id :p1}
-              {:seeds [1761283695], :id :p2}
-              {:seeds [1749940626], :id :p3}
-              {:seeds [892128508], :id :p4}
-              {:seeds [-2003437247], :id :p5}
-              {:seeds [1487394176], :id :p6}
-              {:seeds [1049991269], :id :p7}
-              {:seeds [-1224600590], :id :p8}
-              {:seeds [-1437495699], :id :p9}]
-             (list (utils/init-player utils/random-agent :random)
-                   (utils/init-player utils/rule-agent :rule)
-                   (utils/init-player utils/wait-and-bet :wait-and-bet))
-             10
-             10
-             :manager manager
-             :symmetrical? false))
-  #_(catch Exception e (println (str e (.getCause e) (.getCause (.getCause e)))))
+  #_(MPI/test-mpi)
   (print-as-vector
-   (print-as-vector
-    (println (ERL/ERL :pop-size 5
-                      :num-generations 2
-                      :num-games 10
-                      :benchmark-count 2
-                      :random-seed -3057099454162971707
-                      :max-seq-length 10
-                      :stdev 0.005)))))
+   (println (MPI/ERL :pop-size 25
+                     :num-generations 25
+                     :num-games 500
+                     :benchmark-count 4
+                     :random-seed -4467023281627811388
+                     :max-seq-length 100
+                     :stdev 0.005
+                     :from-block? true)))
+  #_(processresult/singlerun-versus
+   ["stdev-pretest-0.5.txt"
+    "stdev-pretest-0.05.txt"
+    "stdev-pretest-0.005.txt"])
+  #_(run! processresult/multirun-versus ["ERL-num-games-comparison-63748.out"
+                                       "ERL-pop-ablation-63759.out"])
+  #_(run! processresult/multirun-versus ["ERL-benchmark-comparison-63742.out"
+                                         "ERL-generation-ablation-63760.out"])
+  #_(do (processresult/multirun-versus "ERL-2-4-8-16-heads-63899.out" :keep-all? true)
+      (processresult/multirun-versus "ERL-seq-length-comparison-63746.out"))
+  #_(processresult/multirun-versus ["ERL-pop-gen-300-63782.out"])
+  #_(processresult/multirun-versus ["ERL-pop-gen-ablation-63761.out"])
+  #_(processresult/multirun-versus ["ERL-pop-gen-1200-15-63786.out"
+                                  "ERL-pop-gen-1200-25-63783.out"
+                                  "ERL-pop-gen-1200-34-63785.out"])
+  #_(processresult/generation-versus "ERL-pop-ablation-63759.out"))
+
 
 
 #_(-main)

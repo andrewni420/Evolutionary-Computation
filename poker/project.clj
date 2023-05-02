@@ -11,17 +11,11 @@
                  [techascent/tech.ml.dataset "7.000-beta-31"]
                  [ai.djl/api "0.21.0"]
                  [ai.djl.pytorch/pytorch-engine "0.22.1"]
-                 ;;[ai.djl.pytorch/pytorch-native-cpu "2.0.0"]
                  [ai.djl.pytorch/pytorch-jni "2.0.0-0.22.1"]
-                 ;;[ai.djl.pytorch/pytorch-native-cu102 "1.12.1"]
                  [ai.djl.mxnet/mxnet-engine "0.22.1"]
-                 ;;[ai.djl.mxnet/mxnet-native-mkl "1.9.1"]
-
                  [org.slf4j/slf4j-api "2.0.7"]
                  [org.slf4j/slf4j-simple "2.0.7"]
                  [org.apache.commons/commons-math3 "3.6.1"]
-                 ;;[org.mpjexpress/mpj "0.44"]
-                 ;;[org.jcuda/jcuda-natives "11.8.0"]
                  ]
   :exclusions []
   :main ^:skip-aot poker.core
@@ -30,7 +24,8 @@
   :target-path "target/%s"
   :jvm-opts ["-Dai.djl.pytorch.graph_optimizer=false" 
              "-Dai.djl.pytorch.num_interop_threads=116"
-             "-Dai.djl.disable_close_resource_on_finalize=true"]
+             "-Dai.djl.disable_close_resource_on_finalize=true"
+             "-Xmx100g"]
   :profiles {:precomp {:prep-tasks ^:replace ["beaver" "compile"]
                        :source-paths ["src/pre/clojure"]
                        :aot [parser.ast]}})

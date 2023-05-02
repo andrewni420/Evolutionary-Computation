@@ -830,6 +830,7 @@
                          utils/rule-agent]
                         100 {}))
 
+(utils/process-decks 1 1)
 
 (defn iterate-games-reset
   "Plays num-games hands of poker with players switching from sb to bb every hand and resetting their money values
@@ -841,14 +842,13 @@
    -> {players, net-gain = [gain ...] or {:mean :stdev}, game-encoding, game-history}"
   [players manager num-games & {:keys [as-list? decks game-history game-encoding max-actions]
                                 :or {as-list? false
-                                     decks nil
                                      max-actions ##Inf}}]
   (loop [players (utils/process-players players)
          net-gain (zipmap (map :id players) (if as-list? [[] []] [0.0 0.0]))
          game-num 0
          game-encoding (or game-encoding (init-game-encoding manager (mapv :id players)))
          game-history (or game-history [])
-         decks (if decks decks (repeatedly #(shuffle utils/deck)))
+         decks (utils/process-decks decks num-games)
          action-count 0]
     (if (or (<= num-games game-num) (<= max-actions action-count))
       {:players players
@@ -879,8 +879,6 @@
                        10
                        :max-actions 3
                        )))
-
-
 
 
 #_(with-open [m (ndarray/new-base-manager)]

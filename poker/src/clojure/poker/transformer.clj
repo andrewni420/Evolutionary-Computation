@@ -4,7 +4,8 @@
    [poker.onehot :as onehot]
    [poker.ndarray :as ndarray]
    [clojure.pprint :as pprint]
-   [clojure.core.matrix :as m])
+   [clojure.core.matrix :as m]
+   [clojure.test :as t])
   (:import poker.TransformerDecoderBlock
            poker.UnembedBlock
            poker.SinglePositionEncoding
@@ -15,6 +16,8 @@
            poker.ParallelEmbedding
            ai.djl.engine.Engine
            ai.djl.Model
+           ai.djl.ndarray.NDArray
+           ai.djl.ndarray.NDList
            ai.djl.ndarray.types.DataType
            ai.djl.ndarray.types.Shape
            ai.djl.nn.SequentialBlock
@@ -25,7 +28,8 @@
            ai.djl.training.initializer.Initializer
            ai.djl.training.initializer.XavierInitializer
            java.util.function.Function
-           java.lang.Class))
+           java.lang.Class
+           java.util.Random))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Models and auxiliary methods    ;;;
@@ -77,6 +81,8 @@
       (println model)
     (.close (:model model))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 (def self-attention-reference
   "E = embedding size\\
@@ -508,10 +514,13 @@
    -> nnet"
   [nnet parameter-map]
   (let [params (get-parameters nnet :as-array? true)]
-    (run! #(.set (params %)
-                   (float-array (map + (parameter-map %) (.toArray (params %)))))
+    (run! #(.set ^NDArray (params %)
+                 (float-array (map +
+                                   (parameter-map %)
+                                   (.toArray ^NDArray (params %)))))
           (map first params))
     nnet))
+
 
 #_(with-open [m (nd/new-base-manager)]
     (let [l (linear 4)]
@@ -916,25 +925,125 @@
            (when stdev-map
              {:stdev stdev-map}))))
 
+
+(defn index-into-block
+  "Helper for indexing into a block of random noise. Returns updated indices\\
+   indices: vector of indices into the block\\
+   block: float array of random noise\\
+   n: number of samples to take\\
+   processing: postprocessing after summing all of the indexed numbers\\
+   -> {:indices :result}"
+  [i-start indices ^floats block n & {:keys [processing]
+                                      :or {processing identity}}]
+  (let [N (alength block)
+        compute #(mod (* %1 %2) N)]
+    (loop [arr (transient [])
+           i 0
+           i-start i-start]
+      (if (= i n)
+        {:i-start i-start :result (persistent! arr)}
+        (recur (conj! arr
+                      (processing
+                       (transduce (map (comp (partial aget block)
+                                             (partial compute i-start)))
+                                  +
+                                  indices)))
+               (inc i)
+               (inc i-start))))))
+
+
+(defn expand-via-indexing
+  "Expand seeds into parameter block by indexing into preinstantiated random
+   noise block"
+  [individual random stdev]
+  (assoc individual
+         :parameter-map
+         (let [indices (:parameter-seeds individual)]
+           (loop [to-return (transient {})
+                  p initial-parameter-map
+                  i 0]
+             (if (empty? p)
+               (persistent! to-return)
+               (let [[k v] (first p)
+                     {i :i-start
+                      res :result} (index-into-block i indices random (count v)
+                                                     :processing (partial * stdev))]
+                 (recur (assoc! to-return k res)
+                        (dissoc p k)
+                        i)))))))
+
+(defn expand-via-sampling
+  "Expand seeds into parameter block by sampling noise from random number generators"
+  [individual random stdev]
+  (assoc individual
+         :parameter-map
+         (into {}
+               (map (fn [[key value]]
+                      [key (utils/make-vector (fn []
+                                                (transduce (map #(* stdev (.nextGaussian ^Random %)))
+                                                           +
+                                                           random))
+                                              (count value))]))
+               initial-parameter-map)))
+
 (defn expand-param-seeds
   "Given an individual, expands its parameter seeds into a set of parameter weights
    for the neural net\\
    -> {parameter-seeds parameter-map}"
-  [individual & {:keys [stdev]
+  [individual & {:keys [stdev from-block?]
                  :or {stdev 1}}]
-  (let [randoms (map utils/random (:parameter-seeds individual))]
-    (assoc individual
-           :parameter-map
-           (into {}
-                 (map (fn [[key value]]
-                        [key (utils/make-vector (fn []
-                                                  (transduce (map #(* stdev (.nextGaussian %)))
-                                                             +
-                                                             randoms))
-                                                (count value))]))
-                 initial-parameter-map))))
+  (let [stdev (or (:stdev individual) stdev)]
+    (if-let [random (and from-block? @utils/random-block)]
+    (expand-via-indexing individual random stdev)
+    (expand-via-sampling individual (map utils/random (:parameter-seeds individual)) stdev))))
 
-#_(expand-param-seeds {:parameter-seeds [1]})
+#_
+    (loop [to-return (transient {})
+           p initial-parameter-map
+           i (:parameter-seeds individual)]
+      (if (empty? p)
+        (persistent! to-return)
+        (let [[k v] (first p)
+              {i :indices res :result} (index-into-block i random (count v))]
+          (recur (assoc to-return k res)
+                 (dissoc p k)
+                 i))))
+#_(let [stdev (or (:stdev individual) stdev)
+      randoms (map utils/random (:parameter-seeds individual))]
+  (assoc individual
+         :parameter-map
+         (into {}
+               (map (fn [[key value]]
+                      [key (utils/make-vector (fn []
+                                                (transduce (map #(* stdev (.nextGaussian %)))
+                                                           +
+                                                           randoms))
+                                              (count value))]))
+               initial-parameter-map)))
+
+#_(expand-param-seeds {:parameter-seeds [1]} :from-block? true)
+
+#_(utils/benchmark 1 (let [r (utils/random 1)]
+                       (loop [i 0]
+                         (if (= i 1000000)
+                           nil
+                           (do (.nextGaussian r)
+                               (recur (inc i)))))))
+;;;180 seconds to expand 100 seeds into 1000000 parameters each
+
+
+#_(utils/benchmark 1000000 (aget ^floats @a 12345))
+
+
+#_(let [v (float-array (let [r (utils/random 1)] 
+          (loop [i 0 
+                 res (transient [])]
+            (if (= i 100000)
+              (persistent! res)
+              (recur (inc i)
+                     (conj! res (.nextGaussian r)))))))]
+  (utils/benchmark 1000000 (aget ^floats v 12345)))
+;;;1-2 seconds to expand 100 seeds into 1000000 parameters each
 
 
 (def max-seq-length
@@ -966,30 +1075,32 @@
 (defn model-from-seeds
   "Given a map of seeds and ids, returns an individual with the current
    default settings"
-  [{seeds :seeds id :id} max-seq-length manager mask & {:keys [stdev]
-                                                        :or {stdev 1}}]
-  (.setRandomSeed (Engine/getEngine (Engine/getDefaultEngineName)) (first seeds))
-  (-> (initialize-individual
-       :nn-factory current-transformer
-       :parameter-seeds (rest seeds)
-       :id id
-       :max-seq-length max-seq-length)
-      (expand-param-seeds :stdev stdev)
-      (make-model manager mask)))
+  [individual max-seq-length manager mask & {:keys [stdev from-block?]
+                                             :or {stdev 1}}]
+  (let [{seeds :seeds id :id std :stdev} individual]
+    (.setRandomSeed (Engine/getEngine (Engine/getDefaultEngineName)) (first seeds))
+    (-> (initialize-individual
+         :nn-factory current-transformer
+         :parameter-seeds (rest seeds)
+         :id id
+         :max-seq-length max-seq-length)
+        (expand-param-seeds :stdev (or std stdev) :from-block? from-block?)
+        (make-model manager mask))))
 
 
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (ndarray/new-base-manager)]
     #_(println (-> (initialize-individual
                     :nn-factory current-transformer
                     :parameter-seeds []
                     :id :p0
                     :max-seq-length max-seq-length)
                    (expand-param-seeds :stdev 1)))
-    (println (ndarray/get-parameters (.getBlock (:model (model-from-seeds {:seeds [1]
+    (println (get-parameters (.getBlock (:model (model-from-seeds {:seeds [1]
                                                                            :id :p0}
                                                                           10
                                                                           m
-                                                                          1))))))
+                                                                          1
+                                                                          :from-block? true))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Gameplay Interface   ;;

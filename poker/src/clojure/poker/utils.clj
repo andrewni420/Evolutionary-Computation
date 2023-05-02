@@ -1,6 +1,14 @@
 (ns poker.utils
   (:require [clojure.set :as set]
-            [clojure.pprint :as pprint]))
+            [clojure.pprint :as pprint])
+  (:import java.util.Collections
+           java.util.Random
+           java.util.function.Consumer
+           java.util.function.Function
+           java.util.function.Supplier
+           java.lang.AutoCloseable
+           java.util.List
+           java.util.Random))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -11,6 +19,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Math and Auxiliary ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def gpus
+  "How many gpus there are"
+  (volatile! 0))
+
+(def random-block
+  "Large block of gaussian noise. Instantiating a large block of gaussian noise
+   at the beginning of the ERL run and indexing into it using random integers is faster
+   than using the random integers to seed a random number generator. However, the 
+   gaussian noise produced by indexing will not be strictly independent"
+  (volatile! nil))
 
 (defmacro make-fn
   "Turns a macro into a function"
@@ -49,6 +68,19 @@
 #_(benchmark 300000000
              (+ 1 2))
 
+(defmacro get-time
+  "Evaluates the body in a do expression and returns the time taken in 
+   ms and the final result of the body\\
+   -> {:time :result}"
+  [& body]
+  `(let [start# (System/nanoTime)
+         res# (do ~@body)
+         end# (System/nanoTime)]
+     {:time (/ (double (- end# start#)) 1000000.0)
+      :result res#}))
+
+
+
 (defn print-return
   "Print x and return it\\
    -> x"
@@ -65,7 +97,7 @@
   "Make the given ifn implement java.util.function.Consumer\\
    IFn -> Consumer"
   [f]
-  (reify java.util.function.Consumer
+  (reify Consumer
     (accept [_ x] (f x))))
 
 #_(instance? java.util.function.Consumer
@@ -96,7 +128,7 @@
   "Make the given ifn implement java.util.function.Supplier\\
    IFn -> Supplier"
   [f]
-  (reify java.util.function.Supplier
+  (reify Supplier
     (get [_] (f))))
 
 #_(instance? java.util.function.Supplier
@@ -106,7 +138,7 @@
   "Make the given ifn implement java.util.function.Function\\
    IFn -> Function"
   [f]
-  (reify java.util.function.Function
+  (reify Function
     (apply [_ x] (f x))))
 
 #_(instance? java.util.function.Function
@@ -117,7 +149,7 @@
    Supply an item and a function to be called to close it\\
    item, f -> AutoCloseable"
   [item f]
-  (reify java.lang.AutoCloseable
+  (reify AutoCloseable
     (close [_] (f item))))
 
 #_(instance? java.lang.AutoCloseable
@@ -466,10 +498,46 @@
 (defn random 
   "Returns a java.util.Random object\\
    -> Random"
-  [seed]
+  ([seed]
   (if seed
-    (java.util.Random. seed)
-    (java.util.Random.)))
+    (Random. seed)
+    (Random.)))
+  ([] (Random.)))
+
+(defn initialize-random-block
+  "Initializes the random block with n independent gaussian random variables.\\
+   Supply either a number or a random number generator\\
+   Takes 1 second to generate 10 million random numbers"
+  [n r]
+  (assert (int? n) "Must give an integer")
+  (let [^Random r (if (number? r) (random r) r)]
+    (vreset! random-block
+             (float-array (loop [i 0
+                                 res (transient [])]
+                            (if (= i n)
+                              (persistent! res)
+                              (recur (inc i)
+                                     (conj! res (.nextGaussian r)))))))))
+
+(defn available-memory
+  []
+  (let [runtime (java.lang.Runtime/getRuntime)]
+    (- (.maxMemory runtime) (- (.totalMemory runtime) (.freeMemory runtime)))))
+
+
+
+(defn shuffle 
+  "Adapted from clojure.core/shuffle to also take a random seed"
+  ([coll seed]
+  (let [r (if (number? seed) (Random. seed) seed)
+        al (java.util.ArrayList. coll)]
+    (Collections/shuffle al ^Random r)
+    (clojure.lang.RT/vector (.toArray al))))
+  ([coll]
+   (let [al (java.util.ArrayList. coll)]
+     (Collections/shuffle al)
+     (clojure.lang.RT/vector (.toArray al)))))
+
 
 (defn rand-normal-length
   "Returns a float array of given length, composed of normally distributed random
@@ -587,12 +655,13 @@
    Used to convert from python objects to clojure objects.\\
    Supports hashmaps and collections\\
    -> clojure object"
-  [coll]
+  [coll & {:keys [to-keyword?]}]
   (into (empty coll)
         (map #(cond
-                (map-entry? %) (recursive-copy (vec %))
-                (coll? %) (recursive-copy %)
-                :else %) coll)))
+                (map-entry? %) (recursive-copy (vec %) :to-keyword? to-keyword?)
+                (coll? %) (recursive-copy % :to-keyword? to-keyword?)
+                :else (if (and (string? %) to-keyword?) (keyword %) %))
+             coll)))
 
 (defn maxes
   "Returns all individuals with maximum value of (key %)\\
@@ -717,6 +786,17 @@
         z deck :while (and (not= z x)
                            (not= z y))]
     #{x y z}))
+
+(defn process-decks
+  "If the list of decks doesn't exist, create one"
+  [decks num-games]
+  (cond (nil? decks) (repeatedly num-games
+                                 #(shuffle deck))
+        (number? decks) (let [r (random decks)]
+                          (repeatedly num-games #(shuffle deck r)))
+        :else decks))
+
+
 
 (def type-rankings
   "Map from the name of a hand type to an integer representing its strength.
