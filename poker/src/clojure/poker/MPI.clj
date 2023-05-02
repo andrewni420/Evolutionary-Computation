@@ -193,6 +193,7 @@
    Sends the following messages to the master thread:\\
    Fitness evaluation results"
   [comm max-seq-length num-games stdev from-block?]
+  (assert (and comm max-seq-length num-games stdev) "Cannot be passed nil parameters")
   (assert (MPI/Is_initialized) "MPI must be initialized for slave thread to run")
   (loop [task (py. comm irecv :source 0 :tag 0)
          terminate (py. comm irecv :source 0 :tag 1)]
@@ -227,6 +228,8 @@
            num-generations 1
            benchmark-count 5
            random-seed 1
+           num-games 10
+           max-seq-length 10
            block-size 1e8
            stdev 0.005}
       :as argmap}]

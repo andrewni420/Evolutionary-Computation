@@ -1,6 +1,6 @@
 (ns poker.core
   (:require [poker.ERL :as ERL]
-            [poker.MPI :as MPI]
+            ;;[poker.MPI :as MPI]
             [clojure.pprint :as pprint]
             [poker.utils :as utils]
             [poker.concurrent :as concurrent]
@@ -109,7 +109,7 @@
   "I don't do a whole lot ... yet."
   [& args]
   #_(MPI/test-mpi)
-  (print-as-vector
+  #_(print-as-vector
    (println (MPI/ERL :pop-size 25
                      :num-generations 25
                      :num-games 500

@@ -171,12 +171,11 @@
 
 (defn take-generation
   "Helper for studying the fitness improvement as generation increases"
-  [{parameters :parameters best-per-gen :best-per-gen}]
+  [{best-per-gen :best-per-gen}]
   (mapv #(let [{{seeds :seeds} :pop
                 gen :generation} %]
            (-> %
-               (assoc :parameters parameters
-                      :seeds seeds
+               (assoc :seeds seeds
                       :id (keyword (str "p" gen)))
                (dissoc :pop :generation)))
         best-per-gen))
@@ -200,11 +199,11 @@
   "Helper for studying the fitness improvement as generation increases
    Extracts winners, renames them, pits them against each other for 5000 games symmetrically,
    and prints the match results"
-  [filenames]
-  (println filenames)
-  (let [filenames (if (coll? filenames) filenames [filenames])
-        processed (mapcat #(process-multirun-first %) filenames)
-        last-4s (first (map take-generation processed))]
+  [filename]
+  (println filename)
+  (let [processed (process-multirun-first filename)
+        last-4s (take-generation processed)]
+    (println (:parameters processed))
     (let [futs (doall (for [ind1 last-4s
                             ind2 last-4s :when (not (= ind1 ind2))]
                         (concurrent/msubmit
@@ -212,7 +211,6 @@
                                      :net-gain? true
                                      :as-list? true))))]
       (println (map #(:net-gain (deref %)) futs)))))
-
 
 
 (defn multirun-versus

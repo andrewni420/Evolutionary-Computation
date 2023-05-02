@@ -504,6 +504,7 @@
     (Random.)))
   ([] (Random.)))
 
+
 (defn initialize-random-block
   "Initializes the random block with n independent gaussian random variables.\\
    Supply either a number or a random number generator\\
@@ -512,18 +513,19 @@
   (assert (int? n) "Must give an integer")
   (let [^Random r (if (number? r) (random r) r)]
     (vreset! random-block
-             (float-array (loop [i 0
-                                 res (transient [])]
-                            (if (= i n)
-                              (persistent! res)
-                              (recur (inc i)
-                                     (conj! res (.nextGaussian r)))))))))
+             (let [res (float-array n)]
+               (loop [i 0]
+               (if (= i n)
+                 res
+                 (do (aset res i (float (.nextGaussian r)))
+                     (recur (inc i)))))))))
 
 (defn available-memory
+  "Gets the amount of memory that should be able to be allocated before
+   an out of memory error occurs"
   []
   (let [runtime (java.lang.Runtime/getRuntime)]
     (- (.maxMemory runtime) (- (.totalMemory runtime) (.freeMemory runtime)))))
-
 
 
 (defn shuffle 
@@ -576,6 +578,14 @@
         (recur (inc i)
                (conj! arr (.nextFloat r)))))))
 
+(defn squeeze 
+  "Squeezes out singleton vectors"
+  [coll & {:keys [squeeze-all?]}]
+  (if (= 1 (count coll))
+    (if squeeze-all?
+      (recur (first coll) {:squeeze-all? true})
+      (first coll))
+    coll))
 
 
 #_(defn transient-add
