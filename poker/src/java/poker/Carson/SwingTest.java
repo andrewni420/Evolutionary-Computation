@@ -28,12 +28,12 @@ public class SwingTest extends JPanel implements ActionListener {
 
     JPanel communityCardsPanel = new JPanel();
 
-    String pot = "100";
-    String current_bet = "50";
+    int pot = 100;
+    int current_bet = 50;
     String[] player_hand = new String[2];
-    String player_stack = "100";
+    int player_stack = 100;
     String[] ai_hand = new String[2];
-    String ai_stack = "200";
+    int ai_stack = 200;
     String[] community_cards = new String[5];
     String round = "Pre-Flop";
 
@@ -79,7 +79,7 @@ public class SwingTest extends JPanel implements ActionListener {
                 g.fillOval(700,255, 20, 20);
                 g.fillOval(720,255, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(pot, 700, 255);
+                g.drawString(Integer.toString(pot), 700, 255);
 
                 // Draw player stack
                 g.setColor(Color.RED);
@@ -87,7 +87,7 @@ public class SwingTest extends JPanel implements ActionListener {
                 g.fillOval(600,360, 20, 20);
                 g.fillOval(590,345, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(player_stack, 590, 395);
+                g.drawString(Integer.toString(player_stack), 590, 395);
 
                 // Draw AI stack
                 g.setColor(Color.RED);
@@ -95,7 +95,7 @@ public class SwingTest extends JPanel implements ActionListener {
                 g.fillOval(600,65, 20, 20);
                 g.fillOval(590,80, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(ai_stack, 590, 60);
+                g.drawString(Integer.toString(ai_stack), 590, 60);
 
                 // Draw current bet
                 g.setColor(Color.RED);
@@ -103,7 +103,7 @@ public class SwingTest extends JPanel implements ActionListener {
                 g.fillOval(600,65, 20, 20);
                 g.fillOval(590,80, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(ai_stack, 590, 60);
+                g.drawString(Integer.toString(ai_stack), 590, 60);
             }
         };
 
@@ -218,7 +218,7 @@ public class SwingTest extends JPanel implements ActionListener {
             boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
 
             // Draw community cards
-            for (int i=0;i<community_cards.length;i++){
+            for (int i=0;i<3;i++){
                 drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf(' ') + 1), community_cards[i].substring(0, community_cards[i].indexOf(' ')));
             }
             boardPanel.add(communityCardsPanel);
@@ -246,6 +246,8 @@ public class SwingTest extends JPanel implements ActionListener {
             // boardPanel.add(Box.createVerticalStrut(90)); // Add vertical space
             boardPanel.add(Box.createHorizontalStrut(300)); // Add horizontal space
             boardPanel.add(foldMessage);
+
+            player_stack = player_stack - 10;
 
             // Revalidate and repaint
             boardPanel.revalidate();
