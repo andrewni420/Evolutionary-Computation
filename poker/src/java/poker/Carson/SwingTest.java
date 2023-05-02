@@ -1,14 +1,8 @@
 package poker.Carson;
+
 // import javax.swing.*;
 // import java.awt.*;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import javax.swing.ImageIcon;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerModel;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.JLabel;
+import javax.swing.*;
 import java.awt.Image;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -28,8 +22,42 @@ public class SwingTest extends JPanel implements ActionListener {
     //  Create a board panel
     JPanel boardPanel = new JPanel();
 
+    JPanel aiCardsPanel = new JPanel();
+
+    JPanel playerCardsPanel = new JPanel();
+
+    JPanel communityCardsPanel = new JPanel();
+
+    String pot = "100";
+    String current_bet = "50";
+    String[] player_hand = new String[2];
+    String player_stack = "100";
+    String[] ai_hand = new String[2];
+    String ai_stack = "200";
+    String[] community_cards = new String[5];
+    String round = "Pre-Flop";
+
+    /**
+     * TODO: 
+     * Use legal move logic to determine which buttons to display -> button.setEnabled(false)
+     * Hook up java to clojure to get game state
+     */
+
+
     // Constructor
     public SwingTest() {
+        player_hand[0] = "ace spades";
+        player_hand[1] = "ace hearts";
+
+        ai_hand[0] = "ace clubs";
+        ai_hand[1] = "ace diamonds";
+
+        community_cards[0] = "10 diamonds";
+        community_cards[1] = "9 diamonds";
+        community_cards[2] = "8 diamonds";
+        community_cards[3] = "7 diamonds";
+        community_cards[4] = "6 diamonds";
+
 
         // Set layout manager
         setLayout(new BorderLayout());
@@ -44,8 +72,43 @@ public class SwingTest extends JPanel implements ActionListener {
                 super.paintComponent(g);
                 g.setColor(Color.GREEN);
                 g.fillRoundRect(100, 50, 800, 350, 350, 350);
+
+                // Draw pot
+                g.setColor(Color.RED);
+                g.fillOval(680,255, 20, 20);
+                g.fillOval(700,255, 20, 20);
+                g.fillOval(720,255, 20, 20);
+                g.setColor(Color.BLACK);
+                g.drawString(pot, 700, 255);
+
+                // Draw player stack
+                g.setColor(Color.RED);
+                g.fillOval(580,360, 20, 20);
+                g.fillOval(600,360, 20, 20);
+                g.fillOval(590,345, 20, 20);
+                g.setColor(Color.BLACK);
+                g.drawString(player_stack, 590, 395);
+
+                // Draw AI stack
+                g.setColor(Color.RED);
+                g.fillOval(580,65, 20, 20);
+                g.fillOval(600,65, 20, 20);
+                g.fillOval(590,80, 20, 20);
+                g.setColor(Color.BLACK);
+                g.drawString(ai_stack, 590, 60);
+
+                // Draw current bet
+                g.setColor(Color.RED);
+                g.fillOval(580,65, 20, 20);
+                g.fillOval(600,65, 20, 20);
+                g.fillOval(590,80, 20, 20);
+                g.setColor(Color.BLACK);
+                g.drawString(ai_stack, 590, 60);
             }
         };
+
+
+        boardPanel.setLayout(new BoxLayout(boardPanel, BoxLayout.Y_AXIS));
 
         // Next hand button
         b1 = new JButton("Next Hand");
@@ -128,23 +191,70 @@ public class SwingTest extends JPanel implements ActionListener {
         buttonPanel.add(b10);
         buttonPanel.add(spinner);
 
-        drawCard(boardPanel, "spades", "ace");
+        // Set the layout manager for the card panels
+        playerCardsPanel.setLayout(new BoxLayout(playerCardsPanel, BoxLayout.X_AXIS));
+        communityCardsPanel.setLayout(new BoxLayout(communityCardsPanel, BoxLayout.X_AXIS));
+        aiCardsPanel.setLayout(new BoxLayout(aiCardsPanel, BoxLayout.X_AXIS));
 
         // Add the panels to the main panel
-        add(boardPanel, BorderLayout.CENTER);
+        add(boardPanel, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
     public void actionPerformed(ActionEvent e) {
         if ("next_hand".equals(e.getActionCommand())) {
-            drawCard(boardPanel, "spades", "ace");
-            boardPanel.repaint();
-        } else {
+            // Remove previous elements
+            aiCardsPanel.removeAll();
+            communityCardsPanel.removeAll();
+            playerCardsPanel.removeAll();
+            boardPanel.removeAll();
             
+            // Draw ai cards
+            boardPanel.add(Box.createVerticalStrut(50)); // Add vertical space
+            drawBackCard(aiCardsPanel);
+            drawBackCard(aiCardsPanel);
+            boardPanel.add(aiCardsPanel);
+
+            boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
+
+            // Draw community cards
+            for (int i=0;i<community_cards.length;i++){
+                drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf(' ') + 1), community_cards[i].substring(0, community_cards[i].indexOf(' ')));
+            }
+            boardPanel.add(communityCardsPanel);
+
+            boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
+
+            // Draw player cards
+            for (int i=0;i<player_hand.length;i++){
+                drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf(' ') + 1), player_hand[i].substring(0, player_hand[i].indexOf(' ')));
+            }
+            boardPanel.add(playerCardsPanel);
+
+            // Revalidate and repaint
+            boardPanel.revalidate();
+            boardPanel.repaint();
+        } else if ("fold".equals(e.getActionCommand())){
+            // Remove previous elements
+            aiCardsPanel.removeAll();
+            communityCardsPanel.removeAll();
+            playerCardsPanel.removeAll();
+            boardPanel.removeAll();
+
+            // Print fold message
+            JLabel foldMessage = new JLabel("You folded. AI wins the pot of $" + pot);
+            // boardPanel.add(Box.createVerticalStrut(90)); // Add vertical space
+            boardPanel.add(Box.createHorizontalStrut(300)); // Add horizontal space
+            boardPanel.add(foldMessage);
+
+            // Revalidate and repaint
+            boardPanel.revalidate();
+            boardPanel.repaint();
         }
     }
 
-    public JLabel getCard(String suit, String value) {
+
+    public void drawCard(JPanel board, String suit, String value) {
 
         // Get path of card image
         String path = "PNG-cards-1.3/" + value + "_of_" + suit + ".png";
@@ -158,7 +268,7 @@ public class SwingTest extends JPanel implements ActionListener {
         // Play around with size
         int width = Math.floorDiv(ogImageIcon.getIconWidth(), 8);
         int height = Math.floorDiv(ogImageIcon.getIconHeight(), 8);
-        
+
         // Scale the image
         Image scaledImage = ogImageIcon.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT);
 
@@ -167,15 +277,26 @@ public class SwingTest extends JPanel implements ActionListener {
 
         // Set the image icon
         label.setIcon(imageIcon);
-        
-        // Return the label
-        return label;
+
+        // Add the label to the board
+        board.add(label);
     }
 
-    public void drawCard(JPanel board, String suit, String value) {
+    /** Returns an ImageIcon, or null if the path was invalid. */
+    protected static ImageIcon createImageIcon(String path) {
+        java.net.URL imgURL = SwingTest.class.getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+            return null;
+        }
+    }
+
+    public void drawBackCard(JPanel board) {
 
         // Get path of card image
-        String path = "PNG-cards-1.3/" + value + "_of_" + suit + ".png";
+        String path = "PNG-cards-1.3/back.png";
 
         // Get image icon from path
         ImageIcon ogImageIcon = createImageIcon(path);
@@ -201,17 +322,6 @@ public class SwingTest extends JPanel implements ActionListener {
         
         // Add the label to the board
         board.add(label);
-    }
-
-    /** Returns an ImageIcon, or null if the path was invalid. */
-    protected static ImageIcon createImageIcon(String path) {
-        java.net.URL imgURL = SwingTest.class.getResource(path);
-        if (imgURL != null) {
-            return new ImageIcon(imgURL);
-        } else {
-            System.err.println("Couldn't find file: " + path);
-            return null;
-        }
     }
 
     /**
