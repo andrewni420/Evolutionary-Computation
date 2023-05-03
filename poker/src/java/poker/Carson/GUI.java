@@ -11,22 +11,28 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SwingTest extends JPanel implements ActionListener {
+public class GUI extends JPanel implements ActionListener {
 
     // Declare buttons
     protected JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b10;
 
-     // Create a button panel
-     JPanel buttonPanel = new JPanel();
+    // Create a button panel
+    JPanel buttonPanel = new JPanel();
 
     //  Create a board panel
     JPanel boardPanel = new JPanel();
 
+    // Create a panel for the ai's cards
     JPanel aiCardsPanel = new JPanel();
 
+    // Create a panel for the player's cards
     JPanel playerCardsPanel = new JPanel();
 
+    // Create a panel for the community cards
     JPanel communityCardsPanel = new JPanel();
+
+    // Create a panel for messages
+    JPanel messagePanel = new JPanel();
 
     int pot = 100;
     int current_bet = 50;
@@ -37,15 +43,18 @@ public class SwingTest extends JPanel implements ActionListener {
     String[] community_cards = new String[5];
     String round = "Pre-Flop";
 
+    JSpinner spinner;
+
     /**
-     * TODO: 
+     * TO DO: 
      * Use legal move logic to determine which buttons to display -> button.setEnabled(false)
      * Hook up java to clojure to get game state
+     * Update the bet spinner to reflect what the max bet could be
      */
 
 
     // Constructor
-    public SwingTest() {
+    public GUI() {
         player_hand[0] = "ace spades";
         player_hand[1] = "ace hearts";
 
@@ -151,8 +160,8 @@ public class SwingTest extends JPanel implements ActionListener {
         b10.setActionCommand("bet");
 
         // Spinner for bet amount
-        SpinnerModel model = new SpinnerNumberModel(50, 1, 1000, 10);     
-        JSpinner spinner = new JSpinner(model);
+        SpinnerModel model = new SpinnerNumberModel(50, 10, player_stack, 10);     
+        spinner = new JSpinner(model);
 
         //Listen for actions on buttons 1 and 3.
         b1.addActionListener(this);
@@ -178,6 +187,18 @@ public class SwingTest extends JPanel implements ActionListener {
         b9.setToolTipText("Click this button to peek at your cards.");
         b10.setToolTipText("Click this button to bet a custom amount.");
 
+        // Set buttons to false except for next hand
+        b1.setEnabled(true);
+        b2.setEnabled(false);
+        b3.setEnabled(false);
+        b4.setEnabled(false);
+        b5.setEnabled(false);
+        b6.setEnabled(false);
+        b7.setEnabled(false);
+        b8.setEnabled(false);
+        b9.setEnabled(false);
+        b10.setEnabled(false);
+
         // Add buttons to the button panel
         buttonPanel.add(b1);
         buttonPanel.add(b2);
@@ -195,9 +216,11 @@ public class SwingTest extends JPanel implements ActionListener {
         playerCardsPanel.setLayout(new BoxLayout(playerCardsPanel, BoxLayout.X_AXIS));
         communityCardsPanel.setLayout(new BoxLayout(communityCardsPanel, BoxLayout.X_AXIS));
         aiCardsPanel.setLayout(new BoxLayout(aiCardsPanel, BoxLayout.X_AXIS));
+        // messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.X_AXIS));
 
         // Add the panels to the main panel
         add(boardPanel, BorderLayout.NORTH);
+        add(messagePanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
@@ -207,6 +230,7 @@ public class SwingTest extends JPanel implements ActionListener {
             aiCardsPanel.removeAll();
             communityCardsPanel.removeAll();
             playerCardsPanel.removeAll();
+            messagePanel.removeAll();
             boardPanel.removeAll();
             
             // Draw ai cards
@@ -231,9 +255,21 @@ public class SwingTest extends JPanel implements ActionListener {
             }
             boardPanel.add(playerCardsPanel);
 
-            // Revalidate and repaint
-            boardPanel.revalidate();
-            boardPanel.repaint();
+            // Grey out the Next Hand button and enable the rest
+            b1.setEnabled(false);
+            b2.setEnabled(true);
+            b3.setEnabled(false);
+            b4.setEnabled(true);
+            b5.setEnabled(true);
+            b6.setEnabled(true);
+            b7.setEnabled(true);
+            b8.setEnabled(true);
+            // b9.setEnabled(false);
+            b9.setEnabled(true);
+            b10.setEnabled(true);
+
+            // Refresh the board
+            refreshElements();
         } else if ("fold".equals(e.getActionCommand())){
             // Remove previous elements
             aiCardsPanel.removeAll();
@@ -242,19 +278,177 @@ public class SwingTest extends JPanel implements ActionListener {
             boardPanel.removeAll();
 
             // Print fold message
-            JLabel foldMessage = new JLabel("You folded. AI wins the pot of $" + pot);
-            // boardPanel.add(Box.createVerticalStrut(90)); // Add vertical space
-            boardPanel.add(Box.createHorizontalStrut(300)); // Add horizontal space
-            boardPanel.add(foldMessage);
+            displayMessage("You folded. AI wins the pot of $" + pot);
 
-            player_stack = player_stack - 10;
+            // Enable the Next Hand button and disable the rest
+            b1.setEnabled(true);
+            b2.setEnabled(false);
+            b3.setEnabled(false);
+            b4.setEnabled(false);
+            b5.setEnabled(false);
+            b6.setEnabled(false);
+            b7.setEnabled(false);
+            b8.setEnabled(false);
+            b9.setEnabled(false);
+            b10.setEnabled(false);
 
-            // Revalidate and repaint
-            boardPanel.revalidate();
-            boardPanel.repaint();
+            // Refresh the board
+            refreshElements();
+        } else if ("check".equals(e.getActionCommand())){
+            // Check logic here
+        } else if ("call".equals(e.getActionCommand())){
+            // Call logic here
+            if (player_stack >= current_bet){
+                player_stack = player_stack - current_bet;
+                pot = pot + current_bet;
+                refreshElements();
+            } else {
+                displayMessage("You don't have enough money to call. Going all in instead.");
+                pot = pot + player_stack;
+                player_stack = 0;
+                refreshElements();
+            }
+        } else if ("min_bet".equals(e.getActionCommand())){
+            // Min bet logic here
+            if (player_stack >= current_bet){
+                player_stack = player_stack - current_bet;
+                pot = pot + current_bet;
+                refreshElements();
+            } else {
+                displayMessage("You don't have enough money to bet the minimum. Going all in instead.");
+                pot = pot + player_stack;
+                player_stack = 0;
+                refreshElements();
+            }
+        } else if ("bet_half_pot".equals(e.getActionCommand())){
+            // Bet half pot logic here
+            if (player_stack >= (pot / 2)){
+                player_stack = player_stack - (pot / 2);
+                current_bet = pot / 2;
+                pot = pot + current_bet;
+                refreshElements();
+            } else {
+                displayMessage("You don't have enough money to bet half the pot. Going all in instead.");
+                pot = pot + player_stack;
+                player_stack = 0;
+                refreshElements();
+            }
+        } else if ("bet_pot".equals(e.getActionCommand())){
+            // bet pot logic here
+            if (player_stack >= pot){
+                player_stack = player_stack - pot;
+                pot = pot + pot;
+                refreshElements();
+            } else {
+                displayMessage("You don't have enough money to bet half the pot. Going all in instead.");
+                pot = pot + player_stack;
+                player_stack = 0;
+                refreshElements();
+            }
+        } else if ("all_in".equals(e.getActionCommand())){
+            // all in logic here
+            current_bet = player_stack;
+            player_stack = 0;
+            pot = pot + current_bet;
+            refreshElements();
+        } else if ("peek".equals(e.getActionCommand())){
+            // peek logic here
+            // Peek the AI cards for 3 seconds
+            aiCardsPanel.removeAll();
+            drawCard(aiCardsPanel, ai_hand[0].substring(ai_hand[0].indexOf(' ') + 1), ai_hand[0].substring(0, ai_hand[0].indexOf(' ')));
+            drawCard(aiCardsPanel, ai_hand[1].substring(ai_hand[1].indexOf(' ') + 1), ai_hand[1].substring(0, ai_hand[1].indexOf(' ')));
+            aiCardsPanel.revalidate();
+            aiCardsPanel.repaint();
+            refreshElements();
+            displayMessage("Peeking AI cards for 3 seconds...");
+            Timer timer = new Timer(3000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    aiCardsPanel.removeAll();
+                    drawBackCard(aiCardsPanel);
+                    drawBackCard(aiCardsPanel);
+                    aiCardsPanel.revalidate();
+                    aiCardsPanel.repaint();
+                    refreshElements();
+                }
+            });
+            timer.setRepeats(false);
+            timer.start();
+        } else if ("bet".equals(e.getActionCommand())){
+            // Get bet amount
+            int bet_amount = (int) spinner.getValue();
+
+            // Check if valid bet amount
+            if ((bet_amount <= player_stack) && (bet_amount >= 1)){
+                // Set current bet
+                current_bet = (int) spinner.getValue();
+
+                // Remove bet amount from player stack
+                player_stack = player_stack - current_bet;
+
+                // Add player bet to main pot
+                pot = pot + current_bet;
+                
+                // Refresh the board
+                refreshElements();
+
+            } else {
+                // Display error message
+                displayMessage("Invalid bet amount. Please try again.");
+            }
         }
     }
 
+    public void refreshElements(){
+        // Check for button logic in here (Mikhail's legal actions)
+
+        if (player_stack > 0){
+            // Adjust the bet spinner
+            try {
+                SpinnerModel model = new SpinnerNumberModel(player_stack / 2, 1, player_stack, 1);
+                spinner.setModel(model);
+            } catch (IllegalArgumentException e){
+                displayMessage("Invalid bet amount. Please try again.");
+            }
+        } else {
+            try {
+                SpinnerModel model = new SpinnerNumberModel(player_stack / 2, 0, player_stack, 1);
+                spinner.setModel(model);
+            } catch (IllegalArgumentException e){
+                displayMessage("Invalid bet amount. Please try again.");
+            }
+        }
+
+        // Revalidate and repaint
+        boardPanel.revalidate();
+        boardPanel.repaint();
+    }
+
+    // Function to check if Game is over
+    public void checkIfGameOver(){
+        
+    }
+
+    public void displayMessage(String msg){
+        // Print message
+        messagePanel.removeAll();
+        JLabel message = new JLabel(msg);
+        messagePanel.add(message);
+        messagePanel.revalidate();
+        messagePanel.repaint();
+
+        // Remove message after 3 seconds
+        Timer timer = new Timer(3000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                messagePanel.removeAll();
+                messagePanel.revalidate();
+                messagePanel.repaint();
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
 
     public void drawCard(JPanel board, String suit, String value) {
 
@@ -286,7 +480,7 @@ public class SwingTest extends JPanel implements ActionListener {
 
     /** Returns an ImageIcon, or null if the path was invalid. */
     protected static ImageIcon createImageIcon(String path) {
-        java.net.URL imgURL = SwingTest.class.getResource(path);
+        java.net.URL imgURL = GUI.class.getResource(path);
         if (imgURL != null) {
             return new ImageIcon(imgURL);
         } else {
@@ -334,11 +528,12 @@ public class SwingTest extends JPanel implements ActionListener {
     private static void createAndShowGUI() {
 
         //Create and set up the window.
-        JFrame frame = new JFrame("SwingTest");
+        JFrame frame = new JFrame("Poker");
+        frame.setPreferredSize(new Dimension(1000, 550));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Create and set up the content pane.
-        SwingTest newContentPane = new SwingTest();
+        GUI newContentPane = new GUI();
         newContentPane.setOpaque(true);
         frame.setContentPane(newContentPane);
 
