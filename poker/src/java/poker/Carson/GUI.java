@@ -22,11 +22,17 @@ public class GUI extends JPanel implements ActionListener {
     //  Create a board panel
     JPanel boardPanel = new JPanel();
 
+    // Create a panel for the ai's cards
     JPanel aiCardsPanel = new JPanel();
 
+    // Create a panel for the player's cards
     JPanel playerCardsPanel = new JPanel();
 
+    // Create a panel for the community cards
     JPanel communityCardsPanel = new JPanel();
+
+    // Create a panel for messages
+    JPanel messagePanel = new JPanel();
 
     int pot = 100;
     int current_bet = 50;
@@ -154,7 +160,7 @@ public class GUI extends JPanel implements ActionListener {
         b10.setActionCommand("bet");
 
         // Spinner for bet amount
-        SpinnerModel model = new SpinnerNumberModel(50, 1, 1000, 10);     
+        SpinnerModel model = new SpinnerNumberModel(50, 10, player_stack, 10);     
         spinner = new JSpinner(model);
 
         //Listen for actions on buttons 1 and 3.
@@ -181,6 +187,18 @@ public class GUI extends JPanel implements ActionListener {
         b9.setToolTipText("Click this button to peek at your cards.");
         b10.setToolTipText("Click this button to bet a custom amount.");
 
+        // Set buttons to false except for next hand
+        b1.setEnabled(true);
+        b2.setEnabled(false);
+        b3.setEnabled(false);
+        b4.setEnabled(false);
+        b5.setEnabled(false);
+        b6.setEnabled(false);
+        b7.setEnabled(false);
+        b8.setEnabled(false);
+        b9.setEnabled(false);
+        b10.setEnabled(false);
+
         // Add buttons to the button panel
         buttonPanel.add(b1);
         buttonPanel.add(b2);
@@ -198,9 +216,11 @@ public class GUI extends JPanel implements ActionListener {
         playerCardsPanel.setLayout(new BoxLayout(playerCardsPanel, BoxLayout.X_AXIS));
         communityCardsPanel.setLayout(new BoxLayout(communityCardsPanel, BoxLayout.X_AXIS));
         aiCardsPanel.setLayout(new BoxLayout(aiCardsPanel, BoxLayout.X_AXIS));
+        // messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.X_AXIS));
 
         // Add the panels to the main panel
         add(boardPanel, BorderLayout.NORTH);
+        add(messagePanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
@@ -210,6 +230,7 @@ public class GUI extends JPanel implements ActionListener {
             aiCardsPanel.removeAll();
             communityCardsPanel.removeAll();
             playerCardsPanel.removeAll();
+            messagePanel.removeAll();
             boardPanel.removeAll();
             
             // Draw ai cards
@@ -246,9 +267,8 @@ public class GUI extends JPanel implements ActionListener {
             b9.setEnabled(true);
             b10.setEnabled(true);
 
-            // Revalidate and repaint
-            boardPanel.revalidate();
-            boardPanel.repaint();
+            // Refresh the board
+            refreshElements();
         } else if ("fold".equals(e.getActionCommand())){
             // Remove previous elements
             aiCardsPanel.removeAll();
@@ -257,13 +277,7 @@ public class GUI extends JPanel implements ActionListener {
             boardPanel.removeAll();
 
             // Print fold message
-            JLabel foldMessage = new JLabel("You folded. AI wins the pot of $" + pot);
-            // boardPanel.add(Box.createVerticalStrut(90)); // Add vertical space
-            boardPanel.add(Box.createHorizontalStrut(300)); // Add horizontal space
-            boardPanel.add(foldMessage);
-
-            // Temp logic to subtract bet from player stack
-            player_stack = player_stack - 10;
+            displayMessage("You folded. AI wins the pot of $" + pot);
 
             // Enable the Next Hand button and disable the rest
             b1.setEnabled(true);
@@ -277,25 +291,88 @@ public class GUI extends JPanel implements ActionListener {
             b9.setEnabled(false);
             b10.setEnabled(false);
 
-            // Revalidate and repaint
-            boardPanel.revalidate();
-            boardPanel.repaint();
+            // Refresh the board
+            refreshElements();
+        } else if ("check".equals(e.getActionCommand())){
+            // Check logic here
+        } else if ("call".equals(e.getActionCommand())){
+            // Call logic here
+        } else if ("min_bet".equals(e.getActionCommand())){
+            // Min bet logic here
+        } else if ("bet_half_pot".equals(e.getActionCommand())){
+            // Bet half pot logic here
+        } else if ("bet_pot".equals(e.getActionCommand())){
+            // bet pot logic here
+        } else if ("all_in".equals(e.getActionCommand())){
+            // all in logic here
+        } else if ("peek".equals(e.getActionCommand())){
+            // peek logic here
         } else if ("bet".equals(e.getActionCommand())){
-            // Set current bet
-            current_bet = (int) spinner.getValue();
+            // Get bet amount
+            int bet_amount = (int) spinner.getValue();
 
-            // Remove bet amount from player stack
-            player_stack = player_stack - current_bet;
+            // Check if valid bet amount
+            if ((bet_amount <= player_stack) && (bet_amount >= 1)){
+                // Set current bet
+                current_bet = (int) spinner.getValue();
 
-            // Add player bet to main pot
-            pot = pot + current_bet;
+                // Remove bet amount from player stack
+                player_stack = player_stack - current_bet;
 
-            // Revalidate and repaint
-            boardPanel.revalidate();
-            boardPanel.repaint();
+                // Add player bet to main pot
+                pot = pot + current_bet;
+                
+                // Refresh the board
+                refreshElements();
+
+            } else {
+                // Display error message
+                displayMessage("Invalid bet amount. Please try again.");
+            }
         }
     }
 
+    public void refreshElements(){
+        // Check for button logic in here (Mikhail's legal actions)
+
+        // Adjust the bet spinner
+        try {
+            SpinnerModel model = new SpinnerNumberModel(player_stack / 2, 1, player_stack, 1);
+            spinner.setModel(model);
+        } catch (IllegalArgumentException e){
+            displayMessage("Invalid bet amount. Please try again.");
+        }
+
+        // Revalidate and repaint
+        boardPanel.revalidate();
+        boardPanel.repaint();
+    }
+
+    // Function to check if Game is over
+    public void checkIfGameOver(){
+        
+    }
+
+    public void displayMessage(String msg){
+        // Print message
+        messagePanel.removeAll();
+        JLabel message = new JLabel(msg);
+        messagePanel.add(message);
+        messagePanel.revalidate();
+        messagePanel.repaint();
+
+        // Remove message after 3 seconds
+        Timer timer = new Timer(3000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                messagePanel.removeAll();
+                messagePanel.revalidate();
+                messagePanel.repaint();
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
 
     public void drawCard(JPanel board, String suit, String value) {
 
@@ -375,7 +452,8 @@ public class GUI extends JPanel implements ActionListener {
     private static void createAndShowGUI() {
 
         //Create and set up the window.
-        JFrame frame = new JFrame("SwingTest");
+        JFrame frame = new JFrame("Poker");
+        frame.setPreferredSize(new Dimension(1000, 550));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Create and set up the content pane.
