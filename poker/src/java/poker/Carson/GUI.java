@@ -258,12 +258,13 @@ public class GUI extends JPanel implements ActionListener {
             // Grey out the Next Hand button and enable the rest
             b1.setEnabled(false);
             b2.setEnabled(true);
-            b3.setEnabled(true);
+            b3.setEnabled(false);
             b4.setEnabled(true);
             b5.setEnabled(true);
             b6.setEnabled(true);
             b7.setEnabled(true);
             b8.setEnabled(true);
+            // b9.setEnabled(false);
             b9.setEnabled(true);
             b10.setEnabled(true);
 
@@ -297,16 +298,82 @@ public class GUI extends JPanel implements ActionListener {
             // Check logic here
         } else if ("call".equals(e.getActionCommand())){
             // Call logic here
+            if (player_stack >= current_bet){
+                player_stack = player_stack - current_bet;
+                pot = pot + current_bet;
+                refreshElements();
+            } else {
+                displayMessage("You don't have enough money to call. Going all in instead.");
+                pot = pot + player_stack;
+                player_stack = 0;
+                refreshElements();
+            }
         } else if ("min_bet".equals(e.getActionCommand())){
             // Min bet logic here
+            if (player_stack >= current_bet){
+                player_stack = player_stack - current_bet;
+                pot = pot + current_bet;
+                refreshElements();
+            } else {
+                displayMessage("You don't have enough money to bet the minimum. Going all in instead.");
+                pot = pot + player_stack;
+                player_stack = 0;
+                refreshElements();
+            }
         } else if ("bet_half_pot".equals(e.getActionCommand())){
             // Bet half pot logic here
+            if (player_stack >= (pot / 2)){
+                player_stack = player_stack - (pot / 2);
+                current_bet = pot / 2;
+                pot = pot + current_bet;
+                refreshElements();
+            } else {
+                displayMessage("You don't have enough money to bet half the pot. Going all in instead.");
+                pot = pot + player_stack;
+                player_stack = 0;
+                refreshElements();
+            }
         } else if ("bet_pot".equals(e.getActionCommand())){
             // bet pot logic here
+            if (player_stack >= pot){
+                player_stack = player_stack - pot;
+                pot = pot + pot;
+                refreshElements();
+            } else {
+                displayMessage("You don't have enough money to bet half the pot. Going all in instead.");
+                pot = pot + player_stack;
+                player_stack = 0;
+                refreshElements();
+            }
         } else if ("all_in".equals(e.getActionCommand())){
             // all in logic here
+            current_bet = player_stack;
+            player_stack = 0;
+            pot = pot + current_bet;
+            refreshElements();
         } else if ("peek".equals(e.getActionCommand())){
             // peek logic here
+            // Peek the AI cards for 3 seconds
+            aiCardsPanel.removeAll();
+            drawCard(aiCardsPanel, ai_hand[0].substring(ai_hand[0].indexOf(' ') + 1), ai_hand[0].substring(0, ai_hand[0].indexOf(' ')));
+            drawCard(aiCardsPanel, ai_hand[1].substring(ai_hand[1].indexOf(' ') + 1), ai_hand[1].substring(0, ai_hand[1].indexOf(' ')));
+            aiCardsPanel.revalidate();
+            aiCardsPanel.repaint();
+            refreshElements();
+            displayMessage("Peeking AI cards for 3 seconds...");
+            Timer timer = new Timer(3000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    aiCardsPanel.removeAll();
+                    drawBackCard(aiCardsPanel);
+                    drawBackCard(aiCardsPanel);
+                    aiCardsPanel.revalidate();
+                    aiCardsPanel.repaint();
+                    refreshElements();
+                }
+            });
+            timer.setRepeats(false);
+            timer.start();
         } else if ("bet".equals(e.getActionCommand())){
             // Get bet amount
             int bet_amount = (int) spinner.getValue();
@@ -335,12 +402,21 @@ public class GUI extends JPanel implements ActionListener {
     public void refreshElements(){
         // Check for button logic in here (Mikhail's legal actions)
 
-        // Adjust the bet spinner
-        try {
-            SpinnerModel model = new SpinnerNumberModel(player_stack / 2, 1, player_stack, 1);
-            spinner.setModel(model);
-        } catch (IllegalArgumentException e){
-            displayMessage("Invalid bet amount. Please try again.");
+        if (player_stack > 0){
+            // Adjust the bet spinner
+            try {
+                SpinnerModel model = new SpinnerNumberModel(player_stack / 2, 1, player_stack, 1);
+                spinner.setModel(model);
+            } catch (IllegalArgumentException e){
+                displayMessage("Invalid bet amount. Please try again.");
+            }
+        } else {
+            try {
+                SpinnerModel model = new SpinnerNumberModel(player_stack / 2, 0, player_stack, 1);
+                spinner.setModel(model);
+            } catch (IllegalArgumentException e){
+                displayMessage("Invalid bet amount. Please try again.");
+            }
         }
 
         // Revalidate and repaint
