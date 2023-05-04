@@ -224,6 +224,36 @@ public class GUI extends JPanel implements ActionListener {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    // Function to draw cards based on round name
+    public void drawCommunityCards(String round_name) {
+        if (round_name == "Pre-Flop") {
+            communityCardsPanel.removeAll();
+            communityCardsPanel.add(Box.createRigidArea(new Dimension(0, 90))); // Add vertical space
+            refreshElements();
+        } else if (round_name == "Flop") {
+            communityCardsPanel.removeAll();
+            // Draw 3 community cards
+            for (int i=0;i<3;i++){
+                drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf(' ') + 1), community_cards[i].substring(0, community_cards[i].indexOf(' ')));
+            }
+            refreshElements();
+        } else if (round_name == "Turn") {
+            communityCardsPanel.removeAll();
+            // Draw 4 community cards
+            for (int i=0;i<4;i++){
+                drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf(' ') + 1), community_cards[i].substring(0, community_cards[i].indexOf(' ')));
+            }
+            refreshElements();
+        } else if (round_name == "River"){
+            communityCardsPanel.removeAll();
+            // Draw 5 community cards
+            for (int i=0;i<5;i++){
+                drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf(' ') + 1), community_cards[i].substring(0, community_cards[i].indexOf(' ')));
+            }
+            refreshElements();
+        }
+    }
+
     public void actionPerformed(ActionEvent e) {
         if ("next_hand".equals(e.getActionCommand())) {
             // Remove previous elements
@@ -241,10 +271,8 @@ public class GUI extends JPanel implements ActionListener {
 
             boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
 
-            // Draw community cards
-            for (int i=0;i<3;i++){
-                drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf(' ') + 1), community_cards[i].substring(0, community_cards[i].indexOf(' ')));
-            }
+            drawCommunityCards(round);
+
             boardPanel.add(communityCardsPanel);
 
             boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
