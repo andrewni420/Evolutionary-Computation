@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 public class GUI extends JPanel implements ActionListener {
 
     // Declare buttons
-    protected JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b10;
+    protected JButton nextHandButton, foldButton, checkButton, callButton, minBetButton, betHalfPotButton, betPotButton, allInButton, peekButton, betButton;
 
     // Create a button panel
     JPanel buttonPanel = new JPanel();
@@ -34,6 +34,7 @@ public class GUI extends JPanel implements ActionListener {
     // Create a panel for messages
     JPanel messagePanel = new JPanel();
 
+    // Variables for pot, current bet, player hand, ai hand, player stack, ai stack, community cards, round, and if game is active
     int pot = 100;
     int current_bet = 50;
     String[] player_hand = new String[2];
@@ -42,6 +43,7 @@ public class GUI extends JPanel implements ActionListener {
     int ai_stack = 200;
     String[] community_cards = new String[5];
     String round = "Pre-Flop";
+    boolean game_active = false;
 
     JSpinner spinner;
 
@@ -120,96 +122,96 @@ public class GUI extends JPanel implements ActionListener {
         boardPanel.setLayout(new BoxLayout(boardPanel, BoxLayout.Y_AXIS));
 
         // Next hand button
-        b1 = new JButton("Next Hand");
-        b1.setActionCommand("next_hand");
+        nextHandButton = new JButton("Next Hand");
+        nextHandButton.setActionCommand("next_hand");
 
         // Fold button
-        b2 = new JButton("Fold");
-        b2.setActionCommand("fold");
+        foldButton = new JButton("Fold");
+        foldButton.setActionCommand("fold");
 
         // Check button
-        b3 = new JButton("Check");
-        b3.setActionCommand("check");
+        checkButton = new JButton("Check");
+        checkButton.setActionCommand("check");
 
         // Call button
-        b4 = new JButton("Call");
-        b4.setActionCommand("call");
+        callButton = new JButton("Call");
+        callButton.setActionCommand("call");
 
         // Min Bet button
-        b5 = new JButton("Min Bet");
-        b5.setActionCommand("min_bet");
+        minBetButton = new JButton("Min Bet");
+        minBetButton.setActionCommand("min_bet");
 
         // Bet Half Pot button 
-        b6 = new JButton("Bet Half Pot");
-        b6.setActionCommand("bet_half_pot");
+        betHalfPotButton = new JButton("Bet Half Pot");
+        betHalfPotButton.setActionCommand("bet_half_pot");
 
         // Bet Pot button
-        b7 = new JButton("Bet Pot");
-        b7.setActionCommand("bet_pot");
+        betPotButton = new JButton("Bet Pot");
+        betPotButton.setActionCommand("bet_pot");
 
         // All In button
-        b8 = new JButton("All In");
-        b8.setActionCommand("all_in");
+        allInButton = new JButton("All In");
+        allInButton.setActionCommand("all_in");
 
         // Peek button
-        b9 = new JButton("Peek");
-        b9.setActionCommand("peek");
+        peekButton = new JButton("Peek");
+        peekButton.setActionCommand("peek");
 
         // Bet button
-        b10 = new JButton("Bet");
-        b10.setActionCommand("bet");
+        betButton = new JButton("Bet");
+        betButton.setActionCommand("bet");
 
         // Spinner for bet amount
         SpinnerModel model = new SpinnerNumberModel(50, 10, player_stack, 10);     
         spinner = new JSpinner(model);
 
         //Listen for actions on buttons 1 and 3.
-        b1.addActionListener(this);
-        b2.addActionListener(this);
-        b3.addActionListener(this);
-        b4.addActionListener(this);
-        b5.addActionListener(this);
-        b6.addActionListener(this);
-        b7.addActionListener(this);
-        b8.addActionListener(this);
-        b9.addActionListener(this);
-        b10.addActionListener(this);
+        nextHandButton.addActionListener(this);
+        foldButton.addActionListener(this);
+        checkButton.addActionListener(this);
+        callButton.addActionListener(this);
+        minBetButton.addActionListener(this);
+        betHalfPotButton.addActionListener(this);
+        betPotButton.addActionListener(this);
+        allInButton.addActionListener(this);
+        peekButton.addActionListener(this);
+        betButton.addActionListener(this);
 
         // Tooltips (hover text)
-        b1.setToolTipText("Click this button to get the next hand.");
-        b2.setToolTipText("Click this button to fold the current hand.");
-        b3.setToolTipText("Click this button to check.");
-        b4.setToolTipText("Click this button to call.");
-        b5.setToolTipText("Click this button to bet the minimum.");
-        b6.setToolTipText("Click this button to bet half the pot.");
-        b7.setToolTipText("Click this button to bet the pot.");
-        b8.setToolTipText("Click this button to go all in.");
-        b9.setToolTipText("Click this button to peek at your cards.");
-        b10.setToolTipText("Click this button to bet a custom amount.");
+        nextHandButton.setToolTipText("Click this button to get the next hand.");
+        foldButton.setToolTipText("Click this button to fold the current hand.");
+        checkButton.setToolTipText("Click this button to check.");
+        callButton.setToolTipText("Click this button to call.");
+        minBetButton.setToolTipText("Click this button to bet the minimum.");
+        betHalfPotButton.setToolTipText("Click this button to bet half the pot.");
+        betPotButton.setToolTipText("Click this button to bet the pot.");
+        allInButton.setToolTipText("Click this button to go all in.");
+        peekButton.setToolTipText("Click this button to peek at your cards.");
+        betButton.setToolTipText("Click this button to bet a custom amount.");
 
         // Set buttons to false except for next hand
-        b1.setEnabled(true);
-        b2.setEnabled(false);
-        b3.setEnabled(false);
-        b4.setEnabled(false);
-        b5.setEnabled(false);
-        b6.setEnabled(false);
-        b7.setEnabled(false);
-        b8.setEnabled(false);
-        b9.setEnabled(false);
-        b10.setEnabled(false);
+        nextHandButton.setEnabled(true);
+        foldButton.setEnabled(false);
+        checkButton.setEnabled(false);
+        callButton.setEnabled(false);
+        minBetButton.setEnabled(false);
+        betHalfPotButton.setEnabled(false);
+        betPotButton.setEnabled(false);
+        allInButton.setEnabled(false);
+        peekButton.setEnabled(false);
+        betButton.setEnabled(false);
 
         // Add buttons to the button panel
-        buttonPanel.add(b1);
-        buttonPanel.add(b2);
-        buttonPanel.add(b3);
-        buttonPanel.add(b4);
-        buttonPanel.add(b5);
-        buttonPanel.add(b6);
-        buttonPanel.add(b7);
-        buttonPanel.add(b8);
-        buttonPanel.add(b9);
-        buttonPanel.add(b10);
+        buttonPanel.add(nextHandButton);
+        buttonPanel.add(foldButton);
+        buttonPanel.add(checkButton);
+        buttonPanel.add(callButton);
+        buttonPanel.add(minBetButton);
+        buttonPanel.add(betHalfPotButton);
+        buttonPanel.add(betPotButton);
+        buttonPanel.add(allInButton);
+        buttonPanel.add(peekButton);
+        buttonPanel.add(betButton);
         buttonPanel.add(spinner);
 
         // Set the layout manager for the card panels
@@ -256,6 +258,9 @@ public class GUI extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if ("next_hand".equals(e.getActionCommand())) {
+            // Set game to active
+            game_active = true;
+            
             // Remove previous elements
             aiCardsPanel.removeAll();
             communityCardsPanel.removeAll();
@@ -283,22 +288,24 @@ public class GUI extends JPanel implements ActionListener {
             }
             boardPanel.add(playerCardsPanel);
 
-            // Grey out the Next Hand button and enable the rest
-            b1.setEnabled(false);
-            b2.setEnabled(true);
-            b3.setEnabled(false);
-            b4.setEnabled(true);
-            b5.setEnabled(true);
-            b6.setEnabled(true);
-            b7.setEnabled(true);
-            b8.setEnabled(true);
-            // b9.setEnabled(false);
-            b9.setEnabled(true);
-            b10.setEnabled(true);
+            // Grey out the Next Hand, check, and peek buttons
+            nextHandButton.setEnabled(false);
+            foldButton.setEnabled(true);
+            checkButton.setEnabled(false);
+            callButton.setEnabled(true);
+            minBetButton.setEnabled(true);
+            betHalfPotButton.setEnabled(true);
+            betPotButton.setEnabled(true);
+            allInButton.setEnabled(true);
+            peekButton.setEnabled(false);
+            betButton.setEnabled(true);
 
             // Refresh the board
             refreshElements();
         } else if ("fold".equals(e.getActionCommand())){
+            // Set game to inactive
+            game_active = false;
+            
             // Remove previous elements
             aiCardsPanel.removeAll();
             communityCardsPanel.removeAll();
@@ -309,19 +316,22 @@ public class GUI extends JPanel implements ActionListener {
             displayMessage("You folded. AI wins the pot of $" + pot);
 
             // Enable the Next Hand button and disable the rest
-            b1.setEnabled(true);
-            b2.setEnabled(false);
-            b3.setEnabled(false);
-            b4.setEnabled(false);
-            b5.setEnabled(false);
-            b6.setEnabled(false);
-            b7.setEnabled(false);
-            b8.setEnabled(false);
-            b9.setEnabled(false);
-            b10.setEnabled(false);
+            nextHandButton.setEnabled(true);
+            foldButton.setEnabled(false);
+            checkButton.setEnabled(false);
+            callButton.setEnabled(false);
+            minBetButton.setEnabled(false);
+            betHalfPotButton.setEnabled(false);
+            betPotButton.setEnabled(false);
+            allInButton.setEnabled(false);
+            peekButton.setEnabled(false);
+            betButton.setEnabled(false);
 
             // Refresh the board
             refreshElements();
+
+            // Check if game over
+            checkIfGameOver();
         } else if ("check".equals(e.getActionCommand())){
             // Check logic here
         } else if ("call".equals(e.getActionCommand())){
@@ -442,6 +452,8 @@ public class GUI extends JPanel implements ActionListener {
             try {
                 SpinnerModel model = new SpinnerNumberModel(player_stack / 2, 0, player_stack, 1);
                 spinner.setModel(model);
+                spinner.setEnabled(false);
+                betButton.setEnabled(false);
             } catch (IllegalArgumentException e){
                 displayMessage("Invalid bet amount. Please try again.");
             }
@@ -454,7 +466,34 @@ public class GUI extends JPanel implements ActionListener {
 
     // Function to check if Game is over
     public void checkIfGameOver(){
-        
+        if (player_stack == 0 && !game_active){
+            // Display game over message
+            displayGameOverMessage("Game Over! You lost all your money. Please restart the game.");
+            // Disable all buttons
+            nextHandButton.setEnabled(false);
+            checkButton.setEnabled(false);
+            callButton.setEnabled(false);
+            minBetButton.setEnabled(false);
+            betHalfPotButton.setEnabled(false);
+            betPotButton.setEnabled(false);
+            allInButton.setEnabled(false);
+            peekButton.setEnabled(false);
+            betButton.setEnabled(false);
+            spinner.setEnabled(false);
+        } else if (ai_stack == 0 && !game_active){
+            // Display game over message
+            displayGameOverMessage("Game Over! You won all the AI's money. Please restart the game.");
+            nextHandButton.setEnabled(false);
+            checkButton.setEnabled(false);
+            callButton.setEnabled(false);
+            minBetButton.setEnabled(false);
+            betHalfPotButton.setEnabled(false);
+            betPotButton.setEnabled(false);
+            allInButton.setEnabled(false);
+            peekButton.setEnabled(false);
+            betButton.setEnabled(false);
+            spinner.setEnabled(false);
+        }
     }
 
     public void displayMessage(String msg){
@@ -476,6 +515,15 @@ public class GUI extends JPanel implements ActionListener {
         });
         timer.setRepeats(false);
         timer.start();
+    }
+
+    public void displayGameOverMessage(String msg){
+        // Print message
+        messagePanel.removeAll();
+        JLabel message = new JLabel(msg);
+        messagePanel.add(message);
+        messagePanel.revalidate();
+        messagePanel.repaint();
     }
 
     public void drawCard(JPanel board, String suit, String value) {
