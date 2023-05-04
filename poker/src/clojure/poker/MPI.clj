@@ -67,8 +67,7 @@
    Requests awaiting the responses of those threads upon finishing the task\\
    -> [Request ...]"
   [comm threads matches]
-  (mapv #(do (println "task for " %1)
-             (py. comm isend (py/->py-dict %2)
+  (mapv #(do (py. comm isend (py/->py-dict %2)
                   :dest %1
                   :tag 0))
         threads
@@ -94,8 +93,8 @@
            matches (drop (dec num-threads) matches)
            results []]
       (if (empty? matches)
-        (do #_(println "matches empty" (map first (get (group-by #(py. (second %) Get_status) requests) false)))
-            (into [] (concat results (map process-result requests))))
+        (do (println "matches empty" (map first (get (group-by #(py. (second %) Get_status) requests) false)))
+         (into [] (concat results (map process-result requests))))
         (let [{finished true
                unfinished false} (group-by #(py. (second %) Get_status) requests)]
           (recur (concat unfinished (send-and-collect comm (map first finished) matches))
@@ -126,6 +125,30 @@
   (run! #(py. comm isend (py/->python 1) :dest % :tag 1) (range 1 num-threads)))
 
 
+
+(defn start-gen
+  [hot-start gen-input pop-size r stdev]
+  (if hot-start
+    (last hot-start)
+    (or (try (read-string (slurp gen-input))
+             (catch Exception _ nil))
+        {:generation 0
+         :pop (ERL/initialize-pop pop-size :r r :stdev stdev)
+         :max-actions ##Inf})))
+
+(defn start-hof
+  [hof-input]
+  (cond hof-input (if (string? hof-input)
+                    (or (try (read-string (slurp hof-input))
+                             (catch Exception _ [])) [])
+                    hof-input)
+        hof-input (try (read-string (slurp hof-input))
+                       (catch Exception _ []))
+        :else []))
+
+
+
+
 (defn master
   "Code executed by the main MPI thread with rank=0\\
    Controls GA loop and delegates the evaluation of fitnesses
@@ -136,7 +159,7 @@
    Evaluate fitness of two opponents\\
    Stop evaluation early and return result\\
    Notify slaves that ERL loop is over"
-  [comm & {:keys [pop-size num-generations benchmark-count random-seed stdev]
+  [comm & {:keys [pop-size num-generations benchmark-count random-seed stdev hot-start hof-output hof-input gen-output gen-input]
            :or {pop-size 3
                 num-generations 1
                 benchmark-count 5
@@ -144,11 +167,20 @@
                 stdev 0.005}
            :as argmap}]
   (assert (MPI/Is_initialized) "MPI must be initialized for master thread to run")
-  (let [r (if (int? random-seed) (utils/random random-seed) random-seed)]
-    (loop [generation 0
-           pop (ERL/initialize-pop pop-size :r r :stdev stdev)
-           hof []
-           max-actions ##Inf]
+  (let [r (if (int? random-seed) (utils/random random-seed) random-seed)
+        gen (start-gen hot-start gen-input pop-size r stdev)]
+    (loop [generation (:generation gen)
+           pop (:pop gen)
+           hof (start-hof hof-input)
+           max-actions (:max-actions gen)
+           t 0]
+      (ERL/report-generation pop generation
+                             :max-actions max-actions
+                             :time-ms t
+                             :gen-output gen-output
+                             :hof-output hof-output
+                             :hof hof)
+      (System/gc)
       (if (= generation num-generations)
         (do (terminate-slaves comm (py. comm Get_size))
             {:last-pop pop
@@ -164,16 +196,14 @@
                                     :max-actions max-actions
                                     :symmetrical? true))
               [p h] (ERL/next-generation p r)]
-          (ERL/report-generation pop generation
-                                 :max-actions max-actions
-                                 :time-ms t)
           (recur (inc generation)
                  p
                  (-> hof
                      (ERL/update-hof b)
                      (ERL/cull-hof)
                      (conj h))
-                 (* 2 (utils/mean a))))))))
+                 (* 2 (utils/mean a))
+                 t))))))
 
 (defn process-message [message]
   (let [{[{id1 "id" seeds1 "seeds" std1 "stdev"}
@@ -200,28 +230,29 @@
   [comm max-seq-length num-games stdev from-block?]
   (assert (and comm max-seq-length num-games stdev) "Cannot be passed nil parameters")
   (assert (MPI/Is_initialized) "MPI must be initialized for slave thread to run")
+  (System/gc)
   (loop [task (py. comm irecv :source 0 :tag 0)
          terminate (py. comm irecv :source 0 :tag 1)]
     (cond (py. terminate Get_status) (do (py. task cancel)
                                          (py. terminate cancel)
                                          nil)
-          (py. task Get_status) (do #_(println "message received" (py. comm Get_rank))
+          (py. task Get_status) (do (println "message received" (py. comm Get_rank))
                                  (let [message (py. task wait)
                                        {players :players
                                         max-actions :max-actions
                                         deck-seed :deck-seed} (process-message (py/->jvm message))
-                                       res (time (ERL/versus (first players)
-                                                             (second players)
-                                                             max-seq-length
-                                                             num-games
-                                                             :net-gain? true
-                                                             :stdev stdev
-                                                             :decks deck-seed
-                                                             :max-actions max-actions
-                                                             :action-count? true
-                                                             :from-block? from-block?
-                                                             :gc? true))]
-                                   #_(println "message sent" (py. comm Get_rank))
+                                       res (ERL/versus (first players)
+                                                       (second players)
+                                                       max-seq-length
+                                                       num-games
+                                                       :net-gain? true
+                                                       :stdev stdev
+                                                       :decks deck-seed
+                                                       :max-actions max-actions
+                                                       :action-count? true
+                                                       :from-block? from-block?
+                                                       :gc? true)]
+                                   (println "message sent" (py. comm Get_rank))
                                    (py. comm isend (py/->py-dict res) :dest 0 :tag 0))
                                     (System/gc)
                                     (recur (py. comm irecv :source 0 :tag 0)
@@ -232,7 +263,7 @@
 (defn ERL
   "Main function assigning the master-slave roles to MPI threads
    based on rank"
-  [& {:keys [pop-size num-generations benchmark-count random-seed num-games max-seq-length stdev from-block? block-size]
+  [& {:keys [pop-size num-generations benchmark-count random-seed num-games max-seq-length stdev from-block? block-size hot-start hof-output hof-input gen-output gen-input param-output param-input]
       :or {pop-size 3
            num-generations 1
            benchmark-count 5
@@ -240,7 +271,13 @@
            num-games 10
            max-seq-length 10
            block-size 1e8
-           stdev 0.005}
+           stdev 0.005
+           hof-output "src/clojure/poker/Andrew/results/_hof.out"
+           hof-input "src/clojure/poker/Andrew/results/_hof.out"
+           gen-output "src/clojure/poker/Andrew/results/_gen.out"
+           gen-input "src/clojure/poker/Andrew/results/_gen.out"
+           param-output "src/clojure/poker/Andrew/results/_param.out"
+           param-input "src/clojure/poker/Andrew/results/_param.out"}
       :as argmap}]
   (let [r (utils/random random-seed)]
     (when from-block? (utils/initialize-random-block (int block-size) r))
@@ -248,11 +285,21 @@
       (let [comm mpi4py.MPI/COMM_WORLD
             rank (py. comm Get_rank)]
         (if (= 0 rank)
-          (println (master comm :pop-size pop-size
-                           :num-generations num-generations
-                           :benchmark-count benchmark-count
-                           :random-seed r
-                           :stdev stdev))
+          (do (println (dissoc argmap :hof-start))
+              (when param-output (spit param-output (with-out-str (println argmap))))
+              #_(when hot-start (run! println hot-start))
+              (println (master comm :pop-size pop-size
+                               :num-generations num-generations
+                               :benchmark-count benchmark-count
+                               :random-seed r
+                               :stdev stdev
+                               :hot-start hot-start
+                               :hot-output hof-output
+                               :hof-input hof-input
+                               :gen-output gen-output
+                               :gen-input gen-input
+                               :param-output param-output
+                               :param-input param-input)))
           (slave comm
                  max-seq-length
                  num-games

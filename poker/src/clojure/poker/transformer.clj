@@ -857,12 +857,15 @@
                                  [1 256 onehot/action-length];;action
                                  [1 512 4];;position
                                  [1 512 512]]));;mask
-               :d-model 64
-               :d-ff 256
-               :num-layers 6
+               :d-model 64;;256;;64;;
+               :d-ff 256;;1024;;256;;
+               :num-layers 6;;12;6;;
                :num-heads 8
-               :d-pe [16 16 16 16]
+               :d-pe [16 16 16 16];;[64 64 64 64];[16 16 16 16];;
                :max-seq-length 512))
+
+#_(with-open [m (ndarray/new-base-manager)]
+  (get-pcount (current-transformer m)))
 
 (def initial-parameter-map
   "The initial parameter map based on the current transformer"
@@ -997,6 +1000,9 @@
                                     (float stdev))})
 
 #_(utils/initialize-random-block 1000000 1)
+
+#_(utils/initialize-random-block 2.5e8 1)
+
 #_(time (do (dotimes [_ 10] (index-into-block 1  (range 100) @utils/random-block 100000)) nil))
 
 
@@ -1092,6 +1098,8 @@
                      (conj! res (.nextGaussian r)))))))]
   (utils/benchmark 1000000 (aget ^floats v 12345)))
 ;;;1-2 seconds to expand 100 seeds into 1000000 parameters each
+
+
 
 
 (def max-seq-length

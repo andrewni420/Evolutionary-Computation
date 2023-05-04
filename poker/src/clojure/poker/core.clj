@@ -1,6 +1,6 @@
 (ns poker.core
   (:require [poker.ERL :as ERL]
-            ;;[poker.MPI :as MPI]
+            [poker.MPI :as MPI]
             [clojure.pprint :as pprint]
             [poker.utils :as utils]
             [poker.concurrent :as concurrent]
@@ -18,8 +18,7 @@
            java.lang.Runtime
            ai.djl.nn.core.SparseMax
            ai.djl.ndarray.types.Shape
-           java.lang.System
-           poker.Andrew.Test))
+           java.lang.System))
 
 
 (defn benchmark
@@ -108,41 +107,70 @@
            :stdev 0.005))
 
 
+(defn read-file
+  "Reads in a clojure data structure from a file. Automatically prepends the path
+   src/clojure/poker/Andrew/results/ \\
+   Use make-vector to read all data structures in the file, not just the first, into a 
+   vector."
+  [name & {:keys [make-vector?]}]
+  (read-string
+   (if make-vector?
+     (str "[" (slurp (str "src/clojure/poker/Andrew/results/" name)) "]")
+     (slurp (str "src/clojure/poker/Andrew/results/" name)))))
+
+(defn hot-test
+  [& {:keys [block-size next-gen-method num-games gen-output gen-input]}]
+  (println gen-output)
+  (println gen-input))
+
+(defn hot-start
+  [& {:keys [hof-output hof-input gen-output gen-input param-output param-input default-pmap]
+               :as argmap}]
+  (let [params (try (read-file param-input) 
+                    (catch Exception _ {}))]
+    (apply MPI/ERL
+           (mapcat identity
+                   (into []
+                         (merge default-pmap 
+                                params 
+                                (dissoc argmap 
+                                        :default-pmap)))))))
+
+;;hot-start editing: :max-actions 2198.9734734734734, :time-ms 2154080.222549}
+
+
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (Test/main)
   #_(print-as-vector
-     (println ))
-  #_(MPI/ERL :pop-size 25
-           :num-generations 10
-           :num-games 500
-           :benchmark-count 4
-           :random-seed 994541586932005
-           :max-seq-length 100
-           :stdev 0.005
-           :from-block? true
-           :next-gen-method :k-best
-           :bench-method :k-best
-           :prop-hof 1.0)
-
-
-  #_(processresult/singlerun-versus
-     ["stdev-pretest-0.5.txt"
-      "stdev-pretest-0.05.txt"
-      "stdev-pretest-0.005.txt"])
-  #_(run! processresult/multirun-versus ["ERL-num-games-comparison-63748.out"
-                                         "ERL-pop-ablation-63759.out"])
-  #_(run! processresult/multirun-versus ["ERL-benchmark-comparison-63742.out"
-                                         "ERL-generation-ablation-63760.out"])
-  #_(do (processresult/multirun-versus "ERL-2-4-8-16-heads-63899.out" :keep-all? true)
-        (processresult/multirun-versus "ERL-seq-length-comparison-63746.out"))
-  #_(processresult/multirun-versus ["ERL-pop-gen-300-63782.out"])
-  #_(processresult/multirun-versus ["ERL-pop-gen-ablation-63761.out"])
-  #_(processresult/multirun-versus ["ERL-pop-gen-1200-15-63786.out"
-                                    "ERL-pop-gen-1200-25-63783.out"
-                                    "ERL-pop-gen-1200-34-63785.out"])
-  #_(processresult/generation-versus "ERL-pop-ablation-63759.out"))
+     (println))
+  #_(hot-start "ERL500x150-69434.out"
+               :hof-output "src/clojure/poker/Andrew/results/temphof.out")
+  (println (ERL/versus {:id :p0-0, :seeds [706194689 -1521660719], :std 0.005} 
+              {:id :p0-3, :seeds [706194689 -1020818428], :std 0.005} 
+              100 
+              10
+              :net-gain? true))
+  #_(hot-start :default-pmap {:pop-size 3;;500
+                            :num-generations 2;;150
+                            :num-games 10;;500
+                            :benchmark-count 1;;4
+                            :random-seed 994541586932005
+                            :max-seq-length 100
+                            :stdev 0.005
+                            :from-block? true
+                            :next-gen-method :k-best
+                            :bench-method :k-best
+                            :prop-hof 1.0
+                            :block-size 1e7;;2.5e8
+                            }
+             :hof-output "src/clojure/poker/Andrew/results/_hof.out"
+             :hof-input "src/clojure/poker/Andrew/results/_hof.out"
+             :gen-output "src/clojure/poker/Andrew/results/_gen.out"
+             :gen-input "src/clojure/poker/Andrew/results/_gen.out"
+             :param-output "src/clojure/poker/Andrew/results/_param.out"
+             :param-input "src/clojure/poker/Andrew/results/_param.out"))
 
 
 

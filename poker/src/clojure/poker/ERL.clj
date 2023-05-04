@@ -109,6 +109,7 @@
   [ind1 ind2 max-seq-length num-games & {:keys [manager net-gain? update-error? as-list? action-count? winning-individual? decks stdev max-actions from-block? device gc?]
                                          :or {stdev 0.005
                                               max-actions ##Inf}}]
+  (println ind1 ind2 max-seq-length num-games manager)
   (let [device (or device (utils/try-gpu))]
     ;;Ensure autoclosing of NDManager
     (with-open [manager (if manager
@@ -766,11 +767,17 @@
 
 (defn report-generation
   "Prints out the generation and the population at that generation"
-  [pop generation & {:keys [max-actions time-ms]}]
+  [pop generation & {:keys [max-actions time-ms gen-output hof hof-output]}]
   (pprint/pprint (merge {:generation generation
                          :pop pop}
                         (when max-actions {:max-actions max-actions})
-                        (when time-ms {:time-ms time-ms}))))
+                        (when time-ms {:time-ms time-ms})))
+  (when gen-output (try (spit gen-output (with-out-str (report-generation pop generation
+                                                                          :max-actions max-actions
+                                                                          :time-ms time-ms)))
+                        (catch Exception _)))
+  (when hof-output (try (spit hof-output (with-out-str (pprint/pprint hof)))
+                        (catch Exception _))))
 
 (defn round-errors 
   [hof decimal-points]

@@ -29,11 +29,10 @@ srun ./run-file.clj
 
 
 #!/bin/sh
-#SBATCH -n 10
-#SBATCH --time=12:00:00
-#SBATCH --output=MPItest-%j.out
-#SBATCH --error=MPItest-%j.err
-#SBATCH --mem-per-cpu=16G
+#SBATCH -n 928
+#SBATCH --time=7-00:00:00
+#SBATCH --output=ERL500x150-%j.out
+#SBATCH --error=ERL500x150-%j.err
 module load cm-pmix4/4.1.1
 module load openmpi4/gcc/4.1.
 module load amh-clojure

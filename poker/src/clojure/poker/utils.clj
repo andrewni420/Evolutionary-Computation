@@ -2143,7 +2143,21 @@
                          (when (and (>= money amount) raise?)
                            [["Raise" amount money]]))))))))
 
-#_(legal-actions (init-game [{:money 10.0} {:money 0.0}]))
+#_(legal-actions (poker.headsup/init-game [{:money 10.0} {:money 0.0}]))
+
+(defn is-legal? 
+  "Checks if the action is legal by calling legal-actions on the game"
+  [action game-state & {:keys [suppress-fold? suppress-raise?]
+                        :or {suppress-raise? true
+                             suppress-fold? true}}]
+  (let [la (legal-actions game-state 
+                          :suppress-fold? suppress-fold? 
+                          :suppress-raise? suppress-raise?)]
+    (when-let [same-type (seq (filter #(= (first action) (first %)) la))]
+      (and (<= (second action) (nth (first same-type) 2)) 
+           (>= (second action) (sfirst same-type))))))
+
+#_(is-legal? ["Raise" 200] (poker.headsup/init-game [{:money 10.0} {:money 0.0}]))
 
 
 (def always-fold

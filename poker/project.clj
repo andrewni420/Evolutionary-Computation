@@ -25,8 +25,7 @@
   :jvm-opts ["-Dai.djl.pytorch.graph_optimizer=false" 
              "-Dai.djl.pytorch.num_interop_threads=116"
              "-Dai.djl.disable_close_resource_on_finalize=true"
-             "-Xmx100g"
-             "-XX:+UseSerialGC"]
+             "-Xmx100g"]
   :profiles {:precomp {:source-paths ["src/pre/clojure"]
                        :aot [poker.headsup
                              poker.utils
