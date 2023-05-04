@@ -67,14 +67,17 @@
    Requests awaiting the responses of those threads upon finishing the task\\
    -> [Request ...]"
   [comm threads matches]
-  (mapv #(py. comm isend (py/->py-dict %2)
-              :dest %1
-              :tag 0)
+  (mapv #(do (println "task for " %1)
+             (py. comm isend (py/->py-dict %2)
+                  :dest %1
+                  :tag 0))
         threads
         matches)
-  (mapv #(vector %
-                 (py. comm irecv :source % :tag 0))
-        threads))
+  (mapv (fn [t _]
+          (vector t
+                  (py. comm irecv :source t :tag 0)))
+        threads
+        matches))
 
 (defn collect-fitness
   "Does not check to see if communication has been received"
@@ -86,15 +89,17 @@
                       (if symmetrical?
                         (concat matches (map reverse matches))
                         matches))]
-    (loop [matches (drop (dec num-threads) matches)
-           requests (send-and-collect comm (range 1 num-threads) matches)
+    #_(println "threadcount" num-threads "matchcount" (count matches))
+    (loop [requests (send-and-collect comm (range 1 num-threads) matches)
+           matches (drop (dec num-threads) matches)
            results []]
       (if (empty? matches)
-        (into [] (concat results (map process-result requests)))
+        (do #_(println "matches empty" (map first (get (group-by #(py. (second %) Get_status) requests) false)))
+            (into [] (concat results (map process-result requests))))
         (let [{finished true
                unfinished false} (group-by #(py. (second %) Get_status) requests)]
-          (recur (drop (count finished) matches)
-                 (concat unfinished (send-and-collect comm (map first finished) matches))
+          (recur (concat unfinished (send-and-collect comm (map first finished) matches))
+                 (drop (count finished) matches)
                  (doall (concat results (mapv process-result finished)))))))))
 
 (defn benchmark
@@ -200,21 +205,25 @@
     (cond (py. terminate Get_status) (do (py. task cancel)
                                          (py. terminate cancel)
                                          nil)
-          (py. task Get_status) (do (let [message (py. task wait)
-                                          {players :players
-                                           max-actions :max-actions
-                                           deck-seed :deck-seed} (process-message (py/->jvm message))
-                                          res (ERL/versus (first players)
-                                                          (second players)
-                                                          max-seq-length
-                                                          num-games
-                                                          :net-gain? true
-                                                          :stdev stdev
-                                                          :decks deck-seed
-                                                          :max-actions max-actions
-                                                          :action-count? true
-                                                          :from-block? from-block?)]
-                                      (py. comm isend (py/->py-dict res) :dest 0 :tag 0))
+          (py. task Get_status) (do #_(println "message received" (py. comm Get_rank))
+                                 (let [message (py. task wait)
+                                       {players :players
+                                        max-actions :max-actions
+                                        deck-seed :deck-seed} (process-message (py/->jvm message))
+                                       res (time (ERL/versus (first players)
+                                                             (second players)
+                                                             max-seq-length
+                                                             num-games
+                                                             :net-gain? true
+                                                             :stdev stdev
+                                                             :decks deck-seed
+                                                             :max-actions max-actions
+                                                             :action-count? true
+                                                             :from-block? from-block?
+                                                             :gc? true))]
+                                   #_(println "message sent" (py. comm Get_rank))
+                                   (py. comm isend (py/->py-dict res) :dest 0 :tag 0))
+                                    (System/gc)
                                     (recur (py. comm irecv :source 0 :tag 0)
                                            terminate))
           :else (recur task terminate))))

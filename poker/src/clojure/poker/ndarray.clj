@@ -54,8 +54,11 @@
   (utils/make-function #(Activation/relu %)))
 
 (defn new-base-manager
-  []
-  (NDManager/newBaseManager))
+  "Creates a new base-level manager"
+  ([device]
+   (NDManager/newBaseManager device))
+  ([]
+   (NDManager/newBaseManager)))
 
 (defn new-default-manager
   "Defines m as a new base manager"

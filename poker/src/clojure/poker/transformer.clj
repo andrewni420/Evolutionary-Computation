@@ -18,6 +18,7 @@
            ai.djl.Model
            ai.djl.ndarray.NDArray
            ai.djl.ndarray.NDList
+           poker.Indexing
            ai.djl.ndarray.types.DataType
            ai.djl.ndarray.types.Shape
            ai.djl.nn.SequentialBlock
@@ -926,7 +927,7 @@
              {:stdev stdev-map}))))
 
 
-(defn index-into-block
+#_(defn index-into-block
   "Helper for indexing into a block of random noise. Returns updated indices\\
    indices: vector of indices into the block\\
    block: float array of random noise\\
@@ -952,6 +953,53 @@
                (inc i-start))))))
 
 
+#_(defn index-into-block2
+  "Helper for indexing into a block of random noise. Returns updated indices\\
+   indices: vector of indices into the block\\
+   block: float array of random noise\\
+   n: number of samples to take\\
+   processing: postprocessing after summing all of the indexed numbers\\
+   -> {:indices :result}"
+  [i-start ^ints indices ^floats block n & {:keys [processing]
+                                              :or {processing identity}}]
+  (let [N (alength block)
+        compute #(mod (* %1 %2) N)
+        arr (float-array n)]
+    (loop [i 0
+           i-start i-start]
+      (if (= i n)
+        {:i-start i-start :result arr}
+        (do
+          (aset arr i
+                (float (processing
+                 (utils/indexedsum indices block
+                                   :processing (partial compute i-start)))))
+          (recur (inc i)
+                 (inc i-start)))))))
+
+;;; I ended up having to make this code java, because clojure just wasn't cutting it,
+;;; even with the two optimized examples above. I thought I was writing very optimized code,
+;;; but for some reason pure java is an entire order of magnitude faster
+(defn index-into-block
+  "Helper for indexing into a block of random noise. Returns updated indices\\
+   indices: vector of indices into the block\\
+   block: float array of random noise\\
+   n: number of samples to take\\
+   stdev: number to multiply each sampled number by\\
+   -> {:indices :result}"
+  [i-start indices block n & {:keys [stdev]
+                                      :or {stdev 0.005}}]
+  {:i-start (+ i-start n)
+   :result (Indexing/indexIntoBlock (int i-start)
+                                    (int-array indices)
+                                    block
+                                    (int n)
+                                    (float stdev))})
+
+#_(utils/initialize-random-block 1000000 1)
+#_(time (do (dotimes [_ 10] (index-into-block 1  (range 100) @utils/random-block 100000)) nil))
+
+
 (defn expand-via-indexing
   "Expand seeds into parameter block by indexing into preinstantiated random
    noise block"
@@ -967,7 +1015,7 @@
                (let [[k v] (first p)
                      {i :i-start
                       res :result} (index-into-block i indices random (count v)
-                                                     :processing (partial * stdev))]
+                                                     :stdev stdev)]
                  (recur (assoc! to-return k res)
                         (dissoc p k)
                         i)))))))
@@ -1078,7 +1126,7 @@
   [individual max-seq-length manager mask & {:keys [stdev from-block?]
                                              :or {stdev 1}}]
   (let [{seeds :seeds id :id std :stdev} individual]
-    (.setRandomSeed (Engine/getEngine (Engine/getDefaultEngineName)) (first seeds))
+    (.setRandomSeed (Engine/getInstance) (first seeds))
     (-> (initialize-individual
          :nn-factory current-transformer
          :parameter-seeds (rest seeds)

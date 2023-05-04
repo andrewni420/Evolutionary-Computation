@@ -8,7 +8,10 @@
            java.util.function.Supplier
            java.lang.AutoCloseable
            java.util.List
-           java.util.Random))
+           java.util.Random
+           poker.Indexing
+           ai.djl.engine.Engine
+           ai.djl.Device))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -22,7 +25,29 @@
 
 (def gpus
   "How many gpus there are"
-  (volatile! 0))
+  (.getGpuCount (Engine/getInstance)))
+
+(defn try-gpu
+  "Try to get the nth gpu, default to cpu if not available. If n is not provided
+   gets the default gpu, or cpu if there are no gpus."
+  ([n]
+   (if (>= n gpus)
+     (Device/cpu)
+     (Device/gpu (int n))))
+  ([] (if (> gpus 0)
+        (Device/gpu)
+        (Device/cpu))))
+
+(defn get-gpu
+  "Gets a gpu, wrapping around the number of gpus if necessary. If there are no gpus,
+   provides the cpu."
+  ([n]
+   (if (> gpus 0)
+     (Device/gpu (int (mod n gpus)))
+     (Device/cpu)))
+  ([] (if (> gpus 0)
+        (Device/gpu)
+        (Device/cpu))))
 
 (def random-block
   "Large block of gaussian noise. Instantiating a large block of gaussian noise
@@ -220,6 +245,41 @@
   (pd
    (reduce + 0 data)
    (float (count data))))
+
+(defn arrsum
+  "takes the sum of a float array"
+  [^floats arr & {:keys [processing]
+                  :or {processing identity}}]
+  (let [n (alength arr)]
+    (loop [i 0
+           res (float 0)]
+      (if (= i n)
+        res
+        (recur (inc i)
+               (+ res (processing (aget arr i))))))))
+
+(defn indexedsum
+  "Takes the sum of an array indexed into another array"
+  [^ints indices ^floats arr & {:keys [processing]
+                                :or {processing identity}}]
+  (let [n (alength indices)]
+    (loop [i 0
+           res (float 0)]
+      (if (= i n)
+        res
+        (recur (inc i)
+               (+ res (aget arr (processing (aget indices i)))))))))
+
+(defn processed-indexedsum
+  "Special fast method for transformer/index-into-block"
+  [^ints indices ^floats arr N i-start]
+  (let [n (alength indices)]
+    (loop [i 0
+           res (float 0)]
+      (if (= i n)
+        res
+        (recur (inc i)
+               (+ res (aget arr (mod (* i-start (aget indices i)) N))))))))
 
 (defn quickselect
   "Average O(n) selection of the ith element from the lowest in the data\\
@@ -505,10 +565,7 @@
   ([] (Random.)))
 
 
-(defn initialize-random-block
-  "Initializes the random block with n independent gaussian random variables.\\
-   Supply either a number or a random number generator\\
-   Takes 1 second to generate 10 million random numbers"
+#_(defn initialize-random-block
   [n r]
   (assert (int? n) "Must give an integer")
   (let [^Random r (if (number? r) (random r) r)]
@@ -519,6 +576,17 @@
                  res
                  (do (aset res i (float (.nextGaussian r)))
                      (recur (inc i)))))))))
+
+(defn initialize-random-block
+  "Initializes the random block with n independent gaussian random variables.\\
+   Supply either a number or a random number generator\\
+   Takes 1 second to generate 10 million random numbers"
+  [n r]
+  (let [^Random r (if (number? r) (random r) r)]
+    (vreset! random-block
+             (Indexing/initializeRandomBlock (int n) r))))
+
+#_(time (do (initialize-random-block 100000000 1) nil))
 
 (defn available-memory
   "Gets the amount of memory that should be able to be allocated before
@@ -2039,7 +2107,8 @@
    of money that can be put into the pot while performing that action type\\
    -> [[type least most] ...]"
   [game-state & {:keys [suppress-fold? suppress-raise?]
-                 :or {suppress-raise? true}}]
+                 :or {suppress-raise? true
+                      suppress-fold? true}}]
   (let [{min-bet :min-bet
          min-raise :min-raise
          bet-values :bet-values

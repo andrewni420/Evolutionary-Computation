@@ -129,7 +129,6 @@
   (multi-hot (map utils/card-index cards) 52))
 
 
-
 #_(encode-cards [[3 "Clubs"] [5 "Clubs"] [3 "Spades"]])
 
 (def action-types ["Check" "Call" "Fold" "Bet" "All-In"])

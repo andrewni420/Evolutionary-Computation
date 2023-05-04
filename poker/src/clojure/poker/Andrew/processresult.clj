@@ -259,9 +259,10 @@
                                      :as-list? true))))]
       (println (map #(:net-gain (deref %)) futs)))))
 
-#_(/ (* 2 80) (Math/sqrt 5000))
 
-#_(let [f (read-file "processing.out" :make-vector? true)]
+(sort-by 
+ #(read-string (apply str (drop 2 (str (first %)))))
+ (let [f (read-file "processing.out" :make-vector? true)]
   (apply merge-with 
          + 
          (map (fn [gain] 
@@ -272,10 +273,10 @@
                                          (/ (:mean (second %)) 
                                             (:stdev (second %))))) 
                            gain))) 
-              (nth f 29))))
+              (nth f 35)))))
 
 #_(let [f (read-file "processing.out" :make-vector? true)]
-  (clojure.pprint/pprint (nth f 28)))
+  (clojure.pprint/pprint (nth f 33)))
 
 
 (def aggregated-results
@@ -406,19 +407,72 @@
 #_(let [f (read-file "processing.out" :make-vector? true)]
   (reduce (fn [res incr] 
             (map #(ERL/update-individual % incr) 
-                 res)) [{:id :p-0-18
-                                  :error {}}
-                                 {:id :p-0-19
-                                  :error {}}
-                                 {:id :p-0-20
-                                  :error {}}
-                                 {:id :p-1-13
-                                  :error {}}
-                                 {:id :p-1-14
-                                  :error {}}
-                                 {:id :p-1-15
-                                  :error {}}] (map (fn [gain] (into {} (map #(vector (first %) (/ (:mean (second %)) (:stdev (second %)))) gain))) (nth f 14)))
+                 res)) [{:id :p0 :error {}}] 
+          (map (fn [gain] 
+                 (into {} (map #(vector (first %) 
+                                        (:mean (second %))
+                                        #_(* (Math/sqrt 5000)
+                                           (/ (:mean (second %)) 
+                                           (:stdev (second %))))) 
+                               gain))) 
+               (nth f 35)))
   #_(spit "src/clojure/poker/Andrew/results/temp.txt"
           (with-out-str (clojure.pprint/pprint
                          (filter #(some (partial contains? (into #{} (map first %)))
                                         [:p-0-23 :p-0-24 :p-0-25]) (nth f 2))))))
+
+#_(sort-by 
+ #(read-string (apply str (drop 2 (str (first %)))))
+ {:p11 5.352334257087439,
+  :p2 -1.5138,
+  :p4 1.1422899892958993,
+  :p3 3.5801908378262617,
+  :p21 -6.38460505035162,
+  :p5 0.3367363482028246,
+  :p8 -1.7162799369692803,
+  :p9 0.668051096264273,
+  :p22 -3.013865148260284,
+  :p25 -2.5907454322436654,
+  :p24 -1.4565909350533266,
+  :p12 2.2460194422584525,
+  :p1 0.35282587890625,
+  :p7 -1.9212988105034063,
+  :p19 -1.7244406164113457,
+  :p14 1.6977470415697158,
+  :p15 -0.04275920883560243,
+  :p13 2.6651184962508894,
+  :p17 -1.3825078422749515,
+  :p10 0.7312084752214427,
+  :p18 -0.04861682373955001,
+  :p16 -0.38757390290007665,
+  :p20 1.9159207879483184,
+  :p6 1.596040593719906,
+  :p23 2.4156182271226685})
+
+
+#_(println (zipmap (map second [[:p1 0.35282587890625]
+[:p2 -1.5138]
+[:p3 3.5801908378262617]
+[:p4 1.1422899892958993]
+[:p5 0.3367363482028246]
+[:p6 1.596040593719906]
+[:p7 -1.9212988105034063]
+[:p8 -1.7162799369692803]
+[:p9 0.668051096264273]
+[:p10 0.7312084752214427]
+[:p11 5.352334257087439]
+[:p12 2.2460194422584525]
+[:p13 2.6651184962508894]
+[:p14 1.6977470415697158]
+[:p15 -0.04275920883560243]
+[:p16 -0.38757390290007665]
+[:p17 -1.3825078422749515]
+[:p18 -0.04861682373955001]
+[:p19 -1.7244406164113457]
+[:p20 1.9159207879483184]
+[:p21 -6.38460505035162]
+[:p22 -3.013865148260284]
+[:p23 2.4156182271226685]
+[:p24 -1.4565909350533266]
+[:p25 -2.5907454322436654]])
+                 (repeat 30 " ")))

@@ -17,7 +17,9 @@
            java.lang.Thread
            java.lang.Runtime
            ai.djl.nn.core.SparseMax
-           ai.djl.ndarray.types.Shape))
+           ai.djl.ndarray.types.Shape
+           java.lang.System
+           poker.Andrew.Test))
 
 
 (defn benchmark
@@ -73,28 +75,28 @@
 
 
 #_(with-open [m (nd/new-base-manager)]
-  (let [arr (ndarray/ndarray m [[[[-100000.1,  -99999.9],
-                                  [-99999.6,  -99999.7]]]])]
-    (println (into [] (transformer/forward (poker.SparseMax. -1 2)
-                                  (nd/ndlist arr))))
-    #_(println (.exp arr))))
+    (let [arr (ndarray/ndarray m [[[[-100000.1,  -99999.9],
+                                    [-99999.6,  -99999.7]]]])]
+      (println (into [] (transformer/forward (poker.SparseMax. -1 2)
+                                             (nd/ndlist arr))))
+      #_(println (.exp arr))))
 
 
 #_(with-open [m (nd/new-base-manager)]
-  (ERL/versus-other {:seeds [-1155869325], :id :p0} 
-                  (utils/init-player utils/rule-agent :rule)
-                  10
-                  10
-                  :manager m
-                  :symmetrical? false)
-  (println (count (.getManagedArrays m))))
+    (ERL/versus-other {:seeds [-1155869325], :id :p0}
+                      (utils/init-player utils/rule-agent :rule)
+                      10
+                      10
+                      :manager m
+                      :symmetrical? false)
+    (println (count (.getManagedArrays m))))
 
 (defmacro print-as-vector
   "Prints [, then prints the body, then prints ]"
   [& body]
   `(try (println "[")
-       (println ~@body)
-       (finally (println "]"))))
+        (println ~@body)
+        (finally (println "]"))))
 
 (defn do-erl []
   (ERL/ERL :pop-size 25
@@ -105,34 +107,41 @@
            :max-seq-length 100
            :stdev 0.005))
 
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  #_(MPI/test-mpi)
+  (Test/main)
   #_(print-as-vector
-   (println (MPI/ERL :pop-size 25
-                     :num-generations 25
-                     :num-games 500
-                     :benchmark-count 4
-                     :random-seed -4467023281627811388
-                     :max-seq-length 100
-                     :stdev 0.005
-                     :from-block? true)))
+     (println ))
+  #_(MPI/ERL :pop-size 25
+           :num-generations 10
+           :num-games 500
+           :benchmark-count 4
+           :random-seed 994541586932005
+           :max-seq-length 100
+           :stdev 0.005
+           :from-block? true
+           :next-gen-method :k-best
+           :bench-method :k-best
+           :prop-hof 1.0)
+
+
   #_(processresult/singlerun-versus
-   ["stdev-pretest-0.5.txt"
-    "stdev-pretest-0.05.txt"
-    "stdev-pretest-0.005.txt"])
+     ["stdev-pretest-0.5.txt"
+      "stdev-pretest-0.05.txt"
+      "stdev-pretest-0.005.txt"])
   #_(run! processresult/multirun-versus ["ERL-num-games-comparison-63748.out"
-                                       "ERL-pop-ablation-63759.out"])
+                                         "ERL-pop-ablation-63759.out"])
   #_(run! processresult/multirun-versus ["ERL-benchmark-comparison-63742.out"
                                          "ERL-generation-ablation-63760.out"])
   #_(do (processresult/multirun-versus "ERL-2-4-8-16-heads-63899.out" :keep-all? true)
-      (processresult/multirun-versus "ERL-seq-length-comparison-63746.out"))
+        (processresult/multirun-versus "ERL-seq-length-comparison-63746.out"))
   #_(processresult/multirun-versus ["ERL-pop-gen-300-63782.out"])
   #_(processresult/multirun-versus ["ERL-pop-gen-ablation-63761.out"])
   #_(processresult/multirun-versus ["ERL-pop-gen-1200-15-63786.out"
-                                  "ERL-pop-gen-1200-25-63783.out"
-                                  "ERL-pop-gen-1200-34-63785.out"])
+                                    "ERL-pop-gen-1200-25-63783.out"
+                                    "ERL-pop-gen-1200-34-63785.out"])
   #_(processresult/generation-versus "ERL-pop-ablation-63759.out"))
 
 

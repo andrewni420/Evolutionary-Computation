@@ -5,7 +5,8 @@
             [poker.ndarray :as ndarray]
             [poker.concurrent :as concurrent]
             [clojure.set :as set]
-            [clojure.pprint :as pprint]))
+            [clojure.pprint :as pprint])
+  (:import ai.djl.Device))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Evolutionary Reinforcement Learning     ;;;
@@ -92,38 +93,57 @@
 (defn versus
   "Returns the winning individual, the match results of the individuals, or the 
    individuals updated to contain the match results\\
+   manager - optionally supply an NDManager\\
+   net-gain? - also return the net gain of each player\\
+   update-error? - also return the players with their error vectors updated by the match results\\
+   as-list? - keep track of each game's results, and also return the standard deviation of winnings\\
+   action-count? - also return the total number of actions taken\\
+   winning-individual? - also return the individual with positive net-gain\\
+   decks - optionally supply a list of decks or a random seed to standardize the decks played across different matchups\\
+   stdev - optionally specify the standard deviation of mutations for individuals that do not internally specify one\\
+   max-actions - optionally specify an action cap, such that the matchup terminates after exceeding this many actions\\
+   from-block? - whether to take perturbations by indexing into a preinstantiated block of random noise\\
+   device - optionally specify device to house NDManager and NDArrays on\\
+   gc? - whether to prompt JVM to collect garbage after creating transformer models\\
    -> {(:ind1 :ind2) (:net-gain) (:winner) (:action-count)}"
-  [ind1 ind2 max-seq-length num-games & {:keys [manager net-gain? update-error? as-list? action-count? winning-individual? decks stdev max-actions from-block?]
+  [ind1 ind2 max-seq-length num-games & {:keys [manager net-gain? update-error? as-list? action-count? winning-individual? decks stdev max-actions from-block? device gc?]
                                          :or {stdev 0.005
                                               max-actions ##Inf}}]
-  (with-open [manager (if manager
-                        (.newSubManager manager)
-                        (ndarray/new-base-manager))]
-    (let [mask (ndarray/ndarray manager (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
-          i1 (transformer/model-from-seeds ind1 max-seq-length manager mask :stdev stdev :from-block? from-block?)
-          i2 (transformer/model-from-seeds ind2 max-seq-length manager mask :stdev stdev :from-block? from-block?)]
-      (with-open [_i1 (utils/make-closeable i1 transformer/close-individual)
-                  _i2 (utils/make-closeable i2 transformer/close-individual)]
-        (let [{net-gain :net-gain
-               action-count :action-count} (apply
-                                            headsup/iterate-games-reset
-                                            [(transformer/as-player i1) (transformer/as-player i2)]
-                                            manager
-                                            num-games
-                                            :max-actions max-actions
-                                            :as-list? as-list?
-                                            (concat (when decks [:decks decks])))]
-          (merge (when update-error? {:ind1 (update ind1
-                                                    :error
-                                                    #(assoc % (:id ind2) ((:id ind1) net-gain)))
-                                      :ind2 (update ind2
-                                                    :error
-                                                    #(assoc % (:id ind1) ((:id ind2) net-gain)))})
-                 (when net-gain? {:net-gain net-gain})
-                 (when winning-individual? {:winner (if (> ((:id ind2) net-gain) 0)
-                                                      ind2
-                                                      ind1)})
-                 (when action-count? {:action-count action-count})))))))
+  (let [device (or device (utils/try-gpu))]
+    ;;Ensure autoclosing of NDManager
+    (with-open [manager (if manager
+                          (.newSubManager manager)
+                          (ndarray/new-base-manager device))]
+      ;;Make each individual's models from their seeds
+      (let [mask (ndarray/ndarray manager (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
+            i1 (transformer/model-from-seeds ind1 max-seq-length manager mask :stdev stdev :from-block? from-block?)
+            i2 (transformer/model-from-seeds ind2 max-seq-length manager mask :stdev stdev :from-block? from-block?)]
+        (when gc? (System/gc))
+        ;;Ensure autoclosing of each individual's models
+        (with-open [_i1 (utils/make-closeable i1 transformer/close-individual)
+                    _i2 (utils/make-closeable i2 transformer/close-individual)]
+          ;;Individuals compete against each other
+          (let [{net-gain :net-gain
+                 action-count :action-count} (apply
+                                              headsup/iterate-games-reset
+                                              [(transformer/as-player i1) (transformer/as-player i2)]
+                                              manager
+                                              num-games
+                                              :max-actions max-actions
+                                              :as-list? as-list?
+                                              (concat (when decks [:decks decks])))]
+            ;;Return different information depending on optional arguments
+            (merge (when update-error? {:ind1 (update ind1
+                                                      :error
+                                                      #(assoc % (:id ind2) ((:id ind1) net-gain)))
+                                        :ind2 (update ind2
+                                                      :error
+                                                      #(assoc % (:id ind1) ((:id ind2) net-gain)))})
+                   (when net-gain? {:net-gain net-gain})
+                   (when winning-individual? {:winner (if (> ((:id ind2) net-gain) 0)
+                                                        ind2
+                                                        ind1)})
+                   (when action-count? {:action-count action-count}))))))))
 
 
 
@@ -186,9 +206,11 @@
               #(merge-with merge-fn % {id gain}))
       individual)))
 
+#_(update-individual {:id :p0 :seeds [1 2 3]} {:p0 -2 :p1 2})
+
 (defn process-results
   "Processes the results of benchmarking matches to update the population and 
-   benchmark population, as well as return the action counts\\
+   benchmarking individuals, as well as return the number of actions taken for each matchup\\
    -> {:pop :benchmark :results}"
   [pop benchmark results]
   {:pop (reduce (fn [p res]
@@ -200,6 +222,14 @@
                       benchmark
                       results)
    :action-counts (mapv :action-count results)})
+
+#_(process-results [{:id :p0 :seeds [1 2]}
+                  {:id :p1 :seeds [1 3]}]
+                 [{:id :p2 :seeds [2 3]}]
+                 [{:net-gain {:p0 -1 :p2 1} :action-count 10}
+                  {:net-gain {:p2 -2 :p1 10} :action-count 20}
+                  {:net-gain {:p1 1 :p2 2} :action-count 30}
+                  {:net-gain {:p1 3 :p0 -1} :action-count 10}])
 
 (defn benchmark
   "Given a population and a set of benchmark individuals possibly drawn
@@ -213,16 +243,19 @@
                                              :or {stdev 0.005
                                                   symmetrical? true
                                                   max-actions ##Inf}}]
-  (let [decks (utils/process-decks decks num-games)
+  (let [pop (if (vector? pop) pop (into [] pop))
+        decks (utils/process-decks decks num-games)
         vs #(concurrent/msubmit
-             (versus %1 %2 max-seq-length num-games
+             (time (versus %1 %2 max-seq-length num-games
                      :net-gain? true
                      :decks decks
                      :as-list? as-list?
                      :stdev stdev
                      :max-actions max-actions
                      :action-count? true
-                     :from-block? from-block?))
+                     :from-block? from-block?
+                     :device (utils/get-gpu (.indexOf pop %1)))))
+        ;;send off matchups to thread pool
         res1 (doall
               (for [ind1 pop
                     ind2 bench :when (not (= ind1 ind2))]
@@ -232,36 +265,13 @@
                 (for [ind1 pop
                       ind2 bench :when (not (= ind1 ind2))]
                   (vs ind2 ind1))))
+        ;;deref results of matchups
+        #_ (doall (for [r (concat res1 res2)]
+                   (do (deref r)
+                   (println "message received"))))
         results (map deref (concat res1 res2))]
+    ;;process results and return the updated pop, benchmark, and action-counts
     (process-results pop bench results)))
-
-
-#_(defn benchmark-pmap
-  "Given a population and a set of benchmark individuals possibly drawn
-   from the population, plays each individual in the population against each
-   of the benchmark individuals, and updates them with the match results\\
-   If symmetrical? is true, then initializes a set of shared decks to be played
-   for each matchup. Then each matchup is played twice, once \"normal\" and once
-   with players in reversed positions, to reduce variance as much as possible\\
-   -> updated population"
-  [pop benchmark max-seq-length num-games & {:keys [decks symmetrical?]}]
-  (let [decks (if symmetrical?
-                (or decks
-                    (repeatedly num-games
-                                #(shuffle utils/deck)))
-                decks)
-        vs #(versus %1 %2 max-seq-length num-games :net-gain? true :decks decks)
-        res1 (for [ind1 pop
-                   ind2 benchmark :when (not (= ind1 ind2))]
-               [ind1 ind2])
-        res2 (when symmetrical?
-               (for [ind1 pop
-                     ind2 benchmark :when (not (= ind1 ind2))]
-                 [ind1 ind2]))]
-    (reduce (fn [p res]
-              (map #(update-individual % res) p))
-            pop
-            (doall (pmap #(vs (first %) (second %)) (concat res1 res2))))))
 
 #_(time (benchmark [{:seeds [-1155869325], :id :p0}
                   {:seeds [431529176], :id :p1}
@@ -286,10 +296,12 @@
   [pop max-rounds max-seq-length num-games & {:keys [update-error? symmetrical? stdev decks from-block?]
                                               :or {symmetrical? true
                                                    stdev 0.005}}]
+  ;;Loop until only 1 player is left or the max number of rounds is reached
   (loop [pop pop
          cur-pop pop
          i 0]
     (if (or (>= i max-rounds) (= 1 (count cur-pop)))
+      ;;Return the current surviving individuals, or the initial population updated with the last round reached
       (if update-error?
         pop
         cur-pop)
@@ -299,12 +311,16 @@
                         :decks (utils/process-decks decks num-games)
                         :from-block? from-block?)
             matches (partition-all 2 (shuffle cur-pop))
+            ;;Odd individual out that gets a pass
             pass (filter #(= 1 (count %)) matches)
+            ;;matchups for this round
             matches (filter #(= 2 (count %)) matches)
+            ;;Send off matchups
             res-1 (mapv #(concurrent/msubmit (vs (first %) (second %))) matches)
             res-2 (if symmetrical?
                     (mapv #(concurrent/msubmit (vs (second %) (first %))) matches)
                     (repeat (count matches) {}))
+            ;;Deref and merge matchup results
             results (apply merge
                            (concat
                             (map #(merge-with +
@@ -315,7 +331,9 @@
                                  res-1
                                  res-2)
                             (map #(assoc {} (:id (first %)) ##Inf) pass)))
+            ;;Getting winners
             next-round (filter #(pos? (get results (:id %) ##-Inf)) cur-pop)]
+        ;;Update the initial population with the highest round reached, or recur with only the winners
         (if update-error?
           (recur (mapv (fn [ind]
                          (condp #(%1 %2) (results (:id ind))
@@ -351,10 +369,12 @@
   -> ((player1 opp1 opp2 ...) ...) "
   [pop-count round-robin-count]
   (assert (or (even? pop-count) (even? round-robin-count)) "pop*round-robin-count must be even since 2 players participate in each game")
-  (let [challengers (take pop-count
+  (let [;;Arrange the population around a circle. Then each player plays the count/2 players to their left and right
+        challengers (take pop-count
                           (partition (int (inc (Math/floor (/ round-robin-count 2))))
                                      1
                                      (cycle (range pop-count))))
+        ;;If the round-robin count is odd, each challenger also plays the challenger diametrically across from it
         challengers (if (odd? round-robin-count)
                       (concat challengers
                               (map #(vector % (+ % (/ pop-count 2)))
@@ -380,29 +400,31 @@
                     :stdev stdev
                     :from-block? from-block?
                     :as-list? as-list?)
+        ;;Send off matchups
         res1 (mapv #(concurrent/msubmit (vs (pop (first %)) (pop (second %)))) matches)
-        res2 (if symmetrical? 
+        res2 (if symmetrical?
                (mapv #(concurrent/msubmit (vs (pop (second %)) (pop (first %)))) matches)
-                 [])]
+               [])]
+    ;;Collect results and update population with results
     (reduce (fn [p res]
-              (map #(update-individual % res) p))
+              (map #(update-individual % (:net-gain res)) p))
             pop
             (map deref (concat res1 res2)))))
 
-#_(round-robin-parallel [{:seeds [1] :id :p0}
-                       {:seeds [2] :id :p1}
-                       {:seeds [3] :id :p2}
-                       {:seeds [4] :id :p3}
-                       {:seeds [5] :id :p4}
-                       {:seeds [6] :id :p5}]
-                      10
-                      5
-                      10
-                        :as-list? true
-                      :symmetrical? false)
+#_(round-robin [{:seeds [1] :id :p0}
+                {:seeds [2] :id :p1}
+                {:seeds [3] :id :p2}
+                {:seeds [4] :id :p3}
+                {:seeds [5] :id :p4}
+                {:seeds [6] :id :p5}]
+               10
+               5
+               10
+               :as-list? true
+               :symmetrical? false)
 
 (defn lexicase-selection
-  "Lexicase selection using the individuals as test cases. Picks a random individual,
+  "Epsilon lexicase selection using the individuals as test cases. Picks a random individual,
    and selects from the population by their match results against that individual\\
    For individuals that haven't played against the test case individual, assume neither won
    money from the other\\
@@ -410,11 +432,13 @@
    as test cases\\
    -> individual"
   [pop & {:keys [benchmark-pop]}]
+  ;;Loop until the test cases are exhausted or only one individual remains
   (loop [opponents (shuffle (map :id (or benchmark-pop pop)))
          pop pop]
     (cond (empty? opponents) (rand-nth pop)
           (= 1 (count pop)) (first pop)
           :else (recur (rest opponents)
+                       ;;Compute mean and mean absolute deviation of errors
                        (let [errors (map #(or ((first opponents)
                                                (:error %))
                                               0)
@@ -423,15 +447,23 @@
                              max-error (apply max errors)
                              med-deviation (utils/median (map #(abs (- % avg-error))
                                                               errors))]
-                         #_(println "avg-error " avg-error "med-deviation " med-deviation)
+                         ;;Take only the individuals which have errors differing from the best error by at most MAD
                          (map first
                               (filter #(>= (second %)
                                           (- max-error med-deviation))
                                       (zipmap pop errors))))))))
 
+#_(lexicase-selection [{:id :p0 :seeds [1 2] :errors {:p3 1 :p4 0}}
+                     {:id :p1 :seeds [1 2] :errors {:p3 2 :p4 -1}}
+                     {:id :p2 :seeds [1 2] :errors {:p3 3 :p4 -2}}])
+
 (defn mutate
   "Given a random number generator and an individual,
    removes the individual's errors and adds a random seed to it\\
+   individual - individual to be mutated\\
+   random - random number generator to generate the seed of the next mutation\\
+   id - this individual is the id'th individual created in the current generation. 
+   Will be appended to the :id field of the individual to ensure unique :id fields for all individuals\\
    -> individual"
   [individual random id]
   (-> individual
@@ -439,22 +471,44 @@
       (update :seeds conj (.nextInt random))
       (update :id #(keyword (str (name %) "-" id)))))
 
+#_(mutate {:id :p0 :seeds [1 2] :errors {:p3 1 :p4 0}} 
+          (utils/random) 
+          3)
+
+
 (defn next-generation
   "Selects and mutates indivduals, producing the new generation 
    of individuals\\
-   Adds parents to hall of fame\\
+   method - method to use for constructing the hof. parents = only parents. all = all individuals. k-best = only k highest winnings\\
    -> pop"
-  [pop random]
-  (let [l (count pop)]
+  [pop random & {:keys [method k]
+                 :or {method :parents
+                      k 1}}]
+  (assert (contains? #{:parents :all :k-best} method) "Method must be one of :parents, :all, or :k-best")
+  (assert (or (not (= method :k-best)) k) "Must specify a k with the method :k-best")
+  (let [pop (if (vector? pop) pop (into [] pop))
+        l (count pop)]
     (loop [new-pop (transient [])
-           hof (transient #{})
+           parents (transient #{})
            i 0]
       (if (= i l)
-        [(persistent! new-pop) (persistent! hof)]
+        [(persistent! new-pop)
+         (condp = method
+           :k-best (into #{}
+                         (take k)
+                         (sort-by (fn [ind]
+                                    (- (transduce (map (comp #(or (:mean %) %)
+                                                             second))
+                                                  +
+                                                  (:error ind))))
+                                  pop))
+           :all (into #{} pop)
+           :parents (persistent! parents))]
         (let [parent (lexicase-selection pop)]
           (recur (conj! new-pop (mutate parent random i))
-                 (conj! hof parent)
+                 (conj! parents parent)
                  (inc i)))))))
+
 
 #_(next-generation [{:id :p0, :error {:p1 -0.75, :p2 -0.3, :p3 -0.79, :p4 0.46}, :seeds [-4964420948893066024]}
                     {:id :p1, :error {:p0 0.75, :p2 0.55, :p3 0.12, :p4 0.72}, :seeds [7564655870752979346]}
@@ -462,6 +516,7 @@
                     {:id :p3, :error {:p1 1.78, :p0 1.15, :p2 0.93, :p4 -1.84}, :seeds [6137546356583794141]}
                     {:id :p4, :error {:p1 -0.37, :p0 -0.505, :p2 1.36, :p3 -1.7}, :seeds [-594798593157429144]}]
                    (utils/random 1))
+
 
 (defn select-from-hof
   "Selects n individual from the hall of fame. \\
@@ -762,13 +817,19 @@
               2)
 
 (defn get-benchmark
-  "Gets the individuals used for benchmarking the population."
+  "Gets the individuals used for benchmarking the population.\\
+   n - number of individuals in the benchmark set\\
+   pop - population\\
+   hof - hall of fame\\
+   prop-hof - proportion of individuals to take from the hof\\
+   method - method used to select individuals from hof"
   [n pop hof prop-hof & {:keys [method]
                          :or {method :exp}}]
-  (let [n-hof (Math/floor (* prop-hof n))]
-    (concat (take (Math/ceil (- n n-hof))
+  (let [n-hof (Math/floor (* prop-hof n))
+        hof-bench (select-from-hof hof n-hof :method method)]
+    (concat (take (Math/ceil (- n (count hof-bench)))
                   (shuffle pop))
-            (select-from-hof hof n-hof :method method))))
+            hof-bench)))
 
 (defn initialize-pop
   "Given the population size n, a random number generator r, and a standard deviation,
@@ -797,13 +858,16 @@
    the previous population. This allows for at least 50% CPU utilization.\\
    After the last generation, the final population and the hall of fame are returned\\
    -> {:last-pop :hof}"
-  [& {:keys [pop-size num-generations num-games benchmark-count random-seed max-seq-length stdev from-block? block-size]
+  [& {:keys [pop-size num-generations num-games benchmark-count random-seed max-seq-length stdev from-block? block-size prop-hof bench-method next-gen-method]
       :or {pop-size 3
            num-generations 1
            num-games 10
            benchmark-count 5
            random-seed 1
            max-seq-length 20
+           prop-hof 0.5
+           bench-method :exp
+           next-gen-method :parents
            stdev 0.005
            block-size 1e8}
       :as argmap}]
@@ -821,14 +885,14 @@
                 b :benchmark
                 a :action-counts} :result
                t :time} (utils/get-time (benchmark pop
-                                                   (get-benchmark benchmark-count pop hof 0.5)
+                                                   (get-benchmark benchmark-count pop hof prop-hof :method bench-method)
                                                    max-seq-length
                                                    num-games
                                                    :symmetrical? true
                                                    :stdev stdev
                                                    :max-actions max-actions
                                                    :from-block? from-block?))
-              [p h] (next-generation p r)]
+              [p h] (next-generation p r :method next-gen-method)]
           (report-generation pop generation
                              :max-actions max-actions
                              :time-ms t)
@@ -836,7 +900,7 @@
                  p
                  (-> hof
                      (update-hof b)
-                     (cull-hof)
+                     ;;(cull-hof)
                      (conj h))
                  (* 2 (utils/mean a))))))))
 

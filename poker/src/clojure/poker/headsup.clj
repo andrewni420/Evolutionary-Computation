@@ -6,7 +6,8 @@
             [poker.transformer :as transformer]
             [clojure.core.matrix :as m]
             [clojure.set :as set])
-  (:gen-class))
+  (:gen-class)
+  (:import SwingTest))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;        Heads-Up Poker Game Engine         ;;;
@@ -123,6 +124,8 @@
      :action-history [[]]
      :player-ids player-ids
      :game-num game-num}))
+
+(defn -init-game [] (init-game))
 
 #_(init-game :verbosity 2)
 
@@ -684,39 +687,46 @@
 (defn play-game
   "Initializes and plays a game of poker, updating players and game-history in the process.
    -> {players game-encoding game-history}"
-  ([players manager & {:keys [deck verbosity game-num game-encoding game-history]
-                       :or {deck (shuffle utils/deck)
-                            verbosity 0
-                            game-num 0}}]
-   (let [game-encoding (or game-encoding (init-game-encoding manager (map :id players)))
-         game-history (or game-history [])
-         game-state (init-game :players players
-                               :deck deck
-                               :verbosity verbosity
-                               :game-num game-num
-                               :manager manager)
-         [new-state new-encoding] (bet-game (pay-blinds game-state :verbosity verbosity)
-                                            :game-encoding game-encoding
-                                            :verbosity verbosity)
-         position-encoding (onehot/encode-position new-state)]
-     (utils/print-verbose verbosity
-                          {:fn "play-game"}
-                          {:players players
-                           :deck (take 7 deck)}
-                          {:final-state new-state}
-                          {:initial-state {}})
-     {:players (:players new-state)
-      :game-encoding (-> new-encoding
-                         (update-game-encoding manager
-                                               :state (onehot/encode-state new-state)
-                                               :position position-encoding
-                                               :actions (onehot/encode-action nil new-state))
-                         (update-game-encoding manager
-                                               :position position-encoding))
-      :game-history (conj game-history (state-to-history game-state new-state :verbosity verbosity))})))
+  [players manager & {:keys [deck verbosity game-num game-encoding game-history]
+                      :or {deck (shuffle utils/deck)
+                           verbosity 0
+                           game-num 0}}]
+(let [game-encoding (or game-encoding (init-game-encoding manager (map :id players)))
+      game-history (or game-history [])
+      game-state (init-game :players players
+                            :deck deck
+                            :verbosity verbosity
+                            :game-num game-num
+                            :manager manager)
+      [new-state new-encoding] (bet-game (pay-blinds game-state :verbosity verbosity)
+                                         :game-encoding game-encoding
+                                         :verbosity verbosity)
+      position-encoding (onehot/encode-position new-state)]
+  (utils/print-verbose verbosity
+                       {:fn "play-game"}
+                       {:players players
+                        :deck (take 7 deck)}
+                       {:final-state new-state}
+                       {:initial-state {}})
+  {:players (:players new-state)
+   :game-encoding (-> new-encoding
+                      (update-game-encoding manager
+                                            :state (onehot/encode-state new-state)
+                                            :position position-encoding
+                                            :actions (onehot/encode-action nil new-state))
+                      (update-game-encoding manager
+                                            :position position-encoding))
+   :game-history (conj game-history (state-to-history game-state new-state :verbosity verbosity))}))
 
-(def h (with-open [m (ndarray/new-base-manager)]
-  (play-game [(utils/init-player utils/random-agent :p0)
+#_(with-open [m (ndarray/new-base-manager)]
+  (let [g (play-game [(utils/init-player utils/random-agent :p0) 
+                      (utils/init-player utils/random-agent :p1)] 
+                     m)]
+    (println (:game-encoding g))
+    (clojure.pprint/pprint g)))
+
+#_(def h (with-open [m (ndarray/new-base-manager)]
+  (let [kek (play-game [(utils/init-player utils/random-agent :p0)
             (utils/init-player utils/random-agent :p1)]
            m
              :game-history [{:hands [[:p0 [[8 "Clubs"] [9 "Diamonds"]]] [:p1 [[10 "Hearts"] [5 "Spades"]]]],
@@ -724,10 +734,13 @@
                              :action-history [[[:p0 ["All-In" 199.5]] [:p1 ["Fold" 0.0]]]],
                              :visible-cards [],
                              :visible-hands [],
-                             :net-gain [[:p0 1.0] [:p1 -1.0]]}])))
+                             :net-gain [[:p0 1.0] [:p1 -1.0]]}])]
+    (println (:game-encoding kek))
+    kek)))
 
 #_(with-open [manager (ndarray/new-base-manager)]
-  (println (play-game [(transformer/as-player (transformer/initialize-individual
+  (println (play-game [(utils/init-player utils/random-agent :p0)
+                       #_(transformer/as-player (transformer/initialize-individual
                                                :manager manager
                                                :nn-factory #(transformer/current-transformer manager)
                                                :id :p0
@@ -744,6 +757,32 @@
     (println game-encoding)
     (clojure.pprint/pprint game-history)))
 
+(defn step-game
+  "returns {:game-state :game-encoding :game-history}"
+  [& {:keys [game-state game-encoding game-history action opponent manager]}]
+  (cond (not game-state)
+        {:game-state (pay-blinds (init-game 
+                                  :players [(if (:id opponent) opponent (utils/init-player opponent :bot))
+                                                      (utils/init-player :client :client)]
+                                  :manager (or manager (ndarray/new-base-manager))))
+         :game-encoding (init-game-encoding (or manager (ndarray/new-base-manager))
+                                            [(or (:id opponent) :bot) :client])
+         :game-history (or game-history [])}
+        (:game-over game-state) (let [new-state (pay-blinds (init-game :players (map #(utils/set-money % utils/init-money)
+                                                                                     (reverse (:players game-state)))))
+                                      new-state (if (= :bot (:id (nth (:players new-state)
+                                                                      (:current-player new-state))))
+                                                  ()
+                                                  ())]
+                                  {:game-state 
+                                   
+                                   }
+                                  )
+        :else (let [{}]
+                ())))
+
+#_(SwingTest/main nil)
+(init-game)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -830,7 +869,6 @@
                          utils/rule-agent]
                         100 {}))
 
-(utils/process-decks 1 1)
 
 (defn iterate-games-reset
   "Plays num-games hands of poker with players switching from sb to bb every hand and resetting their money values

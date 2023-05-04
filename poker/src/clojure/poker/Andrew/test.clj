@@ -5,9 +5,9 @@
    [poker.utils :as utils]
    [poker.headsup :as headsup]
    [clojure.core.matrix :as matrix])
-  (:import poker.TransformerDecoderBlock
-           poker.Test
-           poker.Utils))
+  (:import poker.TransformerDecoderBlock))
+
+(poker.Andrew.Test/main)
 
 
 (utils/benchmark 10000 (headsup/play-game [utils/random-agent utils/random-agent]
@@ -495,6 +495,6 @@ cmake --build .")
    put -r poker ERL")
 
 (def delete-files 
-  ;;ls | grep -P "^ERL-" | xargs -d "\n" rm
+  ;;ls | grep -P "^hs_err_pid" | xargs -d "\n" rm
   )
          

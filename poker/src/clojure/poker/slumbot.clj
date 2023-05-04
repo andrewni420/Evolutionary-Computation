@@ -4,7 +4,9 @@
             [clojure.pprint :as pprint]
             [clojure.string :as string]
             [poker.utils :as utils]
-            [poker.headsup :as headsup]))
+            [poker.headsup :as headsup]
+            [poker.onehot :as onehot]
+            [poker.ndarray :as ndarray]))
 
 (require-python '[requests :as requests])
 
@@ -28,9 +30,9 @@
 (defn handle-post-error [r]
   (if (not= 200 (py/get-attr r "status_code"))
     (pprint/pprint {:r r
-                            :error "ERROR"
-                            :json (try ((r "json"))
-                                       (catch Exception e e))}) nil))
+                    :error "ERROR"
+                    :json (try ((r "json"))
+                               (catch Exception e e))}) nil))
 
 (defn get-json [r]
   (try ((py/get-attr r "json"))
@@ -38,8 +40,8 @@
 
 (defn handle-r-error [r input]
   (when (r "error_msg") (pprint/pprint {:error "ERROR"
-                                                :r r
-                                                :input input})))
+                                        :r r
+                                        :input input})))
 
 
 (defn slumbot-login
@@ -254,7 +256,6 @@
    -> game-state"
   [w r game-state]
   (let [{hands :hands
-         players :players
          action-history :action-history} game-state
         client-pos (r "client_pos")
         game-state (assoc game-state
@@ -265,27 +266,28 @@
                      (headsup/showdown game-state)
                      game-state)]
     (assoc game-state
-           :players (assoc players
-                           client-pos (utils/set-money (players client-pos)
-                                                       (- slumbot-start-bb
-                                                          (/ w slumbot-bb)))
-                           (- 1 client-pos) (utils/set-money (players (- 1 client-pos))
-                                                             (+ slumbot-start-bb
-                                                                (/ w slumbot-bb))))
+           #_:players #_(assoc players
+                               client-pos (utils/set-money (players client-pos)
+                                                           (- slumbot-start-bb
+                                                              (/ w slumbot-bb)))
+                               (- 1 client-pos) (utils/set-money (players (- 1 client-pos))
+                                                                 (+ slumbot-start-bb
+                                                                    (/ w slumbot-bb))))
+           :client-winnings (/ w slumbot-bb)
            :game-over true)))
 
 
-#_(defn parse-incr-action
+(defn parse-incr-action
   "Takes a response from slumbot, converts it into the incremental actions occurring
    since the last update, parses these incremental actions, and applies them to the game-state.\\
    If the game has ended, calls parse-winnings to return the final game-state.\\
    r: response from Slumbot\\
    game-state: current game state\\
-   -> game-state"
-  [r game-state]
+   -> {:game-state :game-encoding"
+  [r game-state game-encoding]
   (let [_ (if (r "error_msg") (pprint/pprint {:error "ERROR"
-                                                      :r r
-                                                      :game-state game-state}) nil)
+                                              :r r
+                                              :game-state game-state}) nil)
         old-action (r "old_action")
         action (r "action")
         incr (try (nth (re-find (re-pattern (str "(" old-action ")(.*)"))
@@ -296,20 +298,28 @@
         client-hand (map parse-card (r "hole_cards"))
         client-pos (r "client_pos")]
     (loop [[_ a rem] (get-action+roundover incr)
-           game-state (assoc game-state
-                             :community board
-                             :visible board
-                             :hands (assoc [nil nil] (- 1 client-pos) client-hand)
-                             :r r)]
+           [game-state game-encoding] [(assoc game-state
+                                              :community board
+                                              :visible board
+                                              :hands (assoc [nil nil] (- 1 client-pos) client-hand)
+                                              :r r)
+                                       game-encoding]]
       (if a
         (recur (get-action+roundover rem)
                (if (= a "/")
-                 (headsup/next-round game-state)
+                 [(headsup/next-round game-state) game-encoding]
                  (headsup/parse-action (decode-action a game-state)
-                               game-state)))
-        (if-let [w (r "winnings")]
-          (parse-winnings w r game-state)
-          game-state)))))
+                                       game-state
+                                       (headsup/update-game-encoding game-encoding
+                                                                     (:manager game-state)
+                                                                     :state (onehot/encode-state game-state)
+                                                                     :position (onehot/encode-position game-state)))))
+        {:game-state (if-let [w (r "winnings")]
+                       (parse-winnings w r game-state)
+                       game-state)
+         :game-encoding game-encoding}))))
+
+
 
 
 (defn init-game-slumbot
@@ -318,30 +328,41 @@
    token: Login token\\
    agent: agent to play against slumbot\\
    game-history: current history of games played against slumbot\\
-   -> [token game-state game-history]"
-  [token agent game-history]
-  (let [[token r] (slumbot-new-hand token)
+   -> {:token :game-state :game-encoding}"
+  [& {:keys [agent token game-num manager game-encoding]
+      :or {agent (constantly ["Fold" 0.0])
+           game-num 0}}]
+  (let [manager (or manager (ndarray/new-base-manager))
+        game-encoding (or game-encoding (headsup/init-game-encoding manager [:client :bot]))
+        token (or token (slumbot-login))
+        [token r] (slumbot-new-hand token)
         players [(utils/init-player agent :client)
                  (utils/init-player :slumbot :bot)]
         client-pos (- 1 (r "client_pos"))
-        game-state (headsup/pay-blinds (headsup/init-game (if (= 0 client-pos)
-                                            players
-                                            (into [] (reverse players)))))
-        game-state (assoc game-state
-                          :hands (assoc [nil nil]
-                                        client-pos
-                                        (map parse-card
-                                             (r "hole_cards")))
-                          :community (map parse-card (r "board"))
-                          :visible (map parse-card (r "board"))
-                          :r r)
-        game-state (parse-incr-action r game-state)
-        #_(if (= 0 client-pos)
-            game-state
-            (parse-action (decode-action (r "action") game-state)
-                          game-state))]
-    [token game-state game-history]))
+        players (if (= 0 client-pos)
+                  players
+                  (into [] (reverse players)))
+        game-state (-> (headsup/init-game
+                        :players players
+                        :manager manager
+                        :game-num game-num
+                        :player-ids (mapv :id players))
+                       (headsup/pay-blinds)
+                       (assoc :hands (assoc [nil nil]
+                                            client-pos
+                                            (map parse-card
+                                                 (r "hole_cards")))
+                              :community (map parse-card (r "board"))
+                              :visible (map parse-card (r "board"))
+                              :r r))
+        {game-state :game-state
+         game-encoding :game-encoding} (parse-incr-action r game-state game-encoding)]
+    {:token token :game-state game-state :game-encoding game-encoding}))
 
+#_(with-open [m (ndarray/new-base-manager)]
+  (let [g (init-game-slumbot :manager m)]
+    (println :game-encoding g)
+    g))
 
 
 #_(parse-incr-action {"old_action" "",
@@ -366,25 +387,62 @@
    token: login token\\
    agent: agent to play against slumbot\\
    game-history: current history of agent vs slumbot games\\
-   -> [token agent game-history]"
-  [token agent game-history]
-  (let [[token game-state game-history] (init-game-slumbot token agent game-history)]
-    (loop [game-state game-state]
+   -> [token agent game-encoding game-history]"
+  [agent & {:keys [game-num manager token game-encoding game-history]
+                    :or {game-num 0}}]
+  #_[token agent manager game-history game-encoding]
+  (let [manager (or manager (ndarray/new-base-manager))
+        token (or token (slumbot-login))
+        game-encoding (or game-encoding (headsup/init-game-encoding manager [:client :bot]))
+        {token :token
+         game-state :game-state
+         game-encoding :game-encoding} (init-game-slumbot :token token
+                                                          :agent agent
+                                                          :manager manager
+                                                          :game-encoding game-encoding
+                                                          :game-num game-num)]
+    (loop [{game-state :game-state
+            game-encoding :game-encoding} {:game-state game-state
+                                           :game-encoding game-encoding}]
       (if (:game-over game-state)
-        [token
-         agent
-         (conj game-history
-               (assoc (headsup/state-to-history {:players (map #(utils/set-money % slumbot-start-bb)
-                                                       (:players game-state))}
-                                        game-state)
-                      :r (into {}
-                               (remove-unneeded-r (utils/recursive-copy
-                                                   (:r game-state))))))]
-        (let [action (headsup/make-move game-state game-history)
+        (let [position-encoding (onehot/encode-position game-state)]
+          {:token token
+           :winnings (:client-winnings game-state)
+           :game-encoding (-> game-encoding
+                              (headsup/update-game-encoding manager
+                                                            :state (onehot/encode-state game-state)
+                                                            :position position-encoding
+                                                            :actions (onehot/encode-action nil game-state))
+                              (headsup/update-game-encoding manager
+                                                            :position position-encoding))
+           :game-history (conj game-history
+                               (assoc (headsup/state-to-history {:players (map #(utils/set-money % slumbot-start-bb)
+                                                                               (:players game-state))}
+                                                                game-state)
+                                      :r (into {}
+                                               (remove-unneeded-r (utils/recursive-copy
+                                                                   (:r game-state))))))})
+        (let [action (headsup/make-move game-state game-encoding)
               r (slumbot-send-action token
-                                           (encode-action action
-                                                                game-state))]
-          (recur (parse-incr-action r game-state)))))))
+                                     (encode-action action
+                                                    game-state))]
+          (recur (parse-incr-action r game-state game-encoding)))))))
+
+#_(with-open [m (ndarray/new-base-manager)]
+  (let [g (play-game-slumbot utils/random-agent m)]
+    (println (:game-encoding g))
+    (clojure.pprint/pprint g)))
+
+(defn process-net-gain 
+  "Process client's net-gain as an average amount won per game and possibly a 
+   standard deviation in winnings per game.\\
+   bb/game or {:mean :stdev}"
+  [net-gain num-games & {:keys [as-list?]}]
+  (if as-list?
+    {:mean (utils/mean net-gain)
+     :stdev (utils/stdev net-gain)}
+    (/ net-gain num-games)))
+
 
 (defn iterate-games-slumbot
   "Plays multiple games against Slumbot and appends the results of those games to game-history.\\
@@ -392,25 +450,34 @@
    agent: agent to play against slumbot\\
    num-games: number of games to play\\
    game-history: current history of games played against slumbot\\
-   -> [token game-history]"
-  ([token agent num-games game-history]
-   (loop [i num-games
-          token token
-          game-history game-history]
-     (if (zero? i)
-       [token game-history]
-       (let [[token _agent game-history] (play-game-slumbot token
-                                                            agent
-                                                            game-history)]
-         (recur (dec i)
+   -> {:token :game-encoding :net-gain :game-history}"
+  [agent num-games & {:keys [token manager game-encoding game-history as-list?]}]
+   (let [manager (or manager (ndarray/new-base-manager))]
+     (loop [i 0
+          token (or token (slumbot-login))
+          net-gain (if as-list? [] 0.0)
+          game-encoding (or game-encoding (headsup/init-game-encoding manager [:client :bot]))
+          game-history (or game-history [])]
+     (if (>= i num-games)
+       {:token token
+        :game-encoding game-encoding
+        :net-gain (process-net-gain net-gain num-games :as-list? as-list?)
+        :game-history game-history}
+       (let [{token :token
+              winnings :winnings
+              game-encoding :game-encoding
+              game-history :game-history} (play-game-slumbot agent 
+                                                             :manager manager
+                                                             :game-history game-history
+                                                             :game-encoding game-encoding
+                                                             :game-num i)]
+         (recur (inc i)
                 token
-                game-history)))))
-  ([token agent num-games] (iterate-games-slumbot token agent num-games []))
-  ([agent num-games] (iterate-games-slumbot (slumbot-login)
-                                            agent
-                                            num-games)))
+                ((if as-list? conj +) net-gain winnings)
+                game-encoding
+                game-history))))))
 
-#_(iterate-games-slumbot utils/random-agent 5)
+#_(iterate-games-slumbot utils/random-agent 5 :as-list? true)
 
 (defn slumbot-rollout
   "Pits agent against slumbot num-samples*num-iter times and writes their match history to the file txt.\\
@@ -419,17 +486,22 @@
    num-samples: number of times to sample and print to file\\
    num-iter: number of games played per sample\\
    -> game-history"
-  [agent txt num-samples num-iter]
-  (loop [i 0
+  [agent txt num-samples num-iter & {:keys [manager as-list?]}]
+  (let [manager (or manager (ndarray/new-base-manager))]
+    (loop [i 0
          token (slumbot-login)]
     (if (= i num-samples)
       nil
-      (let [[token history] (iterate-games-slumbot token agent num-iter)]
+      (let [{token :token
+             game-history :game-history} (iterate-games-slumbot agent num-iter
+                                                                :manager manager
+                                                                :token token
+                                                                :as-list? as-list?)]
         (spit txt
-              (with-out-str (pprint/pprint history))
+              (with-out-str (pprint/pprint game-history))
               :append true)
         (println i)
-        (recur (inc i) token)))))
+        (recur (inc i) token))))))
 
 
 (defn fill-missing-hands
@@ -449,6 +521,19 @@
                       (assoc g :hands h)) l new-hands)]
     #_(spit "slumbot-history-random.txt"
             (with-out-str (clojure.pprint/pprint new-l)))))
+
+(defn mapcat-slumbot-history
+  "Mapcats multiple different rollouts against slumbot into one overall history"
+  [filename & {:keys [to-file]}]
+  (let [to-file (or to-file filename)]
+    (spit to-file
+          (with-out-str
+            (->> filename
+                 (slurp)
+                 (#(str "[" % "]"))
+                 (read-string)
+                 (mapcat identity)
+                 (pprint/pprint))))))
 
 
 ;;computing slumbot statistics
