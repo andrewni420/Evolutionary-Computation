@@ -9,6 +9,7 @@
             [poker.onehot :as onehot]
             [poker.ndarray :as ndarray]
             [clojure.core.matrix :as m]
+            [poker.slumbot :as slumbot]
             [poker.Andrew.processresult :as processresult]
             [clojure.string :as s])
   (:import ai.djl.Device
@@ -118,59 +119,67 @@
      (str "[" (slurp (str "src/clojure/poker/Andrew/results/" name)) "]")
      (slurp (str "src/clojure/poker/Andrew/results/" name)))))
 
+
 (defn hot-test
   [& {:keys [block-size next-gen-method num-games gen-output gen-input]}]
   (println gen-output)
   (println gen-input))
 
 (defn hot-start
-  [& {:keys [hof-output hof-input gen-output gen-input param-output param-input default-pmap]
-               :as argmap}]
-  (let [params (try (read-file param-input) 
+  [& {:keys [hof-output hof-input gen-output gen-input param-output param-input default-pmap override-params?]
+      :as argmap}]
+  (let [params (try (read-string (slurp param-input))
                     (catch Exception _ {}))]
     (apply MPI/ERL
            (mapcat identity
                    (into []
-                         (merge default-pmap 
-                                params 
-                                (dissoc argmap 
+                         (merge (if override-params?
+                                  (merge params default-pmap)
+                                  (merge default-pmap params))
+                                (dissoc argmap
                                         :default-pmap)))))))
 
 ;;hot-start editing: :max-actions 2198.9734734734734, :time-ms 2154080.222549}
 
-
+#_(def challenger {:seeds [1214870254 -599077455 1389138710 1985198127 -1196029346 1419764478 -1011071022 344414086 839058045 -808557128 569981436 2141209152 -886498085 -333498454 -665775348 -1877394347 1385959825 669837050 1742082696 342463688 1977105854 -1588884343 775375154 -1015789197 301259794 -74722191 -602854656 780026697 876536406 -2094359061 1346730382 -586561425 -1330699011 -1144666484 1038533690 1603090449 977826193 587534028 -225244400 -1170317260 -319860625 -1914716520 1527872707 1103455723 -737931723 882570405 1149152104 807505075 -401238177 -683322400 336795851 -1558784814 -1469434853 102388824 -1780263778 -24926424 1205584016 130414921 -1934000314 1553138048 1429560218 258005691 -286366515 240703996 173961293 -1212181469 -1780174093 -668870061 574023453 1464857067 -632904208 537720295 542981329 -1074007060 -1935814956 -2114576480 -1633447819 473098796 -714965007 -1795511096 -191769306 -556377078 -812145397 1808738635 2098925459 -232657773 437076651 895912599 559998331 -525209603 -180078282 598128726 508846068 -2097530563 154195222 1793543679 1937995078 1172127731 -1354005376 816419957],
+                 :id :client 
+                 :stdev 0.005})
 
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  #_(print-as-vector
-     (println))
-  #_(hot-start "ERL500x150-69434.out"
-               :hof-output "src/clojure/poker/Andrew/results/temphof.out")
-  (println (ERL/versus {:id :p0-0, :seeds [706194689 -1521660719], :std 0.005} 
-              {:id :p0-3, :seeds [706194689 -1020818428], :std 0.005} 
-              100 
-              10
-              :net-gain? true))
-  #_(hot-start :default-pmap {:pop-size 3;;500
-                            :num-generations 2;;150
-                            :num-games 10;;500
-                            :benchmark-count 1;;4
-                            :random-seed 994541586932005
-                            :max-seq-length 100
-                            :stdev 0.005
-                            :from-block? true
-                            :next-gen-method :k-best
-                            :bench-method :k-best
-                            :prop-hof 1.0
-                            :block-size 1e7;;2.5e8
-                            }
-             :hof-output "src/clojure/poker/Andrew/results/_hof.out"
-             :hof-input "src/clojure/poker/Andrew/results/_hof.out"
-             :gen-output "src/clojure/poker/Andrew/results/_gen.out"
-             :gen-input "src/clojure/poker/Andrew/results/_gen.out"
-             :param-output "src/clojure/poker/Andrew/results/_param.out"
-             :param-input "src/clojure/poker/Andrew/results/_param.out"))
+  #_(slumbot/slumbot-rollout challenger "vsSlumbot-1.txt" 10 2000
+                           :transformer? true
+                           :from-block? true
+                           :random-seed -5907454322436654
+                           :block-size 1e8)
+  (hot-start :default-pmap {:pop-size 50
+                              :num-generations 3
+                              :num-games 500
+                              :benchmark-count 3
+                              :random-seed -8411666870417163767
+                              :max-seq-length 100
+                              :stdev 0.005
+                              :from-block? true
+                              :next-gen-method :k-best
+                              :bench-method :k-best
+                              :prop-hof 1.0
+                              :block-size 1e9}
+               :override-params? true
+               :hof-output "src/clojure/poker/Andrew/results/__hof.out"
+               :hof-input "src/clojure/poker/Andrew/results/__hof.out"
+               :gen-output "src/clojure/poker/Andrew/results/__gen.out"
+               :gen-input "src/clojure/poker/Andrew/results/__gen.out"
+               :param-output "src/clojure/poker/Andrew/results/__param.out"
+               :param-input "src/clojure/poker/Andrew/results/__param.out"
+               :transformer-parameters {:d-model 256;;
+                                        :d-ff 1024;;
+                                        :num-layers 12;;
+                                        :num-heads 16
+                                        :d-pe [64 64 64 64];;
+                                        :max-seq-length 512})
+  #_(println (slumbot/net-gain "slumbot-history-random.txt" :as-list? true :mapcat? true))
+  #_(processresult/generation-versus "ERL-250x100-67545.out"))
 
 
 
@@ -194,80 +203,6 @@
    :stdev [0.001 0.005 0.01 0.05 0.1]})
 
 
-
-
-
-(def results
-  [{:seeds [-1155869325],
-    :id :p0,
-    :error
-    {:random {:mean -2.299516800789707, :stdev 131.66351464871548},
-     :rule {:mean -0.7250685400997252, :stdev 47.708607827318374},
-     :wait-and-bet
-     {:mean -2.3600650542667894, :stdev 146.6509342787873}}}
-   {:seeds [431529176],
-    :id :p1,
-    :error
-    {:random {:mean -1.5521247036917054, :stdev 104.75501236574735},
-     :rule {:mean -0.8133563592020555, :stdev 30.194003659552948},
-     :wait-and-bet
-     {:mean -1.1567215179104555, :stdev 104.62215767774595}}}
-   {:seeds [1761283695],
-    :id :p2,
-    :error
-    {:random {:mean 0.008500111910809665, :stdev 112.46387451266838},
-     :rule {:mean -1.044665386146007, :stdev 46.24727233974615},
-     :wait-and-bet
-     {:mean -2.960686570833728, :stdev 122.57392377195217}}}
-   {:seeds [1749940626],
-    :id :p3,
-    :error
-    {:random {:mean -0.3168140685832318, :stdev 143.9859819349083},
-     :rule {:mean 1.4525024551092394, :stdev 58.25149253360078},
-     :wait-and-bet {:mean 0.6060240795430073, :stdev 179.1475424957181}}}
-   {:seeds [892128508],
-    :id :p4,
-    :error
-    {:random {:mean -0.15022848106910097, :stdev 46.37055546471076},
-     :rule {:mean -0.1436437453508377, :stdev 6.410748139314529},
-     :wait-and-bet
-     {:mean -0.37940930548223034, :stdev 55.95697681953668}}}
-   {:seeds [-2003437247],
-    :id :p5,
-    :error
-    {:random {:mean -2.7354956840615428, :stdev 146.89224490556518},
-     :rule {:mean 0.8232784890317009, :stdev 77.17310121116614},
-     :wait-and-bet
-     {:mean 1.8629400051241978, :stdev 188.14449965400183}}}
-   {:seeds [1487394176],
-    :id :p6,
-    :error
-    {:random {:mean -0.8668267477660971, :stdev 102.72117702471415},
-     :rule {:mean 0.1882938726159683, :stdev 32.136258063038895},
-     :wait-and-bet
-     {:mean -3.4200330007826416, :stdev 127.17030915898582}}}
-   {:seeds [1049991269],
-    :id :p7,
-    :error
-    {:random {:mean 1.5159529468007968, :stdev 138.913335181375},
-     :rule {:mean -1.5669364774871435, :stdev 78.35807147742116},
-     :wait-and-bet
-     {:mean -10.408253691163873, :stdev 166.17206284223877}}}
-   {:seeds [-1224600590],
-    :id :p8,
-    :error
-    {:random {:mean 0.22393526503095718, :stdev 128.38091677413968},
-     :rule {:mean 1.0679116695760626, :stdev 62.86526960602778},
-     :wait-and-bet
-     {:mean -3.4655270480350513, :stdev 151.89216337318504}}}
-   {:seeds [-1437495699],
-    :id :p9,
-    :error
-    {:random {:mean -1.0028136983822598, :stdev 32.26840451945378},
-     :rule {:mean -0.23953652721040417, :stdev 6.679605727512594},
-     :wait-and-bet {:mean -0.953388852098994, :stdev 32.21449974044938}}}])
-
-#_(map #(/ (:mean %) (/ (:stdev %) 100)) (map :wait-and-bet (map :error results)))
 
 
 

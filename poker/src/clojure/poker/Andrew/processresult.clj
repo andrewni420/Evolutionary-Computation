@@ -30,7 +30,7 @@
 ;;; - Selecting best individual to play against Slumbot
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn read-file 
+(defn read-file
   "Reads in a clojure data structure from a file. Automatically prepends the path
    src/clojure/poker/Andrew/results/ \\
    Use make-vector to read all data structures in the file, not just the first, into a 
@@ -94,9 +94,9 @@
 #_(nth (first pretest) 2)
 
 #_(let [lg (:pop (first (take-last 2 pretest)))
-      fg (:pop (nth pretest 1))]
-  (time (poker.ERL/versus (first lg) (second lg) 100 500 :stdev 0.005 :net-gain? true))
-  (time (poker.ERL/versus (first fg) (second fg) 100 500 :stdev 0.005 :net-gain? true)))
+        fg (:pop (nth pretest 1))]
+    (time (poker.ERL/versus (first lg) (second lg) 100 500 :stdev 0.005 :net-gain? true))
+    (time (poker.ERL/versus (first fg) (second fg) 100 500 :stdev 0.005 :net-gain? true)))
 
 (defn extract-winners
   "Extracts the best individual from each generation as determined by a single elimination
@@ -144,11 +144,12 @@
 (defn extract-a-winner
   "Extracts a best-of-generation from each generation using a single elimination
    tournament"
-  [pop & {:keys [stdev]
+  [pop & {:keys [stdev from-block?]
           :or {stdev 0.005}}]
   (ERL/single-elim pop 10 100 1000
                    :symmetrical? true
-                   :stdev stdev))
+                   :stdev stdev
+                   :from-block? from-block?))
 
 
 (defn process-multirun
@@ -188,7 +189,7 @@
   (let [last3 (take-last n best-per-gen)]
     (mapv #(let [{{seeds :seeds} :pop
                   gen :generation} %]
-             (-> % 
+             (-> %
                  (assoc :parameters parameters
                         :seeds seeds
                         :id (keyword (str "p-" (.indexOf params parameters) "-" gen)))
@@ -201,16 +202,29 @@
    and prints the match results"
   [filename]
   (println filename)
-  (let [processed (process-multirun-first filename)
+  (let [[params & pop] (drop-last 2 (read-file filename))
+        processed {:parameters params
+                   :best-per-gen (map #(update % :pop extract-a-winner)
+                                      (get-generations pop))}
         last-4s (take-generation processed)]
     (println (:parameters processed))
+    (println last-4s)
     (let [futs (doall (for [ind1 last-4s
                             ind2 last-4s :when (not (= ind1 ind2))]
                         (concurrent/msubmit
                          (ERL/versus ind1 ind2 100 5000
                                      :net-gain? true
-                                     :as-list? true))))]
-      (println (map #(:net-gain (deref %)) futs)))))
+                                     :as-list? true))))
+          futs2 (doall (for [ind1 last-4s]
+                         (concurrent/msubmit
+                          (ERL/versus-other ind1 
+                                            utils/random-agent
+                                            100
+                                            5000
+                                            :net-gain? true
+                                            :as-list? true))))]
+      (println (map #(:net-gain (deref %)) futs))
+      (println (map #(:net-gain (deref %)) futs2)))))
 
 
 (defn multirun-versus
@@ -260,23 +274,42 @@
       (println (map #(:net-gain (deref %)) futs)))))
 
 
-(sort-by 
- #(read-string (apply str (drop 2 (str (first %)))))
- (let [f (read-file "processing.out" :make-vector? true)]
-  (apply merge-with 
-         + 
-         (map (fn [gain] 
-                (into {} 
-                      (map #(vector (first %) 
-                                    #_(:mean (second %)) 
-                                    (* (Math/sqrt 5000) 
-                                         (/ (:mean (second %)) 
-                                            (:stdev (second %))))) 
-                           gain))) 
-              (nth f 35)))))
 
-#_(let [f (read-file "processing.out" :make-vector? true)]
-  (clojure.pprint/pprint (nth f 33)))
+#_(sort-by
+   #(read-string (apply str (drop 2 (str (first %)))))
+   (let [f (read-file "processing.out" :make-vector? true)]
+     (apply merge-with
+            +
+            (map (fn [gain]
+                   (into {}
+                         (map #(vector (first %)
+                                       #_(:mean (second %))
+                                       (* (Math/sqrt 5000)
+                                          (/ (:mean (second %))
+                                             (:stdev (second %)))))
+                              gain)))
+                 (nth f 35)))))
+
+(defn get-best
+  [filename & {:keys [multiple?]}]
+  (let [[params & pop] (read-file filename)]
+    (when (:from-block? params) (utils/initialize-random-block (or (:block-size params) (int 1e8))
+                                                               (:random-seed params)))
+    (let [pop (drop-last 2 pop)
+          erl #(ERL/single-elim (:pop %)
+                                20
+                                100
+                                2000
+                                :symmetrical? true
+                                :from-block? true
+                                :stdev (:stdev params))
+          res (if multiple? 
+                [(concurrent/msubmit (erl (last pop)))]
+                  (mapv #(concurrent/msubmit (erl %)) pop))]
+      (run! #(println (deref %)) res))))
+
+#_(let [f (read-file "ERL-250x100-67545.out")]
+    (println (mapv :time-ms (drop-last 2 f))))
 
 
 (def aggregated-results
@@ -405,74 +438,74 @@
 
 
 #_(let [f (read-file "processing.out" :make-vector? true)]
-  (reduce (fn [res incr] 
-            (map #(ERL/update-individual % incr) 
-                 res)) [{:id :p0 :error {}}] 
-          (map (fn [gain] 
-                 (into {} (map #(vector (first %) 
-                                        (:mean (second %))
-                                        #_(* (Math/sqrt 5000)
-                                           (/ (:mean (second %)) 
-                                           (:stdev (second %))))) 
-                               gain))) 
-               (nth f 35)))
-  #_(spit "src/clojure/poker/Andrew/results/temp.txt"
-          (with-out-str (clojure.pprint/pprint
-                         (filter #(some (partial contains? (into #{} (map first %)))
-                                        [:p-0-23 :p-0-24 :p-0-25]) (nth f 2))))))
+    (reduce (fn [res incr]
+              (map #(ERL/update-individual % incr)
+                   res)) [{:id :p0 :error {}}]
+            (map (fn [gain]
+                   (into {} (map #(vector (first %)
+                                          (:mean (second %))
+                                          #_(* (Math/sqrt 5000)
+                                               (/ (:mean (second %))
+                                                  (:stdev (second %)))))
+                                 gain)))
+                 (nth f 35)))
+    #_(spit "src/clojure/poker/Andrew/results/temp.txt"
+            (with-out-str (clojure.pprint/pprint
+                           (filter #(some (partial contains? (into #{} (map first %)))
+                                          [:p-0-23 :p-0-24 :p-0-25]) (nth f 2))))))
 
-#_(sort-by 
- #(read-string (apply str (drop 2 (str (first %)))))
- {:p11 5.352334257087439,
-  :p2 -1.5138,
-  :p4 1.1422899892958993,
-  :p3 3.5801908378262617,
-  :p21 -6.38460505035162,
-  :p5 0.3367363482028246,
-  :p8 -1.7162799369692803,
-  :p9 0.668051096264273,
-  :p22 -3.013865148260284,
-  :p25 -2.5907454322436654,
-  :p24 -1.4565909350533266,
-  :p12 2.2460194422584525,
-  :p1 0.35282587890625,
-  :p7 -1.9212988105034063,
-  :p19 -1.7244406164113457,
-  :p14 1.6977470415697158,
-  :p15 -0.04275920883560243,
-  :p13 2.6651184962508894,
-  :p17 -1.3825078422749515,
-  :p10 0.7312084752214427,
-  :p18 -0.04861682373955001,
-  :p16 -0.38757390290007665,
-  :p20 1.9159207879483184,
-  :p6 1.596040593719906,
-  :p23 2.4156182271226685})
+#_(sort-by
+   #(read-string (apply str (drop 2 (str (first %)))))
+   {:p11 5.352334257087439,
+    :p2 -1.5138,
+    :p4 1.1422899892958993,
+    :p3 3.5801908378262617,
+    :p21 -6.38460505035162,
+    :p5 0.3367363482028246,
+    :p8 -1.7162799369692803,
+    :p9 0.668051096264273,
+    :p22 -3.013865148260284,
+    :p25 -2.5907454322436654,
+    :p24 -1.4565909350533266,
+    :p12 2.2460194422584525,
+    :p1 0.35282587890625,
+    :p7 -1.9212988105034063,
+    :p19 -1.7244406164113457,
+    :p14 1.6977470415697158,
+    :p15 -0.04275920883560243,
+    :p13 2.6651184962508894,
+    :p17 -1.3825078422749515,
+    :p10 0.7312084752214427,
+    :p18 -0.04861682373955001,
+    :p16 -0.38757390290007665,
+    :p20 1.9159207879483184,
+    :p6 1.596040593719906,
+    :p23 2.4156182271226685})
 
 
 #_(println (zipmap (map second [[:p1 0.35282587890625]
-[:p2 -1.5138]
-[:p3 3.5801908378262617]
-[:p4 1.1422899892958993]
-[:p5 0.3367363482028246]
-[:p6 1.596040593719906]
-[:p7 -1.9212988105034063]
-[:p8 -1.7162799369692803]
-[:p9 0.668051096264273]
-[:p10 0.7312084752214427]
-[:p11 5.352334257087439]
-[:p12 2.2460194422584525]
-[:p13 2.6651184962508894]
-[:p14 1.6977470415697158]
-[:p15 -0.04275920883560243]
-[:p16 -0.38757390290007665]
-[:p17 -1.3825078422749515]
-[:p18 -0.04861682373955001]
-[:p19 -1.7244406164113457]
-[:p20 1.9159207879483184]
-[:p21 -6.38460505035162]
-[:p22 -3.013865148260284]
-[:p23 2.4156182271226685]
-[:p24 -1.4565909350533266]
-[:p25 -2.5907454322436654]])
-                 (repeat 30 " ")))
+                                [:p2 -1.5138]
+                                [:p3 3.5801908378262617]
+                                [:p4 1.1422899892958993]
+                                [:p5 0.3367363482028246]
+                                [:p6 1.596040593719906]
+                                [:p7 -1.9212988105034063]
+                                [:p8 -1.7162799369692803]
+                                [:p9 0.668051096264273]
+                                [:p10 0.7312084752214427]
+                                [:p11 5.352334257087439]
+                                [:p12 2.2460194422584525]
+                                [:p13 2.6651184962508894]
+                                [:p14 1.6977470415697158]
+                                [:p15 -0.04275920883560243]
+                                [:p16 -0.38757390290007665]
+                                [:p17 -1.3825078422749515]
+                                [:p18 -0.04861682373955001]
+                                [:p19 -1.7244406164113457]
+                                [:p20 1.9159207879483184]
+                                [:p21 -6.38460505035162]
+                                [:p22 -3.013865148260284]
+                                [:p23 2.4156182271226685]
+                                [:p24 -1.4565909350533266]
+                                [:p25 -2.5907454322436654]])
+                   (repeat 30 " ")))

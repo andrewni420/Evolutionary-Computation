@@ -151,7 +151,7 @@
   "Given the additional state, position, and or actions encodings to be added, updates the game-encoding\\
    by appending these encodings onto the appropriate tensors.\\
    -> game-encoding"
-  [game-encoding manager & {:keys [state position actions]}]
+  [game-encoding manager & {:keys [state position actions max-seq-length]}]
   (let [;;If some of state, position, and actions are provided, turn them into NDArrays
         ;;If a map is provided for state, turn it into a map of id to NDArray
         state (if state (into {} (map (fn [[k v]]
@@ -805,7 +805,6 @@
   (assert (or (and game-history game-encoding)
               (and opponent manager))
           "Must provide either game-encoding and history, or an opponent and a manager")
-  (assert (or manager (:manager game-state)) "Must supply a manager either through the game-state or explicitly")
   (let [manager (or manager (:manager game-state))
         game-state (pay-blinds (init-game
                                 :players [(if (:id opponent) opponent (utils/init-player opponent :bot))
@@ -820,7 +819,10 @@
 
 (defn step-game
   "returns {:game-state :game-encoding :game-history :net-gain}"
-  [& {:keys [game-state game-encoding game-history action opponent manager]}]
+  [& {:keys [game-state game-encoding game-history action opponent manager]
+      :or {opponent utils/random-agent
+           manager (ndarray/new-base-manager)}}]
+  (assert (or (and game-state game-encoding game-history action) opponent))
   (cond (not game-state)
         (merge (start-game :game-state game-state
                            :game-encoding game-encoding
@@ -840,6 +842,9 @@
                   (let [[g e] (parse-action action game-state game-encoding)]
                     (apply check-bot-move (check-transition g e game-history))))))
 
+(defn apply-step-game 
+  [g & {:keys [action] :as argmap}]
+  (apply step-game (mapcat identity (into [] (merge g argmap)))))
 
 #_(def m (ndarray/new-base-manager))
 #_(def g (volatile! (step-game :manager m :opponent utils/random-agent)))
@@ -850,6 +855,7 @@
                                           @g)))))
 
 #_g
+
 ;;10x model
 ;;2xpopulation
 ;;1.5xgenerations

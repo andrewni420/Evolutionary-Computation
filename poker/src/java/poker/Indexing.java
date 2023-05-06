@@ -9,7 +9,7 @@ public class Indexing {
         int[] indicesTracker = new int[indices.length];
         for (int i=0;i<indices.length;i++){
             indices[i] = ((indices[i]% N)+N)%N;
-            indicesTracker[i] = (indices[i]*iStart % N);
+            indicesTracker[i] = ((indices[i]*iStart % N) + N) % N;
         }
 
         for (int i=0;i<n;i++){

@@ -7,6 +7,7 @@
            java.util.function.Function
            java.util.function.Supplier
            java.lang.AutoCloseable
+           java.lang.Runtime
            java.util.List
            java.util.Random
            poker.Indexing
@@ -48,6 +49,11 @@
   ([] (if (> gpus 0)
         (Device/gpu)
         (Device/cpu))))
+
+(defn num-processors
+  "Gets the number of processors available"
+  []
+  (.availableProcessors (Runtime/getRuntime)))
 
 (def random-block
   "Large block of gaussian noise. Instantiating a large block of gaussian noise
@@ -104,7 +110,14 @@
      {:time (/ (double (- end# start#)) 1000000.0)
       :result res#}))
 
-
+(defn apply-map 
+  "Applies the given map as optional arguments to the function. For redundant arguments,
+   the last given argument overrides the other ones."
+  [f & maps]
+  (apply f 
+         (mapcat identity 
+                 (into [] 
+                       (apply merge maps)))))
 
 (defn print-return
   "Print x and return it\\

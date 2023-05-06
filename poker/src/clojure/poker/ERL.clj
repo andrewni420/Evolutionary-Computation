@@ -109,7 +109,6 @@
   [ind1 ind2 max-seq-length num-games & {:keys [manager net-gain? update-error? as-list? action-count? winning-individual? decks stdev max-actions from-block? device gc?]
                                          :or {stdev 0.005
                                               max-actions ##Inf}}]
-  (println ind1 ind2 max-seq-length num-games manager)
   (let [device (or device (utils/try-gpu))]
     ;;Ensure autoclosing of NDManager
     (with-open [manager (if manager
@@ -146,7 +145,14 @@
                                                         ind1)})
                    (when action-count? {:action-count action-count}))))))))
 
+#_(utils/initialize-random-block (int 1e7) 1)
 
+#_(transformer/set-parameters {:d-model 128;;
+                             :d-ff 512;;
+                             :num-layers 12;;
+                             :num-heads 8
+                             :d-pe [32 32 32 32];;
+                             :max-seq-length 512})
 
 #_(time (versus {:seeds [2074038742],
                :id :p1}
@@ -310,7 +316,8 @@
                         :net-gain? true
                         :stdev stdev
                         :decks (utils/process-decks decks num-games)
-                        :from-block? from-block?)
+                        :from-block? from-block?
+                        :gc? true)
             matches (partition-all 2 (shuffle cur-pop))
             ;;Odd individual out that gets a pass
             pass (filter #(= 1 (count %)) matches)
@@ -495,14 +502,16 @@
       (if (= i l)
         [(persistent! new-pop)
          (condp = method
-           :k-best (into #{}
+           :k-best (let [p (into #{}
                          (take k)
                          (sort-by (fn [ind]
                                     (- (transduce (map (comp #(or (:mean %) %)
                                                              second))
                                                   +
                                                   (:error ind))))
-                                  pop))
+                                  pop))]
+                     (println p)
+                     p)
            :all (into #{} pop)
            :parents (persistent! parents))]
         (let [parent (lexicase-selection pop)]
@@ -776,7 +785,8 @@
                                                                           :max-actions max-actions
                                                                           :time-ms time-ms)))
                         (catch Exception _)))
-  (when hof-output (try (spit hof-output (with-out-str (pprint/pprint hof)))
+  (when hof-output (spit hof-output (with-out-str (pprint/pprint hof)))
+        #_(try (spit hof-output (with-out-str (pprint/pprint hof)))
                         (catch Exception _))))
 
 (defn round-errors 

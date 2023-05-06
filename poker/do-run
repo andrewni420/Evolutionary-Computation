@@ -18,34 +18,43 @@ srun ./run-file.clj
 
 #! /bin/sh
 #SBATCH --cpus-per-task=116
-#SBATCH --time=7-00:00:00
-#SBATCH --output=ERL-250x100-%j.out
-#SBATCH --error=ERL-250x100-%j.err
+#SBATCH --time=2-00:00:00
+#SBATCH --output=generation-versus-%j.out
+#SBATCH --error=generation-versus-%j.err
 module load amh-clojure
 export DJL_DEFAULT_ENGINE=PyTorch
 export MXNET_ENGINE_TYPE=NaiveEngine
 export OMP_NUM_THREADS=1
-srun ./run-file.clj
+srun --overlap lein run
+
+#! /bin/sh
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem-per-cpu=16GB
+#SBATCH --time=20:00:00
+#SBATCH --output=vs-slumbot-%j.out
+#SBATCH --error=vs-slumbot-%j.err
+module load amh-clojure
+export DJL_DEFAULT_ENGINE=PyTorch
+export MXNET_ENGINE_TYPE=NaiveEngine
+export OMP_NUM_THREADS=1
+srun --overlap lein run
 
 
 #!/bin/sh
-#SBATCH -n 928
+#SBATCH -n 464
+#SBATCH --cpus-per-task 2
 #SBATCH --time=7-00:00:00
-#SBATCH --output=ERL500x150-%j.out
-#SBATCH --error=ERL500x150-%j.err
+#SBATCH --output=ERL-500x300-1-%j.out
+#SBATCH --error=ERL-500x300-1-%j.err
 module load cm-pmix4/4.1.1
 module load openmpi4/gcc/4.1.
 module load amh-clojure
 export DJL_DEFAULT_ENGINE=PyTorch
 export MXNET_ENGINE_TYPE=NaiveEngine
-export OMP_NUM_THREADS=1
-srun --mpi pmix lein run
+export OMP_NUM_THREADS=2
+srun --mpi pmix --overlap lein run
 
-mpiexec --map-by hwthread --report-bindings lein run
-
-srun --mpi pmix -n 10 lein run
-
-module load openmpi4/gcc/4.1.
 
 gputest do-run
 #! /bin/sh
