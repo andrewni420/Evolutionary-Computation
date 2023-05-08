@@ -142,42 +142,92 @@
 ;;hot-start editing: :max-actions 2198.9734734734734, :time-ms 2154080.222549}
 
 #_(def challenger {:seeds [1214870254 -599077455 1389138710 1985198127 -1196029346 1419764478 -1011071022 344414086 839058045 -808557128 569981436 2141209152 -886498085 -333498454 -665775348 -1877394347 1385959825 669837050 1742082696 342463688 1977105854 -1588884343 775375154 -1015789197 301259794 -74722191 -602854656 780026697 876536406 -2094359061 1346730382 -586561425 -1330699011 -1144666484 1038533690 1603090449 977826193 587534028 -225244400 -1170317260 -319860625 -1914716520 1527872707 1103455723 -737931723 882570405 1149152104 807505075 -401238177 -683322400 336795851 -1558784814 -1469434853 102388824 -1780263778 -24926424 1205584016 130414921 -1934000314 1553138048 1429560218 258005691 -286366515 240703996 173961293 -1212181469 -1780174093 -668870061 574023453 1464857067 -632904208 537720295 542981329 -1074007060 -1935814956 -2114576480 -1633447819 473098796 -714965007 -1795511096 -191769306 -556377078 -812145397 1808738635 2098925459 -232657773 437076651 895912599 559998331 -525209603 -180078282 598128726 508846068 -2097530563 154195222 1793543679 1937995078 1172127731 -1354005376 816419957],
-                 :id :client 
-                 :stdev 0.005})
+                   :id :client
+                   :stdev 0.005})
+
+;:hof-output "src/clojure/poker/Andrew/results/__hof.out"
+               ;:hof-input "src/clojure/poker/Andrew/results/__hof.out"
+               ;:gen-output "src/clojure/poker/Andrew/results/__gen.out"
+               ;:gen-input "src/clojure/poker/Andrew/results/__gen.out"
+               ;:param-output "src/clojure/poker/Andrew/results/__param.out"
+               ;:param-input "src/clojure/poker/Andrew/results/__param.out"
+
+(def default-pmap
+  {:pop-size 100
+   :num-generations 50
+   :num-games 500
+   :benchmark-count 3
+   :random-seed -8411666870417163767
+   :max-seq-length 100
+   :stdev 0.005
+   :from-block? true
+   :next-gen-method :k-best
+   :bench-method :k-best
+   :bench-exp 2
+   :prop-hof 1.0
+   :block-size 1e9})
+
+(def default-transformer-map
+  {:d-model 256;;
+   :d-ff 1024;;
+   :num-layers 12;;
+   :num-heads 8
+   :d-pe [64 64 64 64];;
+   :max-seq-length 512})
+
+
+#_(MPI/multi-ERL
+   :ERL-argmaps (for [stdev [0.001 0.002 0.004 0.008]]
+                  (assoc default-pmap
+                         :stdev stdev
+                         :transformer-parameters default-transformer-map))
+   :intra-run? true
+   :inter-run? true)
+
+#_(MPI/multi-ERL
+   :ERL-argmaps (for [bench-method [:k-best]
+                      benchmark-count [2 4 6 8]]
+                  (assoc default-pmap
+                         :bench-method bench-method
+                         :benchmark-count benchmark-count
+                         :transformer-parameters default-transformer-map))
+   :intra-run? true
+   :inter-run? true
+   :num-games 5000)
 
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
   #_(slumbot/slumbot-rollout challenger "vsSlumbot-1.txt" 10 2000
-                           :transformer? true
-                           :from-block? true
-                           :random-seed -5907454322436654
-                           :block-size 1e8)
-  (hot-start :default-pmap {:pop-size 50
-                              :num-generations 3
-                              :num-games 500
-                              :benchmark-count 3
-                              :random-seed -8411666870417163767
-                              :max-seq-length 100
-                              :stdev 0.005
-                              :from-block? true
-                              :next-gen-method :k-best
-                              :bench-method :k-best
-                              :prop-hof 1.0
-                              :block-size 1e9}
-               :override-params? true
-               :hof-output "src/clojure/poker/Andrew/results/__hof.out"
-               :hof-input "src/clojure/poker/Andrew/results/__hof.out"
-               :gen-output "src/clojure/poker/Andrew/results/__gen.out"
-               :gen-input "src/clojure/poker/Andrew/results/__gen.out"
-               :param-output "src/clojure/poker/Andrew/results/__param.out"
-               :param-input "src/clojure/poker/Andrew/results/__param.out"
-               :transformer-parameters {:d-model 256;;
-                                        :d-ff 1024;;
-                                        :num-layers 12;;
-                                        :num-heads 16
-                                        :d-pe [64 64 64 64];;
-                                        :max-seq-length 512})
+                             :transformer? true
+                             :from-block? true
+                             :random-seed -5907454322436654
+                             :block-size 1e8)
+  (MPI/multi-ERL
+   :ERL-argmaps (for [stdev [0.0001]]
+                  (assoc default-pmap
+                         :stdev stdev
+                         :pop-size 25
+                         :num-generations 25
+                         :num-games 125
+                         :benchmark-count 10
+                         :bench-exp 1.5
+                         :next-gen-method :parents
+                         :bench-method :hardexp
+                         :transformer-parameters default-transformer-map))
+   :intra-run? true
+   :inter-run? false
+   :num-games 5000)
+  #_(MPI/with-MPI
+      (doall (for [bench-method [:k-best]
+                   benchmark-count [2 4 6 8]]
+               (println (hot-start :default-pmap (assoc default-pmap
+                                                        :pop-size 10
+                                                        :num-generations 3
+                                                        :num-games 10
+                                                        :bench-method bench-method
+                                                        :benchmark-count benchmark-count)
+                                   :transformer-parameters default-transformer-map)))))
+
   #_(println (slumbot/net-gain "slumbot-history-random.txt" :as-list? true :mapcat? true))
   #_(processresult/generation-versus "ERL-250x100-67545.out"))
 

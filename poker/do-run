@@ -19,7 +19,7 @@ srun ./run-file.clj
 #! /bin/sh
 #SBATCH --cpus-per-task=116
 #SBATCH --time=2-00:00:00
-#SBATCH --output=generation-versus-%j.out
+#SBATCH --output=stdev-0.001-2-4-8-%j.out
 #SBATCH --error=generation-versus-%j.err
 module load amh-clojure
 export DJL_DEFAULT_ENGINE=PyTorch
@@ -42,18 +42,22 @@ srun --overlap lein run
 
 
 #!/bin/sh
-#SBATCH -n 464
-#SBATCH --cpus-per-task 2
+#SBATCH -n 1
+#SBATCH --cpus-per-task 116
 #SBATCH --time=7-00:00:00
-#SBATCH --output=ERL-500x300-1-%j.out
-#SBATCH --error=ERL-500x300-1-%j.err
+#SBATCH --output=stdev25-0.0001%j.out
+#SBATCH --error=stdev25-0.0001%j.err
 module load cm-pmix4/4.1.1
 module load openmpi4/gcc/4.1.
 module load amh-clojure
 export DJL_DEFAULT_ENGINE=PyTorch
 export MXNET_ENGINE_TYPE=NaiveEngine
-export OMP_NUM_THREADS=2
+export OMP_NUM_THREADS=1
 srun --mpi pmix --overlap lein run
+
+k-best-2-4-6-8
+hardexp-2-4-6-8
+stdev-0.001-2-4-8
 
 
 gputest do-run

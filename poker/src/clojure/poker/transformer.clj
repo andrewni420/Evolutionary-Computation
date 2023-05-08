@@ -71,6 +71,10 @@
 ;;;(Individual) model-from-seeds reconstructs the individual's neural net from its seeds
 ;;;(Gameplay) as-agent uses the individual's neural net to decide upon an action
 ;;;(Gameplay) casts the individual as an action-performing, money-holding poker player
+;;;
+;;; The architecture of the transformer is stored as an argument map
+;;; in the transformer-parameters volatile. To change it, call (set-parameters)
+;;; with the desired argmap. 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -83,6 +87,9 @@
       (println model)
       (.close (:model model))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
 
 
 
@@ -107,6 +114,10 @@
        inputs are interpreted as keys, queries, values and an attention mask, full masked attention.\\
    Attention masks must contain a 1 for positions to keep and a 0 for positions to mask."
   nil)
+
+
+
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -739,6 +750,7 @@
    ai.djl.training.initializer.XavierInitializer$FactorType/IN
    2))
 
+
 (defn transformer
   "Creates a transformer model\\
    manager: NDManager controls lifecycle of models and NDArrays\\
@@ -861,6 +873,7 @@
               :d-pe [16 16 16 16];;
               :max-seq-length 512}))
 
+
 (defn current-transformer
   "The current transformer model being evolved. Subject to change based on 
    computing constraints, meta-evolution, and ablation studies.\\
@@ -875,6 +888,8 @@
                            [1 512 512]]));;mask
          (mapcat identity (into [] @transformer-parameters))))
 
+
+
 #_(vreset! transformer-parameters
            {:d-model 128;;
             :d-ff 512;;
@@ -885,7 +900,6 @@
 
 #_(with-open [m (ndarray/new-base-manager)]
     (get-pcount (current-transformer m)))
-
 
 
 (defn parameter-map
@@ -900,6 +914,7 @@
 
 (def initial-parameter-map
   (volatile! (parameter-map)))
+
 
 (defn set-parameters
   [pmap]
@@ -1129,7 +1144,7 @@
            :manager m
            :mask mask)))
 
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (ndarray/new-base-manager)]
     (initialize-individual :manager m :nn-factory #(current-transformer m)
                            :mask (ndarray/ndarray m (ndarray/causal-mask [1 7 7] -2))
                            :id :p0
@@ -1150,6 +1165,13 @@
         (expand-param-seeds :stdev (or std stdev) :from-block? from-block?)
         (make-model manager mask))))
 
+(set-parameters {:d-model 256;;
+:d-ff 512;;
+:num-layers 12;;
+:num-heads 16
+:d-pe [64 64 64 64];;
+:max-seq-length 512})
+
 
 #_(with-open [m (ndarray/new-base-manager)]
     #_(println (-> (initialize-individual
@@ -1158,12 +1180,14 @@
                     :id :p0
                     :max-seq-length max-seq-length)
                    (expand-param-seeds :stdev 1)))
-    (println (get-parameters (.getBlock (:model (model-from-seeds {:seeds [1]
-                                                                   :id :p0}
+    (println (take 10 (.toArray (get (get-parameters (.getBlock (:model (model-from-seeds {:seeds [1]
+                                                                   :id :p0
+                                                                                           :stdev 0.005}
                                                                   10
                                                                   m
                                                                   1
-                                                                  :from-block? true))))))
+                                                                  :from-block? true))))
+                  "02SequentialBlock_05TransformerDecoderBlock_01selfAttention_03valueProjection_weight")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Gameplay Interface   ;;

@@ -5,7 +5,8 @@
             [poker.ndarray :as ndarray]
             [poker.concurrent :as concurrent]
             [clojure.set :as set]
-            [clojure.pprint :as pprint])
+            [clojure.pprint :as pprint]
+            [clojure.string :as s])
   (:import ai.djl.Device))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -166,8 +167,7 @@
 
 (defn versus-other
   "Plays a transformer seed individual against another individual.\\
-   Returns the winning individual, the match results of the individuals, or the 
-   individuals updated to contain the match results"
+   -> {:id {:mean :stdev} :id(:opp) {:mean :stdev}}"
   [individual opponent max-seq-length num-games & {:keys [manager reverse? decks stdev from-block?]
                                                    :or {stdev 0.005}}]
   (with-open [manager (if manager
@@ -465,6 +465,47 @@
                      {:id :p1 :seeds [1 2] :errors {:p3 2 :p4 -1}}
                      {:id :p2 :seeds [1 2] :errors {:p3 3 :p4 -2}}])
 
+
+(defn total-error
+  [individual]
+  (transduce (map second) + (:error individual)))
+
+(defn tournament-selection
+  [pop tournament-size]
+  (apply max-key total-error (take tournament-size (shuffle pop))))
+
+(defn roulette-selection 
+  [pop]
+  (utils/random-weighted total-error pop))
+
+(defn truncation-selection
+  [pop percent]
+  (rand-nth (take-last (* percent (count pop)) (sort-by total-error pop))))
+
+(defn fitness-proportional-selection
+  [pop & {:keys [beta]
+          :or {beta 0.2}}]
+  (let [fitnesses (map #(assoc % :error (if beta (Math/exp (* beta (total-error %))) (total-error %))) pop)
+        total-fitness (transduce (map :error) + fitnesses)]
+    (loop [i 0
+           selected []
+           fitnesses (map #(assoc % :error (/ (:error %) total-fitness)) fitnesses)
+           cur-ind nil]
+      (cond (>= i 1) (recur (dec i)
+                            (conj selected cur-ind)
+                            fitnesses
+                            cur-ind)
+            (empty? fitnesses) (do (assert (= (count selected) (count pop)) "Not enough selected")
+                                   selected)
+            :else (recur (+ i (* (count pop) (:error (first fitnesses))))
+                         selected
+                         (rest fitnesses)
+                         (first fitnesses))))))
+
+#_(fitness-proportional-selection [{:id :p0 :seeds [1 1] :error {:p3 1 :p4 0}}
+                                   {:id :p1 :seeds [1 2] :error {:p3 2 :p4 -1}}
+                                   {:id :p2 :seeds [1 3] :error {:p3 3 :p4 -2}}])
+
 (defn mutate
   "Given a random number generator and an individual,
    removes the individual's errors and adds a random seed to it\\
@@ -473,15 +514,24 @@
    id - this individual is the id'th individual created in the current generation. 
    Will be appended to the :id field of the individual to ensure unique :id fields for all individuals\\
    -> individual"
-  [individual random id]
-  (-> individual
+  [individual random id & {:keys [mutation-chance]
+                           :or {mutation-chance 1}}]
+  (if (<= (rand) mutation-chance)
+    (-> individual
       (dissoc :error)
       (update :seeds conj (.nextInt random))
-      (update :id #(keyword (str (name %) "-" id)))))
+      (update :id #(keyword (str (name %) "-" id))))
+    (dissoc individual :error)))
 
 #_(mutate {:id :p0 :seeds [1 2] :errors {:p3 1 :p4 0}} 
           (utils/random) 
           3)
+
+(def selection-methods
+  {:lexicase lexicase-selection
+   :tournament tournament-selection
+   :roulette roulette-selection
+   :truncation truncation-selection})
 
 
 (defn next-generation
@@ -489,8 +539,9 @@
    of individuals\\
    method - method to use for constructing the hof. parents = only parents. all = all individuals. k-best = only k highest winnings\\
    -> pop"
-  [pop random & {:keys [method k]
+  [pop random & {:keys [method k selection]
                  :or {method :parents
+                      selection :lexicase
                       k 1}}]
   (assert (contains? #{:parents :all :k-best} method) "Method must be one of :parents, :all, or :k-best")
   (assert (or (not (= method :k-best)) k) "Must specify a k with the method :k-best")
@@ -510,11 +561,12 @@
                                                   +
                                                   (:error ind))))
                                   pop))]
-                     (println p)
+                     #_(println p)
                      p)
            :all (into #{} pop)
            :parents (persistent! parents))]
-        (let [parent (lexicase-selection pop)]
+        (let [parent (((or (selection-methods selection) 
+                           lexicase-selection)) pop)]
           (recur (conj! new-pop (mutate parent random i))
                  (conj! parents parent)
                  (inc i)))))))
@@ -527,7 +579,6 @@
                     {:id :p4, :error {:p1 -0.37, :p0 -0.505, :p2 1.36, :p3 -1.7}, :seeds [-594798593157429144]}]
                    (utils/random 1))
 
-
 (defn select-from-hof
   "Selects n individual from the hall of fame. \\
    method: method used to select individuals\\
@@ -535,42 +586,56 @@
    previous ⌊e^2⌋ generations, and so on\\
    :random = randomly selects n individuals from all individuals so far
    :k-best selects the best individual by total chips won from each of the k previous generations"
-  [hof n & {:keys [method]
-            :or {method :exp}}]
+  [hof n & {:keys [method exp]
+            :or {method :exp
+                 exp Math/E}}]
   (condp = method
+    :hardexp (loop [i 0
+                    selected #{}]
+               (if (>= (Math/exp i) (count hof))
+                 selected
+                 (recur (inc i)
+                        (->> hof
+                             (take-last (int (Math/pow exp i)))
+                             (first)
+                             (into [])
+                             (rand-nth)
+                             (conj selected)))))
     :exp (loop [i 0
                 selected #{}]
-           (if (>= i n) 
+           (if (>= i n)
              selected
-               (recur (inc i)
-                      (set/union
-                       selected
-                       (loop [p (shuffle (mapcat identity
-                                                 (take-last (int (Math/exp i))
-                                                            hof)))]
-                         (cond (empty? p) #{}
-                               (selected (first p)) (recur (rest p))
-                               :else #{(first p)}))))))
+             (recur (inc i)
+                    (set/union
+                     selected
+                     (loop [p (shuffle (mapcat identity
+                                               (take-last (int (Math/pow exp i))
+                                                          hof)))]
+                       (cond (empty? p) #{}
+                             (selected (first p)) (recur (rest p))
+                             :else #{(first p)}))))))
     :random (take n (shuffle (mapcat identity hof)))
-    :k-best (mapv (partial apply 
-                           max-key 
-                           #(transduce (map second) + (:error %))) 
+    :k-best (mapv (partial apply
+                           max-key
+                           #(transduce (map second) + (:error %)))
                   (take-last n hof))))
 
-#_(select-from-hof 
- [#{{:seeds [1] :id :p0}
-    {:seeds [2] :id :p1}
-    {:seeds [3] :id :p2}}
-  #{{:seeds [2 4] :id :p1-0}
-    {:seeds [3 5] :id :p2-0}
-    {:seeds [2 6] :id :p1-1}}
-  #{{:seeds [3 5 6] :id :p2-0-0}
-    {:seeds [3 5 7] :id :p2-0-1}
-    {:seeds [3 5 8] :id :p2-0-2}}
-  #{{:seeds [3 5 7 9] :id :p2-0-1-0}
-    {:seeds [3 5 8 10] :id :p2-0-2-0}
-    {:seeds [3 5 8 11] :id :p2-0-2-1}}]
- 3)
+
+#_(select-from-hof
+   [#{{:seeds [1] :id :p0}
+      {:seeds [2] :id :p1}
+      {:seeds [3] :id :p2}}
+    #{{:seeds [2 4] :id :p1-0}
+      {:seeds [3 5] :id :p2-0}
+      {:seeds [2 6] :id :p1-1}}
+    #{{:seeds [3 5 6] :id :p2-0-0}
+      {:seeds [3 5 7] :id :p2-0-1}
+      {:seeds [3 5 8] :id :p2-0-2}}
+    #{{:seeds [3 5 7 9] :id :p2-0-1-0}
+      {:seeds [3 5 8 10] :id :p2-0-2-0}
+      {:seeds [3 5 8 11] :id :p2-0-2-1}}]
+   3
+   :method :hardexp)
 
 
 (defn merge-errors 
@@ -785,8 +850,7 @@
                                                                           :max-actions max-actions
                                                                           :time-ms time-ms)))
                         (catch Exception _)))
-  (when hof-output (spit hof-output (with-out-str (pprint/pprint hof)))
-        #_(try (spit hof-output (with-out-str (pprint/pprint hof)))
+  (when hof-output (try (spit hof-output (with-out-str (pprint/pprint hof)))
                         (catch Exception _))))
 
 (defn round-errors 
@@ -840,10 +904,11 @@
    hof - hall of fame\\
    prop-hof - proportion of individuals to take from the hof\\
    method - method used to select individuals from hof"
-  [n pop hof prop-hof & {:keys [method]
-                         :or {method :exp}}]
+  [n pop hof prop-hof & {:keys [method exp]
+                         :or {method :exp
+                              exp Math/E}}]
   (let [n-hof (Math/floor (* prop-hof n))
-        hof-bench (select-from-hof hof n-hof :method method)]
+        hof-bench (select-from-hof hof n-hof :method method :exp exp)]
     (concat (take (Math/ceil (- n (count hof-bench)))
                   (shuffle pop))
             hof-bench)))

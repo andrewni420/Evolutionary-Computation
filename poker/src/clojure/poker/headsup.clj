@@ -970,7 +970,7 @@
          action-count 0]
     (if (or (<= num-games game-num) (<= max-actions action-count))
       {:players players
-       :net-gain (process-net-gain net-gain num-games :as-list? as-list?)
+       :net-gain (process-net-gain net-gain game-num :as-list? as-list?)
        :game-encoding game-encoding
        :game-history game-history
        :action-count action-count}
@@ -996,6 +996,7 @@
                                 m
                                 10
                                 :max-actions 3)))
+
 
 
 #_(with-open [m (ndarray/new-base-manager)]

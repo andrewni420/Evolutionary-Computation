@@ -495,6 +495,6 @@ cmake --build .")
    put -r poker ERL")
 
 (def delete-files 
-  ;;ls | grep -P "^__" | xargs -d "\n" rm
+  ;;ls | grep -P "^vs-slumbot" | xargs -d "\n" rm
   )
          

@@ -6,6 +6,7 @@
             [poker.concurrent :as concurrent]
             [poker.utils :as utils]
             [poker.transformer :as transformer]
+            [poker.Andrew.processresult :as processresult]
             [clojure.test :as t])
   (:import java.util.Random
            java.lang.Runtime))
@@ -143,7 +144,7 @@
               argmaps)
           (str "Must have all required parameters " players max-actions deck-seed max-seq-length num-games))
   #_(println "rank " (py. mpi4py.MPI/COMM_WORLD Get_rank) " evaluating task")
-  (time (apply ERL/versus
+  (apply ERL/versus
          (first players)
          (second players)
          max-seq-length
@@ -157,7 +158,7 @@
                             :action-count? true
                             :from-block? from-block?
                             :gc? true}
-                           argmaps))))))
+                           argmaps)))))
 
 (defn process-result
   "Processes the result received either from MPI or from derefing a thread. 
@@ -267,7 +268,7 @@
 (defn collect-fitness
   "Send off and collect the results of fitness evaluations from all slave threads,
    including threads on the master MPI process. \\
-   :comm - MPI world communicator\\\
+   :comm - MPI world communicator\\
    :matches - vector [[individual1 individual2] ...] of matchups to be played\\
    :num-ranks - number of MPI processes in total\\
    :max-actions - adaptive cap on the number of actions allowed per matchup for 
@@ -378,12 +379,13 @@
    Evaluate fitness of two opponents\\
    Stop evaluation early and return result\\
    Notify slaves that ERL loop is over"
-  [comm & {:keys [pop-size num-generations benchmark-count random-seed stdev hot-start hof-output hof-input gen-output gen-input bench-method next-gen-method prop-hof]
+  [comm & {:keys [pop-size num-generations benchmark-count random-seed stdev hot-start hof-output hof-input gen-output gen-input bench-method bench-exp next-gen-method prop-hof]
            :or {pop-size 3
                 num-generations 1
                 benchmark-count 5
                 random-seed 1
                 bench-method :exp
+                bench-exp Math/E
                 next-gen-method :parents
                 stdev 0.005
                 prop-hof 0.5}
@@ -409,7 +411,7 @@
         ;;Terminate slave MPI processes and return final result
         (do (terminate-slaves comm (py. comm Get_size))
             {:last-pop pop
-             :hall-of-fame (ERL/round-errors hof 3)})
+             :hall-of-fame hof #_(ERL/round-errors hof 3)})
         ;;Fitness evaluation using benchmarking individuals
         (let [{{p :pop
                 b :benchmark
@@ -417,7 +419,7 @@
                t :time} (utils/get-time
                          (benchmark comm
                                     pop
-                                    (ERL/get-benchmark benchmark-count pop hof prop-hof :method bench-method)
+                                    (ERL/get-benchmark benchmark-count pop hof prop-hof :method bench-method :exp bench-exp)
                                     :deck-seed (.nextInt r)
                                     :max-actions max-actions
                                     :symmetrical? true
@@ -429,7 +431,6 @@
                  p
                  (-> hof
                      (ERL/update-hof b)
-                     (ERL/cull-hof)
                      (conj h))
                  (* 2 (utils/mean a))
                  t))))))
@@ -598,7 +599,7 @@
    -> Reports out each generation\\
    -> caches information in files for resuming evolution\\
    -> returns the final population and hall-of-fame."
-  [& {:keys [pop-size num-generations benchmark-count random-seed num-games max-seq-length stdev from-block? block-size hot-start hof-output hof-input gen-output gen-input param-output param-input bench-method next-gen-method prop-hof transformer-parameters]
+  [& {:keys [pop-size num-generations benchmark-count random-seed num-games max-seq-length stdev from-block? block-size hot-start hof-output hof-input gen-output gen-input param-output param-input bench-method bench-exp next-gen-method prop-hof transformer-parameters with-MPI?]
       :or {pop-size 3
            num-generations 1
            benchmark-count 5
@@ -608,6 +609,7 @@
            block-size 1e8
            stdev 0.005
            bench-method :exp
+           bench-exp Math/E
            next-gen-method :parents
            prop-hof 0.5
            hof-output "src/clojure/poker/Andrew/results/_hof.out"
@@ -622,22 +624,46 @@
     (when from-block? (utils/initialize-random-block (int block-size) r))
     (when transformer-parameters (transformer/set-parameters transformer-parameters))
     ;Open and close MPI environment
-    (with-MPI
+    ((if with-MPI? #(with-MPI %) identity)
       (let [comm mpi4py.MPI/COMM_WORLD
             rank (py. comm Get_rank)]
         ;Rank 0 process is master thread
         (if (= 0 rank)
-          (do (println (dissoc argmap :hof-start))
-              (when param-output (spit param-output (with-out-str (println argmap))))
+          (do (println (dissoc argmap :hot-start))
+              (when param-output (try (spit param-output (with-out-str (println argmap))) 
+                                      (catch Exception _)))
               #_(when hot-start (run! println hot-start))
               ;pass on parameters to master process
-              (println (apply master comm (mapcat identity (into [] argmap)))))
+             (apply master comm (mapcat identity (into [] argmap))))
           ;All other processes are slave threads
           (slave comm :args argmap))
         #_(println "Finalizing rank " rank)))))
 
-;;Get the average time of every fitness evaluation that's finished when the buffer
-;;finally empties. Then wait 2x that amount of time
+
+(defn multi-ERL
+  [& {:keys [ERL-argmaps intra-run? inter-run? num-games]
+      :or {num-games 5000}}]
+  (with-MPI 
+    (let [results (doall (map-indexed #(assoc (utils/apply-map ERL %2 {:with-MPI? false})
+                                     :index %1)
+                             ERL-argmaps))
+        total-error #(transduce (map second) + (:error %))
+        best-of-gen #(dissoc (assoc
+                              (apply max-key total-error %2)
+                              :id (keyword (str "p" %1)))
+                             :error)
+        id-to-generation (fn [idx gen ind] (dissoc (assoc ind :id (keyword (str "p-" idx "-" gen))) :error))
+        last-3-generation (fn [{hof :hall-of-fame idx :index}]
+                            (take-last 3 (map-indexed #(id-to-generation idx %1 (best-of-gen %1 %2))
+                                                      hof)))]
+      (println {:results (map #(dissoc % :last-pop) results)})
+    (when intra-run? (run! #(println {:intra-run (processresult/round-robin (map-indexed best-of-gen (:hall-of-fame %))
+                                                                            :num-games num-games)
+                                      :index (:index %)})
+                           results))
+    (when inter-run? (println {:inter-run (processresult/round-round-robin
+                                           (map last-3-generation results)
+                                           :num-games num-games)})))))
 
 (defn test-mpi []
   (MPI/Init)
@@ -655,4 +681,12 @@ elif rank == 1:
                          (let [d (py/py. comm irecv :source 0 :tag 11)]
                            (py. d Test)
                            (println "data received " (py. d wait))))))
+  (MPI/Finalize))
+
+(defn mpitest []
+  (MPI/Init)
+  (println (py/call-attr mpi4py.MPI/COMM_WORLD "Get_rank"))
+  (MPI/Finalize)
+  (MPI/Init)
+  (println (py/call-attr mpi4py.MPI/COMM_WORLD "Get_rank"))
   (MPI/Finalize))
