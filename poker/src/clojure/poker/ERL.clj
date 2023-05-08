@@ -145,7 +145,14 @@
                                                         ind1)})
                    (when action-count? {:action-count action-count}))))))))
 
+#_(utils/initialize-random-block (int 1e7) 1)
 
+#_(transformer/set-parameters {:d-model 128;;
+                             :d-ff 512;;
+                             :num-layers 12;;
+                             :num-heads 8
+                             :d-pe [32 32 32 32];;
+                             :max-seq-length 512})
 
 #_(time (versus {:seeds [2074038742],
                :id :p1}
@@ -309,7 +316,8 @@
                         :net-gain? true
                         :stdev stdev
                         :decks (utils/process-decks decks num-games)
-                        :from-block? from-block?)
+                        :from-block? from-block?
+                        :gc? true)
             matches (partition-all 2 (shuffle cur-pop))
             ;;Odd individual out that gets a pass
             pass (filter #(= 1 (count %)) matches)
@@ -494,14 +502,16 @@
       (if (= i l)
         [(persistent! new-pop)
          (condp = method
-           :k-best (into #{}
+           :k-best (let [p (into #{}
                          (take k)
                          (sort-by (fn [ind]
                                     (- (transduce (map (comp #(or (:mean %) %)
                                                              second))
                                                   +
                                                   (:error ind))))
-                                  pop))
+                                  pop))]
+                     (println p)
+                     p)
            :all (into #{} pop)
            :parents (persistent! parents))]
         (let [parent (lexicase-selection pop)]
@@ -766,11 +776,18 @@
 
 (defn report-generation
   "Prints out the generation and the population at that generation"
-  [pop generation & {:keys [max-actions time-ms]}]
+  [pop generation & {:keys [max-actions time-ms gen-output hof hof-output]}]
   (pprint/pprint (merge {:generation generation
                          :pop pop}
                         (when max-actions {:max-actions max-actions})
-                        (when time-ms {:time-ms time-ms}))))
+                        (when time-ms {:time-ms time-ms})))
+  (when gen-output (try (spit gen-output (with-out-str (report-generation pop generation
+                                                                          :max-actions max-actions
+                                                                          :time-ms time-ms)))
+                        (catch Exception _)))
+  (when hof-output (spit hof-output (with-out-str (pprint/pprint hof)))
+        #_(try (spit hof-output (with-out-str (pprint/pprint hof)))
+                        (catch Exception _))))
 
 (defn round-errors 
   [hof decimal-points]

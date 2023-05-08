@@ -141,7 +141,7 @@
    :position (.create manager (ndarray/shape [0 onehot/position-length]))})
 
 #_(with-open [m (ndarray/new-base-manager)]
-    ( (init-game-history m [:p0 :p1])))
+    ((init-game-history m [:p0 :p1])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Single Move    ;;
@@ -151,7 +151,7 @@
   "Given the additional state, position, and or actions encodings to be added, updates the game-encoding\\
    by appending these encodings onto the appropriate tensors.\\
    -> game-encoding"
-  [game-encoding manager & {:keys [state position actions]}]
+  [game-encoding manager & {:keys [state position actions max-seq-length]}]
   (let [;;If some of state, position, and actions are provided, turn them into NDArrays
         ;;If a map is provided for state, turn it into a map of id to NDArray
         state (if state (into {} (map (fn [[k v]]
@@ -195,10 +195,11 @@
   "Asks the current player for a move\\
    -> [move-type amount]"
   [game-state game-encoding & {:keys [verbosity]
-                              :or {verbosity 0}}]
+                               :or {verbosity 0}}]
   (let [{current-player :current-player
          players :players} game-state
         player (players current-player)]
+    (assert (not (keyword? (:agent player))) "Agent cannot be a keyword")
     ;;Printing functionality to help explain how code works
     (utils/print-verbose verbosity
                          {:fn "make-move"}
@@ -268,8 +269,8 @@
    -> [game-state game-encoding]"
   [action game-state game-encoding & {:keys [verbosity]
                                       :or {verbosity 0}}]
-  (assert (and (first action) (second action)) 
-          (str "Cannot have nil in action "action game-state))
+  (assert (and (first action) (second action))
+          (str "Cannot have nil in action " action game-state))
   (let [{current-player :current-player
          active-players :active-players
          pot :pot
@@ -292,9 +293,9 @@
                          :players players)
         ;;Update game encoding with the submitted action
         new-encoding (update-game-encoding game-encoding
-                                          manager
-                                          :actions (onehot/encode-action action game-state)
-                                          :position (onehot/encode-position game-state))]
+                                           manager
+                                           :actions (onehot/encode-action action game-state)
+                                           :position (onehot/encode-position game-state))]
     ;;Printing functionality to help explain how code works
     (utils/print-verbose verbosity
                          {:fn "parse-action"}
@@ -317,11 +318,11 @@
       ;;Otherwise, we need to update the pot, the amount betted by each player,
       ;;(maybe) the minimum raise, and (maybe) the amount players need to bet to stay in the game
       ["Raise" "Bet" "All-In" "Call"] [(assoc new-state
-                                      :bet-values (update bet-values current-player (partial + amount))
-                                      :pot (+ pot amount)
-                                      :current-bet (max current-bet (+ amount (bet-values current-player)))
-                                      :min-raise (max min-raise (- (+ amount (bet-values current-player)) current-bet)))
-                               new-encoding])))
+                                              :bet-values (update bet-values current-player (partial + amount))
+                                              :pot (+ pot amount)
+                                              :current-bet (max current-bet (+ amount (bet-values current-player)))
+                                              :min-raise (max min-raise (- (+ amount (bet-values current-player)) current-bet)))
+                                       new-encoding])))
 
 #_(with-open [m (ndarray/new-base-manager)]
     (clojure.pprint/pprint (parse-action ["Fold" 0.0] (init-game :manager m)
@@ -347,8 +348,8 @@
       [(assoc player :money 0) ["All-In" money]]
       [(assoc player :money (- money value)) ["Bet" value]])))
 
-#_(blind (utils/init-player (constantly ["Fold" 0.0]) :p0) 
-         1.0 
+#_(blind (utils/init-player (constantly ["Fold" 0.0]) :p0)
+         1.0
          :verbosity 2)
 
 (defn pay-blinds
@@ -491,12 +492,12 @@
 
 
 #_(with-open [m (ndarray/new-base-manager)]
-  ( (bet-round (init-game :players [(utils/init-player utils/random-agent :p0)
-                                  (utils/init-player utils/random-agent :p1)]
-                        :manager m)
-             (init-game-history m [:p0 :p1])
-             m
-             :verbosity 2)))
+    ((bet-round (init-game :players [(utils/init-player utils/random-agent :p0)
+                                     (utils/init-player utils/random-agent :p1)]
+                           :manager m)
+                (init-game-history m [:p0 :p1])
+                m
+                :verbosity 2)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -608,7 +609,7 @@
 (defn bet-game
   "Runs betting from initialization of game until showdown"
   [game-state & {:keys [game-encoding verbosity]
-                              :or {verbosity 0}}]
+                 :or {verbosity 0}}]
   (utils/print-verbose verbosity
                        {:fn "bet-game"}
                        {}
@@ -626,34 +627,34 @@
                   :verbosity verbosity}))))))
 
 #_(with-open [m (ndarray/new-base-manager)]
-  (let [[game-state game-history] (bet-game (pay-blinds
-                                             (init-game :players [(utils/init-player utils/random-agent :p0)
-                                                                  (utils/init-player utils/random-agent :p1)]
-                                                        :manager m))
-                                            (init-game-history  m [:p0 :p1]))]
-    (clojure.pprint/pprint game-state)
-    ( game-history)))
+    (let [[game-state game-history] (bet-game (pay-blinds
+                                               (init-game :players [(utils/init-player utils/random-agent :p0)
+                                                                    (utils/init-player utils/random-agent :p1)]
+                                                          :manager m))
+                                              (init-game-history  m [:p0 :p1]))]
+      (clojure.pprint/pprint game-state)
+      (game-history)))
 
-#_(defn var-reduce 
-  "Subtracts expected value of hand from the money earned"
-  [net-gain game-state]
-  (let [{players :players
-         hands :hands} game-state
-        ids (zipmap (map :id players) [0 1])]
-    (into [] (map #(let [[p g] %
-                         {win :win 
-                          total :total} (utils/rollout (into #{} (hands (ids p))))]
-                     (vector p (- g (* 0 (:pot game-state) (/ win total))))) 
-                  net-gain))))
+#_(defn var-reduce
+    "Subtracts expected value of hand from the money earned"
+    [net-gain game-state]
+    (let [{players :players
+           hands :hands} game-state
+          ids (zipmap (map :id players) [0 1])]
+      (into [] (map #(let [[p g] %
+                           {win :win
+                            total :total} (utils/rollout (into #{} (hands (ids p))))]
+                       (vector p (- g (* 0 (:pot game-state) (/ win total)))))
+                    net-gain))))
 
-(defn var-reduce 
+(defn var-reduce
   "NOT IMPLEMENTED\\
    Reduce variance"
   [net-gain _game-state & {:keys [verbosity]
                            :or {verbosity 0}}]
   net-gain)
 
-(defn state-to-history 
+(defn state-to-history
   "Summarizes end-of-game state into fields to put into game history.\\
    hands: cards dealt to each player\\
    visible-hands: cards shown at showdown\\
@@ -675,11 +676,11 @@
            :action-history action-history
            :visible-cards visible
            :visible-hands visible-hands
-           :net-gain (var-reduce 
-                      (mapv #(vector (:id %2) 
-                                     (- (:money %1) 
-                                        (:money %2))) 
-                            new-players 
+           :net-gain (var-reduce
+                      (mapv #(vector (:id %2)
+                                     (- (:money %1)
+                                        (:money %2)))
+                            new-players
                             old-players)
                       new-state))))
 
@@ -691,98 +692,177 @@
                       :or {deck (shuffle utils/deck)
                            verbosity 0
                            game-num 0}}]
-(let [game-encoding (or game-encoding (init-game-encoding manager (map :id players)))
-      game-history (or game-history [])
-      game-state (init-game :players players
-                            :deck deck
-                            :verbosity verbosity
-                            :game-num game-num
-                            :manager manager)
-      [new-state new-encoding] (bet-game (pay-blinds game-state :verbosity verbosity)
-                                         :game-encoding game-encoding
-                                         :verbosity verbosity)
-      position-encoding (onehot/encode-position new-state)]
-  (utils/print-verbose verbosity
-                       {:fn "play-game"}
-                       {:players players
-                        :deck (take 7 deck)}
-                       {:final-state new-state}
-                       {:initial-state {}})
-  {:players (:players new-state)
-   :game-encoding (-> new-encoding
-                      (update-game-encoding manager
-                                            :state (onehot/encode-state new-state)
-                                            :position position-encoding
-                                            :actions (onehot/encode-action nil new-state))
-                      (update-game-encoding manager
-                                            :position position-encoding))
-   :game-history (conj game-history (state-to-history game-state new-state :verbosity verbosity))}))
+  (let [game-encoding (or game-encoding (init-game-encoding manager (map :id players)))
+        game-history (or game-history [])
+        game-state (init-game :players players
+                              :deck deck
+                              :verbosity verbosity
+                              :game-num game-num
+                              :manager manager)
+        [new-state new-encoding] (bet-game (pay-blinds game-state :verbosity verbosity)
+                                           :game-encoding game-encoding
+                                           :verbosity verbosity)
+        position-encoding (onehot/encode-position new-state)]
+    (utils/print-verbose verbosity
+                         {:fn "play-game"}
+                         {:players players
+                          :deck (take 7 deck)}
+                         {:final-state new-state}
+                         {:initial-state {}})
+    {:players (:players new-state)
+     :game-encoding (-> new-encoding
+                        (update-game-encoding manager
+                                              :state (onehot/encode-state new-state)
+                                              :position position-encoding
+                                              :actions (onehot/encode-action nil new-state))
+                        (update-game-encoding manager
+                                              :position position-encoding))
+     :game-history (conj game-history (state-to-history game-state new-state :verbosity verbosity))}))
 
 #_(with-open [m (ndarray/new-base-manager)]
-  (let [g (play-game [(utils/init-player utils/random-agent :p0) 
-                      (utils/init-player utils/random-agent :p1)] 
-                     m)]
-    (println (:game-encoding g))
-    (clojure.pprint/pprint g)))
+    (let [g (play-game [(utils/init-player utils/random-agent :p0)
+                        (utils/init-player utils/random-agent :p1)]
+                       m)]
+      (println (:game-encoding g))
+      (clojure.pprint/pprint g)))
 
 #_(def h (with-open [m (ndarray/new-base-manager)]
-  (let [kek (play-game [(utils/init-player utils/random-agent :p0)
-            (utils/init-player utils/random-agent :p1)]
-           m
-             :game-history [{:hands [[:p0 [[8 "Clubs"] [9 "Diamonds"]]] [:p1 [[10 "Hearts"] [5 "Spades"]]]],
-                             :playerIDs [:p0 :p1],
-                             :action-history [[[:p0 ["All-In" 199.5]] [:p1 ["Fold" 0.0]]]],
-                             :visible-cards [],
-                             :visible-hands [],
-                             :net-gain [[:p0 1.0] [:p1 -1.0]]}])]
-    (println (:game-encoding kek))
-    kek)))
+           (let [kek (play-game [(utils/init-player utils/random-agent :p0)
+                                 (utils/init-player utils/random-agent :p1)]
+                                m
+                                :game-history [{:hands [[:p0 [[8 "Clubs"] [9 "Diamonds"]]] [:p1 [[10 "Hearts"] [5 "Spades"]]]],
+                                                :playerIDs [:p0 :p1],
+                                                :action-history [[[:p0 ["All-In" 199.5]] [:p1 ["Fold" 0.0]]]],
+                                                :visible-cards [],
+                                                :visible-hands [],
+                                                :net-gain [[:p0 1.0] [:p1 -1.0]]}])]
+             (println (:game-encoding kek))
+             kek)))
 
 #_(with-open [manager (ndarray/new-base-manager)]
-  (println (play-game [(utils/init-player utils/random-agent :p0)
-                       #_(transformer/as-player (transformer/initialize-individual
-                                               :manager manager
-                                               :nn-factory #(transformer/current-transformer manager)
-                                               :id :p0
-                                               :mask (ndarray/ndarray manager (ndarray/causal-mask [1 256 256] -2))
-                                               :max-seq-length 256))
-                       (utils/init-player utils/random-agent :p1)]
-                      manager)))
+    (println (play-game [(utils/init-player utils/random-agent :p0)
+                         #_(transformer/as-player (transformer/initialize-individual
+                                                   :manager manager
+                                                   :nn-factory #(transformer/current-transformer manager)
+                                                   :id :p0
+                                                   :mask (ndarray/ndarray manager (ndarray/causal-mask [1 256 256] -2))
+                                                   :max-seq-length 256))
+                         (utils/init-player utils/random-agent :p1)]
+                        manager)))
 
 #_(with-open [manager (ndarray/new-base-manager)]
-  (let [{game-encoding :game-encoding
-         game-history :game-history} (play-game [(utils/init-player utils/random-agent :p0)
-                                                 (utils/init-player utils/random-agent :p1)]
-                                                manager)]
-    (println game-encoding)
-    (clojure.pprint/pprint game-history)))
+    (let [{game-encoding :game-encoding
+           game-history :game-history} (play-game [(utils/init-player utils/random-agent :p0)
+                                                   (utils/init-player utils/random-agent :p1)]
+                                                  manager)]
+      (println game-encoding)
+      (clojure.pprint/pprint game-history)))
+
+(defn check-transition
+  "Returns game-state, game-encoding, and game-history. Responsible for updates
+   at boundaries, such as at the end of a round or game."
+  [game-state game-encoding game-history]
+  (cond (round-over-checkone game-state) [(next-round game-state) game-encoding game-history]
+        (:game-over game-state) [game-state
+                                 (let [{manager :manager} game-state]
+                                   (-> game-encoding
+                                       (update-game-encoding manager
+                                                             :state (onehot/encode-state game-state)
+                                                             :position (onehot/encode-position game-state)
+                                                             :actions (onehot/encode-action nil game-state))
+                                       (update-game-encoding manager
+                                                             :position (onehot/encode-position game-state))))
+                                 (conj game-history (state-to-history {:players (map #(utils/set-money % utils/initial-stack)
+                                                                                     (:players game-state))}
+                                                                      game-state))]
+        :else [game-state game-encoding game-history]))
+
+(defn check-bot-move
+  "Checks for the bot to make a move. If needed, asks the bot to make a move, and 
+   updates the game-state and game-encoding if needed"
+  [game-state game-encoding game-history]
+  (let [{players :players
+         current-player :current-player
+         manager :manager
+         game-over :game-over} game-state]
+    (if (and (not game-over) (= :bot (:id (players current-player))))
+      (let [game-encoding (update-game-encoding game-encoding
+                                                manager
+                                                :state (onehot/encode-state game-state)
+                                                :position (onehot/encode-position game-state))
+            m (make-move game-state game-encoding)
+            [g e h] (apply check-transition
+                           (conj (parse-action m game-state game-encoding)
+                                 game-history))]
+        (recur g e h))
+      {:game-state game-state
+       :game-encoding game-encoding
+       :game-history game-history})))
+
+
+(defn start-game
+  [& {:keys [game-state game-encoding game-history opponent manager]}]
+  (assert (or (and game-history game-encoding)
+              (and opponent manager))
+          "Must provide either game-encoding and history, or an opponent and a manager")
+  (let [manager (or manager (:manager game-state))
+        game-state (pay-blinds (init-game
+                                :players [(if (:id opponent) opponent (utils/init-player opponent :bot))
+                                          (utils/init-player :client :client)]
+                                :manager (or manager (ndarray/new-base-manager))))
+        game-encoding (or game-encoding (init-game-encoding (or manager (ndarray/new-base-manager))
+                                                            [(or (:id opponent) :bot) :client]))
+        game-history (or game-history [])]
+    (check-bot-move game-state game-encoding game-history)))
+
+
 
 (defn step-game
-  "returns {:game-state :game-encoding :game-history}"
-  [& {:keys [game-state game-encoding game-history action opponent manager]}]
+  "returns {:game-state :game-encoding :game-history :net-gain}"
+  [& {:keys [game-state game-encoding game-history action opponent manager]
+      :or {opponent utils/random-agent
+           manager (ndarray/new-base-manager)}}]
+  (assert (or (and game-state game-encoding game-history action) opponent))
   (cond (not game-state)
-        {:game-state (pay-blinds (init-game 
-                                  :players [(if (:id opponent) opponent (utils/init-player opponent :bot))
-                                                      (utils/init-player :client :client)]
-                                  :manager (or manager (ndarray/new-base-manager))))
-         :game-encoding (init-game-encoding (or manager (ndarray/new-base-manager))
-                                            [(or (:id opponent) :bot) :client])
-         :game-history (or game-history [])}
-        (:game-over game-state) (let [new-state (pay-blinds (init-game :players (map #(utils/set-money % utils/init-money)
-                                                                                     (reverse (:players game-state)))))
-                                      new-state (if (= :bot (:id (nth (:players new-state)
-                                                                      (:current-player new-state))))
-                                                  ()
-                                                  ())]
-                                  {:game-state 
-                                   
-                                   }
-                                  )
-        :else (let [{}]
-                ())))
+        (merge (start-game :game-state game-state
+                           :game-encoding game-encoding
+                           :game-history game-history
+                           :opponent opponent
+                           :manager manager)
+               {:net-gain 0})
+        (:game-over game-state) {:game-state (pay-blinds (init-game
+                                                          :players (reverse (:players game-state))
+                                                          :manager (or (:manager game-state) (ndarray/new-base-manager))
+                                                          :game-num (inc (:game-num game-state))))
+                                 :game-encoding game-encoding
+                                 :game-history game-history
+                                 :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history)}
+        :else (do (assert (utils/is-legal? action game-state)
+                          (str "Illegal action: " action " game-state " game-state))
+                  (let [[g e] (parse-action action game-state game-encoding)]
+                    (apply check-bot-move (check-transition g e game-history))))))
+
+(defn apply-step-game 
+  [g & {:keys [action] :as argmap}]
+  (apply step-game (mapcat identity (into [] (merge g argmap)))))
+
+#_(def m (ndarray/new-base-manager))
+#_(def g (volatile! (step-game :manager m :opponent utils/random-agent)))
+
+#_(vreset! g (apply step-game
+                  (mapcat identity
+                          (into [] (merge {:action ["Check" 0.0]}
+                                          @g)))))
+
+#_g
+
+;;10x model
+;;2xpopulation
+;;1.5xgenerations
+;;-> 10 nodes for 4 days
 
 #_(SwingTest/main nil)
-(init-game)
+#_(init-game)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -816,10 +896,10 @@
           players))
 
 
-#_(update-net-gain {:p1 [], :p2 []} 
-                 [{:agent 1, :money 200.0, :id :p1} 
-                  {:agent 1, :money 200.0, :id :p2}]
-                 :as-list? true)
+#_(update-net-gain {:p1 [], :p2 []}
+                   [{:agent 1, :money 200.0, :id :p1}
+                    {:agent 1, :money 200.0, :id :p2}]
+                   :as-list? true)
 
 (defn iterate-games
   "Plays num-games hands of poker with players switching from sb to bb every hand.\\
@@ -898,9 +978,9 @@
              game-encoding :game-encoding
              game-history :game-history} (play-game players
                                                     manager
-                                                    :game-encoding game-encoding 
-                                                    :game-history game-history 
-                                                    :game-num game-num 
+                                                    :game-encoding game-encoding
+                                                    :game-history game-history
+                                                    :game-num game-num
                                                     :deck (first decks))]
         (recur (into [] (reverse players))
                (update-net-gain net-gain [p1 p2] :as-list? as-list?)
@@ -911,45 +991,44 @@
                (+ action-count (/ (count (flatten (:action-history (last game-history)))) 3)))))))
 
 #_(def k (with-open [m (ndarray/new-base-manager)]
-  (iterate-games-reset [(utils/init-player utils/random-agent :p0)
-                       (utils/init-player utils/random-agent :p1)]
-                       m
-                       10
-                       :max-actions 3
-                       )))
+           (iterate-games-reset [(utils/init-player utils/random-agent :p0)
+                                 (utils/init-player utils/random-agent :p1)]
+                                m
+                                10
+                                :max-actions 3)))
 
 
 #_(with-open [m (ndarray/new-base-manager)]
-  (let [max-seq-length 20
-        param-map transformer/initial-parameter-map
-        mask (ndarray/ndarray m (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
-        ind1 (transformer/model-from-seeds {:seeds [2074038742],
-                                            :id :p1}
-                                           max-seq-length
-                                           m
-                                           mask)
-        ind2 (transformer/model-from-seeds {:seeds [-888633566], 
-                                            :id :p2}
-                                           max-seq-length 
-                                           m 
-                                           mask)]
-    (with-open [_i1 (utils/make-closeable ind1 transformer/close-individual)
-                _i2 (utils/make-closeable ind2 transformer/close-individual)]
-      (let [{game-history :game-history
-             game-encoding :game-encoding
-             net-gain :net-gain}
-            (time (iterate-games-reset  [(transformer/as-player ind1)
-                                         (transformer/as-player ind2)]
-                                        m
-                                        10
-                                        :as-list? true))]
-        (println net-gain)
-        (println "actions-per-game:"
-                 (float (/ (transduce (map #(/ (count (flatten (:action-history %))) 3.0)) + game-history)
-                           (count game-history))))
-        #_net-gain
-        #_(println game-encoding)
-        #_(clojure.pprint/pprint game-history)))))
+    (let [max-seq-length 20
+          param-map transformer/initial-parameter-map
+          mask (ndarray/ndarray m (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
+          ind1 (transformer/model-from-seeds {:seeds [2074038742],
+                                              :id :p1}
+                                             max-seq-length
+                                             m
+                                             mask)
+          ind2 (transformer/model-from-seeds {:seeds [-888633566],
+                                              :id :p2}
+                                             max-seq-length
+                                             m
+                                             mask)]
+      (with-open [_i1 (utils/make-closeable ind1 transformer/close-individual)
+                  _i2 (utils/make-closeable ind2 transformer/close-individual)]
+        (let [{game-history :game-history
+               game-encoding :game-encoding
+               net-gain :net-gain}
+              (time (iterate-games-reset  [(transformer/as-player ind1)
+                                           (transformer/as-player ind2)]
+                                          m
+                                          10
+                                          :as-list? true))]
+          (println net-gain)
+          (println "actions-per-game:"
+                   (float (/ (transduce (map #(/ (count (flatten (:action-history %))) 3.0)) + game-history)
+                             (count game-history))))
+          #_net-gain
+          #_(println game-encoding)
+          #_(clojure.pprint/pprint game-history)))))
 
 ;;random-agent: 2ms per action
 ;;transformer: 30ms per action
@@ -1056,10 +1135,10 @@
 ;;;         Runtime       ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #_(with-open [m (ndarray/new-base-manager)
-            m1 (.newSubManager m)]
-  (let [arr1 (ndarray/ndarray m [[[1 2 3] [1 2 3]]])
-        arr2 (ndarray/ndarray m1 [[[3 4 5]]])]
-    (println m)
-    (println m1)
-    (println (.getManager (.concat arr2 arr1 1)))))
+              m1 (.newSubManager m)]
+    (let [arr1 (ndarray/ndarray m [[[1 2 3] [1 2 3]]])
+          arr2 (ndarray/ndarray m1 [[[3 4 5]]])]
+      (println m)
+      (println m1)
+      (println (.getManager (.concat arr2 arr1 1)))))
 

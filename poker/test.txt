@@ -1,0 +1,5680 @@
+({:hands
+  [[:bot ([12 "Spades"] [7 "Diamonds"])]
+   [:client ([3 "Spades"] [3 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 4.65]] [:bot ["Call" 4.65]]]
+   [[:client ["All-In" 193.35]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([7 "Clubs"] [5 "Diamonds"] [4 "Hearts"] [7 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -6.650000000000006] [:client 6.650000000000006]],
+  :r
+  {"baseline_winnings" 465,
+   "winnings" 665,
+   "bot_hole_cards" ["Qs" "7d"],
+   "board" ["7c" "5d" "4h" "7s"],
+   "hole_cards" ["3s" "3h"],
+   "client_pos" 0,
+   "action" "b200c/b465c/b19335f"}}
+ {:hands
+  [[:bot ([8 "Diamonds"] [3 "Diamonds"])]
+   [:client ([10 "Spades"] [6 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Clubs"] [8 "Hearts"] [7 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["8d" "3d"],
+   "board" ["Tc" "8h" "7h"],
+   "hole_cards" ["Ts" "6h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Hearts"] [2 "Diamonds"])]
+   [:client ([7 "Clubs"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Diamonds"] [9 "Clubs"] [7 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["Qh" "2d"],
+   "board" ["9d" "9c" "7h"],
+   "hole_cards" ["7c" "2s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([5 "Spades"] [5 "Clubs"])]
+   [:client ([13 "Hearts"] [10 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Call" 17.76]]]
+   [[:client ["Bet" 3.05]] [:bot ["Call" 3.05]]]
+   [[:client ["Bet" 53.1]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Hearts"]
+   [4 "Diamonds"]
+   [4 "Clubs"]
+   [11 "Clubs"]
+   [7 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -22.810000000000002] [:client 22.810000000000002]],
+  :r
+  {"baseline_winnings" 2881,
+   "winnings" 2281,
+   "bot_hole_cards" ["5s" "5c"],
+   "board" ["Ah" "4d" "4c" "Jc" "7d"],
+   "hole_cards" ["Kh" "Th"],
+   "client_pos" 0,
+   "action" "b200c/b1776c/b305c/b5310f"}}
+ {:hands
+  [[:bot ([9 "Hearts"] [7 "Clubs"])]
+   [:client ([8 "Spades"] [3 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 44.4]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Clubs"] [4 "Spades"] [2 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["9h" "7c"],
+   "board" ["Ac" "4s" "2h"],
+   "hole_cards" ["8s" "3s"],
+   "client_pos" 0,
+   "action" "b200c/b4440f"}}
+ {:hands
+  [[:bot ([6 "Diamonds"] [2 "Clubs"])]
+   [:client ([6 "Spades"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["6d" "2c"],
+   "board" [],
+   "hole_cards" ["6s" "2d"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [5 "Hearts"])]
+   [:client ([12 "Spades"] [9 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([6 "Spades"] [4 "Clubs"] [3 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -600,
+   "winnings" 200,
+   "bot_hole_cards" ["Ad" "5h"],
+   "board" ["6s" "4c" "3d"],
+   "hole_cards" ["Qs" "9c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([8 "Clubs"] [5 "Spades"])]
+   [:client ([14 "Clubs"] [5 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 35.52]]
+    [:bot ["All-In" 198.0]]
+    [:client ["Call" 162.48]]]
+   []
+   []],
+  :visible-cards
+  ([13 "Hearts"]
+   [7 "Diamonds"]
+   [2 "Clubs"]
+   [13 "Diamonds"]
+   [14 "Spades"]),
+  :visible-hands
+  ([:bot ([8 "Clubs"] [5 "Spades"])]
+   [:client ([14 "Clubs"] [5 "Diamonds"])]),
+  :net-gain [[:bot -200.0] [:client 200.0]],
+  :r
+  {"baseline_winnings" 19800,
+   "winnings" 20000,
+   "bot_hole_cards" ["8c" "5s"],
+   "board" ["Kh" "7d" "2c" "Kd" "As"],
+   "hole_cards" ["Ac" "5d"],
+   "client_pos" 0,
+   "action" "b200c/b3552b19800c//"}}
+ {:hands
+  [[:bot ([10 "Clubs"] [8 "Spades"])]
+   [:client ([9 "Hearts"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Spades"] [6 "Clubs"] [3 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["Tc" "8s"],
+   "board" ["Ks" "6c" "3c"],
+   "hole_cards" ["9h" "2s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([8 "Spades"] [2 "Hearts"])]
+   [:client ([9 "Spades"] [9 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["8s" "2h"],
+   "board" [],
+   "hole_cards" ["9s" "9h"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([11 "Diamonds"] [4 "Spades"])]
+   [:client ([11 "Spades"] [8 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([3 "Hearts"] [2 "Spades"] [2 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Jd" "4s"],
+   "board" ["3h" "2s" "2h"],
+   "hole_cards" ["Js" "8c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([9 "Clubs"] [7 "Hearts"])]
+   [:client ([10 "Spades"] [5 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 11.64]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Spades"] [6 "Hearts"] [3 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["9c" "7h"],
+   "board" ["As" "6h" "3d"],
+   "hole_cards" ["Ts" "5d"],
+   "client_pos" 0,
+   "action" "b200c/b1164f"}}
+ {:hands
+  [[:bot ([7 "Hearts"] [6 "Hearts"])]
+   [:client ([7 "Diamonds"] [5 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Spades"] [8 "Hearts"] [3 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["7h" "6h"],
+   "board" ["Qs" "8h" "3h"],
+   "hole_cards" ["7d" "5s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([13 "Hearts"] [5 "Clubs"])]
+   [:client ([13 "Clubs"] [11 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 1.0]] [:bot ["Call" 1.0]]]
+   [[:client ["All-In" 197.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([13 "Spades"] [11 "Clubs"] [3 "Hearts"] [10 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -3.0] [:client 3.0]],
+  :r
+  {"baseline_winnings" -1300,
+   "winnings" 300,
+   "bot_hole_cards" ["Kh" "5c"],
+   "board" ["Ks" "Jc" "3h" "Td"],
+   "hole_cards" ["Kc" "Jd"],
+   "client_pos" 0,
+   "action" "b200c/b100c/b19700f"}}
+ {:hands
+  [[:bot ([12 "Hearts"] [7 "Hearts"])]
+   [:client ([10 "Hearts"] [6 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Diamonds"] [4 "Hearts"] [4 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 200,
+   "bot_hole_cards" ["Qh" "7h"],
+   "board" ["Jd" "4h" "4d"],
+   "hole_cards" ["Th" "6h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([8 "Spades"] [2 "Diamonds"])]
+   [:client ([8 "Diamonds"] [7 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["8s" "2d"],
+   "board" [],
+   "hole_cards" ["8d" "7c"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([7 "Clubs"] [5 "Hearts"])]
+   [:client ([14 "Clubs"] [10 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Spades"] [2 "Spades"] [2 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["7c" "5h"],
+   "board" ["9s" "2s" "2c"],
+   "hole_cards" ["Ac" "Th"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([5 "Diamonds"] [4 "Spades"])]
+   [:client ([14 "Spades"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [10 "Spades"] [10 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["5d" "4s"],
+   "board" ["Qd" "Ts" "Th"],
+   "hole_cards" ["As" "2d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Hearts"] [4 "Hearts"])]
+   [:client ([13 "Diamonds"] [8 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 2.98]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Clubs"] [8 "Hearts"] [6 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Th" "4h"],
+   "board" ["Ac" "8h" "6c"],
+   "hole_cards" ["Kd" "8s"],
+   "client_pos" 0,
+   "action" "b200c/b298f"}}
+ {:hands
+  [[:bot ([12 "Clubs"] [7 "Diamonds"])]
+   [:client ([14 "Diamonds"] [11 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([13 "Spades"] [8 "Diamonds"] [3 "Diamonds"] [6 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Qc" "7d"],
+   "board" ["Ks" "8d" "3d" "6c"],
+   "hole_cards" ["Ad" "Jd"],
+   "client_pos" 0,
+   "action" "b200c/kk/b19800f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [7 "Clubs"])]
+   [:client ([14 "Spades"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 27.75]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Clubs"] [7 "Hearts"] [2 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Js" "7c"],
+   "board" ["9c" "7h" "2s"],
+   "hole_cards" ["As" "2d"],
+   "client_pos" 0,
+   "action" "b200c/b2775f"}}
+ {:hands
+  [[:bot ([10 "Diamonds"] [7 "Clubs"])]
+   [:client ([8 "Hearts"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["Bet" 9.31]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([11 "Clubs"] [4 "Spades"] [4 "Hearts"] [13 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" 500,
+   "winnings" 400,
+   "bot_hole_cards" ["Td" "7c"],
+   "board" ["Jc" "4s" "4h" "Kd"],
+   "hole_cards" ["8h" "2s"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b931f"}}
+ {:hands
+  [[:bot ([13 "Hearts"] [12 "Clubs"])]
+   [:client ([5 "Diamonds"] [5 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Clubs"] [4 "Clubs"] [2 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -1400,
+   "winnings" 200,
+   "bot_hole_cards" ["Kh" "Qc"],
+   "board" ["Tc" "4c" "2h"],
+   "hole_cards" ["5d" "5c"],
+   "client_pos" 0,
+   "action" "b200c/b1776f"}}
+ {:hands
+  [[:bot ([12 "Spades"] [3 "Spades"])]
+   [:client ([7 "Diamonds"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 3.05]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Clubs"] [11 "Diamonds"] [10 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Qs" "3s"],
+   "board" ["Qc" "Jd" "Tc"],
+   "hole_cards" ["7d" "6c"],
+   "client_pos" 0,
+   "action" "b200c/b305f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [2 "Hearts"])]
+   [:client ([9 "Hearts"] [4 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 11.64]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [11 "Spades"] [5 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ad" "2h"],
+   "board" ["Qd" "Js" "5c"],
+   "hole_cards" ["9h" "4d"],
+   "client_pos" 0,
+   "action" "b200c/b1164f"}}
+ {:hands
+  [[:bot ([10 "Clubs"] [2 "Spades"])]
+   [:client ([10 "Spades"] [3 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Hearts"] [13 "Clubs"] [12 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Tc" "2s"],
+   "board" ["Ah" "Kc" "Qd"],
+   "hole_cards" ["Ts" "3c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([8 "Hearts"] [5 "Spades"])]
+   [:client ([9 "Spades"] [3 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["8h" "5s"],
+   "board" [],
+   "hole_cards" ["9s" "3s"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([8 "Diamonds"] [3 "Diamonds"])]
+   [:client ([9 "Spades"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 86.73]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Spades"] [13 "Clubs"] [2 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["8d" "3d"],
+   "board" ["As" "Kc" "2s"],
+   "hole_cards" ["9s" "6c"],
+   "client_pos" 0,
+   "action" "b200c/b8673f"}}
+ {:hands
+  [[:bot ([13 "Hearts"] [6 "Hearts"])]
+   [:client ([11 "Spades"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Kh" "6h"],
+   "board" [],
+   "hole_cards" ["Js" "2s"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([13 "Diamonds"] [12 "Hearts"])]
+   [:client ([13 "Spades"] [12 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["All-In" 196.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([11 "Hearts"] [9 "Clubs"] [5 "Hearts"] [11 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" -800,
+   "winnings" 400,
+   "bot_hole_cards" ["Kd" "Qh"],
+   "board" ["Jh" "9c" "5h" "Js"],
+   "hole_cards" ["Ks" "Qc"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b19600f"}}
+ {:hands
+  [[:bot ([13 "Spades"] [13 "Clubs"])]
+   [:client ([7 "Diamonds"] [3 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Raise" 1.5]] [:client ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot 1.0] [:client -1.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" -100,
+   "bot_hole_cards" ["Ks" "Kc"],
+   "board" [],
+   "hole_cards" ["7d" "3h"],
+   "client_pos" 0,
+   "action" "b200f"}}
+ {:hands
+  [[:bot ([13 "Clubs"] [3 "Hearts"])]
+   [:client ([7 "Hearts"] [7 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 180.07]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Spades"] [5 "Diamonds"] [3 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 200,
+   "bot_hole_cards" ["Kc" "3h"],
+   "board" ["As" "5d" "3d"],
+   "hole_cards" ["7h" "7c"],
+   "client_pos" 0,
+   "action" "b200c/b18007f"}}
+ {:hands
+  [[:bot ([10 "Hearts"] [3 "Hearts"])]
+   [:client ([11 "Spades"] [7 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Th" "3h"],
+   "board" [],
+   "hole_cards" ["Js" "7s"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([12 "Hearts"] [9 "Spades"])]
+   [:client ([14 "Clubs"] [9 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [6 "Spades"] [5 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Qh" "9s"],
+   "board" ["Qd" "6s" "5d"],
+   "hole_cards" ["Ac" "9h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([9 "Clubs"] [7 "Spades"])]
+   [:client ([7 "Diamonds"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]]
+    [:bot ["Bet" 2.0]]
+    [:client ["All-In" 198.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards ([8 "Spades"] [4 "Spades"] [2 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 400,
+   "bot_hole_cards" ["9c" "7s"],
+   "board" ["8s" "4s" "2h"],
+   "hole_cards" ["7d" "4h"],
+   "client_pos" 0,
+   "action" "b200c/kb200b19800f"}}
+ {:hands
+  [[:bot ([14 "Clubs"] [6 "Clubs"])]
+   [:client ([12 "Spades"] [7 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Call" 17.76]]]
+   [[:client ["All-In" 180.24]] [:bot ["Call" 180.24]]]
+   []],
+  :visible-cards
+  ([14 "Diamonds"] [11 "Clubs"] [2 "Clubs"] [6 "Hearts"] [9 "Clubs"]),
+  :visible-hands
+  ([:bot ([14 "Clubs"] [6 "Clubs"])]
+   [:client ([12 "Spades"] [7 "Diamonds"])]),
+  :net-gain [[:bot 200.0] [:client -200.0]],
+  :r
+  {"baseline_winnings" -19800,
+   "winnings" -20000,
+   "bot_hole_cards" ["Ac" "6c"],
+   "board" ["Ad" "Jc" "2c" "6h" "9c"],
+   "hole_cards" ["Qs" "7d"],
+   "client_pos" 0,
+   "action" "b200c/b1776c/b18024c/"}}
+ {:hands
+  [[:bot ([10 "Spades"] [5 "Hearts"])]
+   [:client ([6 "Diamonds"] [5 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([7 "Diamonds"] [6 "Hearts"] [5 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Ts" "5h"],
+   "board" ["7d" "6h" "5c"],
+   "hole_cards" ["6d" "5d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([7 "Spades"] [3 "Clubs"])]
+   [:client ([13 "Spades"] [10 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["7s" "3c"],
+   "board" [],
+   "hole_cards" ["Ks" "Td"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([12 "Hearts"] [12 "Diamonds"])]
+   [:client ([9 "Clubs"] [4 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Call" 198.0]]]
+   []
+   []],
+  :visible-cards
+  ([9 "Hearts"]
+   [5 "Hearts"]
+   [3 "Clubs"]
+   [6 "Diamonds"]
+   [11 "Diamonds"]),
+  :visible-hands
+  ([:bot ([12 "Hearts"] [12 "Diamonds"])]
+   [:client ([9 "Clubs"] [4 "Clubs"])]),
+  :net-gain [[:bot 200.0] [:client -200.0]],
+  :r
+  {"baseline_winnings" -17600,
+   "winnings" -20000,
+   "bot_hole_cards" ["Qh" "Qd"],
+   "board" ["9h" "5h" "3c" "6d" "Jd"],
+   "hole_cards" ["9c" "4c"],
+   "client_pos" 0,
+   "action" "b200c/b19800c//"}}
+ {:hands
+  [[:bot ([5 "Spades"] [5 "Clubs"])]
+   [:client ([10 "Diamonds"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Diamonds"] [7 "Hearts"] [2 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["5s" "5c"],
+   "board" ["9d" "7h" "2c"],
+   "hole_cards" ["Td" "2h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Clubs"] [5 "Diamonds"])]
+   [:client ([4 "Hearts"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Hearts"] [6 "Diamonds"] [4 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Ac" "5d"],
+   "board" ["Th" "6d" "4d"],
+   "hole_cards" ["4h" "2d"],
+   "client_pos" 0,
+   "action" "b200c/b1776f"}}
+ {:hands
+  [[:bot ([8 "Hearts"] [2 "Spades"])]
+   [:client ([10 "Diamonds"] [6 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["8h" "2s"],
+   "board" [],
+   "hole_cards" ["Td" "6d"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([5 "Clubs"] [4 "Clubs"])]
+   [:client ([5 "Hearts"] [3 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 4.65]] [:bot ["Call" 4.65]]]
+   [[:client ["Bet" 3.05]] [:bot ["Call" 3.05]]]
+   [[:client ["Check" 0.0]]
+    [:bot ["Bet" 17.3]]
+    [:client ["Call" 17.3]]]],
+  :visible-cards
+  ([14 "Clubs"]
+   [8 "Hearts"]
+   [6 "Diamonds"]
+   [3 "Hearts"]
+   [7 "Diamonds"]),
+  :visible-hands ([:bot ([5 "Clubs"] [4 "Clubs"])]),
+  :net-gain [[:bot 26.99999999999997] [:client -27.00000000000003]],
+  :r
+  {"baseline_winnings" -2500,
+   "winnings" -2700,
+   "bot_hole_cards" ["5c" "4c"],
+   "board" ["Ac" "8h" "6d" "3h" "7d"],
+   "hole_cards" ["5h" "3c"],
+   "client_pos" 0,
+   "action" "b200c/b465c/b305c/kb1730c"}}
+ {:hands
+  [[:bot ([13 "Clubs"] [7 "Clubs"])]
+   [:client ([7 "Hearts"] [3 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Kc" "7c"],
+   "board" [],
+   "hole_cards" ["7h" "3h"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([14 "Spades"] [4 "Spades"])]
+   [:client ([12 "Spades"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["As" "4s"],
+   "board" [],
+   "hole_cards" ["Qs" "4h"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([14 "Spades"] [10 "Hearts"])]
+   [:client ([12 "Diamonds"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Clubs"] [9 "Hearts"] [8 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["As" "Th"],
+   "board" ["Tc" "9h" "8s"],
+   "hole_cards" ["Qd" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([7 "Clubs"] [3 "Hearts"])]
+   [:client ([13 "Diamonds"] [7 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["7c" "3h"],
+   "board" [],
+   "hole_cards" ["Kd" "7h"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([10 "Diamonds"] [9 "Hearts"])]
+   [:client ([8 "Diamonds"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["Bet" 28.42]] [:bot ["Call" 28.42]]]
+   [[:client ["Check" 0.0]]
+    [:bot ["Bet" 23.58]]
+    [:client ["Call" 23.58]]]],
+  :visible-cards
+  ([8 "Hearts"]
+   [4 "Diamonds"]
+   [2 "Spades"]
+   [11 "Hearts"]
+   [12 "Diamonds"]),
+  :visible-hands ([:bot ([10 "Diamonds"] [9 "Hearts"])]),
+  :net-gain [[:bot 56.0] [:client -56.0]],
+  :r
+  {"baseline_winnings" -6000,
+   "winnings" -5600,
+   "bot_hole_cards" ["Td" "9h"],
+   "board" ["8h" "4d" "2s" "Jh" "Qd"],
+   "hole_cards" ["8d" "2d"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b2842c/kb2358c"}}
+ {:hands
+  [[:bot ([14 "Clubs"] [5 "Clubs"])]
+   [:client ([5 "Diamonds"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["All-In" 196.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Spades"] [9 "Clubs"] [2 "Spades"] [8 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 400,
+   "bot_hole_cards" ["Ac" "5c"],
+   "board" ["Qs" "9c" "2s" "8h"],
+   "hole_cards" ["5d" "2d"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b19600f"}}
+ {:hands
+  [[:bot ([13 "Spades"] [6 "Clubs"])]
+   [:client ([7 "Spades"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 1.56]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([8 "Diamonds"] [5 "Hearts"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["Ks" "6c"],
+   "board" ["8d" "5h" "2d"],
+   "hole_cards" ["7s" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b156f"}}
+ {:hands
+  [[:bot ([8 "Diamonds"] [6 "Clubs"])]
+   [:client ([12 "Diamonds"] [11 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Spades"] [9 "Spades"] [8 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["8d" "6c"],
+   "board" ["Qs" "9s" "8c"],
+   "hole_cards" ["Qd" "Js"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Spades"] [6 "Clubs"])]
+   [:client ([4 "Spades"] [3 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["As" "6c"],
+   "board" [],
+   "hole_cards" ["4s" "3h"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([13 "Spades"] [5 "Hearts"])]
+   [:client ([6 "Clubs"] [3 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 86.73]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Clubs"] [9 "Diamonds"] [8 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Ks" "5h"],
+   "board" ["Ac" "9d" "8d"],
+   "hole_cards" ["6c" "3h"],
+   "client_pos" 0,
+   "action" "b200c/b8673f"}}
+ {:hands
+  [[:bot ([8 "Clubs"] [5 "Diamonds"])]
+   [:client ([12 "Clubs"] [10 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 55.51]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Hearts"] [6 "Diamonds"] [4 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["8c" "5d"],
+   "board" ["Ah" "6d" "4h"],
+   "hole_cards" ["Qc" "Td"],
+   "client_pos" 0,
+   "action" "b200c/b5551f"}}
+ {:hands
+  [[:bot ([6 "Clubs"] [2 "Spades"])]
+   [:client ([8 "Clubs"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["6c" "2s"],
+   "board" [],
+   "hole_cards" ["8c" "2d"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([12 "Diamonds"] [8 "Clubs"])]
+   [:client ([11 "Diamonds"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Diamonds"] [10 "Diamonds"] [8 "Spades"] [5 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Qd" "8c"],
+   "board" ["Ad" "Td" "8s" "5h"],
+   "hole_cards" ["Jd" "4h"],
+   "client_pos" 0,
+   "action" "b200c/kk/b19800f"}}
+ {:hands
+  [[:bot ([13 "Spades"] [9 "Diamonds"])]
+   [:client ([10 "Spades"] [6 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Clubs"] [5 "Diamonds"] [4 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 800,
+   "winnings" 200,
+   "bot_hole_cards" ["Ks" "9d"],
+   "board" ["9c" "5d" "4d"],
+   "hole_cards" ["Ts" "6s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([8 "Spades"] [8 "Diamonds"])]
+   [:client ([13 "Spades"] [5 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Raise" 1.5]] [:client ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot 1.0] [:client -1.0]],
+  :r
+  {"baseline_winnings" -100,
+   "winnings" -100,
+   "bot_hole_cards" ["8s" "8d"],
+   "board" [],
+   "hole_cards" ["Ks" "5d"],
+   "client_pos" 0,
+   "action" "b200f"}}
+ {:hands
+  [[:bot ([3 "Spades"] [3 "Clubs"])]
+   [:client ([7 "Spades"] [3 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["3s" "3c"],
+   "board" [],
+   "hole_cards" ["7s" "3h"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([9 "Spades"] [9 "Hearts"])]
+   [:client ([8 "Diamonds"] [5 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Hearts"] [7 "Spades"] [6 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -1400,
+   "winnings" 200,
+   "bot_hole_cards" ["9s" "9h"],
+   "board" ["Qh" "7s" "6d"],
+   "hole_cards" ["8d" "5h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([7 "Diamonds"] [4 "Diamonds"])]
+   [:client ([10 "Hearts"] [3 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 200,
+   "bot_hole_cards" ["7d" "4d"],
+   "board" [],
+   "hole_cards" ["Th" "3d"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([13 "Spades"] [11 "Clubs"])]
+   [:client ([11 "Hearts"] [7 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 3.05]]
+    [:bot ["Raise" 10.0]]
+    [:client ["All-In" 194.95]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Diamonds"] [7 "Clubs"] [5 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -12.0] [:client 12.0]],
+  :r
+  {"baseline_winnings" -2000,
+   "winnings" 1200,
+   "bot_hole_cards" ["Ks" "Jc"],
+   "board" ["Td" "7c" "5c"],
+   "hole_cards" ["Jh" "7s"],
+   "client_pos" 0,
+   "action" "b200c/b305b1000b19800f"}}
+ {:hands
+  [[:bot ([14 "Spades"] [10 "Clubs"])]
+   [:client ([5 "Spades"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([7 "Hearts"] [6 "Hearts"] [2 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 2600,
+   "winnings" 200,
+   "bot_hole_cards" ["As" "Tc"],
+   "board" ["7h" "6h" "2s"],
+   "hole_cards" ["5s" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([9 "Spades"] [4 "Spades"])]
+   [:client ([13 "Clubs"] [8 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Diamonds"] [10 "Hearts"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["9s" "4s"],
+   "board" ["Ad" "Th" "2d"],
+   "hole_cards" ["Kc" "8s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [4 "Hearts"])]
+   [:client ([9 "Clubs"] [4 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Clubs"] [6 "Diamonds"] [2 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Js" "4h"],
+   "board" ["Tc" "6d" "2c"],
+   "hole_cards" ["9c" "4s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([13 "Hearts"] [5 "Clubs"])]
+   [:client ([13 "Spades"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([5 "Spades"] [5 "Hearts"] [2 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Kh" "5c"],
+   "board" ["5s" "5h" "2s"],
+   "hole_cards" ["Ks" "4h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Clubs"] [9 "Diamonds"])]
+   [:client ([13 "Clubs"] [5 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([7 "Spades"] [7 "Hearts"] [3 "Spades"] [7 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -1000,
+   "winnings" 200,
+   "bot_hole_cards" ["Tc" "9d"],
+   "board" ["7s" "7h" "3s" "7d"],
+   "hole_cards" ["Kc" "5s"],
+   "client_pos" 0,
+   "action" "b200c/kk/b19800f"}}
+ {:hands
+  [[:bot ([10 "Diamonds"] [7 "Diamonds"])]
+   [:client ([12 "Diamonds"] [5 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Spades"] [8 "Clubs"] [6 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Td" "7d"],
+   "board" ["Ts" "8c" "6h"],
+   "hole_cards" ["Qd" "5c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [6 "Diamonds"])]
+   [:client ([9 "Diamonds"] [3 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["All-In" 196.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([13 "Diamonds"] [4 "Diamonds"] [2 "Spades"] [2 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" 200,
+   "winnings" 400,
+   "bot_hole_cards" ["Js" "6d"],
+   "board" ["Kd" "4d" "2s" "2c"],
+   "hole_cards" ["9d" "3c"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b19600f"}}
+ {:hands
+  [[:bot ([3 "Spades"] [2 "Hearts"])]
+   [:client ([10 "Diamonds"] [5 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["3s" "2h"],
+   "board" [],
+   "hole_cards" ["Td" "5s"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([6 "Diamonds"] [5 "Diamonds"])]
+   [:client ([14 "Hearts"] [12 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Diamonds"] [10 "Spades"] [5 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 5600,
+   "winnings" 200,
+   "bot_hole_cards" ["6d" "5d"],
+   "board" ["Ad" "Ts" "5h"],
+   "hole_cards" ["Ah" "Qc"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [2 "Spades"])]
+   [:client ([13 "Hearts"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Clubs"] [6 "Hearts"] [5 "Diamonds"] [14 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Js" "2s"],
+   "board" ["Ac" "6h" "5d" "Ah"],
+   "hole_cards" ["Kh" "6c"],
+   "client_pos" 0,
+   "action" "b200c/kk/b19800f"}}
+ {:hands
+  [[:bot ([13 "Clubs"] [5 "Diamonds"])]
+   [:client ([11 "Spades"] [7 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Spades"] [6 "Hearts"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Kc" "5d"],
+   "board" ["Qs" "6h" "2d"],
+   "hole_cards" ["Js" "7d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([13 "Spades"] [2 "Diamonds"])]
+   [:client ([6 "Diamonds"] [4 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Diamonds"] [9 "Clubs"] [2 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ks" "2d"],
+   "board" ["Kd" "9c" "2c"],
+   "hole_cards" ["6d" "4s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Diamonds"] [3 "Hearts"])]
+   [:client ([10 "Clubs"] [7 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Spades"] [10 "Hearts"] [9 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Td" "3h"],
+   "board" ["Js" "Th" "9s"],
+   "hole_cards" ["Tc" "7d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Clubs"] [9 "Hearts"])]
+   [:client ([7 "Spades"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 55.51]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([8 "Clubs"] [5 "Spades"] [3 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 200,
+   "bot_hole_cards" ["Qc" "9h"],
+   "board" ["8c" "5s" "3s"],
+   "hole_cards" ["7s" "6c"],
+   "client_pos" 0,
+   "action" "b200c/b5551f"}}
+ {:hands
+  [[:bot ([14 "Spades"] [11 "Clubs"])]
+   [:client ([12 "Diamonds"] [5 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Spades"] [9 "Spades"] [4 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 2000,
+   "winnings" 200,
+   "bot_hole_cards" ["As" "Jc"],
+   "board" ["Ts" "9s" "4d"],
+   "hole_cards" ["Qd" "5d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([9 "Clubs"] [7 "Clubs"])]
+   [:client ([11 "Clubs"] [8 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["All-In" 196.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([12 "Spades"] [11 "Hearts"] [2 "Spades"] [3 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 400,
+   "bot_hole_cards" ["9c" "7c"],
+   "board" ["Qs" "Jh" "2s" "3s"],
+   "hole_cards" ["Jc" "8h"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b19600f"}}
+ {:hands
+  [[:bot ([8 "Diamonds"] [5 "Clubs"])]
+   [:client ([13 "Spades"] [3 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 18.18]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Diamonds"] [6 "Spades"] [3 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -2200,
+   "winnings" 200,
+   "bot_hole_cards" ["8d" "5c"],
+   "board" ["Jd" "6s" "3s"],
+   "hole_cards" ["Ks" "3d"],
+   "client_pos" 0,
+   "action" "b200c/b1818f"}}
+ {:hands
+  [[:bot ([8 "Clubs"] [4 "Spades"])]
+   [:client ([13 "Diamonds"] [9 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 15.46]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [11 "Diamonds"] [3 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["8c" "4s"],
+   "board" ["Qd" "Jd" "3c"],
+   "hole_cards" ["Kd" "9h"],
+   "client_pos" 0,
+   "action" "b200c/b1546f"}}
+ {:hands
+  [[:bot ([13 "Diamonds"] [9 "Hearts"])]
+   [:client ([14 "Spades"] [14 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Diamonds"] [6 "Diamonds"] [5 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 200,
+   "bot_hole_cards" ["Kd" "9h"],
+   "board" ["Td" "6d" "5c"],
+   "hole_cards" ["As" "Ah"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Clubs"] [2 "Clubs"])]
+   [:client ([9 "Clubs"] [8 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Hearts"] [9 "Hearts"] [3 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Ac" "2c"],
+   "board" ["Qh" "9h" "3c"],
+   "hole_cards" ["9c" "8s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([2 "Spades"] [2 "Clubs"])]
+   [:client ([11 "Diamonds"] [10 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Hearts"] [7 "Clubs"] [4 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -1000,
+   "winnings" 200,
+   "bot_hole_cards" ["2s" "2c"],
+   "board" ["Th" "7c" "4c"],
+   "hole_cards" ["Jd" "Td"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [9 "Spades"])]
+   [:client ([6 "Clubs"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 35.52]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Spades"] [8 "Spades"] [2 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Js" "9s"],
+   "board" ["Ts" "8s" "2c"],
+   "hole_cards" ["6c" "4h"],
+   "client_pos" 0,
+   "action" "b200c/b3552f"}}
+ {:hands
+  [[:bot ([12 "Clubs"] [7 "Hearts"])]
+   [:client ([6 "Diamonds"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 15.46]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([4 "Diamonds"] [3 "Hearts"] [2 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Qc" "7h"],
+   "board" ["4d" "3h" "2h"],
+   "hole_cards" ["6d" "6c"],
+   "client_pos" 0,
+   "action" "b200c/b1546f"}}
+ {:hands
+  [[:bot ([14 "Hearts"] [10 "Clubs"])]
+   [:client ([11 "Hearts"] [7 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -2200,
+   "winnings" 200,
+   "bot_hole_cards" ["Ah" "Tc"],
+   "board" [],
+   "hole_cards" ["Jh" "7s"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([6 "Spades"] [6 "Clubs"])]
+   [:client ([14 "Hearts"] [8 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Diamonds"] [11 "Diamonds"] [11 "Clubs"] [13 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["6s" "6c"],
+   "board" ["Ad" "Jd" "Jc" "Kd"],
+   "hole_cards" ["Ah" "8s"],
+   "client_pos" 0,
+   "action" "b200c/kk/b19800f"}}
+ {:hands
+  [[:bot ([9 "Diamonds"] [2 "Hearts"])]
+   [:client ([10 "Spades"] [8 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["9d" "2h"],
+   "board" [],
+   "hole_cards" ["Ts" "8h"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([5 "Hearts"] [5 "Clubs"])]
+   [:client ([9 "Hearts"] [7 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["5h" "5c"],
+   "board" [],
+   "hole_cards" ["9h" "7c"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([5 "Clubs"] [2 "Hearts"])]
+   [:client ([11 "Clubs"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["5c" "2h"],
+   "board" [],
+   "hole_cards" ["Jc" "4h"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([9 "Diamonds"] [8 "Spades"])]
+   [:client ([7 "Diamonds"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["All-In" 196.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([10 "Spades"] [10 "Clubs"] [7 "Spades"] [7 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 400,
+   "bot_hole_cards" ["9d" "8s"],
+   "board" ["Ts" "Tc" "7s" "7h"],
+   "hole_cards" ["7d" "2d"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b19600f"}}
+ {:hands
+  [[:bot ([7 "Spades"] [4 "Diamonds"])]
+   [:client ([8 "Hearts"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["7s" "4d"],
+   "board" [],
+   "hole_cards" ["8h" "6c"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([10 "Diamonds"] [4 "Diamonds"])]
+   [:client ([10 "Clubs"] [3 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["All-In" 196.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([7 "Spades"] [7 "Diamonds"] [6 "Spades"] [7 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" 200,
+   "winnings" 400,
+   "bot_hole_cards" ["Td" "4d"],
+   "board" ["7s" "7d" "6s" "7c"],
+   "hole_cards" ["Tc" "3h"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b19600f"}}
+ {:hands
+  [[:bot ([13 "Spades"] [8 "Clubs"])]
+   [:client ([9 "Spades"] [6 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 9.9]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Diamonds"] [7 "Diamonds"] [5 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ks" "8c"],
+   "board" ["9d" "7d" "5h"],
+   "hole_cards" ["9s" "6s"],
+   "client_pos" 0,
+   "action" "b200c/b990f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [13 "Clubs"])]
+   [:client ([13 "Diamonds"] [9 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 22.2]] [:bot ["Call" 22.2]]]
+   [[:client ["Bet" 1.56]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([12 "Spades"] [8 "Diamonds"] [3 "Diamonds"] [9 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -24.19999999999999] [:client 24.200000000000017]],
+  :r
+  {"baseline_winnings" 3620,
+   "winnings" 2420,
+   "bot_hole_cards" ["Ad" "Kc"],
+   "board" ["Qs" "8d" "3d" "9s"],
+   "hole_cards" ["Kd" "9h"],
+   "client_pos" 0,
+   "action" "b200c/b2220c/b156f"}}
+ {:hands
+  [[:bot ([14 "Spades"] [3 "Hearts"])]
+   [:client ([7 "Clubs"] [4 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Clubs"] [9 "Diamonds"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -600,
+   "winnings" 200,
+   "bot_hole_cards" ["As" "3h"],
+   "board" ["Qc" "9d" "2d"],
+   "hole_cards" ["7c" "4d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Spades"] [10 "Clubs"])]
+   [:client ([8 "Spades"] [8 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 1.56]] [:bot ["Call" 1.56]]]
+   [[:client ["Bet" 142.92]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([5 "Clubs"] [3 "Clubs"] [2 "Spades"] [12 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -3.5600000000000023] [:client 3.5600000000000023]],
+  :r
+  {"baseline_winnings" 956,
+   "winnings" 356,
+   "bot_hole_cards" ["Ts" "Tc"],
+   "board" ["5c" "3c" "2s" "Qh"],
+   "hole_cards" ["8s" "8h"],
+   "client_pos" 0,
+   "action" "b200c/b156c/b14292f"}}
+ {:hands
+  [[:bot ([12 "Hearts"] [7 "Spades"])]
+   [:client ([8 "Clubs"] [5 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Spades"] [13 "Spades"] [2 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Qh" "7s"],
+   "board" ["As" "Ks" "2h"],
+   "hole_cards" ["8c" "5d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Spades"] [6 "Hearts"])]
+   [:client ([8 "Clubs"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [11 "Clubs"] [6 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["Ts" "6h"],
+   "board" ["Qd" "Jc" "6d"],
+   "hole_cards" ["8c" "2h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([13 "Spades"] [8 "Spades"])]
+   [:client ([14 "Clubs"] [13 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Hearts"] [7 "Hearts"] [7 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 800,
+   "winnings" 200,
+   "bot_hole_cards" ["Ks" "8s"],
+   "board" ["Th" "7h" "7d"],
+   "hole_cards" ["Ac" "Kc"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([7 "Spades"] [6 "Clubs"])]
+   [:client ([8 "Diamonds"] [7 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 4.65]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Hearts"] [13 "Clubs"] [8 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["7s" "6c"],
+   "board" ["Kh" "Kc" "8s"],
+   "hole_cards" ["8d" "7h"],
+   "client_pos" 0,
+   "action" "b200c/b465f"}}
+ {:hands
+  [[:bot ([8 "Diamonds"] [2 "Clubs"])]
+   [:client ([9 "Hearts"] [8 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["8d" "2c"],
+   "board" [],
+   "hole_cards" ["9h" "8s"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([7 "Diamonds"] [2 "Diamonds"])]
+   [:client ([10 "Diamonds"] [8 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([6 "Hearts"] [4 "Clubs"] [2 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["7d" "2d"],
+   "board" ["6h" "4c" "2s"],
+   "hole_cards" ["Td" "8d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([8 "Hearts"] [8 "Clubs"])]
+   [:client ([13 "Hearts"] [10 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Call" 17.76]]]
+   [[:client ["All-In" 180.24]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([11 "Diamonds"] [5 "Diamonds"] [5 "Clubs"] [9 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -19.75999999999999] [:client 19.76000000000002]],
+  :r
+  {"baseline_winnings" 176,
+   "winnings" 1976,
+   "bot_hole_cards" ["8h" "8c"],
+   "board" ["Jd" "5d" "5c" "9c"],
+   "hole_cards" ["Kh" "Th"],
+   "client_pos" 0,
+   "action" "b200c/b1776c/b18024f"}}
+ {:hands
+  [[:bot ([14 "Hearts"] [13 "Hearts"])]
+   [:client ([10 "Hearts"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Call" 198.0]]]
+   []
+   []],
+  :visible-cards
+  ([14 "Diamonds"]
+   [13 "Clubs"]
+   [7 "Clubs"]
+   [6 "Diamonds"]
+   [8 "Spades"]),
+  :visible-hands
+  ([:bot ([14 "Hearts"] [13 "Hearts"])]
+   [:client ([10 "Hearts"] [4 "Hearts"])]),
+  :net-gain [[:bot 200.0] [:client -200.0]],
+  :r
+  {"baseline_winnings" -19800,
+   "winnings" -20000,
+   "bot_hole_cards" ["Ah" "Kh"],
+   "board" ["Ad" "Kc" "7c" "6d" "8s"],
+   "hole_cards" ["Th" "4h"],
+   "client_pos" 0,
+   "action" "b200c/b19800c//"}}
+ {:hands
+  [[:bot ([13 "Clubs"] [9 "Clubs"])]
+   [:client ([12 "Clubs"] [5 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 3.05]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Hearts"] [6 "Hearts"] [5 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Kc" "9c"],
+   "board" ["Ah" "6h" "5d"],
+   "hole_cards" ["Qc" "5h"],
+   "client_pos" 0,
+   "action" "b200c/b305f"}}
+ {:hands
+  [[:bot ([5 "Spades"] [2 "Hearts"])]
+   [:client ([8 "Clubs"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["5s" "2h"],
+   "board" [],
+   "hole_cards" ["8c" "2d"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([12 "Clubs"] [7 "Hearts"])]
+   [:client ([6 "Diamonds"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Diamonds"] [9 "Spades"] [3 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Qc" "7h"],
+   "board" ["Td" "9s" "3d"],
+   "hole_cards" ["6d" "4h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([3 "Diamonds"] [2 "Diamonds"])]
+   [:client ([5 "Clubs"] [3 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 1.56]] [:bot ["Call" 1.56]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["Bet" 15.34]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Hearts"] [8 "Hearts"] [5 "Spades"] [6 "Hearts"] [10 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -3.5600000000000023] [:client 3.5600000000000023]],
+  :r
+  {"baseline_winnings" 156,
+   "winnings" 356,
+   "bot_hole_cards" ["3d" "2d"],
+   "board" ["Ah" "8h" "5s" "6h" "Tc"],
+   "hole_cards" ["5c" "3c"],
+   "client_pos" 0,
+   "action" "b200c/b156c/kk/b1534f"}}
+ {:hands
+  [[:bot ([10 "Spades"] [5 "Spades"])]
+   [:client ([14 "Diamonds"] [7 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Hearts"] [9 "Hearts"] [7 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1000,
+   "winnings" 200,
+   "bot_hole_cards" ["Ts" "5s"],
+   "board" ["Jh" "9h" "7s"],
+   "hole_cards" ["Ad" "7c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Clubs"] [8 "Clubs"])]
+   [:client ([14 "Diamonds"] [12 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["Bet" 1.56]]
+    [:bot ["Raise" 8.0]]
+    [:client ["All-In" 194.44]]
+    [:bot ["Call" 188.0]]]
+   []],
+  :visible-cards
+  ([7 "Diamonds"]
+   [6 "Spades"]
+   [2 "Clubs"]
+   [9 "Diamonds"]
+   [2 "Hearts"]),
+  :visible-hands
+  ([:bot ([10 "Clubs"] [8 "Clubs"])]
+   [:client ([14 "Diamonds"] [12 "Clubs"])]),
+  :net-gain [[:bot 200.0] [:client -200.0]],
+  :r
+  {"baseline_winnings" -18800,
+   "winnings" -20000,
+   "bot_hole_cards" ["Tc" "8c"],
+   "board" ["7d" "6s" "2c" "9d" "2h"],
+   "hole_cards" ["Ad" "Qc"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b156b800b19600c/"}}
+ {:hands
+  [[:bot ([13 "Diamonds"] [2 "Hearts"])]
+   [:client ([10 "Clubs"] [6 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Hearts"] [6 "Clubs"] [3 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -600,
+   "winnings" 200,
+   "bot_hole_cards" ["Kd" "2h"],
+   "board" ["9h" "6c" "3d"],
+   "hole_cards" ["Tc" "6s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([8 "Hearts"] [4 "Clubs"])]
+   [:client ([13 "Spades"] [11 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Diamonds"] [2 "Hearts"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["8h" "4c"],
+   "board" ["Ad" "2h" "2d"],
+   "hole_cards" ["Ks" "Js"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Clubs"] [3 "Hearts"])]
+   [:client ([13 "Clubs"] [11 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 144.06]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Diamonds"] [7 "Diamonds"] [6 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Tc" "3h"],
+   "board" ["Jd" "7d" "6d"],
+   "hole_cards" ["Kc" "Jh"],
+   "client_pos" 0,
+   "action" "b200c/b14406f"}}
+ {:hands
+  [[:bot ([10 "Hearts"] [5 "Hearts"])]
+   [:client ([12 "Spades"] [6 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 86.73]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [7 "Clubs"] [4 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 200,
+   "bot_hole_cards" ["Th" "5h"],
+   "board" ["Qd" "7c" "4s"],
+   "hole_cards" ["Qs" "6s"],
+   "client_pos" 0,
+   "action" "b200c/b8673f"}}
+ {:hands
+  [[:bot ([13 "Spades"] [2 "Hearts"])]
+   [:client ([13 "Diamonds"] [12 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Spades"] [11 "Clubs"] [9 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Ks" "2h"],
+   "board" ["As" "Jc" "9d"],
+   "hole_cards" ["Kd" "Qd"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([3 "Clubs"] [2 "Hearts"])]
+   [:client ([11 "Spades"] [5 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["3c" "2h"],
+   "board" [],
+   "hole_cards" ["Js" "5s"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([9 "Clubs"] [7 "Hearts"])]
+   [:client ([10 "Hearts"] [7 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Clubs"] [8 "Clubs"] [7 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["9c" "7h"],
+   "board" ["Ac" "8c" "7s"],
+   "hole_cards" ["Th" "7c"],
+   "client_pos" 0,
+   "action" "b200c/b1776f"}}
+ {:hands
+  [[:bot ([11 "Hearts"] [11 "Clubs"])]
+   [:client ([7 "Spades"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [10 "Hearts"] [4 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["Jh" "Jc"],
+   "board" ["Qd" "Th" "4d"],
+   "hole_cards" ["7s" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([4 "Spades"] [2 "Spades"])]
+   [:client ([7 "Spades"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([7 "Hearts"] [5 "Spades"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -600,
+   "winnings" 200,
+   "bot_hole_cards" ["4s" "2s"],
+   "board" ["7h" "5s" "2d"],
+   "hole_cards" ["7s" "4h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Clubs"] [7 "Hearts"])]
+   [:client ([7 "Clubs"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Hearts"] [10 "Hearts"] [9 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Tc" "7h"],
+   "board" ["Kh" "Th" "9s"],
+   "hole_cards" ["7c" "4h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([9 "Spades"] [7 "Clubs"])]
+   [:client ([11 "Diamonds"] [11 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["9s" "7c"],
+   "board" [],
+   "hole_cards" ["Jd" "Jc"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([14 "Hearts"] [2 "Clubs"])]
+   [:client ([8 "Spades"] [7 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Hearts"] [9 "Clubs"] [3 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ah" "2c"],
+   "board" ["Kh" "9c" "3h"],
+   "hole_cards" ["8s" "7c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Clubs"] [7 "Diamonds"])]
+   [:client ([10 "Hearts"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 3.05]]
+    [:bot ["Raise" 10.0]]
+    [:client ["Call" 6.95]]]
+   [[:client ["All-In" 188.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Clubs"] [9 "Clubs"] [7 "Spades"] [5 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -12.0] [:client 12.0]],
+  :r
+  {"baseline_winnings" 1600,
+   "winnings" 1200,
+   "bot_hole_cards" ["Qc" "7d"],
+   "board" ["Jc" "9c" "7s" "5h"],
+   "hole_cards" ["Th" "6c"],
+   "client_pos" 0,
+   "action" "b200c/b305b1000c/b18800f"}}
+ {:hands
+  [[:bot ([13 "Hearts"] [6 "Clubs"])]
+   [:client ([8 "Diamonds"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Spades"] [9 "Diamonds"] [3 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Kh" "6c"],
+   "board" ["Js" "9d" "3s"],
+   "hole_cards" ["8d" "4h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([5 "Diamonds"] [3 "Diamonds"])]
+   [:client ([11 "Clubs"] [10 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 200,
+   "bot_hole_cards" ["5d" "3d"],
+   "board" [],
+   "hole_cards" ["Jc" "Td"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([10 "Hearts"] [8 "Diamonds"])]
+   [:client ([12 "Clubs"] [4 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 4.76]]
+    [:bot ["Raise" 10.0]]
+    [:client ["Call" 5.24]]]
+   [[:client ["Bet" 5.85]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Hearts"] [7 "Hearts"] [4 "Hearts"] [4 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -12.0] [:client 12.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 1200,
+   "bot_hole_cards" ["Th" "8d"],
+   "board" ["Ah" "7h" "4h" "4d"],
+   "hole_cards" ["Qc" "4s"],
+   "client_pos" 0,
+   "action" "b200c/b476b1000c/b585f"}}
+ {:hands
+  [[:bot ([10 "Spades"] [9 "Spades"])]
+   [:client ([12 "Clubs"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Spades"] [10 "Diamonds"] [8 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ts" "9s"],
+   "board" ["Ks" "Td" "8d"],
+   "hole_cards" ["Qc" "2s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Clubs"] [9 "Clubs"])]
+   [:client ([7 "Spades"] [4 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Diamonds"] [6 "Spades"] [4 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Qc" "9c"],
+   "board" ["Kd" "6s" "4d"],
+   "hole_cards" ["7s" "4c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Hearts"] [9 "Diamonds"])]
+   [:client ([5 "Hearts"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 200,
+   "bot_hole_cards" ["Qh" "9d"],
+   "board" [],
+   "hole_cards" ["5h" "4h"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [8 "Spades"])]
+   [:client ([14 "Clubs"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["Check" 0.0]]
+    [:bot ["Bet" 2.0]]
+    [:client ["Fold" 0.0]]]],
+  :visible-cards
+  ([13 "Spades"] [3 "Diamonds"] [3 "Clubs"] [10 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot 2.0] [:client -2.0]],
+  :r
+  {"baseline_winnings" -600,
+   "winnings" -200,
+   "bot_hole_cards" ["Js" "8s"],
+   "board" ["Ks" "3d" "3c" "Td"],
+   "hole_cards" ["Ac" "2h"],
+   "client_pos" 0,
+   "action" "b200c/kk/kb200f"}}
+ {:hands
+  [[:bot ([8 "Hearts"] [3 "Diamonds"])]
+   [:client ([13 "Spades"] [10 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["8h" "3d"],
+   "board" [],
+   "hole_cards" ["Ks" "Tc"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([6 "Hearts"] [4 "Hearts"])]
+   [:client ([9 "Spades"] [9 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Diamonds"] [11 "Hearts"] [8 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 200,
+   "bot_hole_cards" ["6h" "4h"],
+   "board" ["Kd" "Jh" "8s"],
+   "hole_cards" ["9s" "9h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([13 "Hearts"] [5 "Hearts"])]
+   [:client ([9 "Spades"] [9 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Raise" 1.5]] [:client ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot 1.0] [:client -1.0]],
+  :r
+  {"baseline_winnings" 1700,
+   "winnings" -100,
+   "bot_hole_cards" ["Kh" "5h"],
+   "board" [],
+   "hole_cards" ["9s" "9d"],
+   "client_pos" 0,
+   "action" "b200f"}}
+ {:hands
+  [[:bot ([10 "Clubs"] [6 "Diamonds"])]
+   [:client ([14 "Clubs"] [10 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [4 "Spades"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Tc" "6d"],
+   "board" ["Qd" "4s" "2d"],
+   "hole_cards" ["Ac" "Ts"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [4 "Hearts"])]
+   [:client ([12 "Spades"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Clubs"] [7 "Spades"] [4 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Js" "4h"],
+   "board" ["Ac" "7s" "4c"],
+   "hole_cards" ["Qs" "6c"],
+   "client_pos" 0,
+   "action" "b200c/b1776f"}}
+ {:hands
+  [[:bot ([13 "Diamonds"] [3 "Spades"])]
+   [:client ([9 "Diamonds"] [4 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 22.2]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Spades"] [8 "Spades"] [5 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Kd" "3s"],
+   "board" ["9s" "8s" "5s"],
+   "hole_cards" ["9d" "4c"],
+   "client_pos" 0,
+   "action" "b200c/b2220f"}}
+ {:hands
+  [[:bot ([10 "Hearts"] [8 "Clubs"])]
+   [:client ([10 "Diamonds"] [5 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Clubs"] [11 "Clubs"] [10 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Th" "8c"],
+   "board" ["Kc" "Jc" "Ts"],
+   "hole_cards" ["Td" "5d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Clubs"] [5 "Spades"])]
+   [:client ([7 "Spades"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Diamonds"] [4 "Hearts"] [3 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["Ac" "5s"],
+   "board" ["Jd" "4h" "3h"],
+   "hole_cards" ["7s" "2h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Clubs"] [11 "Hearts"])]
+   [:client ([13 "Spades"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([7 "Clubs"] [4 "Diamonds"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Qc" "Jh"],
+   "board" ["7c" "4d" "2d"],
+   "hole_cards" ["Ks" "2h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([8 "Clubs"] [7 "Clubs"])]
+   [:client ([10 "Hearts"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Hearts"] [12 "Diamonds"] [9 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["8c" "7c"],
+   "board" ["Qh" "Qd" "9s"],
+   "hole_cards" ["Th" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([6 "Spades"] [3 "Hearts"])]
+   [:client ([12 "Spades"] [10 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Spades"] [11 "Hearts"] [6 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1000,
+   "winnings" 200,
+   "bot_hole_cards" ["6s" "3h"],
+   "board" ["Js" "Jh" "6d"],
+   "hole_cards" ["Qs" "Th"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Clubs"] [2 "Clubs"])]
+   [:client ([13 "Spades"] [7 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Hearts"] [8 "Diamonds"] [4 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Jc" "2c"],
+   "board" ["Jh" "8d" "4c"],
+   "hole_cards" ["Ks" "7s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [3 "Hearts"])]
+   [:client ([14 "Hearts"] [4 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Spades"] [6 "Diamonds"] [3 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Ad" "3h"],
+   "board" ["Ts" "6d" "3c"],
+   "hole_cards" ["Ah" "4s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([4 "Spades"] [4 "Diamonds"])]
+   [:client ([14 "Spades"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Spades"] [8 "Hearts"] [5 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["4s" "4d"],
+   "board" ["Ks" "8h" "5h"],
+   "hole_cards" ["As" "2d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Diamonds"] [7 "Spades"])]
+   [:client ([9 "Diamonds"] [8 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Diamonds"] [11 "Hearts"] [5 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Td" "7s"],
+   "board" ["Kd" "Jh" "5d"],
+   "hole_cards" ["9d" "8d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([13 "Hearts"] [2 "Clubs"])]
+   [:client ([4 "Diamonds"] [3 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 1.0]] [:bot ["Raise" 4.0]] [:client ["Call" 3.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["All-In" 194.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Spades"] [4 "Hearts"] [2 "Spades"] [10 "Clubs"] [13 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -6.0] [:client 6.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 600,
+   "bot_hole_cards" ["Kh" "2c"],
+   "board" ["As" "4h" "2s" "Tc" "Kc"],
+   "hole_cards" ["4d" "3d"],
+   "client_pos" 0,
+   "action" "b200c/b100b400c/kk/b19400f"}}
+ {:hands
+  [[:bot ([12 "Diamonds"] [6 "Hearts"])]
+   [:client ([13 "Clubs"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Spades"] [7 "Spades"] [2 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Qd" "6h"],
+   "board" ["As" "7s" "2s"],
+   "hole_cards" ["Kc" "2h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([9 "Hearts"] [8 "Diamonds"])]
+   [:client ([11 "Spades"] [3 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]]
+    [:bot ["Bet" 2.0]]
+    [:client ["All-In" 198.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Clubs"] [6 "Diamonds"] [4 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 400,
+   "bot_hole_cards" ["9h" "8d"],
+   "board" ["Jc" "6d" "4h"],
+   "hole_cards" ["Js" "3h"],
+   "client_pos" 0,
+   "action" "b200c/kb200b19800f"}}
+ {:hands
+  [[:bot ([6 "Clubs"] [2 "Clubs"])]
+   [:client ([11 "Spades"] [3 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["Bet" 9.31]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([8 "Hearts"] [7 "Clubs"] [4 "Hearts"] [2 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 400,
+   "bot_hole_cards" ["6c" "2c"],
+   "board" ["8h" "7c" "4h" "2h"],
+   "hole_cards" ["Js" "3h"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b931f"}}
+ {:hands
+  [[:bot ([10 "Diamonds"] [7 "Hearts"])]
+   [:client ([14 "Spades"] [11 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 3.05]]
+    [:bot ["Raise" 10.0]]
+    [:client ["Call" 6.95]]]
+   [[:client ["Bet" 5.85]] [:bot ["Call" 5.85]]]
+   [[:client ["Bet" 158.53]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([6 "Spades"] [5 "Clubs"] [2 "Hearts"] [4 "Hearts"] [7 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -17.849999999999994] [:client 17.850000000000023]],
+  :r
+  {"baseline_winnings" 1585,
+   "winnings" 1785,
+   "bot_hole_cards" ["Td" "7h"],
+   "board" ["6s" "5c" "2h" "4h" "7s"],
+   "hole_cards" ["As" "Jd"],
+   "client_pos" 0,
+   "action" "b200c/b305b1000c/b585c/b15853f"}}
+ {:hands
+  [[:bot ([10 "Diamonds"] [9 "Diamonds"])]
+   [:client ([10 "Hearts"] [3 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 144.06]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([4 "Spades"] [3 "Hearts"] [3 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Td" "9d"],
+   "board" ["4s" "3h" "3c"],
+   "hole_cards" ["Th" "3s"],
+   "client_pos" 0,
+   "action" "b200c/b14406f"}}
+ {:hands
+  [[:bot ([4 "Diamonds"] [2 "Spades"])]
+   [:client ([10 "Hearts"] [10 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["4d" "2s"],
+   "board" [],
+   "hole_cards" ["Th" "Tc"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([7 "Diamonds"] [6 "Clubs"])]
+   [:client ([12 "Hearts"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Clubs"] [10 "Diamonds"] [8 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["7d" "6c"],
+   "board" ["Kc" "Td" "8c"],
+   "hole_cards" ["Qh" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b1776f"}}
+ {:hands
+  [[:bot ([10 "Spades"] [7 "Spades"])]
+   [:client ([9 "Hearts"] [6 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Call" 198.0]]]
+   []
+   []],
+  :visible-cards
+  ([10 "Hearts"] [7 "Diamonds"] [3 "Clubs"] [6 "Clubs"] [11 "Spades"]),
+  :visible-hands
+  ([:bot ([10 "Spades"] [7 "Spades"])]
+   [:client ([9 "Hearts"] [6 "Hearts"])]),
+  :net-gain [[:bot 200.0] [:client -200.0]],
+  :r
+  {"baseline_winnings" -19400,
+   "winnings" -20000,
+   "bot_hole_cards" ["Ts" "7s"],
+   "board" ["Th" "7d" "3c" "6c" "Js"],
+   "hole_cards" ["9h" "6h"],
+   "client_pos" 0,
+   "action" "b200c/b19800c//"}}
+ {:hands
+  [[:bot ([9 "Clubs"] [5 "Spades"])]
+   [:client ([14 "Spades"] [11 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 115.25]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Diamonds"] [3 "Spades"] [2 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["9c" "5s"],
+   "board" ["Ad" "3s" "2c"],
+   "hole_cards" ["As" "Jc"],
+   "client_pos" 0,
+   "action" "b200c/b11525f"}}
+ {:hands
+  [[:bot ([11 "Hearts"] [3 "Clubs"])]
+   [:client ([10 "Spades"] [10 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([8 "Diamonds"] [3 "Hearts"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Jh" "3c"],
+   "board" ["8d" "3h" "2d"],
+   "hole_cards" ["Ts" "Td"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Spades"] [7 "Hearts"])]
+   [:client ([6 "Spades"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([12 "Diamonds"] [8 "Clubs"] [2 "Clubs"] [10 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 200,
+   "bot_hole_cards" ["As" "7h"],
+   "board" ["Qd" "8c" "2c" "Tc"],
+   "hole_cards" ["6s" "6c"],
+   "client_pos" 0,
+   "action" "b200c/kk/b19800f"}}
+ {:hands
+  [[:bot ([9 "Spades"] [2 "Diamonds"])]
+   [:client ([10 "Clubs"] [6 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["9s" "2d"],
+   "board" [],
+   "hole_cards" ["Tc" "6d"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([13 "Spades"] [8 "Hearts"])]
+   [:client ([12 "Hearts"] [10 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Clubs"] [11 "Hearts"] [10 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Ks" "8h"],
+   "board" ["Kc" "Jh" "Ts"],
+   "hole_cards" ["Qh" "Td"],
+   "client_pos" 0,
+   "action" "b200c/b1776f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [8 "Hearts"])]
+   [:client ([8 "Spades"] [3 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Hearts"] [8 "Diamonds"] [6 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["Ad" "8h"],
+   "board" ["Qh" "8d" "6d"],
+   "hole_cards" ["8s" "3c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Spades"] [10 "Clubs"])]
+   [:client ([11 "Diamonds"] [8 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Diamonds"] [8 "Diamonds"] [7 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["As" "Tc"],
+   "board" ["Td" "8d" "7c"],
+   "hole_cards" ["Jd" "8c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Diamonds"] [2 "Diamonds"])]
+   [:client ([9 "Hearts"] [7 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Hearts"] [9 "Diamonds"] [2 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Qd" "2d"],
+   "board" ["Ah" "9d" "2h"],
+   "hole_cards" ["9h" "7s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Diamonds"] [5 "Diamonds"])]
+   [:client ([9 "Clubs"] [3 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Td" "5d"],
+   "board" [],
+   "hole_cards" ["9c" "3s"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([13 "Diamonds"] [5 "Hearts"])]
+   [:client ([9 "Hearts"] [5 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Hearts"] [11 "Clubs"] [7 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Kd" "5h"],
+   "board" ["Kh" "Jc" "7h"],
+   "hole_cards" ["9h" "5c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([7 "Spades"] [3 "Clubs"])]
+   [:client ([13 "Diamonds"] [11 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["7s" "3c"],
+   "board" [],
+   "hole_cards" ["Kd" "Jd"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([10 "Spades"] [5 "Spades"])]
+   [:client ([8 "Spades"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 3.05]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Clubs"] [9 "Diamonds"] [8 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["Ts" "5s"],
+   "board" ["Jc" "9d" "8d"],
+   "hole_cards" ["8s" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b305f"}}
+ {:hands
+  [[:bot ([10 "Hearts"] [5 "Diamonds"])]
+   [:client ([13 "Spades"] [4 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Clubs"] [13 "Hearts"] [11 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Th" "5d"],
+   "board" ["Ac" "Kh" "Jh"],
+   "hole_cards" ["Ks" "4s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Hearts"] [8 "Hearts"])]
+   [:client ([3 "Spades"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Diamonds"] [9 "Spades"] [5 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Ah" "8h"],
+   "board" ["Kd" "9s" "5d"],
+   "hole_cards" ["3s" "2d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([13 "Clubs"] [5 "Hearts"])]
+   [:client ([11 "Spades"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 12.37]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Clubs"] [9 "Diamonds"] [2 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Kc" "5h"],
+   "board" ["Ac" "9d" "2s"],
+   "hole_cards" ["Js" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b1237f"}}
+ {:hands
+  [[:bot ([7 "Clubs"] [4 "Hearts"])]
+   [:client ([10 "Clubs"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["7c" "4h"],
+   "board" [],
+   "hole_cards" ["Tc" "6c"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([14 "Hearts"] [9 "Clubs"])]
+   [:client ([12 "Clubs"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Spades"] [9 "Diamonds"] [6 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ah" "9c"],
+   "board" ["Js" "9d" "6c"],
+   "hole_cards" ["Qc" "4h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [2 "Spades"])]
+   [:client ([9 "Spades"] [3 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Clubs"] [13 "Clubs"] [6 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ad" "2s"],
+   "board" ["Ac" "Kc" "6d"],
+   "hole_cards" ["9s" "3d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Diamonds"] [6 "Clubs"])]
+   [:client ([7 "Diamonds"] [3 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Clubs"] [11 "Diamonds"] [7 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["Qd" "6c"],
+   "board" ["Ac" "Jd" "7h"],
+   "hole_cards" ["7d" "3s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Clubs"] [8 "Clubs"])]
+   [:client ([11 "Spades"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Clubs"] [3 "Spades"] [3 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Qc" "8c"],
+   "board" ["9c" "3s" "3d"],
+   "hole_cards" ["Js" "4h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Spades"] [9 "Diamonds"])]
+   [:client ([14 "Diamonds"] [7 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Clubs"] [12 "Hearts"] [10 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Qs" "9d"],
+   "board" ["Kc" "Qh" "Tc"],
+   "hole_cards" ["Ad" "7s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Spades"] [4 "Diamonds"])]
+   [:client ([10 "Spades"] [9 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([8 "Spades"] [7 "Hearts"] [6 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 200,
+   "bot_hole_cards" ["As" "4d"],
+   "board" ["8s" "7h" "6c"],
+   "hole_cards" ["Ts" "9c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Clubs"] [4 "Hearts"])]
+   [:client ([10 "Spades"] [3 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Hearts"] [5 "Clubs"] [4 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Jc" "4h"],
+   "board" ["Kh" "5c" "4c"],
+   "hole_cards" ["Ts" "3d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Spades"] [5 "Hearts"])]
+   [:client ([13 "Hearts"] [3 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 5.96]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Diamonds"] [11 "Hearts"] [10 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -1000,
+   "winnings" 200,
+   "bot_hole_cards" ["Ts" "5h"],
+   "board" ["Ad" "Jh" "Tc"],
+   "hole_cards" ["Kh" "3h"],
+   "client_pos" 0,
+   "action" "b200c/b596f"}}
+ {:hands
+  [[:bot ([8 "Hearts"] [4 "Hearts"])]
+   [:client ([14 "Spades"] [4 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Hearts"] [7 "Clubs"] [4 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["8h" "4h"],
+   "board" ["Jh" "7c" "4c"],
+   "hole_cards" ["As" "4d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Diamonds"] [2 "Hearts"])]
+   [:client ([7 "Diamonds"] [4 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Raise" 1.5]] [:client ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot 1.0] [:client -1.0]],
+  :r
+  {"baseline_winnings" -500,
+   "winnings" -100,
+   "bot_hole_cards" ["Qd" "2h"],
+   "board" [],
+   "hole_cards" ["7d" "4s"],
+   "client_pos" 0,
+   "action" "b200f"}}
+ {:hands
+  [[:bot ([10 "Clubs"] [6 "Clubs"])]
+   [:client ([10 "Spades"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 1.22]] [:bot ["Call" 1.22]]]
+   [[:client ["All-In" 196.78]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([11 "Diamonds"] [9 "Clubs"] [3 "Hearts"] [9 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -3.219999999999999] [:client 3.219999999999999]],
+  :r
+  {"baseline_winnings" 522,
+   "winnings" 322,
+   "bot_hole_cards" ["Tc" "6c"],
+   "board" ["Jd" "9c" "3h" "9h"],
+   "hole_cards" ["Ts" "2h"],
+   "client_pos" 0,
+   "action" "b200c/b122c/b19678f"}}
+ {:hands
+  [[:bot ([14 "Hearts"] [11 "Spades"])]
+   [:client ([7 "Clubs"] [5 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Raise" 1.5]] [:client ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot 1.0] [:client -1.0]],
+  :r
+  {"baseline_winnings" 700,
+   "winnings" -100,
+   "bot_hole_cards" ["Ah" "Js"],
+   "board" [],
+   "hole_cards" ["7c" "5h"],
+   "client_pos" 0,
+   "action" "b200f"}}
+ {:hands
+  [[:bot ([12 "Diamonds"] [10 "Spades"])]
+   [:client ([7 "Diamonds"] [7 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Diamonds"] [8 "Spades"] [3 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 200,
+   "bot_hole_cards" ["Qd" "Ts"],
+   "board" ["Ad" "8s" "3h"],
+   "hole_cards" ["7d" "7c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Spades"] [7 "Diamonds"])]
+   [:client ([11 "Spades"] [5 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([8 "Spades"] [8 "Clubs"] [2 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Ts" "7d"],
+   "board" ["8s" "8c" "2s"],
+   "hole_cards" ["Js" "5c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Clubs"] [10 "Diamonds"])]
+   [:client ([14 "Hearts"] [11 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 200,
+   "bot_hole_cards" ["Qc" "Td"],
+   "board" [],
+   "hole_cards" ["Ah" "Jc"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([6 "Diamonds"] [5 "Spades"])]
+   [:client ([11 "Clubs"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Spades"] [12 "Hearts"] [6 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["6d" "5s"],
+   "board" ["As" "Qh" "6s"],
+   "hole_cards" ["Jc" "2h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([9 "Hearts"] [8 "Diamonds"])]
+   [:client ([13 "Spades"] [8 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 200,
+   "bot_hole_cards" ["9h" "8d"],
+   "board" [],
+   "hole_cards" ["Ks" "8c"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([10 "Clubs"] [3 "Clubs"])]
+   [:client ([5 "Clubs"] [4 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Hearts"] [9 "Diamonds"] [4 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Tc" "3c"],
+   "board" ["Ah" "9d" "4h"],
+   "hole_cards" ["5c" "4s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([4 "Hearts"] [3 "Hearts"])]
+   [:client ([12 "Hearts"] [5 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 1.52]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Spades"] [7 "Spades"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["4h" "3h"],
+   "board" ["9s" "7s" "2d"],
+   "hole_cards" ["Qh" "5c"],
+   "client_pos" 0,
+   "action" "b200c/b152f"}}
+ {:hands
+  [[:bot ([14 "Hearts"] [10 "Hearts"])]
+   [:client ([11 "Diamonds"] [6 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Clubs"] [9 "Diamonds"] [6 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ah" "Th"],
+   "board" ["Ac" "9d" "6c"],
+   "hole_cards" ["Jd" "6d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([7 "Spades"] [2 "Hearts"])]
+   [:client ([11 "Hearts"] [4 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["7s" "2h"],
+   "board" [],
+   "hole_cards" ["Jh" "4c"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([11 "Hearts"] [2 "Diamonds"])]
+   [:client ([11 "Clubs"] [3 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["Bet" 15.31]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([13 "Clubs"] [12 "Clubs"] [10 "Diamonds"] [13 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" -2000,
+   "winnings" 400,
+   "bot_hole_cards" ["Jh" "2d"],
+   "board" ["Kc" "Qc" "Td" "Kh"],
+   "hole_cards" ["Jc" "3c"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b1531f"}}
+ {:hands
+  [[:bot ([5 "Hearts"] [4 "Diamonds"])]
+   [:client ([13 "Diamonds"] [10 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Raise" 1.5]] [:client ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot 1.0] [:client -1.0]],
+  :r
+  {"baseline_winnings" -700,
+   "winnings" -100,
+   "bot_hole_cards" ["5h" "4d"],
+   "board" [],
+   "hole_cards" ["Kd" "Td"],
+   "client_pos" 0,
+   "action" "b200f"}}
+ {:hands
+  [[:bot ([11 "Diamonds"] [8 "Spades"])]
+   [:client ([8 "Clubs"] [3 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Diamonds"] [13 "Hearts"] [7 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["Jd" "8s"],
+   "board" ["Ad" "Kh" "7h"],
+   "hole_cards" ["8c" "3h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([5 "Spades"] [3 "Diamonds"])]
+   [:client ([9 "Spades"] [9 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Clubs"] [6 "Hearts"] [5 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["5s" "3d"],
+   "board" ["Jc" "6h" "5c"],
+   "hole_cards" ["9s" "9d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([9 "Hearts"] [5 "Spades"])]
+   [:client ([12 "Hearts"] [10 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 144.06]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Spades"] [4 "Diamonds"] [3 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["9h" "5s"],
+   "board" ["Qs" "4d" "3d"],
+   "hole_cards" ["Qh" "Tc"],
+   "client_pos" 0,
+   "action" "b200c/b14406f"}}
+ {:hands
+  [[:bot ([9 "Clubs"] [6 "Hearts"])]
+   [:client ([13 "Hearts"] [13 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["Bet" 3.05]] [:bot ["Call" 3.05]]]
+   [[:client ["All-In" 194.95]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([12 "Diamonds"] [9 "Hearts"] [4 "Hearts"] [8 "Hearts"] [8 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -5.050000000000011] [:client 5.049999999999983]],
+  :r
+  {"baseline_winnings" 305,
+   "winnings" 505,
+   "bot_hole_cards" ["9c" "6h"],
+   "board" ["Qd" "9h" "4h" "8h" "8c"],
+   "hole_cards" ["Kh" "Kc"],
+   "client_pos" 0,
+   "action" "b200c/kk/b305c/b19495f"}}
+ {:hands
+  [[:bot ([13 "Hearts"] [4 "Hearts"])]
+   [:client ([8 "Diamonds"] [6 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Clubs"] [8 "Spades"] [5 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Kh" "4h"],
+   "board" ["Ac" "8s" "5s"],
+   "hole_cards" ["8d" "6h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([6 "Spades"] [3 "Diamonds"])]
+   [:client ([13 "Clubs"] [5 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["Bet" 3.05]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Spades"] [10 "Spades"] [2 "Diamonds"] [14 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 400,
+   "bot_hole_cards" ["6s" "3d"],
+   "board" ["As" "Ts" "2d" "Ad"],
+   "hole_cards" ["Kc" "5c"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b305f"}}
+ {:hands
+  [[:bot ([5 "Clubs"] [4 "Diamonds"])]
+   [:client ([9 "Spades"] [8 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 4.65]] [:bot ["Call" 4.65]]]
+   [[:client ["Bet" 140.68]]
+    [:bot ["All-In" 193.35]]
+    [:client ["Call" 52.66999999999999]]]
+   []],
+  :visible-cards
+  ([13 "Hearts"] [7 "Spades"] [3 "Spades"] [6 "Clubs"] [9 "Diamonds"]),
+  :visible-hands ([:bot ([5 "Clubs"] [4 "Diamonds"])]),
+  :net-gain [[:bot 200.0] [:client -200.0]],
+  :r
+  {"baseline_winnings" -16400,
+   "winnings" -20000,
+   "bot_hole_cards" ["5c" "4d"],
+   "board" ["Kh" "7s" "3s" "6c" "9d"],
+   "hole_cards" ["9s" "8h"],
+   "client_pos" 0,
+   "action" "b200c/b465c/b14068b19335c/"}}
+ {:hands
+  [[:bot ([12 "Diamonds"] [9 "Diamonds"])]
+   [:client ([14 "Spades"] [4 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Diamonds"] [4 "Spades"] [3 "Spades"] [3 "Clubs"] [5 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Qd" "9d"],
+   "board" ["Ad" "4s" "3s" "3c" "5c"],
+   "hole_cards" ["As" "4c"],
+   "client_pos" 0,
+   "action" "b200c/kk/kk/b19800f"}}
+ {:hands
+  [[:bot ([13 "Diamonds"] [5 "Clubs"])]
+   [:client ([11 "Hearts"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Clubs"] [6 "Spades"] [4 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1000,
+   "winnings" 200,
+   "bot_hole_cards" ["Kd" "5c"],
+   "board" ["Tc" "6s" "4c"],
+   "hole_cards" ["Jh" "6c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([5 "Spades"] [3 "Hearts"])]
+   [:client ([6 "Hearts"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["5s" "3h"],
+   "board" [],
+   "hole_cards" ["6h" "6c"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([11 "Hearts"] [10 "Clubs"])]
+   [:client ([12 "Clubs"] [10 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Hearts"] [8 "Hearts"] [3 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -1000,
+   "winnings" 200,
+   "bot_hole_cards" ["Jh" "Tc"],
+   "board" ["Th" "8h" "3c"],
+   "hole_cards" ["Qc" "Ts"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([7 "Hearts"] [3 "Hearts"])]
+   [:client ([13 "Hearts"] [6 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([10 "Clubs"] [5 "Diamonds"] [4 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["7h" "3h"],
+   "board" ["Tc" "5d" "4c"],
+   "hole_cards" ["Kh" "6s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Clubs"] [2 "Diamonds"])]
+   [:client ([8 "Diamonds"] [5 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["All-In" 196.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Diamonds"] [11 "Diamonds"] [10 "Hearts"] [6 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 400,
+   "bot_hole_cards" ["Qc" "2d"],
+   "board" ["Ad" "Jd" "Th" "6c"],
+   "hole_cards" ["8d" "5s"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b19600f"}}
+ {:hands
+  [[:bot ([6 "Diamonds"] [3 "Hearts"])]
+   [:client ([7 "Spades"] [3 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([8 "Clubs"] [6 "Hearts"] [5 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["6d" "3h"],
+   "board" ["8c" "6h" "5h"],
+   "hole_cards" ["7s" "3s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [3 "Clubs"])]
+   [:client ([11 "Diamonds"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Spades"] [10 "Spades"] [5 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Ad" "3c"],
+   "board" ["Js" "Ts" "5s"],
+   "hole_cards" ["Jd" "2s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([6 "Clubs"] [2 "Hearts"])]
+   [:client ([4 "Spades"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["6c" "2h"],
+   "board" [],
+   "hole_cards" ["4s" "2s"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [8 "Hearts"])]
+   [:client ([14 "Diamonds"] [4 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Js" "8h"],
+   "board" [],
+   "hole_cards" ["Ad" "4c"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([9 "Hearts"] [7 "Spades"])]
+   [:client ([5 "Diamonds"] [3 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 86.73]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Hearts"] [11 "Clubs"] [4 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["9h" "7s"],
+   "board" ["Qh" "Jc" "4h"],
+   "hole_cards" ["5d" "3d"],
+   "client_pos" 0,
+   "action" "b200c/b8673f"}}
+ {:hands
+  [[:bot ([11 "Clubs"] [4 "Spades"])]
+   [:client ([14 "Clubs"] [5 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Jc" "4s"],
+   "board" [],
+   "hole_cards" ["Ac" "5s"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([13 "Clubs"] [12 "Diamonds"])]
+   [:client ([11 "Spades"] [9 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Hearts"] [12 "Clubs"] [10 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 7400,
+   "winnings" 200,
+   "bot_hole_cards" ["Kc" "Qd"],
+   "board" ["Ah" "Qc" "Td"],
+   "hole_cards" ["Js" "9h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Diamonds"] [9 "Diamonds"])]
+   [:client ([13 "Hearts"] [8 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Hearts"] [8 "Hearts"] [2 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 200,
+   "bot_hole_cards" ["Qd" "9d"],
+   "board" ["9h" "8h" "2h"],
+   "hole_cards" ["Kh" "8d"],
+   "client_pos" 0,
+   "action" "b200c/b1776f"}}
+ {:hands
+  [[:bot ([10 "Hearts"] [3 "Clubs"])]
+   [:client ([7 "Spades"] [6 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 22.2]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Clubs"] [6 "Clubs"] [2 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Th" "3c"],
+   "board" ["Jc" "6c" "2c"],
+   "hole_cards" ["7s" "6s"],
+   "client_pos" 0,
+   "action" "b200c/b2220f"}}
+ {:hands
+  [[:bot ([11 "Clubs"] [9 "Diamonds"])]
+   [:client ([12 "Hearts"] [3 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Call" 198.0]]]
+   []
+   []],
+  :visible-cards
+  ([11 "Spades"]
+   [9 "Spades"]
+   [6 "Diamonds"]
+   [4 "Hearts"]
+   [2 "Hearts"]),
+  :visible-hands
+  ([:bot ([11 "Clubs"] [9 "Diamonds"])]
+   [:client ([12 "Hearts"] [3 "Diamonds"])]),
+  :net-gain [[:bot 200.0] [:client -200.0]],
+  :r
+  {"baseline_winnings" -19800,
+   "winnings" -20000,
+   "bot_hole_cards" ["Jc" "9d"],
+   "board" ["Js" "9s" "6d" "4h" "2h"],
+   "hole_cards" ["Qh" "3d"],
+   "client_pos" 0,
+   "action" "b200c/b19800c//"}}
+ {:hands
+  [[:bot ([9 "Clubs"] [7 "Spades"])]
+   [:client ([7 "Hearts"] [4 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 12.37]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Diamonds"] [10 "Hearts"] [2 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["9c" "7s"],
+   "board" ["Ad" "Th" "2c"],
+   "hole_cards" ["7h" "4s"],
+   "client_pos" 0,
+   "action" "b200c/b1237f"}}
+ {:hands
+  [[:bot ([14 "Clubs"] [10 "Clubs"])]
+   [:client ([14 "Spades"] [9 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Raise" 1.5]] [:client ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot 1.0] [:client -1.0]],
+  :r
+  {"baseline_winnings" -500,
+   "winnings" -100,
+   "bot_hole_cards" ["Ac" "Tc"],
+   "board" [],
+   "hole_cards" ["As" "9h"],
+   "client_pos" 0,
+   "action" "b200f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [10 "Spades"])]
+   [:client ([5 "Hearts"] [5 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 22.73]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Hearts"] [10 "Clubs"] [2 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Js" "Ts"],
+   "board" ["Ah" "Tc" "2h"],
+   "hole_cards" ["5h" "5d"],
+   "client_pos" 0,
+   "action" "b200c/b2273f"}}
+ {:hands
+  [[:bot ([7 "Hearts"] [3 "Hearts"])]
+   [:client ([5 "Spades"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1800,
+   "winnings" 200,
+   "bot_hole_cards" ["7h" "3h"],
+   "board" [],
+   "hole_cards" ["5s" "2h"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [13 "Hearts"])]
+   [:client ([5 "Clubs"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 1.22]] [:bot ["Call" 1.22]]]
+   [[:client ["Check" 0.0]]
+    [:bot ["Bet" 2.78]]
+    [:client ["Call" 2.78]]]
+   [[:client ["All-In" 194.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([13 "Spades"] [7 "Spades"] [4 "Spades"] [3 "Clubs"] [9 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -6.0] [:client 6.0]],
+  :r
+  {"baseline_winnings" 800,
+   "winnings" 600,
+   "bot_hole_cards" ["Ad" "Kh"],
+   "board" ["Ks" "7s" "4s" "3c" "9h"],
+   "hole_cards" ["5c" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b122c/kb278c/b19400f"}}
+ {:hands
+  [[:bot ([10 "Spades"] [5 "Clubs"])]
+   [:client ([3 "Diamonds"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Call" 198.0]]]
+   []
+   []],
+  :visible-cards
+  ([8 "Clubs"] [5 "Spades"] [5 "Hearts"] [8 "Spades"] [8 "Diamonds"]),
+  :visible-hands
+  ([:bot ([10 "Spades"] [5 "Clubs"])]
+   [:client ([3 "Diamonds"] [2 "Clubs"])]),
+  :net-gain [[:bot 0.0] [:client 0.0]],
+  :r
+  {"baseline_winnings" 200,
+   "winnings" 0,
+   "bot_hole_cards" ["Ts" "5c"],
+   "board" ["8c" "5s" "5h" "8s" "8d"],
+   "hole_cards" ["3d" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b19800c//"}}
+ {:hands
+  [[:bot ([14 "Spades"] [10 "Spades"])]
+   [:client ([6 "Diamonds"] [4 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 9.9]] [:bot ["Call" 9.9]]]
+   [[:client ["All-In" 188.1]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([13 "Clubs"] [12 "Clubs"] [9 "Diamonds"] [2 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -11.900000000000006] [:client 11.900000000000006]],
+  :r
+  {"baseline_winnings" 1390,
+   "winnings" 1190,
+   "bot_hole_cards" ["As" "Ts"],
+   "board" ["Kc" "Qc" "9d" "2s"],
+   "hole_cards" ["6d" "4s"],
+   "client_pos" 0,
+   "action" "b200c/b990c/b18810f"}}
+ {:hands
+  [[:bot ([13 "Spades"] [12 "Clubs"])]
+   [:client ([12 "Spades"] [9 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([4 "Hearts"] [2 "Spades"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1000,
+   "winnings" 200,
+   "bot_hole_cards" ["Ks" "Qc"],
+   "board" ["4h" "2s" "2d"],
+   "hole_cards" ["Qs" "9h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([4 "Clubs"] [2 "Diamonds"])]
+   [:client ([12 "Hearts"] [5 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["4c" "2d"],
+   "board" [],
+   "hole_cards" ["Qh" "5s"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([10 "Hearts"] [7 "Clubs"])]
+   [:client ([9 "Clubs"] [7 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Hearts"] [6 "Clubs"] [4 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -1000,
+   "winnings" 200,
+   "bot_hole_cards" ["Th" "7c"],
+   "board" ["9h" "6c" "4h"],
+   "hole_cards" ["9c" "7d"],
+   "client_pos" 0,
+   "action" "b200c/b1776f"}}
+ {:hands
+  [[:bot ([11 "Hearts"] [6 "Clubs"])]
+   [:client ([5 "Clubs"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Call" 198.0]]]
+   []
+   []],
+  :visible-cards
+  ([14 "Spades"] [10 "Diamonds"] [2 "Clubs"] [8 "Clubs"] [2 "Spades"]),
+  :visible-hands ([:client ([5 "Clubs"] [2 "Diamonds"])]),
+  :net-gain [[:bot -200.0] [:client 200.0]],
+  :r
+  {"baseline_winnings" 19600,
+   "winnings" 20000,
+   "bot_hole_cards" ["Jh" "6c"],
+   "board" ["As" "Td" "2c" "8c" "2s"],
+   "hole_cards" ["5c" "2d"],
+   "client_pos" 0,
+   "action" "b200c/b19800c//"}}
+ {:hands
+  [[:bot ([7 "Spades"] [4 "Diamonds"])]
+   [:client ([11 "Diamonds"] [5 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["7s" "4d"],
+   "board" [],
+   "hole_cards" ["Jd" "5c"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([12 "Hearts"] [4 "Clubs"])]
+   [:client ([2 "Hearts"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Hearts"] [3 "Clubs"] [2 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Qh" "4c"],
+   "board" ["9h" "3c" "2s"],
+   "hole_cards" ["2h" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b1776f"}}
+ {:hands
+  [[:bot ([9 "Diamonds"] [6 "Diamonds"])]
+   [:client ([14 "Clubs"] [8 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Diamonds"] [11 "Clubs"] [4 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -1600,
+   "winnings" 200,
+   "bot_hole_cards" ["9d" "6d"],
+   "board" ["Jd" "Jc" "4c"],
+   "hole_cards" ["Ac" "8c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Hearts"] [11 "Diamonds"])]
+   [:client ([11 "Clubs"] [3 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 1.56]] [:bot ["Call" 1.56]]]
+   [[:client ["Bet" 142.92]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Hearts"] [6 "Clubs"] [5 "Clubs"] [6 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -3.5600000000000023] [:client 3.5600000000000023]],
+  :r
+  {"baseline_winnings" 156,
+   "winnings" 356,
+   "bot_hole_cards" ["Qh" "Jd"],
+   "board" ["9h" "6c" "5c" "6h"],
+   "hole_cards" ["Jc" "3s"],
+   "client_pos" 0,
+   "action" "b200c/b156c/b14292f"}}
+ {:hands
+  [[:bot ([14 "Clubs"] [11 "Hearts"])]
+   [:client ([5 "Spades"] [3 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Hearts"] [7 "Clubs"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ac" "Jh"],
+   "board" ["Kh" "7c" "2d"],
+   "hole_cards" ["5s" "3s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Clubs"] [6 "Spades"])]
+   [:client ([12 "Spades"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 4.65]]
+    [:bot ["Raise" 10.0]]
+    [:client ["Call" 5.35]]]
+   [[:client ["All-In" 188.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([8 "Clubs"] [7 "Spades"] [5 "Clubs"] [4 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -12.0] [:client 12.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 1200,
+   "bot_hole_cards" ["Tc" "6s"],
+   "board" ["8c" "7s" "5c" "4c"],
+   "hole_cards" ["Qs" "2d"],
+   "client_pos" 0,
+   "action" "b200c/b465b1000c/b18800f"}}
+ {:hands
+  [[:bot ([13 "Diamonds"] [7 "Diamonds"])]
+   [:client ([10 "Spades"] [6 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Hearts"] [9 "Clubs"] [4 "Clubs"] [5 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Kd" "7d"],
+   "board" ["Qh" "9c" "4c" "5h"],
+   "hole_cards" ["Ts" "6d"],
+   "client_pos" 0,
+   "action" "b200c/kk/b19800f"}}
+ {:hands
+  [[:bot ([13 "Clubs"] [9 "Spades"])]
+   [:client ([9 "Clubs"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [6 "Diamonds"] [4 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 200,
+   "bot_hole_cards" ["Kc" "9s"],
+   "board" ["Qd" "6d" "4h"],
+   "hole_cards" ["9c" "6c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Diamonds"] [3 "Diamonds"])]
+   [:client ([8 "Clubs"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Clubs"] [10 "Hearts"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["Jd" "3d"],
+   "board" ["Jc" "Th" "2d"],
+   "hole_cards" ["8c" "2s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([3 "Clubs"] [2 "Diamonds"])]
+   [:client ([8 "Diamonds"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["3c" "2d"],
+   "board" [],
+   "hole_cards" ["8d" "4h"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([4 "Clubs"] [2 "Spades"])]
+   [:client ([9 "Diamonds"] [6 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["4c" "2s"],
+   "board" [],
+   "hole_cards" ["9d" "6s"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([12 "Diamonds"] [6 "Diamonds"])]
+   [:client ([13 "Spades"] [7 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Qd" "6d"],
+   "board" [],
+   "hole_cards" ["Ks" "7h"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([14 "Clubs"] [4 "Diamonds"])]
+   [:client ([13 "Spades"] [8 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ac" "4d"],
+   "board" [],
+   "hole_cards" ["Ks" "8h"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [3 "Hearts"])]
+   [:client ([10 "Spades"] [8 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Spades"] [11 "Clubs"] [4 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ad" "3h"],
+   "board" ["Qs" "Jc" "4h"],
+   "hole_cards" ["Ts" "8c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Hearts"] [12 "Diamonds"])]
+   [:client ([13 "Spades"] [9 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 4.76]] [:bot ["Call" 4.76]]]
+   [[:client ["All-In" 193.24]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([11 "Hearts"] [5 "Hearts"] [3 "Diamonds"] [13 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -6.759999999999991] [:client 6.760000000000019]],
+  :r
+  {"baseline_winnings" -524,
+   "winnings" 676,
+   "bot_hole_cards" ["Ah" "Qd"],
+   "board" ["Jh" "5h" "3d" "Kd"],
+   "hole_cards" ["Ks" "9s"],
+   "client_pos" 0,
+   "action" "b200c/b476c/b19324f"}}
+ {:hands
+  [[:bot ([12 "Hearts"] [11 "Diamonds"])]
+   [:client ([10 "Diamonds"] [5 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Raise" 1.5]] [:client ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot 1.0] [:client -1.0]],
+  :r
+  {"baseline_winnings" 100,
+   "winnings" -100,
+   "bot_hole_cards" ["Qh" "Jd"],
+   "board" [],
+   "hole_cards" ["Td" "5d"],
+   "client_pos" 0,
+   "action" "b200f"}}
+ {:hands
+  [[:bot ([6 "Spades"] [5 "Hearts"])]
+   [:client ([14 "Spades"] [3 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["6s" "5h"],
+   "board" [],
+   "hole_cards" ["As" "3h"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([2 "Spades"] [2 "Clubs"])]
+   [:client ([13 "Hearts"] [4 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["All-In" 196.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Spades"] [13 "Clubs"] [12 "Diamonds"] [11 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 400,
+   "bot_hole_cards" ["2s" "2c"],
+   "board" ["As" "Kc" "Qd" "Jh"],
+   "hole_cards" ["Kh" "4s"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b19600f"}}
+ {:hands
+  [[:bot ([14 "Hearts"] [11 "Hearts"])]
+   [:client ([13 "Diamonds"] [3 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Hearts"] [11 "Diamonds"] [4 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ah" "Jh"],
+   "board" ["Kh" "Jd" "4h"],
+   "hole_cards" ["Kd" "3d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([10 "Clubs"] [7 "Spades"])]
+   [:client ([9 "Diamonds"] [3 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 12.37]] [:bot ["Call" 12.37]]]
+   [[:client ["Check" 0.0]]
+    [:bot ["Bet" 13.63]]
+    [:client ["Call" 13.63]]]
+   [[:client ["Bet" 41.72]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([10 "Spades"]
+   [8 "Hearts"]
+   [7 "Diamonds"]
+   [5 "Spades"]
+   [4 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -28.0] [:client 28.0]],
+  :r
+  {"baseline_winnings" 1200,
+   "winnings" 2800,
+   "bot_hole_cards" ["Tc" "7s"],
+   "board" ["Ts" "8h" "7d" "5s" "4d"],
+   "hole_cards" ["9d" "3s"],
+   "client_pos" 0,
+   "action" "b200c/b1237c/kb1363c/b4172f"}}
+ {:hands
+  [[:bot ([9 "Diamonds"] [5 "Spades"])]
+   [:client ([8 "Spades"] [5 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Spades"] [10 "Hearts"] [5 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["9d" "5s"],
+   "board" ["As" "Th" "5d"],
+   "hole_cards" ["8s" "5h"],
+   "client_pos" 0,
+   "action" "b200c/b1776f"}}
+ {:hands
+  [[:bot ([13 "Clubs"] [8 "Hearts"])]
+   [:client ([10 "Spades"] [6 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 35.52]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Diamonds"] [14 "Clubs"] [3 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Kc" "8h"],
+   "board" ["Ad" "Ac" "3s"],
+   "hole_cards" ["Ts" "6h"],
+   "client_pos" 0,
+   "action" "b200c/b3552f"}}
+ {:hands
+  [[:bot ([9 "Spades"] [4 "Diamonds"])]
+   [:client ([2 "Spades"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Diamonds"] [10 "Clubs"] [3 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["9s" "4d"],
+   "board" ["Jd" "Tc" "3c"],
+   "hole_cards" ["2s" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [7 "Hearts"])]
+   [:client ([14 "Spades"] [10 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([12 "Spades"] [9 "Hearts"] [4 "Diamonds"] [12 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Ad" "7h"],
+   "board" ["Qs" "9h" "4d" "Qd"],
+   "hole_cards" ["As" "Td"],
+   "client_pos" 0,
+   "action" "b200c/kk/b19800f"}}
+ {:hands
+  [[:bot ([7 "Clubs"] [5 "Diamonds"])]
+   [:client ([10 "Diamonds"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [5 "Clubs"] [3 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["7c" "5d"],
+   "board" ["Qd" "5c" "3d"],
+   "hole_cards" ["Td" "4h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Diamonds"] [5 "Clubs"])]
+   [:client ([8 "Hearts"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Call" 198.0]]]
+   []
+   []],
+  :visible-cards
+  ([14 "Clubs"]
+   [5 "Diamonds"]
+   [2 "Clubs"]
+   [7 "Diamonds"]
+   [8 "Spades"]),
+  :visible-hands ([:client ([8 "Hearts"] [2 "Hearts"])]),
+  :net-gain [[:bot -200.0] [:client 200.0]],
+  :r
+  {"baseline_winnings" 19600,
+   "winnings" 20000,
+   "bot_hole_cards" ["Qd" "5c"],
+   "board" ["Ac" "5d" "2c" "7d" "8s"],
+   "hole_cards" ["8h" "2h"],
+   "client_pos" 0,
+   "action" "b200c/b19800c//"}}
+ {:hands
+  [[:bot ([10 "Spades"] [10 "Hearts"])]
+   [:client ([8 "Spades"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([6 "Hearts"] [2 "Diamonds"] [2 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -1400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ts" "Th"],
+   "board" ["6h" "2d" "2c"],
+   "hole_cards" ["8s" "6c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([6 "Clubs"] [5 "Clubs"])]
+   [:client ([12 "Hearts"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 17.76]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [9 "Clubs"] [5 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 1000,
+   "winnings" 200,
+   "bot_hole_cards" ["6c" "5c"],
+   "board" ["Qd" "9c" "5d"],
+   "hole_cards" ["Qh" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b1776f"}}
+ {:hands
+  [[:bot ([11 "Hearts"] [3 "Hearts"])]
+   [:client ([9 "Diamonds"] [6 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Jh" "3h"],
+   "board" [],
+   "hole_cards" ["9d" "6h"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [3 "Diamonds"])]
+   [:client ([5 "Spades"] [2 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]],
+  :visible-cards
+  ([6 "Spades"]
+   [6 "Hearts"]
+   [6 "Diamonds"]
+   [7 "Hearts"]
+   [11 "Hearts"]),
+  :visible-hands ([:bot ([14 "Diamonds"] [3 "Diamonds"])]),
+  :net-gain [[:bot 4.0] [:client -4.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" -400,
+   "bot_hole_cards" ["Ad" "3d"],
+   "board" ["6s" "6h" "6d" "7h" "Jh"],
+   "hole_cards" ["5s" "2d"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/kk/kk"}}
+ {:hands
+  [[:bot ([13 "Hearts"] [5 "Clubs"])]
+   [:client ([11 "Hearts"] [10 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Clubs"] [6 "Diamonds"] [3 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 200,
+   "bot_hole_cards" ["Kh" "5c"],
+   "board" ["Jc" "6d" "3d"],
+   "hole_cards" ["Jh" "Ts"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([7 "Hearts"] [6 "Spades"])]
+   [:client ([4 "Spades"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [11 "Clubs"] [9 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["7h" "6s"],
+   "board" ["Qd" "Jc" "9d"],
+   "hole_cards" ["4s" "2h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([3 "Clubs"] [2 "Clubs"])]
+   [:client ([6 "Clubs"] [3 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Clubs"] [12 "Spades"] [8 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["3c" "2c"],
+   "board" ["Kc" "Qs" "8s"],
+   "hole_cards" ["6c" "3s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([12 "Clubs"] [7 "Diamonds"])]
+   [:client ([9 "Spades"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([10 "Hearts"] [5 "Spades"] [5 "Hearts"] [13 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Qc" "7d"],
+   "board" ["Th" "5s" "5h" "Ks"],
+   "hole_cards" ["9s" "2s"],
+   "client_pos" 0,
+   "action" "b200c/kk/b19800f"}}
+ {:hands
+  [[:bot ([14 "Clubs"] [12 "Clubs"])]
+   [:client ([7 "Diamonds"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 8.0]] [:client ["Call" 8.0]]]
+   [[:client ["Check" 0.0]]
+    [:bot ["Bet" 24.0]]
+    [:client ["Call" 24.0]]]],
+  :visible-cards
+  ([14 "Diamonds"]
+   [11 "Clubs"]
+   [4 "Hearts"]
+   [12 "Spades"]
+   [3 "Spades"]),
+  :visible-hands ([:bot ([14 "Clubs"] [12 "Clubs"])]),
+  :net-gain [[:bot 36.0] [:client -36.0]],
+  :r
+  {"baseline_winnings" -3500,
+   "winnings" -3600,
+   "bot_hole_cards" ["Ac" "Qc"],
+   "board" ["Ad" "Jc" "4h" "Qs" "3s"],
+   "hole_cards" ["7d" "2s"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/kb800c/kb2400c"}}
+ {:hands
+  [[:bot ([10 "Diamonds"] [4 "Diamonds"])]
+   [:client ([11 "Diamonds"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Hearts"] [8 "Clubs"] [3 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Td" "4d"],
+   "board" ["9h" "8c" "3d"],
+   "hole_cards" ["Jd" "2h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [6 "Hearts"])]
+   [:client ([9 "Diamonds"] [7 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Hearts"] [11 "Diamonds"] [3 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Js" "6h"],
+   "board" ["Qh" "Jd" "3d"],
+   "hole_cards" ["9d" "7d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [13 "Diamonds"])]
+   [:client ([9 "Spades"] [5 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([7 "Clubs"] [6 "Spades"] [2 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Ad" "Kd"],
+   "board" ["7c" "6s" "2c"],
+   "hole_cards" ["9s" "5d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([8 "Spades"] [3 "Clubs"])]
+   [:client ([12 "Spades"] [3 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["8s" "3c"],
+   "board" [],
+   "hole_cards" ["Qs" "3d"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([12 "Hearts"] [12 "Clubs"])]
+   [:client ([9 "Hearts"] [5 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Call" 198.0]]]
+   []
+   []
+   []],
+  :visible-cards
+  ([14 "Hearts"] [5 "Spades"] [5 "Clubs"] [9 "Spades"] [4 "Clubs"]),
+  :visible-hands ([:client ([9 "Hearts"] [5 "Diamonds"])]),
+  :net-gain [[:bot -200.0] [:client 200.0]],
+  :r
+  {"baseline_winnings" 19200,
+   "winnings" 20000,
+   "bot_hole_cards" ["Qh" "Qc"],
+   "board" ["Ah" "5s" "5c" "9s" "4c"],
+   "hole_cards" ["9h" "5d"],
+   "client_pos" 0,
+   "action" "b200b20000c///"}}
+ {:hands
+  [[:bot ([14 "Clubs"] [12 "Spades"])]
+   [:client ([8 "Spades"] [8 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 15.46]] [:bot ["Call" 15.46]]]
+   [[:client ["All-In" 182.54]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Hearts"] [6 "Spades"] [6 "Hearts"] [12 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -17.460000000000008] [:client 17.45999999999998]],
+  :r
+  {"baseline_winnings" 2346,
+   "winnings" 1746,
+   "bot_hole_cards" ["Ac" "Qs"],
+   "board" ["Ah" "6s" "6h" "Qd"],
+   "hole_cards" ["8s" "8h"],
+   "client_pos" 0,
+   "action" "b200c/b1546c/b18254f"}}
+ {:hands
+  [[:bot ([9 "Diamonds"] [2 "Diamonds"])]
+   [:client ([10 "Spades"] [6 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["All-In" 196.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Spades"] [10 "Diamonds"] [5 "Diamonds"] [13 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -4.0] [:client 4.0]],
+  :r
+  {"baseline_winnings" 1200,
+   "winnings" 400,
+   "bot_hole_cards" ["9d" "2d"],
+   "board" ["As" "Td" "5d" "Kh"],
+   "hole_cards" ["Ts" "6h"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/b19600f"}}
+ {:hands
+  [[:bot ([11 "Hearts"] [9 "Clubs"])]
+   [:client ([6 "Diamonds"] [3 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Jh" "9c"],
+   "board" [],
+   "hole_cards" ["6d" "3s"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([5 "Spades"] [2 "Diamonds"])]
+   [:client ([5 "Clubs"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["5s" "2d"],
+   "board" [],
+   "hole_cards" ["5c" "2s"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([7 "Clubs"] [4 "Hearts"])]
+   [:client ([8 "Spades"] [3 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["7c" "4h"],
+   "board" [],
+   "hole_cards" ["8s" "3d"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([11 "Hearts"] [8 "Spades"])]
+   [:client ([12 "Diamonds"] [6 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([13 "Spades"] [9 "Hearts"] [2 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["Jh" "8s"],
+   "board" ["Ks" "9h" "2d"],
+   "hole_cards" ["Qd" "6d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Spades"] [2 "Hearts"])]
+   [:client ([11 "Hearts"] [7 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Raise" 1.5]] [:client ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot 1.0] [:client -1.0]],
+  :r
+  {"baseline_winnings" -300,
+   "winnings" -100,
+   "bot_hole_cards" ["As" "2h"],
+   "board" [],
+   "hole_cards" ["Jh" "7s"],
+   "client_pos" 0,
+   "action" "b200f"}}
+ {:hands
+  [[:bot ([10 "Clubs"] [4 "Spades"])]
+   [:client ([11 "Clubs"] [5 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Diamonds"] [9 "Hearts"] [5 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Tc" "4s"],
+   "board" ["Ad" "9h" "5h"],
+   "hole_cards" ["Jc" "5s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [2 "Diamonds"])]
+   [:client ([13 "Diamonds"] [4 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 1.56]] [:bot ["Call" 1.56]]]
+   [[:client ["All-In" 196.44]] [:bot ["Call" 196.44]]]
+   []],
+  :visible-cards
+  ([9 "Clubs"] [4 "Clubs"] [2 "Hearts"] [8 "Hearts"] [6 "Hearts"]),
+  :visible-hands ([:client ([13 "Diamonds"] [4 "Diamonds"])]),
+  :net-gain [[:bot -200.0] [:client 200.0]],
+  :r
+  {"baseline_winnings" 19800,
+   "winnings" 20000,
+   "bot_hole_cards" ["Js" "2d"],
+   "board" ["9c" "4c" "2h" "8h" "6h"],
+   "hole_cards" ["Kd" "4d"],
+   "client_pos" 0,
+   "action" "b200c/b156c/b19644c/"}}
+ {:hands
+  [[:bot ([9 "Clubs"] [6 "Hearts"])]
+   [:client ([5 "Clubs"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([5 "Hearts"] [3 "Spades"] [3 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["9c" "6h"],
+   "board" ["5h" "3s" "3h"],
+   "hole_cards" ["5c" "2s"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([9 "Diamonds"] [4 "Diamonds"])]
+   [:client ([11 "Clubs"] [9 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["9d" "4d"],
+   "board" [],
+   "hole_cards" ["Jc" "9s"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [5 "Clubs"])]
+   [:client ([12 "Diamonds"] [8 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Raise" 1.5]] [:client ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot 1.0] [:client -1.0]],
+  :r
+  {"baseline_winnings" 100,
+   "winnings" -100,
+   "bot_hole_cards" ["Js" "5c"],
+   "board" [],
+   "hole_cards" ["Qd" "8c"],
+   "client_pos" 0,
+   "action" "b200f"}}
+ {:hands
+  [[:bot ([11 "Diamonds"] [4 "Clubs"])]
+   [:client ([13 "Spades"] [12 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Call" 198.0]]]
+   []
+   []],
+  :visible-cards
+  ([11 "Clubs"] [8 "Spades"] [4 "Diamonds"] [12 "Hearts"] [5 "Clubs"]),
+  :visible-hands
+  ([:bot ([11 "Diamonds"] [4 "Clubs"])]
+   [:client ([13 "Spades"] [12 "Spades"])]),
+  :net-gain [[:bot 200.0] [:client -200.0]],
+  :r
+  {"baseline_winnings" -20200,
+   "winnings" -20000,
+   "bot_hole_cards" ["Jd" "4c"],
+   "board" ["Jc" "8s" "4d" "Qh" "5c"],
+   "hole_cards" ["Ks" "Qs"],
+   "client_pos" 0,
+   "action" "b200c/b19800c//"}}
+ {:hands
+  [[:bot ([14 "Spades"] [2 "Diamonds"])]
+   [:client ([14 "Diamonds"] [11 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([9 "Clubs"] [8 "Hearts"] [4 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -400,
+   "winnings" 200,
+   "bot_hole_cards" ["As" "2d"],
+   "board" ["9c" "8h" "4s"],
+   "hole_cards" ["Ad" "Jc"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([8 "Clubs"] [3 "Spades"])]
+   [:client ([9 "Spades"] [7 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["8c" "3s"],
+   "board" [],
+   "hole_cards" ["9s" "7d"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([14 "Hearts"] [11 "Clubs"])]
+   [:client ([13 "Spades"] [8 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Hearts"] [9 "Hearts"] [2 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ah" "Jc"],
+   "board" ["Qh" "9h" "2c"],
+   "hole_cards" ["Ks" "8h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [2 "Spades"])]
+   [:client ([11 "Diamonds"] [7 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Raise" 1.5]] [:client ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot 1.0] [:client -1.0]],
+  :r
+  {"baseline_winnings" -500,
+   "winnings" -100,
+   "bot_hole_cards" ["Js" "2s"],
+   "board" [],
+   "hole_cards" ["Jd" "7h"],
+   "client_pos" 0,
+   "action" "b200f"}}
+ {:hands
+  [[:bot ([6 "Spades"] [3 "Spades"])]
+   [:client ([10 "Clubs"] [2 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Diamonds"] [9 "Clubs"] [8 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 200,
+   "bot_hole_cards" ["6s" "3s"],
+   "board" ["Qd" "9c" "8h"],
+   "hole_cards" ["Tc" "2h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([7 "Clubs"] [4 "Spades"])]
+   [:client ([9 "Spades"] [5 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["7c" "4s"],
+   "board" [],
+   "hole_cards" ["9s" "5d"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([12 "Diamonds"] [6 "Hearts"])]
+   [:client ([9 "Diamonds"] [8 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Clubs"] [10 "Diamonds"] [4 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" 200,
+   "bot_hole_cards" ["Qd" "6h"],
+   "board" ["Jc" "Td" "4c"],
+   "hole_cards" ["9d" "8h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Diamonds"] [6 "Hearts"])]
+   [:client ([13 "Hearts"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Raise" 1.5]] [:client ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot 1.0] [:client -1.0]],
+  :r
+  {"baseline_winnings" -300,
+   "winnings" -100,
+   "bot_hole_cards" ["Ad" "6h"],
+   "board" [],
+   "hole_cards" ["Kh" "2c"],
+   "client_pos" 0,
+   "action" "b200f"}}
+ {:hands
+  [[:bot ([5 "Spades"] [4 "Hearts"])]
+   [:client ([13 "Diamonds"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Hearts"] [4 "Clubs"] [2 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["5s" "4h"],
+   "board" ["Ah" "4c" "2s"],
+   "hole_cards" ["Kd" "6c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Clubs"] [5 "Clubs"])]
+   [:client ([13 "Diamonds"] [11 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -600,
+   "winnings" 200,
+   "bot_hole_cards" ["Jc" "5c"],
+   "board" [],
+   "hole_cards" ["Kd" "Js"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([4 "Diamonds"] [2 "Hearts"])]
+   [:client ([11 "Clubs"] [5 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["4d" "2h"],
+   "board" [],
+   "hole_cards" ["Jc" "5c"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([14 "Clubs"] [4 "Diamonds"])]
+   [:client ([12 "Diamonds"] [2 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]]
+    [:client ["All-In" 199.0]]
+    [:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ac" "4d"],
+   "board" [],
+   "hole_cards" ["Qd" "2s"],
+   "client_pos" 0,
+   "action" "b200b20000f"}}
+ {:hands
+  [[:bot ([9 "Hearts"] [9 "Clubs"])]
+   [:client ([11 "Hearts"] [8 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Bet" 2.0]] [:client ["Call" 2.0]]]
+   [[:client ["Check" 0.0]]
+    [:bot ["Bet" 8.0]]
+    [:client ["Fold" 0.0]]]],
+  :visible-cards
+  ([14 "Hearts"] [9 "Diamonds"] [3 "Clubs"] [8 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot 4.0] [:client -4.0]],
+  :r
+  {"baseline_winnings" -200,
+   "winnings" -400,
+   "bot_hole_cards" ["9h" "9c"],
+   "board" ["Ah" "9d" "3c" "8s"],
+   "hole_cards" ["Jh" "8d"],
+   "client_pos" 0,
+   "action" "b200c/kb200c/kb800f"}}
+ {:hands
+  [[:bot ([14 "Hearts"] [12 "Spades"])]
+   [:client ([8 "Diamonds"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([8 "Clubs"] [5 "Hearts"] [4 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 300,
+   "winnings" 200,
+   "bot_hole_cards" ["Ah" "Qs"],
+   "board" ["8c" "5h" "4h"],
+   "hole_cards" ["8d" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([14 "Hearts"] [14 "Clubs"])]
+   [:client ([7 "Spades"] [4 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([8 "Spades"] [7 "Hearts"] [6 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" -1400,
+   "winnings" 200,
+   "bot_hole_cards" ["Ah" "Ac"],
+   "board" ["8s" "7h" "6h"],
+   "hole_cards" ["7s" "4c"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([11 "Spades"] [3 "Clubs"])]
+   [:client ([14 "Spades"] [2 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 1.22]] [:bot ["Call" 1.22]]]
+   [[:client ["Bet" 169.4]]
+    [:bot ["All-In" 196.78]]
+    [:client ["Call" 27.379999999999995]]]
+   []],
+  :visible-cards
+  ([11 "Hearts"]
+   [10 "Diamonds"]
+   [8 "Hearts"]
+   [4 "Diamonds"]
+   [5 "Clubs"]),
+  :visible-hands ([:bot ([11 "Spades"] [3 "Clubs"])]),
+  :net-gain [[:bot 200.0] [:client -200.0]],
+  :r
+  {"baseline_winnings" -19800,
+   "winnings" -20000,
+   "bot_hole_cards" ["Js" "3c"],
+   "board" ["Jh" "Td" "8h" "4d" "5c"],
+   "hole_cards" ["As" "2c"],
+   "client_pos" 0,
+   "action" "b200c/b122c/b16940b19678c/"}}
+ {:hands
+  [[:bot ([7 "Clubs"] [4 "Hearts"])]
+   [:client ([4 "Clubs"] [3 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history [[[:bot ["Fold" 0.0]]]],
+  :visible-cards (),
+  :visible-hands [],
+  :net-gain [[:bot -0.5] [:client 0.5]],
+  :r
+  {"baseline_winnings" 0,
+   "winnings" 50,
+   "bot_hole_cards" ["7c" "4h"],
+   "board" [],
+   "hole_cards" ["4c" "3s"],
+   "client_pos" 0,
+   "action" "f"}}
+ {:hands
+  [[:bot ([12 "Hearts"] [11 "Hearts"])]
+   [:client ([7 "Clubs"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Check" 0.0]] [:bot ["Check" 0.0]]]
+   [[:client ["Bet" 4.76]] [:bot ["Fold" 0.0]]]],
+  :visible-cards
+  ([7 "Hearts"] [6 "Diamonds"] [4 "Clubs"] [14 "Diamonds"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 3800,
+   "winnings" 200,
+   "bot_hole_cards" ["Qh" "Jh"],
+   "board" ["7h" "6d" "4c" "Ad"],
+   "hole_cards" ["7c" "6c"],
+   "client_pos" 0,
+   "action" "b200c/kk/b476f"}}
+ {:hands
+  [[:bot ([10 "Hearts"] [6 "Clubs"])]
+   [:client ([13 "Spades"] [3 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 144.06]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Clubs"] [6 "Hearts"] [3 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Th" "6c"],
+   "board" ["Jc" "6h" "3s"],
+   "hole_cards" ["Ks" "3c"],
+   "client_pos" 0,
+   "action" "b200c/b14406f"}}
+ {:hands
+  [[:bot ([12 "Clubs"] [9 "Clubs"])]
+   [:client ([13 "Clubs"] [4 "Hearts"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([12 "Hearts"] [11 "Diamonds"] [7 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["Qc" "9c"],
+   "board" ["Qh" "Jd" "7s"],
+   "hole_cards" ["Kc" "4h"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([6 "Diamonds"] [3 "Hearts"])]
+   [:client ([14 "Hearts"] [6 "Clubs"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 24.16]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([11 "Hearts"] [9 "Diamonds"] [7 "Spades"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 400,
+   "winnings" 200,
+   "bot_hole_cards" ["6d" "3h"],
+   "board" ["Jh" "9d" "7s"],
+   "hole_cards" ["Ah" "6c"],
+   "client_pos" 0,
+   "action" "b200c/b2416f"}}
+ {:hands
+  [[:bot ([10 "Spades"] [7 "Clubs"])]
+   [:client ([13 "Spades"] [7 "Diamonds"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["All-In" 198.0]] [:bot ["Fold" 0.0]]]],
+  :visible-cards ([14 "Hearts"] [11 "Spades"] [11 "Hearts"]),
+  :visible-hands [],
+  :net-gain [[:bot -2.0] [:client 2.0]],
+  :r
+  {"baseline_winnings" 600,
+   "winnings" 200,
+   "bot_hole_cards" ["Ts" "7c"],
+   "board" ["Ah" "Js" "Jh"],
+   "hole_cards" ["Ks" "7d"],
+   "client_pos" 0,
+   "action" "b200c/b19800f"}}
+ {:hands
+  [[:bot ([7 "Spades"] [6 "Hearts"])]
+   [:client ([10 "Spades"] [6 "Spades"])]],
+  :playerIDs [:bot :client],
+  :action-history
+  [[[:bot ["Raise" 1.5]] [:client ["Call" 1.0]]]
+   [[:client ["Bet" 27.75]]
+    [:bot ["Raise" 55.5]]
+    [:client ["Call" 27.75]]]
+   [[:client ["Bet" 82.94]]
+    [:bot ["All-In" 142.5]]
+    [:client ["Fold" 0.0]]]],
+  :visible-cards
+  ([9 "Diamonds"] [8 "Hearts"] [4 "Hearts"] [10 "Clubs"]),
+  :visible-hands [],
+  :net-gain [[:bot 140.44] [:client -140.44]],
+  :r
+  {"baseline_winnings" -12844,
+   "winnings" -14044,
+   "bot_hole_cards" ["7s" "6h"],
+   "board" ["9d" "8h" "4h" "Tc"],
+   "hole_cards" ["Ts" "6s"],
+   "client_pos" 0,
+   "action" "b200c/b2775b5550c/b8294b14250f"}})

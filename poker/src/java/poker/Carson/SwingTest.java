@@ -1,3 +1,7 @@
+/*------------------------------------------------------------|  
+| THIS FILE IS OLD AND NOT USED ANYMORE. SEE GUI.JAVA INSTEAD |
+--------------------------------------------------------------*/
+
 //package poker.Carson;
 
 // import javax.swing.*;

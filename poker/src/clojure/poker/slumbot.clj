@@ -6,7 +6,8 @@
             [poker.utils :as utils]
             [poker.headsup :as headsup]
             [poker.onehot :as onehot]
-            [poker.ndarray :as ndarray]))
+            [poker.ndarray :as ndarray]
+            [poker.transformer :as transformer]))
 
 (require-python '[requests :as requests])
 
@@ -68,6 +69,7 @@
      (handle-r-error r {:token token})
      [token r]))
   ([] (slumbot-new-hand (slumbot-login))))
+
 
 (defn slumbot-send-action
   "Send an incremental action to the slumbot api using the login token\\
@@ -428,10 +430,16 @@
                                                     game-state))]
           (recur (parse-incr-action r game-state game-encoding)))))))
 
-#_(with-open [m (ndarray/new-base-manager)]
-  (let [g (play-game-slumbot utils/random-agent m)]
-    (println (:game-encoding g))
-    (clojure.pprint/pprint g)))
+#_(transformer/from-seeds 
+ {:seeds [1]
+  :id :bot
+  :stdev 0.005}
+ (fn [& {:keys [model manager]}]
+   (let [{token :token
+          agent :agent
+          ge :game-encoding
+          gh :game-history} (play-game-slumbot (transformer/as-agent model) manager)]
+     (clojure.pprint/pprint gh))))
 
 (defn process-net-gain 
   "Process client's net-gain as an average amount won per game and possibly a 
@@ -477,6 +485,27 @@
                 game-encoding
                 game-history))))))
 
+(defn transformer-vs-slumbot
+  "Plays a transformer model represented as an individual {:seeds :id :stdev}
+   against slumbot and returns the results"
+  [ind n-games & {:keys [as-list? from-block?]}]
+  (transformer/from-seeds
+   (assoc ind :id :client)
+   from-block?
+   (fn [& {:keys [model manager]}]
+     (let [g (iterate-games-slumbot (transformer/as-agent model)
+                                    n-games
+                                    :manager manager
+                                    :as-list? as-list?)]
+       g))))
+
+#_(transformer-vs-slumbot
+   {:seeds [1]
+    :id :client
+    :stdev 0.005}
+   5
+   :from-block? true)
+
 #_(iterate-games-slumbot utils/random-agent 5 :as-list? true)
 
 (defn slumbot-rollout
@@ -486,22 +515,44 @@
    num-samples: number of times to sample and print to file\\
    num-iter: number of games played per sample\\
    -> game-history"
-  [agent txt num-samples num-iter & {:keys [manager as-list?]}]
-  (let [manager (or manager (ndarray/new-base-manager))]
-    (loop [i 0
+  [agent txt num-samples num-games & {:keys [manager as-list? transformer? from-block? random-seed block-size]}]
+  (when random-seed (utils/initialize-random-block (int block-size) random-seed))
+  (loop [i 0
          token (slumbot-login)]
     (if (= i num-samples)
       nil
       (let [{token :token
-             game-history :game-history} (iterate-games-slumbot agent num-iter
-                                                                :manager manager
-                                                                :token token
-                                                                :as-list? as-list?)]
-        (spit txt
-              (with-out-str (pprint/pprint game-history))
-              :append true)
-        (println i)
-        (recur (inc i) token))))))
+             game-history :game-history} (try ((if transformer?
+                                                 transformer-vs-slumbot
+                                                 iterate-games-slumbot) agent num-games
+                                                                        :manager manager
+                                                                        :token token
+                                                                        :as-list? as-list?
+                                                                        :from-block? from-block?)
+                                              (catch Exception e (do (println e) nil)))]
+        (if (and token game-history)
+          (do (spit txt
+                    (with-out-str (pprint/pprint game-history))
+                    :append true)
+              (println i)
+              (recur (inc i) token))
+          (do (println "Exception caught in versus")
+              nil #_(recur i (slumbot-login))))))))
+
+#_(slumbot-rollout {:seeds [1]
+                    :id :p0
+                    :stdev 0.005}
+                   "test.txt"
+                   2
+                   2
+                   :transformer? true
+                   :as-list? true
+                   :from-block? true
+                   :random-seed 1
+                   :block-size 1e7)
+
+
+
 
 
 (defn fill-missing-hands
@@ -534,6 +585,23 @@
                  (read-string)
                  (mapcat identity)
                  (pprint/pprint))))))
+
+(defn net-gain
+  "Given the name of a file in which slumbot history is stored, 
+   computes statistics for the net gain of the agent playing against slumbot.\\
+   Optionally mapcats multiple histories into one as preprocessing"
+  [filename & {:keys [as-list? mapcat?]}]
+  (when mapcat? (mapcat-slumbot-history filename))
+  (let [ng (map (comp :client
+                      (partial into {})
+                      :net-gain) (read-string (slurp filename)))]
+    (if as-list?
+      {:mean (utils/mean ng)
+       :stdev (utils/stdev ng)}
+      (utils/mean ng))))
+
+#_(net-gain "slumbot-history-random.txt" :mapcat? true :as-list? true)
+
 
 
 ;;computing slumbot statistics

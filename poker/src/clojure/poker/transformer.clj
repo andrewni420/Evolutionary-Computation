@@ -18,6 +18,7 @@
            ai.djl.Model
            ai.djl.ndarray.NDArray
            ai.djl.ndarray.NDList
+           ai.djl.ndarray.index.NDIndex
            poker.Indexing
            ai.djl.ndarray.types.DataType
            ai.djl.ndarray.types.Shape
@@ -76,11 +77,11 @@
 ;;; Example Usage:                                   ;;;
 #_(with-open [manager (nd/new-base-manager)]
     (let [model (model-from-seeds {:seeds [1] :id :p0}
-                      10
-                      manager
-                      1)]
+                                  10
+                                  manager
+                                  1)]
       (println model)
-    (.close (:model model))))
+      (.close (:model model))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -410,8 +411,8 @@
       #_(set-all-parameters m 1 float-array)
       #_(println (get-parameters m))
       (println (into [] (forward m (ndarray/ndlist manager
-                                           [[[1 2 3 4] [3 4 5 6]]]
-                                           [[[1 0] [1 1]]]))))))
+                                                   [[[1 2 3 4] [3 4 5 6]]]
+                                                   [[[1 0] [1 1]]]))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Manipulating Blocks    ;;
@@ -501,10 +502,10 @@
   [nnet parameter-map]
   (let [params (get-parameters nnet :as-array? true)]
     (run! #(.set (params %)
-                   (let [arr (parameter-map %)]
-                     (if (instance? (Class/forName "[F") arr)
-                       arr
-                       (float-array arr))))
+                 (let [arr (parameter-map %)]
+                   (if (instance? (Class/forName "[F") arr)
+                     arr
+                     (float-array arr))))
           (map first params))
     nnet))
 
@@ -588,11 +589,11 @@
   (assert (>= (count input-shape) 3) (str "Shape size too small. Must be at least [B F1 F2]. Shape: " input-shape))
   (let [m (mask-block manager input-shape :datatype datatype)]
     (set-parameter! m
-                            "01Multiplication_weight"
-                            (arrfn
-                             (flatten
-                              (ndarray/causal-mask (drop 1 input-shape)
-                                                   axis))))
+                    "01Multiplication_weight"
+                    (arrfn
+                     (flatten
+                      (ndarray/causal-mask (drop 1 input-shape)
+                                           axis))))
     (.freezeParameters m true)
     m))
 
@@ -806,22 +807,29 @@
 
 #_(with-open [manager (ndarray/new-base-manager)]
     (let [input-shapes (into-array Shape (map ndarray/shape [[1 4 4]
-                                                            [1 3 2]
-                                                            [7 3]
-                                                            [1 7 7]]))
-          model (transformer manager input-shapes
+                                                             [1 3 2]
+                                                             [7 3]
+                                                             [1 7 7]]))
+          {model :model
+           input-layer :input-layer
+           embedding :embedding} (transformer manager input-shapes
                              :d-model 10
                              :d-ff 20
                              :num-layers 1
                              :num-heads 2
                              :d-pe [4 3 3]
-                             :max-seq-length 10)]
-      (println (get-parameters model))
-      #_(println (into [] (forward model (ndlist manager
-                                                 [[[-1 -2 -3 -4] [-5 -6 -7 -8] [-1 -3 -5 -7] [1 1 1 1]]]
-                                                 [[[0 1] [1 0] [1 1]]]
-                                                 [[1 2 3] [2 3 4] [3 4 5] [4 5 6] [5 6 7] [6 7 8] [1 3 4]]
-                                                 (causal-mask [1 7 7] 0)))))))
+                             :max-seq-length 10
+                             :component-map? true)]
+      #_(println (get-parameters model))
+      (let [first-size (transduce (map #(.size %)) + (.getManagedArrays manager))]
+        (into [] (forward embedding (ndarray/ndlist manager
+                                              [[[-1 -2 -3 -4] [-5 -6 -7 -8] [-1 -3 -5 -7] [1 1 1 1]]]
+                                              [[[0 1] [1 0] [1 1]]]
+                                              #_[[1 2 3] [2 3 4] [3 4 5] [4 5 6] [5 6 7] [6 7 8] [1 3 4]]
+                                              #_(ndarray/causal-mask [1 7 7] 0))))
+      (println (.getManagedArrays manager)
+               (- (transduce (map #(.size %)) + (.getManagedArrays manager))
+                  first-size)))))
 
 
 
@@ -845,27 +853,44 @@
       (initialize-model model m "float" [1 2])
       (println (initialize-stdevs model m))))
 
+(def transformer-parameters
+  (volatile! {:d-model 64;;
+              :d-ff 256;;
+              :num-layers 6;;
+              :num-heads 8
+              :d-pe [16 16 16 16];;
+              :max-seq-length 512}))
+
 (defn current-transformer
   "The current transformer model being evolved. Subject to change based on 
    computing constraints, meta-evolution, and ablation studies.\\
    -> Block"
   [manager]
-  (transformer manager
-               (into-array Shape
-                           (map ndarray/shape
-                                [[1 256 onehot/state-length];;state
-                                 [1 256 onehot/action-length];;action
-                                 [1 512 4];;position
-                                 [1 512 512]]));;mask
-               :d-model 64
-               :d-ff 256
-               :num-layers 6
-               :num-heads 8
-               :d-pe [16 16 16 16]
-               :max-seq-length 512))
+  (apply transformer manager
+         (into-array Shape
+                     (map ndarray/shape
+                          [[1 256 onehot/state-length];;state
+                           [1 256 onehot/action-length];;action
+                           [1 512 4];;position
+                           [1 512 512]]));;mask
+         (mapcat identity (into [] @transformer-parameters))))
 
-(def initial-parameter-map
+#_(vreset! transformer-parameters
+           {:d-model 128;;
+            :d-ff 512;;
+            :num-layers 12;;
+            :num-heads 8
+            :d-pe [32 32 32 32];;
+            :max-seq-length 512})
+
+#_(with-open [m (ndarray/new-base-manager)]
+    (get-pcount (current-transformer m)))
+
+
+
+(defn parameter-map
   "The initial parameter map based on the current transformer"
+  []
   (with-open [m (ndarray/new-base-manager)]
     (let [t (current-transformer m)]
       (transduce (map (fn [[k v]] [k (float-array (.size v))]))
@@ -873,9 +898,18 @@
                  {}
                  (get-parameters t)))))
 
+(def initial-parameter-map
+  (volatile! (parameter-map)))
+
+(defn set-parameters
+  [pmap]
+  (vreset! transformer-parameters pmap)
+  (vreset! initial-parameter-map (parameter-map))
+  (System/gc))
+
 #_(with-open [manager (ndarray/new-base-manager)
               model (Model/newInstance "transformer")]
-    (let [s (into-array Shape [(nd/shape [1 2 3])])
+    (let [s (into-array Shape [(ndarray/shape [1 2 3])])
           arr [(ndarray/ndarray manager [[[1 2 3] [4 5 6]]])]
           l (linear 10)]
       (initialize-model l manager "float" s)
@@ -928,54 +962,54 @@
 
 
 #_(defn index-into-block
-  "Helper for indexing into a block of random noise. Returns updated indices\\
+    "Helper for indexing into a block of random noise. Returns updated indices\\
    indices: vector of indices into the block\\
    block: float array of random noise\\
    n: number of samples to take\\
    processing: postprocessing after summing all of the indexed numbers\\
    -> {:indices :result}"
-  [i-start indices ^floats block n & {:keys [processing]
-                                      :or {processing identity}}]
-  (let [N (alength block)
-        compute #(mod (* %1 %2) N)]
-    (loop [arr (transient [])
-           i 0
-           i-start i-start]
-      (if (= i n)
-        {:i-start i-start :result (persistent! arr)}
-        (recur (conj! arr
-                      (processing
-                       (transduce (map (comp (partial aget block)
-                                             (partial compute i-start)))
-                                  +
-                                  indices)))
-               (inc i)
-               (inc i-start))))))
+    [i-start indices ^floats block n & {:keys [processing]
+                                        :or {processing identity}}]
+    (let [N (alength block)
+          compute #(mod (* %1 %2) N)]
+      (loop [arr (transient [])
+             i 0
+             i-start i-start]
+        (if (= i n)
+          {:i-start i-start :result (persistent! arr)}
+          (recur (conj! arr
+                        (processing
+                         (transduce (map (comp (partial aget block)
+                                               (partial compute i-start)))
+                                    +
+                                    indices)))
+                 (inc i)
+                 (inc i-start))))))
 
 
 #_(defn index-into-block2
-  "Helper for indexing into a block of random noise. Returns updated indices\\
+    "Helper for indexing into a block of random noise. Returns updated indices\\
    indices: vector of indices into the block\\
    block: float array of random noise\\
    n: number of samples to take\\
    processing: postprocessing after summing all of the indexed numbers\\
    -> {:indices :result}"
-  [i-start ^ints indices ^floats block n & {:keys [processing]
+    [i-start ^ints indices ^floats block n & {:keys [processing]
                                               :or {processing identity}}]
-  (let [N (alength block)
-        compute #(mod (* %1 %2) N)
-        arr (float-array n)]
-    (loop [i 0
-           i-start i-start]
-      (if (= i n)
-        {:i-start i-start :result arr}
-        (do
-          (aset arr i
-                (float (processing
-                 (utils/indexedsum indices block
-                                   :processing (partial compute i-start)))))
-          (recur (inc i)
-                 (inc i-start)))))))
+    (let [N (alength block)
+          compute #(mod (* %1 %2) N)
+          arr (float-array n)]
+      (loop [i 0
+             i-start i-start]
+        (if (= i n)
+          {:i-start i-start :result arr}
+          (do
+            (aset arr i
+                  (float (processing
+                          (utils/indexedsum indices block
+                                            :processing (partial compute i-start)))))
+            (recur (inc i)
+                   (inc i-start)))))))
 
 ;;; I ended up having to make this code java, because clojure just wasn't cutting it,
 ;;; even with the two optimized examples above. I thought I was writing very optimized code,
@@ -988,7 +1022,7 @@
    stdev: number to multiply each sampled number by\\
    -> {:indices :result}"
   [i-start indices block n & {:keys [stdev]
-                                      :or {stdev 0.005}}]
+                              :or {stdev 0.005}}]
   {:i-start (+ i-start n)
    :result (Indexing/indexIntoBlock (int i-start)
                                     (int-array indices)
@@ -997,6 +1031,11 @@
                                     (float stdev))})
 
 #_(utils/initialize-random-block 1000000 1)
+
+#_(utils/initialize-random-block 2.5e8 1)
+
+#_(index-into-block 1 [-10 10] @utils/random-block 100)
+
 #_(time (do (dotimes [_ 10] (index-into-block 1  (range 100) @utils/random-block 100000)) nil))
 
 
@@ -1008,7 +1047,7 @@
          :parameter-map
          (let [indices (:parameter-seeds individual)]
            (loop [to-return (transient {})
-                  p initial-parameter-map
+                  p @initial-parameter-map
                   i 0]
              (if (empty? p)
                (persistent! to-return)
@@ -1032,7 +1071,7 @@
                                                            +
                                                            random))
                                               (count value))]))
-               initial-parameter-map)))
+               @initial-parameter-map)))
 
 (defn expand-param-seeds
   "Given an individual, expands its parameter seeds into a set of parameter weights
@@ -1042,56 +1081,32 @@
                  :or {stdev 1}}]
   (let [stdev (or (:stdev individual) stdev)]
     (if-let [random (and from-block? @utils/random-block)]
-    (expand-via-indexing individual random stdev)
-    (expand-via-sampling individual (map utils/random (:parameter-seeds individual)) stdev))))
+      (expand-via-indexing individual random stdev)
+      (expand-via-sampling individual (map utils/random (:parameter-seeds individual)) stdev))))
 
-#_
-    (loop [to-return (transient {})
-           p initial-parameter-map
-           i (:parameter-seeds individual)]
-      (if (empty? p)
-        (persistent! to-return)
-        (let [[k v] (first p)
-              {i :indices res :result} (index-into-block i random (count v))]
-          (recur (assoc to-return k res)
-                 (dissoc p k)
-                 i))))
+#_(loop [to-return (transient {})
+         p initial-parameter-map
+         i (:parameter-seeds individual)]
+    (if (empty? p)
+      (persistent! to-return)
+      (let [[k v] (first p)
+            {i :indices res :result} (index-into-block i random (count v))]
+        (recur (assoc to-return k res)
+               (dissoc p k)
+               i))))
 #_(let [stdev (or (:stdev individual) stdev)
-      randoms (map utils/random (:parameter-seeds individual))]
-  (assoc individual
-         :parameter-map
-         (into {}
-               (map (fn [[key value]]
-                      [key (utils/make-vector (fn []
-                                                (transduce (map #(* stdev (.nextGaussian %)))
-                                                           +
-                                                           randoms))
-                                              (count value))]))
-               initial-parameter-map)))
+        randoms (map utils/random (:parameter-seeds individual))]
+    (assoc individual
+           :parameter-map
+           (into {}
+                 (map (fn [[key value]]
+                        [key (utils/make-vector (fn []
+                                                  (transduce (map #(* stdev (.nextGaussian %)))
+                                                             +
+                                                             randoms))
+                                                (count value))]))
+                 initial-parameter-map)))
 
-#_(expand-param-seeds {:parameter-seeds [1]} :from-block? true)
-
-#_(utils/benchmark 1 (let [r (utils/random 1)]
-                       (loop [i 0]
-                         (if (= i 1000000)
-                           nil
-                           (do (.nextGaussian r)
-                               (recur (inc i)))))))
-;;;180 seconds to expand 100 seeds into 1000000 parameters each
-
-
-#_(utils/benchmark 1000000 (aget ^floats @a 12345))
-
-
-#_(let [v (float-array (let [r (utils/random 1)] 
-          (loop [i 0 
-                 res (transient [])]
-            (if (= i 100000)
-              (persistent! res)
-              (recur (inc i)
-                     (conj! res (.nextGaussian r)))))))]
-  (utils/benchmark 1000000 (aget ^floats v 12345)))
-;;;1-2 seconds to expand 100 seeds into 1000000 parameters each
 
 
 (def max-seq-length
@@ -1144,11 +1159,11 @@
                     :max-seq-length max-seq-length)
                    (expand-param-seeds :stdev 1)))
     (println (get-parameters (.getBlock (:model (model-from-seeds {:seeds [1]
-                                                                           :id :p0}
-                                                                          10
-                                                                          m
-                                                                          1
-                                                                          :from-block? true))))))
+                                                                   :id :p0}
+                                                                  10
+                                                                  m
+                                                                  1
+                                                                  :from-block? true))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Gameplay Interface   ;;
@@ -1201,6 +1216,8 @@
                       i)))))
 
 (defn parse-action-encoding
+  "Parse an action encoding into a sampled action type and a sampled action amount.\\
+   -> [type amount]"
   [encoding game-state & {:keys [buckets sample? need-softmax? need-exp?]
                           :or {buckets onehot/default-action-buckets
                                sample? true
@@ -1258,22 +1275,22 @@
    as a vector\\
    If the maximum sequence length n is odd, there will be at most ⌊n/2⌋ actions and ⌈n/2⌉ states\\
    -> [state actions positions mask]"
-  [state actions position mask max-seq-length]
-  (let [[state-shape action-shape position-shape] (map ndarray/get-shape [state actions position])
-        get-slice (fn [arr idx]
+  [^NDArray state ^NDArray actions ^NDArray position ^NDArray mask max-seq-length]
+  (let [[^Shape state-shape ^Shape action-shape ^Shape position-shape] (map ndarray/get-shape [state actions position])
+        get-slice (fn [^NDArray arr idx]
                     (if (zero? (.size arr))
                       (.create (.getManager arr) (.getShape arr))
-                      (.get arr (ndarray/ndindex (str "...," (int idx) ":,:")))))
-        position-slice (get-slice position
-                                  (max 0 (- (ndarray/get-axis position-shape -2)
-                                            max-seq-length)))
-        position-slice (if (= "PyTorch" (ai.djl.engine.Engine/getDefaultEngineName))
-                         (.toType position-slice DataType/INT32 false)
-                         position-slice)
+                      (.get arr ^NDIndex (ndarray/ndindex (str "...," (int idx) ":,:")))))
+        ^NDArray position-slice (get-slice position
+                                           (max 0 (- (ndarray/get-axis position-shape -2)
+                                                     max-seq-length)))
+        ^NDArray position-slice (if (= "PyTorch" (ai.djl.engine.Engine/getDefaultEngineName))
+                                  (.toType position-slice DataType/INT32 false)
+                                  position-slice)
         position-slice (minus-baseline position-slice (.getManager position-slice))
         mask-start (max 0 (- (ndarray/get-axis (ndarray/get-shape mask) -2)
                              (ndarray/get-axis (ndarray/get-shape position-slice) -2)))
-        mask-slice (.get mask (ndarray/ndindex (str "...," mask-start ":," mask-start ":")))]
+        mask-slice (.get mask ^NDIndex (ndarray/ndindex (str "...," mask-start ":," mask-start ":")))]
     [(get-slice state (max 0 (- (ndarray/get-axis state-shape -2)
                                 (Math/ceil (/ max-seq-length 2.0)))))
      (get-slice actions (max 0 (- (ndarray/get-axis action-shape -2)
@@ -1282,38 +1299,40 @@
      mask-slice]))
 
 
-#_(with-open [manager (nd/new-base-manager)
-              model (Model/newInstance "transformer")]
-    (let [actions (ndarray/ndarray manager float-array (ndarray/identical-array [10 onehot/action-length] 1))
-          state (ndarray/ndarray manager float-array (ndarray/identical-array [10 onehot/state-length] 1))
-          position (ndarray/ndarray manager int-array (ndarray/identical-array [20 onehot/position-length] 1))
-          mask (ndarray/ndarray manager float-array (ndarray/identical-array [20 20] 1))
-          embedded (ndarray/ndarray manager float-array (ndarray/identical-array [1 64] 1))
-          {embedding :embedding
-           pos-encoding :pos-encoding
-           input-layer :input-layer
-           core-layer :core-layer
-           output-layer :output-layer
-           m :model} (transformer manager
-                                  (into-array Shape
-                                              (map nd/new-shape
-                                                   [[1 256 onehot/state-length];;state
-                                                    [1 256 onehot/action-length];;action
-                                                    [1 512 4];;position
-                                                    [1 512 512]]));;mask
-                                  :d-model 64
-                                  :d-ff 256
-                                  :num-layers 6
-                                  :num-heads 8
-                                  :d-pe [16 16 16 16]
-                                  :max-seq-length 512
-                                  :component-map? true)]
-      (.setBlock model m)
-      #_(println (forward m (ndarray/ndlist manager state actions position mask)))
-      (let [first-arrays (.getManagedArrays manager)]
-        (with-open [p (.newPredictor model (TransformerTranslator. manager))]
+
+#_(with-open [manager (ndarray/new-base-manager)
+            model (Model/newInstance "transformer")]
+  (let [actions (ndarray/ndarray manager float-array (ndarray/identical-array [1 100 onehot/action-length] 1))
+        state (ndarray/ndarray manager float-array (ndarray/identical-array [1 100 onehot/state-length] 1))
+        position (ndarray/ndarray manager int-array (ndarray/identical-array [1 200 onehot/position-length] 1))
+        mask (ndarray/ndarray manager float-array (ndarray/identical-array [1 200 200] 1))
+        {embedding :embedding
+         pos-encoding :pos-encoding
+         input-layer :input-layer
+         core-layer :core-layer
+         output-layer :output-layer
+         m :model} (transformer manager
+                                (into-array Shape
+                                            (map ndarray/shape
+                                                 [[1 256 onehot/state-length];;state
+                                                  [1 256 onehot/action-length];;action
+                                                  [1 512 4];;position
+                                                  [1 512 512]]));;mask
+                                :d-model 64
+                                :d-ff 256
+                                :num-layers 1
+                                :num-heads 8
+                                :d-pe [16 16 16 16]
+                                :max-seq-length 512
+                                :component-map? true)]
+    (.setBlock model m)
+    (let [first-size (transduce (map #(.size %)) + (.getManagedArrays manager))]
+      (println (forward (sequential-block input-layer core-layer) (ndarray/ndlist manager state actions position mask)))
+      #_(with-open [p (.newPredictor model (TransformerTranslator. manager))]
           (println "prediction: " (map vec (into [] (.predict p [state actions position mask])))))
-        (println (- (count (.getManagedArrays manager)) (count first-arrays))))))
+      #_(println (.getManagedArrays manager))
+      (println "Additional size: " (- (transduce (map #(.size %)) + (.getManagedArrays manager))
+                                      first-size)))))
 
 
 #_(with-open [manager (nd/new-base-manager)
@@ -1346,7 +1365,7 @@
            positions :position} game-encoding
           {mask :mask
            max-seq-length :max-seq-length
-           model :model
+           ^Model model :model
            manager :manager} individual
           input (slice-inputs state
                               actions
@@ -1356,7 +1375,7 @@
           encoded-action (utils/sfirst
                           (with-open [p (.newPredictor
                                          model
-                                         (TransformerTranslator. manager))]
+                                         ^TransformerTranslator (TransformerTranslator. manager))]
                             (.batchPredict p [input])))]
       (parse-action-encoding encoded-action game-state))))
 
@@ -1428,7 +1447,22 @@
                                                              [[[1 2 3] [2 3 4] [3 4 5] [4 5 6] [5 6 7] [6 7 8] [1 3 4]]]
                                                              (causal-mask [1 7 7] 1))))))))
 
-
+(defmacro from-seeds
+  "Given an unexpanded individual {:seeds :id :stdev}, expands the individual using a new base manager,
+   and wraps a call to the given function and arguments with optional arguments :model :manager for the expanded individual
+   and manager in a with-open expression that closes the model."
+  [individual from-block? f & args]
+  `(with-open [manager# (ndarray/new-base-manager)]
+     (let [max-seq-length# (:max-seq-length @transformer-parameters)
+           mask# (ndarray/ndarray manager# (ndarray/causal-mask [1 max-seq-length# max-seq-length#] -2))
+           model# (model-from-seeds ~individual
+                                    max-seq-length#
+                                    manager#
+                                    mask#
+                                    :stdev 0.005
+                                    :from-block? ~from-block?)]
+       (with-open [_model# (utils/make-closeable model# close-individual)]
+         (~f ~@args :model model# :manager manager#)))))
 
 
 

@@ -154,6 +154,23 @@ public class TransformerDecoderBlock extends AbstractBlock {
         // normalize result
         NDList outputWithNorm = outputNorm.forward(ps, new NDList(outputWithResidual), training);
 
+        attentionOutput.close();
+        attentionOutputAfterDropout.close();
+        withResidual.close();
+        normalized.close();
+        afterFullyConnected.close();
+        afterFullyConnectedDropout.close();
+        outputWithResidual.close();
+        attentionOutput.close();
+
+        attentionOutput.detach();
+        attentionOutputAfterDropout.detach();
+        withResidual.detach();
+        normalized.detach();
+        afterFullyConnected.detach();
+        afterFullyConnectedDropout.detach();
+        outputWithResidual.detach();
+
         // add mask back to result
         outputWithNorm.add(inputs.get(1));
         return outputWithNorm;

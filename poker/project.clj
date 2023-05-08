@@ -15,18 +15,23 @@
                  [ai.djl.mxnet/mxnet-engine "0.22.1"]
                  [org.slf4j/slf4j-api "2.0.7"]
                  [org.slf4j/slf4j-simple "2.0.7"]
-                 [org.apache.commons/commons-math3 "3.6.1"]
-                 ]
+                 [org.apache.commons/commons-math3 "3.6.1"]]
   :exclusions []
   :main ^:skip-aot poker.core
   :source-paths      ["src/clojure"]
   :java-source-paths ["src/java"]
   :target-path "target/%s"
-  :jvm-opts ["-Dai.djl.pytorch.graph_optimizer=false" 
+  :jvm-opts ["-Dai.djl.pytorch.graph_optimizer=false"
              "-Dai.djl.pytorch.num_interop_threads=116"
+             "-Dai.djl.pytorch.num_intraop_threads=1"
              "-Dai.djl.disable_close_resource_on_finalize=true"
              "-Xmx100g"
-             "-XX:+UseSerialGC"]
+             "-XX:MaxGCPauseMillis=100"
+             ;;"-Dcom.sun.management.jmxremote"
+             ;;"-Dcom.sun.management.jmxremote.port=1089"
+             ;;"-Dcom.sun.management.jmxremote.ssl=false"
+             ;;"-Dcom.sun.management.jmxremote.authenticate=false"
+             ]
   :profiles {:precomp {:source-paths ["src/pre/clojure"]
                        :aot [poker.headsup
                              poker.utils
@@ -35,5 +40,5 @@
                              poker.onehot]}})
 
 
-       
-           
+
+
