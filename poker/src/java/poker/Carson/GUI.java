@@ -49,23 +49,22 @@ public class GUI extends JPanel implements ActionListener {
      * TO DO: 
      * Use legal move logic to determine which buttons to display -> button.setEnabled(false)
      * Hook up java to clojure to get game state
-     * Update the bet spinner to reflect what the max bet could be
      */
 
 
     // Constructor
     public GUI() {
         player_hand[0] = "ace spades";
-        player_hand[1] = "ace hearts";
+        player_hand[1] = "9 diamonds";
 
         ai_hand[0] = "ace clubs";
         ai_hand[1] = "ace diamonds";
 
         community_cards[0] = "10 diamonds";
-        community_cards[1] = "9 diamonds";
-        community_cards[2] = "8 diamonds";
-        community_cards[3] = "7 diamonds";
-        community_cards[4] = "6 diamonds";
+        community_cards[1] = "9 hearts";
+        community_cards[2] = "2 clubs";
+        community_cards[3] = "jack diamonds";
+        community_cards[4] = "6 spades";
 
 
         // Set layout manager
@@ -271,7 +270,7 @@ public class GUI extends JPanel implements ActionListener {
 
             boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
 
-            drawCommunityCards(round);
+            drawCommunityCards("River");
 
             boardPanel.add(communityCardsPanel);
 
@@ -292,8 +291,7 @@ public class GUI extends JPanel implements ActionListener {
             b6.setEnabled(true);
             b7.setEnabled(true);
             b8.setEnabled(true);
-            // b9.setEnabled(false);
-            b9.setEnabled(true);
+            b9.setEnabled(false);
             b10.setEnabled(true);
 
             // Refresh the board
