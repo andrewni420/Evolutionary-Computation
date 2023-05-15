@@ -8,7 +8,9 @@ The main function of the repository. Runs the evolutionary loop and outputs a tr
 
 ## transformer.clj
 
-Implementation of the transformer neural network. Functions for model creation, weight initialization, weight manipulation, and inference.
+Implementation of the transformer neural network. Functions for model creation, weight initialization, weight manipulation, and inference. Structure is given below:
+
+![transformer](https://github.com/andrewni420/Evolutionary-Computation/assets/77020120/db990235-f6b1-461a-9597-181269159aa6)
 
 ## ndarray.clj
 
@@ -46,10 +48,9 @@ An improved implementation of the top-k softmax, which produces 0s upon being pa
 A Transformer Decoder Block. Applies an attention mask to its inputs, and passes the attention mask along in its output to be used by the next decoder block in the layer
 ### Embedding.java
 Interface specifying a reverse method that implements the output unembedding in weight sharing. See UnembedBlock.java
+  
 ### UnembedBlock.java
 Implementation of weight sharing, as proposed in https://arxiv.org/pdf/1608.05859.pdf. Inputs are multiplied by the transpose of the embedding matrix. 
-### Utils.java
-I think this is unused and should be deleted. I will check later.
 
 ## headsup.clj
 
