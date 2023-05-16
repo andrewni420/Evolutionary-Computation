@@ -292,7 +292,7 @@ public class GUI extends JPanel implements ActionListener {
 
             // Draw player cards
             for (int i=0;i<player_hand.length;i++){
-                drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf('_') + 1), player_hand[i].substring(0, player_hand[i].indexOf('_')).toLowerCase());
+                drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf('_') + 1).toLowerCase(), player_hand[i].substring(0, player_hand[i].indexOf('_')).toLowerCase());
             }
             boardPanel.add(playerCardsPanel);
 
