@@ -35,7 +35,7 @@ public class CljCommunicator
 
     // float of the minimum bet
     public double minimumBet;
-
+    
     // List of the Players Money
     public List<Double> playersMoney;
 
