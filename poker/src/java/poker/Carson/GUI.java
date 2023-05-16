@@ -1,6 +1,5 @@
 package poker.Carson;
 
-// import javax.swing.*;
 // import java.awt.*;
 import javax.swing.*;
 import java.awt.Image;
@@ -10,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import poker.Mikhail.CljCommunicator;
 
 public class GUI extends JPanel implements ActionListener {
 
@@ -47,6 +47,8 @@ public class GUI extends JPanel implements ActionListener {
 
     JSpinner spinner;
 
+    CljCommunicator clj = new CljCommunicator();
+
     /**
      * TO DO: 
      * Use legal move logic to determine which buttons to display -> button.setEnabled(false)
@@ -56,17 +58,35 @@ public class GUI extends JPanel implements ActionListener {
 
     // Constructor
     public GUI() {
-        player_hand[0] = "ace spades";
-        player_hand[1] = "9 diamonds";
+        // player_hand[0] = "ace spades";
+        // player_hand[1] = "9 diamonds";
 
-        ai_hand[0] = "ace clubs";
-        ai_hand[1] = "ace diamonds";
+        // ai_hand[0] = "ace clubs";
+        // ai_hand[1] = "ace diamonds";
 
-        community_cards[0] = "10 diamonds";
-        community_cards[1] = "9 hearts";
-        community_cards[2] = "2 clubs";
-        community_cards[3] = "jack diamonds";
-        community_cards[4] = "6 spades";
+        // community_cards[0] = "10 diamonds";
+        // community_cards[1] = "9 hearts";
+        // community_cards[2] = "2 clubs";
+        // community_cards[3] = "jack diamonds";
+        // community_cards[4] = "6 spades";
+
+        // Initialize the clj communicator
+        clj.init();
+        // clj.updateMap();
+
+        // Get the player cards
+        player_hand[0] = clj.playerHands.get(Math.toIntExact(clj.gameNum)).get(0);
+        player_hand[1] = clj.playerHands.get(Math.toIntExact(clj.gameNum)).get(1);
+
+        // Get the community cards
+        community_cards[0] = clj.visibleCards.get(0);
+        community_cards[1] = clj.visibleCards.get(1);
+        community_cards[2] = clj.visibleCards.get(2);
+        community_cards[3] = clj.visibleCards.get(3);
+        community_cards[4] = clj.visibleCards.get(4);
+
+        // Set the players money
+
 
 
         // Set layout manager
@@ -596,9 +616,7 @@ public class GUI extends JPanel implements ActionListener {
     }
 
     /**
-     * Create the GUI and show it.  For thread safety, 
-    * this method should be invoked from the 
-    * event-dispatching thread.
+     * Create the GUI and show it
     */
     private static void createAndShowGUI() {
 

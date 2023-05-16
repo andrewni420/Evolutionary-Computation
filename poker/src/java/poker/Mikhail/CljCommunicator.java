@@ -1,8 +1,9 @@
 package poker.Mikhail;
 
 import java.util.*;
-import clojure.lang.*;
 import clojure.java.api.Clojure;
+import clojure.lang.IFn;
+import clojure.lang.APersistentMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,45 +16,62 @@ import java.util.stream.Collectors;
 public class CljCommunicator 
 {
     // This is the static maping that we will use the get the state of the game
-    public static APersistentMap maping;
+    public APersistentMap maping;
 
     // List of the bets that players will make
-    static List<Float> betValues;
+    public List<Float> betValues;
 
     // Integer of the game number
-    static Long gameNum;
+    public Long gameNum;
 
     // float of the current bet on the table
-    static double currentBet;
+    public double currentBet;
 
     // List of the Cards that are in players hands
-    static List<List<String>> playerHands = new ArrayList<>();
+    public List<List<String>> playerHands = new ArrayList<>();
 
     // String name of the Betting Round
-    static String bettingRound;
+    public String bettingRound;
 
     // float of the minimum bet
-    static double minimumBet;
+    public double minimumBet;
 
     // List of the Players Money
-    static List<Double> playersMoney;
+    public List<Double> playersMoney;
 
     // Is the game over
-    static boolean isGameOver;
+    public boolean isGameOver;
 
     // List of all the visible hands that we have
-    static List<String> visibleCards;
+    public List<String> visibleCards;
 
     // Minimal Raise
-    static double minimumRaise;
+    public double minimumRaise;
 
     // Value of the pot
-    static double pot;
+    public double pot;
 
-    public static void main(APersistentMap givenMap)
-    {
+    // g and gameState
+    public APersistentMap gameState;
+    public APersistentMap g;
+
+    // netGain
+    public float netGain;
+
+    // Step game function
+    public IFn stepGame;
+
+    public CljCommunicator(){
+        gameState = null;
+        g = null;
+        netGain = 0;
+        stepGame = Clojure.var("poker.headsup", "apply-step-game");
+        gameNum = (long) 0;
+    }
+
+    public void updateMap(){
         // We get the maping to be the given map
-        maping = givenMap;
+        maping = g;
 
         // We get the Bet Values
         betValues = (List<Float>)maping.get(Clojure.read(":bet-values"));
@@ -136,5 +154,24 @@ public class CljCommunicator
         pot = (double)maping.get(Clojure.read(":pot"));
 
         System.out.println(pot);
+    }
+
+    public void update(float actionAmount, String actionType){
+        try {
+            System.out.println("stepgame is about to run");
+            g = (APersistentMap) stepGame.invoke(g, Clojure.read(":action"), Clojure.read("[" + Float.toString(actionAmount) + "\"" + actionType + "\"]"));
+            System.out.println("stepgame ran");
+            gameState = (APersistentMap) g.get(Clojure.read(":game-state"));
+            netGain = (float) g.get(Clojure.read(":net-gain"));
+            //update interface
+        } catch (Exception e) {
+            //not a legal action. Throws an AssertionError
+            System.out.println("Not a legal action");
+            //display warning on interface
+        }
+    }
+
+    public void init(){
+        update((float) 0, "Fold");
     }
 }
