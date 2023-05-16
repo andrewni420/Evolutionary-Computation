@@ -39,12 +39,13 @@ public class GUI extends JPanel implements ActionListener {
     JPanel messagePanel = new JPanel();
 
     // Variables for pot, current bet, player hand, ai hand, player stack, ai stack, community cards, round, and if game is active
-    int pot = 100;
-    int current_bet = 50;
+    float pot = 100;
+    float current_bet = 50;
+    float minimumRaise = 100;
     String[] player_hand = new String[2];
-    int player_stack = 100;
+    float player_stack = 100;
     String[] ai_hand = new String[2];
-    int ai_stack = 200;
+    float ai_stack = 200;
     String[] community_cards = new String[5];
     String round = "Pre-Flop";
     boolean game_active = false;
@@ -266,6 +267,10 @@ public class GUI extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if ("next_hand".equals(e.getActionCommand())) {
+
+            // Restart game on backend
+            clj.update(0, "Check");
+
             // Set game to active
             game_active = true;
             
@@ -311,6 +316,9 @@ public class GUI extends JPanel implements ActionListener {
             // Refresh the board
             refreshElements();
         } else if ("fold".equals(e.getActionCommand())){
+            // Send to backend
+            clj.update(player_stack, "Fold");
+
             // Set game to inactive
             game_active = false;
             
@@ -341,61 +349,69 @@ public class GUI extends JPanel implements ActionListener {
             // Check if game over
             checkIfGameOver();
         } else if ("check".equals(e.getActionCommand())){
-            // Check logic here
+            clj.update(0, "Check");
         } else if ("call".equals(e.getActionCommand())){
-            // Call logic here
+            // Check if player can afford to call
             if (player_stack >= current_bet){
-                player_stack = player_stack - current_bet;
-                pot = pot + current_bet;
+                clj.update(current_bet, "Call");
                 refreshElements();
             } else {
+                // Player cannot afford to call, go all in
                 displayMessage("You don't have enough money to call. Going all in instead.");
-                pot = pot + player_stack;
-                player_stack = 0;
+                clj.update(player_stack, "All-In");
                 refreshElements();
             }
         } else if ("min_bet".equals(e.getActionCommand())){
-            // Min bet logic here
+            // Check if player can afford to min bet
             if (player_stack >= current_bet){
-                player_stack = player_stack - current_bet;
-                pot = pot + current_bet;
+                if (current_bet == 0){
+                    clj.update(minimumRaise, "Bet");
+                }
+                else{
+                    clj.update(minimumRaise, "Raise");
+                }
                 refreshElements();
             } else {
+                // Player cannot afford, go all in
                 displayMessage("You don't have enough money to bet the minimum. Going all in instead.");
-                pot = pot + player_stack;
-                player_stack = 0;
+                clj.update(player_stack, "All-In");
                 refreshElements();
             }
         } else if ("bet_half_pot".equals(e.getActionCommand())){
-            // Bet half pot logic here
+            // Check if player can afford to bet half pot
             if (player_stack >= (pot / 2)){
-                player_stack = player_stack - (pot / 2);
-                current_bet = pot / 2;
-                pot = pot + current_bet;
+                if (current_bet == 0){
+                    clj.update(pot / 2, "Bet");
+                }
+                else{
+                    clj.update(pot / 2, "Raise");
+                }
                 refreshElements();
             } else {
+                // Player cannot afford to bet half pot, go all-in
                 displayMessage("You don't have enough money to bet half the pot. Going all in instead.");
-                pot = pot + player_stack;
-                player_stack = 0;
+                clj.update(player_stack, "All-In");
                 refreshElements();
             }
         } else if ("bet_pot".equals(e.getActionCommand())){
-            // bet pot logic here
+            // Check if player can afford to bet pot
             if (player_stack >= pot){
-                player_stack = player_stack - pot;
-                pot = pot + pot;
+                if (current_bet == 0){
+                    clj.update(pot, "Bet");
+                }
+                else{
+                    clj.update(pot, "Raise");
+                }
                 refreshElements();
             } else {
-                displayMessage("You don't have enough money to bet half the pot. Going all in instead.");
-                pot = pot + player_stack;
-                player_stack = 0;
+                // Player cannot afford to bet pot, go all-in
+                displayMessage("You don't have enough money to bet the pot. Going all in instead.");
+                clj.update(player_stack, "All-In");
                 refreshElements();
             }
         } else if ("all_in".equals(e.getActionCommand())){
-            // all in logic here
-            current_bet = player_stack;
-            player_stack = 0;
-            pot = pot + current_bet;
+            // Go All-In
+            clj.update(player_stack, "All-In");
             refreshElements();
         } else if ("peek".equals(e.getActionCommand())){
             // peek logic here
@@ -422,19 +438,18 @@ public class GUI extends JPanel implements ActionListener {
             timer.start();
         } else if ("bet".equals(e.getActionCommand())){
             // Get bet amount
-            int bet_amount = (int) spinner.getValue();
+            float bet_amount = (float) spinner.getValue();
 
             // Check if valid bet amount
-            if ((bet_amount <= player_stack) && (bet_amount >= 1)){
-                // Set current bet
-                current_bet = (int) spinner.getValue();
+            if ((bet_amount <= player_stack) && (bet_amount >= 1)){    
 
-                // Remove bet amount from player stack
-                player_stack = player_stack - current_bet;
+                if (current_bet == 0){
+                    clj.update(bet_amount, "Bet");
+                }
+                else{
+                    clj.update(bet_amount, "Raise");
+                }
 
-                // Add player bet to main pot
-                pot = pot + current_bet;
-                
                 // Refresh the board
                 refreshElements();
 
