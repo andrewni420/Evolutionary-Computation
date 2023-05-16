@@ -1,8 +1,9 @@
 package poker.Mikhail;
 
 import java.util.*;
-import clojure.lang.*;
 import clojure.java.api.Clojure;
+import clojure.lang.IFn;
+import clojure.lang.APersistentMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,57 +16,76 @@ import java.util.stream.Collectors;
 public class CljCommunicator 
 {
     // This is the static maping that we will use the get the state of the game
-    public static APersistentMap maping;
+    public APersistentMap maping;
 
     // List of the bets that players will make
-    static List<Float> betValues;
+    public List<Float> betValues;
 
     // Integer of the game number
-    static Long gameNum;
+    public Long gameNum;
 
     // float of the current bet on the table
-    static double currentBet;
+    public double currentBet;
 
     // List of the Cards that are in players hands
-    static List<List<String>> playerHands = new ArrayList<>();
+    public List<List<String>> playerHands = new ArrayList<>();
 
     // String name of the Betting Round
-    static String bettingRound;
+    public String bettingRound;
 
     // float of the minimum bet
-    static double minimumBet;
+    public double minimumBet;
 
     // List of the Players Money
-    static List<Double> playersMoney;
+    public List<Double> playersMoney;
 
     // Is the game over
-    static boolean isGameOver;
+    public boolean isGameOver;
 
     // List of all the visible hands that we have
-    static List<String> visibleCards;
+    public List<String> visibleCards;
 
     // Minimal Raise
-    static double minimumRaise;
+    public double minimumRaise;
 
     // Value of the pot
-    static double pot;
+    public double pot;
 
-    public static void main(APersistentMap givenMap)
-    {
+    // g and gameState
+    public APersistentMap gameState;
+    public APersistentMap g;
+
+    // netGain
+    public float netGain;
+
+    // Step game function
+    public IFn stepGame;
+
+    public CljCommunicator(){
+        gameState = null;
+        g = null;
+        netGain = 0;
+        stepGame = Clojure.var("poker.headsup", "apply-step-game");
+        gameNum = (long) 0;
+    }
+
+    public void updateMap(){
         // We get the maping to be the given map
-        maping = givenMap;
+        maping = (APersistentMap)g.get(Clojure.read(":game-state"));
+
+        System.out.println("maping keys: " + maping.keySet());
 
         // We get the Bet Values
         betValues = (List<Float>)maping.get(Clojure.read(":bet-values"));
-        System.out.println(betValues);
+        System.out.println("betValues:" + betValues);
 
         // We get the game number
         gameNum = (Long)maping.get(Clojure.read(":game-num"));
-        System.out.println(gameNum);
+        System.out.println("gameNum: " + gameNum);
 
         // We get the current bet
         currentBet = (double)maping.get(Clojure.read(":current-bet"));
-        System.out.println(currentBet);
+        System.out.println("currentBet: " + currentBet);
 
         // We get the hands and then turn them into strings
         List<List<List<Object>>> placeHolder = (List<List<List<Object>>>)maping.get(Clojure.read(":hands"));
@@ -86,15 +106,15 @@ public class CljCommunicator
             playerHands.add(playersHandTemporary);
         }
 
-        System.out.println(playerHands);
+        System.out.println("playerHands: " + playerHands);
 
         // We now get the betting round
         bettingRound = (String)maping.get(Clojure.read(":betting-round"));
-        System.out.println(bettingRound);
+        System.out.println("bettingRound: " + bettingRound);
 
         // Get the minimum bet
         minimumBet = (Double)maping.get(Clojure.read(":min-bet"));
-        System.out.println(minimumBet);
+        System.out.println("minimumBet: " + minimumBet);
 
         // We wnat to get players money
         List<APersistentMap> players = (List<APersistentMap>)maping.get(Clojure.read(":players"));
@@ -110,12 +130,12 @@ public class CljCommunicator
         playersMoney.add(player1Money);
         playersMoney.add(player2Money);
 
-        System.out.println(playersMoney);
+        System.out.println("playersMoney: " + playersMoney);
 
         // Get the is Game Over Variable
         isGameOver = (boolean)maping.get(Clojure.read(":game-over"));
 
-        System.out.println(isGameOver);
+        System.out.println("isGameOver: " + isGameOver);
 
         // Get the visible hands
         visibleCards = new ArrayList<>();
@@ -125,16 +145,38 @@ public class CljCommunicator
             visibleCards.add(card.get(0).toString() + "_" + card.get(1).toString());
         }
 
-        System.out.println(visibleCards);
+        System.out.println("visibleCards: " + visibleCards);
 
         // Get the Minimum Raise
         minimumRaise = (double)maping.get(Clojure.read(":min-raise"));
 
-        System.out.println(minimumRaise);
+        System.out.println("minimumRaise: " + minimumRaise);
 
         // Get the pot
         pot = (double)maping.get(Clojure.read(":pot"));
 
-        System.out.println(pot);
+        System.out.println("pot: " + pot);
+    }
+
+    public void update(float actionAmount, String actionType){
+        try {
+            System.out.println("stepgame is about to run");
+            g = (APersistentMap) stepGame.invoke(g, Clojure.read(":action"), Clojure.read("[" + Float.toString(actionAmount) + "\"" + actionType + "\"]"));
+            System.out.println("stepgame ran");
+            gameState = (APersistentMap) g.get(Clojure.read(":game-state"));
+            System.out.println("gamestate ran");
+            System.out.println("g: " + g.get(Clojure.read(":net-gain")));
+            netGain = ((Number) g.get(Clojure.read(":net-gain"))).floatValue();
+            System.out.println("netgain: " + netGain);
+            //update interface
+        } catch (Exception e) {
+            //not a legal action. Throws an AssertionError
+            System.out.println("Not a legal action (Exception: " + e + ")");
+            //display warning on interface
+        }
+    }
+
+    public void init(){
+        update((float) 0, "Fold");
     }
 }

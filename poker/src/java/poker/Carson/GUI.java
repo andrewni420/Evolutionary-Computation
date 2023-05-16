@@ -1,6 +1,5 @@
 package poker.Carson;
 
-// import javax.swing.*;
 // import java.awt.*;
 import javax.swing.*;
 import java.awt.Image;
@@ -10,6 +9,11 @@ import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import poker.Mikhail.CljCommunicator;
+
+
+// Client is numGames - 1 % 2
+// Ai is numGames % 2
 
 public class GUI extends JPanel implements ActionListener {
 
@@ -47,28 +51,32 @@ public class GUI extends JPanel implements ActionListener {
 
     JSpinner spinner;
 
+    CljCommunicator clj = new CljCommunicator();
+
     /**
      * TO DO: 
      * Use legal move logic to determine which buttons to display -> button.setEnabled(false)
      * Hook up java to clojure to get game state
-     * Update the bet spinner to reflect what the max bet could be
      */
 
 
     // Constructor
     public GUI() {
-        player_hand[0] = "ace spades";
-        player_hand[1] = "ace hearts";
+        // Initialize the clj communicator
+        clj.init();
+        clj.updateMap();
 
-        ai_hand[0] = "ace clubs";
-        ai_hand[1] = "ace diamonds";
+        // Get the player cards
+        getPlayerCards();
 
-        community_cards[0] = "10 diamonds";
-        community_cards[1] = "9 diamonds";
-        community_cards[2] = "8 diamonds";
-        community_cards[3] = "7 diamonds";
-        community_cards[4] = "6 diamonds";
+        // Get the community cards
+        getCommunityCards();
 
+        // Set the players money
+        updateMoney();
+
+        // Set the pot
+        updatePot();
 
         // Set layout manager
         setLayout(new BorderLayout());
@@ -162,7 +170,7 @@ public class GUI extends JPanel implements ActionListener {
         betButton.setActionCommand("bet");
 
         // Spinner for bet amount
-        SpinnerModel model = new SpinnerNumberModel(50, 10, player_stack, 10);     
+        SpinnerModel model = new SpinnerNumberModel(0, 0, 0, 0);     
         spinner = new JSpinner(model);
 
         //Listen for actions on buttons 1 and 3.
@@ -236,21 +244,21 @@ public class GUI extends JPanel implements ActionListener {
             communityCardsPanel.removeAll();
             // Draw 3 community cards
             for (int i=0;i<3;i++){
-                drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf(' ') + 1), community_cards[i].substring(0, community_cards[i].indexOf(' ')));
+                drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf('_') + 1).toLowerCase(), community_cards[i].substring(0, community_cards[i].indexOf('_')).toLowerCase());
             }
             refreshElements();
         } else if (round_name == "Turn") {
             communityCardsPanel.removeAll();
             // Draw 4 community cards
             for (int i=0;i<4;i++){
-                drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf(' ') + 1), community_cards[i].substring(0, community_cards[i].indexOf(' ')));
+                drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf('_') + 1).toLowerCase(), community_cards[i].substring(0, community_cards[i].indexOf('_')).toLowerCase());
             }
             refreshElements();
         } else if (round_name == "River"){
             communityCardsPanel.removeAll();
             // Draw 5 community cards
             for (int i=0;i<5;i++){
-                drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf(' ') + 1), community_cards[i].substring(0, community_cards[i].indexOf(' ')));
+                drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf('_') + 1).toLowerCase(), community_cards[i].substring(0, community_cards[i].indexOf('_')).toLowerCase());
             }
             refreshElements();
         }
@@ -276,7 +284,7 @@ public class GUI extends JPanel implements ActionListener {
 
             boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
 
-            drawCommunityCards(round);
+            drawCommunityCards(clj.bettingRound);
 
             boardPanel.add(communityCardsPanel);
 
@@ -284,7 +292,7 @@ public class GUI extends JPanel implements ActionListener {
 
             // Draw player cards
             for (int i=0;i<player_hand.length;i++){
-                drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf(' ') + 1), player_hand[i].substring(0, player_hand[i].indexOf(' ')));
+                drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf('_') + 1), player_hand[i].substring(0, player_hand[i].indexOf('_')).toLowerCase());
             }
             boardPanel.add(playerCardsPanel);
 
@@ -393,8 +401,8 @@ public class GUI extends JPanel implements ActionListener {
             // peek logic here
             // Peek the AI cards for 3 seconds
             aiCardsPanel.removeAll();
-            drawCard(aiCardsPanel, ai_hand[0].substring(ai_hand[0].indexOf(' ') + 1), ai_hand[0].substring(0, ai_hand[0].indexOf(' ')));
-            drawCard(aiCardsPanel, ai_hand[1].substring(ai_hand[1].indexOf(' ') + 1), ai_hand[1].substring(0, ai_hand[1].indexOf(' ')));
+            drawCard(aiCardsPanel, ai_hand[0].substring(ai_hand[0].indexOf('_') + 1), ai_hand[0].substring(0, ai_hand[0].indexOf('_')).toLowerCase());
+            drawCard(aiCardsPanel, ai_hand[1].substring(ai_hand[1].indexOf('_') + 1), ai_hand[1].substring(0, ai_hand[1].indexOf('_')).toLowerCase());
             aiCardsPanel.revalidate();
             aiCardsPanel.repaint();
             refreshElements();
@@ -437,8 +445,37 @@ public class GUI extends JPanel implements ActionListener {
         }
     }
 
+    public void getPlayerCards() {
+        // Get the player cards
+        player_hand[0] = clj.playerHands.get(0).get(0);
+        player_hand[1] = clj.playerHands.get(0).get(1);
+    }
+
+    public void getCommunityCards(){
+        // Get the community cards
+        for (int i = 0; i < clj.visibleCards.size(); i++) {
+            community_cards[i] = clj.visibleCards.get(i);
+        };
+    }
+
+    public void getAiCards(){
+        // Get the AI cards
+        ai_hand[0] = clj.playerHands.get(1).get(0);
+        ai_hand[1] = clj.playerHands.get(1).get(1);
+    }
+
+    public void updateMoney(){
+        // Update the money
+        player_stack = clj.playersMoney.get(0).intValue();
+        ai_stack = clj.playersMoney.get(1).intValue();
+    }
+
+    public void updatePot(){
+        // Update the pot
+        pot = (int) clj.pot;
+    }
+
     public void refreshElements(){
-        // Check for button logic in here (Mikhail's legal actions)
 
         if (player_stack > 0){
             // Adjust the bet spinner
@@ -458,6 +495,10 @@ public class GUI extends JPanel implements ActionListener {
                 displayMessage("Invalid bet amount. Please try again.");
             }
         }
+
+        // Update money and pot
+        updateMoney();
+        updatePot();
 
         // Revalidate and repaint
         boardPanel.revalidate();
@@ -597,9 +638,7 @@ public class GUI extends JPanel implements ActionListener {
     }
 
     /**
-     * Create the GUI and show it.  For thread safety, 
-    * this method should be invoked from the 
-    * event-dispatching thread.
+     * Create the GUI and show it
     */
     private static void createAndShowGUI() {
 
