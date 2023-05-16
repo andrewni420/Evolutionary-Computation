@@ -48,7 +48,7 @@ public class GUI extends JPanel implements ActionListener {
     float ai_stack = 200;
     String[] community_cards = new String[5];
     String round = "Pre-Flop";
-    boolean game_active = false;
+    boolean game_active = true;
 
     JSpinner spinner;
 
@@ -77,6 +77,9 @@ public class GUI extends JPanel implements ActionListener {
 
         // Set the pot
         updatePot();
+
+        // Set the game stats
+        setGameOver();
 
         // Set layout manager
         setLayout(new BorderLayout());
@@ -268,7 +271,9 @@ public class GUI extends JPanel implements ActionListener {
         if ("next_hand".equals(e.getActionCommand())) {
 
             // Restart game on backend
-            clj.update(0, "Check");
+            if (! game_active){
+                clj.update(0, "Check");
+            }
 
             // Set game to active
             game_active = true;
@@ -491,6 +496,15 @@ public class GUI extends JPanel implements ActionListener {
 
     public void updateButtonLegality(){
         // Update the button legality
+    }
+
+    public void setGameOver(){
+        if (clj.isGameOver){
+            game_active = false;
+        }
+        else{
+            game_active = true;
+        }
     }
 
     public void refreshElements(){
