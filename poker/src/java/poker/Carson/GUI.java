@@ -98,7 +98,7 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(700,255, 20, 20);
                 g.fillOval(720,255, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Integer.toString(pot), 700, 255);
+                g.drawString(Float.toString(pot), 700, 255);
 
                 // Draw player stack
                 g.setColor(Color.RED);
@@ -106,7 +106,7 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(600,360, 20, 20);
                 g.fillOval(590,345, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Integer.toString(player_stack), 590, 395);
+                g.drawString(Float.toString(player_stack), 590, 395);
 
                 // Draw AI stack
                 g.setColor(Color.RED);
@@ -114,7 +114,7 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(600,65, 20, 20);
                 g.fillOval(590,80, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Integer.toString(ai_stack), 590, 60);
+                g.drawString(Float.toString(ai_stack), 590, 60);
 
                 // Draw current bet
                 g.setColor(Color.RED);
@@ -122,7 +122,7 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(600,65, 20, 20);
                 g.fillOval(590,80, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Integer.toString(ai_stack), 590, 60);
+                g.drawString(Float.toString(ai_stack), 590, 60);
             }
         };
 
