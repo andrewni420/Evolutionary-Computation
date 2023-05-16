@@ -268,32 +268,32 @@ public class GUI extends JPanel implements ActionListener {
             // Set game to active
             game_active = true;
             
-            // // Remove previous elements
-            // aiCardsPanel.removeAll();
-            // communityCardsPanel.removeAll();
-            // playerCardsPanel.removeAll();
-            // messagePanel.removeAll();
-            // boardPanel.removeAll();
+            // Remove previous elements
+            aiCardsPanel.removeAll();
+            communityCardsPanel.removeAll();
+            playerCardsPanel.removeAll();
+            messagePanel.removeAll();
+            boardPanel.removeAll();
             
-            // // Draw ai cards
-            // boardPanel.add(Box.createVerticalStrut(50)); // Add vertical space
-            // drawBackCard(aiCardsPanel);
-            // drawBackCard(aiCardsPanel);
-            // boardPanel.add(aiCardsPanel);
+            // Draw ai cards
+            boardPanel.add(Box.createVerticalStrut(50)); // Add vertical space
+            drawBackCard(aiCardsPanel);
+            drawBackCard(aiCardsPanel);
+            boardPanel.add(aiCardsPanel);
 
-            // boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
+            boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
 
-            // drawCommunityCards(clj.bettingRound);
+            drawCommunityCards(clj.bettingRound);
 
-            // boardPanel.add(communityCardsPanel);
+            boardPanel.add(communityCardsPanel);
 
-            // boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
+            boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
 
-            // // Draw player cards
-            // for (int i=0;i<player_hand.length;i++){
-            //     drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf('_') + 1).toLowerCase(), player_hand[i].substring(0, player_hand[i].indexOf('_')).toLowerCase());
-            // }
-            // boardPanel.add(playerCardsPanel);
+            // Draw player cards
+            for (int i=0;i<player_hand.length;i++){
+                drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf('_') + 1).toLowerCase(), player_hand[i].substring(0, player_hand[i].indexOf('_')).toLowerCase());
+            }
+            boardPanel.add(playerCardsPanel);
 
             // Grey out the Next Hand, check, and peek buttons
             nextHandButton.setEnabled(false);
@@ -503,32 +503,32 @@ public class GUI extends JPanel implements ActionListener {
         updateMoney();
         updatePot();
 
-        // Remove previous elements
-        aiCardsPanel.removeAll();
-        communityCardsPanel.removeAll();
-        playerCardsPanel.removeAll();
-        messagePanel.removeAll();
-        boardPanel.removeAll();
+        // // Remove previous elements
+        // aiCardsPanel.removeAll();
+        // communityCardsPanel.removeAll();
+        // playerCardsPanel.removeAll();
+        // messagePanel.removeAll();
+        // boardPanel.removeAll();
         
-        // Draw ai cards
-        boardPanel.add(Box.createVerticalStrut(50)); // Add vertical space
-        drawBackCard(aiCardsPanel);
-        drawBackCard(aiCardsPanel);
-        boardPanel.add(aiCardsPanel);
+        // // Draw ai cards
+        // boardPanel.add(Box.createVerticalStrut(50)); // Add vertical space
+        // drawBackCard(aiCardsPanel);
+        // drawBackCard(aiCardsPanel);
+        // boardPanel.add(aiCardsPanel);
 
-        boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
+        // boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
 
-        drawCommunityCards(clj.bettingRound);
+        // drawCommunityCards(clj.bettingRound);
 
-        boardPanel.add(communityCardsPanel);
+        // boardPanel.add(communityCardsPanel);
 
-        boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
+        // boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
 
-        // Draw player cards
-        for (int i=0;i<player_hand.length;i++){
-            drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf('_') + 1).toLowerCase(), player_hand[i].substring(0, player_hand[i].indexOf('_')).toLowerCase());
-        }
-        boardPanel.add(playerCardsPanel);
+        // // Draw player cards
+        // for (int i=0;i<player_hand.length;i++){
+        //     drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf('_') + 1).toLowerCase(), player_hand[i].substring(0, player_hand[i].indexOf('_')).toLowerCase());
+        // }
+        // boardPanel.add(playerCardsPanel);
 
         // Revalidate and repaint
         boardPanel.revalidate();
