@@ -56,7 +56,6 @@ public class GUI extends JPanel implements ActionListener {
     /**
      * TO DO: 
      * Use legal move logic to determine which buttons to display -> button.setEnabled(false)
-     * Hook up java to clojure to get game state
      */
 
 
@@ -269,32 +268,32 @@ public class GUI extends JPanel implements ActionListener {
             // Set game to active
             game_active = true;
             
-            // Remove previous elements
-            aiCardsPanel.removeAll();
-            communityCardsPanel.removeAll();
-            playerCardsPanel.removeAll();
-            messagePanel.removeAll();
-            boardPanel.removeAll();
+            // // Remove previous elements
+            // aiCardsPanel.removeAll();
+            // communityCardsPanel.removeAll();
+            // playerCardsPanel.removeAll();
+            // messagePanel.removeAll();
+            // boardPanel.removeAll();
             
-            // Draw ai cards
-            boardPanel.add(Box.createVerticalStrut(50)); // Add vertical space
-            drawBackCard(aiCardsPanel);
-            drawBackCard(aiCardsPanel);
-            boardPanel.add(aiCardsPanel);
+            // // Draw ai cards
+            // boardPanel.add(Box.createVerticalStrut(50)); // Add vertical space
+            // drawBackCard(aiCardsPanel);
+            // drawBackCard(aiCardsPanel);
+            // boardPanel.add(aiCardsPanel);
 
-            boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
+            // boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
 
-            drawCommunityCards(clj.bettingRound);
+            // drawCommunityCards(clj.bettingRound);
 
-            boardPanel.add(communityCardsPanel);
+            // boardPanel.add(communityCardsPanel);
 
-            boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
+            // boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
 
-            // Draw player cards
-            for (int i=0;i<player_hand.length;i++){
-                drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf('_') + 1), player_hand[i].substring(0, player_hand[i].indexOf('_')).toLowerCase());
-            }
-            boardPanel.add(playerCardsPanel);
+            // // Draw player cards
+            // for (int i=0;i<player_hand.length;i++){
+            //     drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf('_') + 1).toLowerCase(), player_hand[i].substring(0, player_hand[i].indexOf('_')).toLowerCase());
+            // }
+            // boardPanel.add(playerCardsPanel);
 
             // Grey out the Next Hand, check, and peek buttons
             nextHandButton.setEnabled(false);
@@ -475,6 +474,10 @@ public class GUI extends JPanel implements ActionListener {
         pot = (int) clj.pot;
     }
 
+    public void updateButtonLegality(){
+        // Update the button legality
+    }
+
     public void refreshElements(){
 
         if (player_stack > 0){
@@ -499,6 +502,33 @@ public class GUI extends JPanel implements ActionListener {
         // Update money and pot
         updateMoney();
         updatePot();
+
+        // Remove previous elements
+        aiCardsPanel.removeAll();
+        communityCardsPanel.removeAll();
+        playerCardsPanel.removeAll();
+        messagePanel.removeAll();
+        boardPanel.removeAll();
+        
+        // Draw ai cards
+        boardPanel.add(Box.createVerticalStrut(50)); // Add vertical space
+        drawBackCard(aiCardsPanel);
+        drawBackCard(aiCardsPanel);
+        boardPanel.add(aiCardsPanel);
+
+        boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
+
+        drawCommunityCards(clj.bettingRound);
+
+        boardPanel.add(communityCardsPanel);
+
+        boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
+
+        // Draw player cards
+        for (int i=0;i<player_hand.length;i++){
+            drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf('_') + 1).toLowerCase(), player_hand[i].substring(0, player_hand[i].indexOf('_')).toLowerCase());
+        }
+        boardPanel.add(playerCardsPanel);
 
         // Revalidate and repaint
         boardPanel.revalidate();
@@ -569,8 +599,20 @@ public class GUI extends JPanel implements ActionListener {
 
     public void drawCard(JPanel board, String suit, String value) {
 
+        String newValue = value.toLowerCase();
+
+        if (value == "11".toLowerCase()){
+            newValue = "jack";
+        } else if (value == "12".toLowerCase()){
+            newValue = "queen";
+        } else if (value == "13".toLowerCase()){
+            newValue = "king";
+        } else if (value == "14".toLowerCase()){
+            newValue = "ace";
+        }
+
         // Get path of card image
-        String path = "PNG-cards-1.3/" + value + "_of_" + suit + ".png";
+        String path = "PNG-cards-1.3/" + newValue + "_of_" + suit + ".png";
 
         // Get image icon from path
         ImageIcon ogImageIcon = createImageIcon(path);
