@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import poker.Mikhail.CljCommunicator;
 
 
+
 // Client is numGames - 1 % 2
 // Ai is numGames % 2
 
@@ -48,7 +49,6 @@ public class GUI extends JPanel implements ActionListener {
     String[] ai_hand = new String[2];
     double ai_stack = 200;
     String[] community_cards = new String[5];
-    String round = "Pre-Flop";
     boolean game_active = true;
     boolean init = true;
 
@@ -56,9 +56,13 @@ public class GUI extends JPanel implements ActionListener {
 
     CljCommunicator clj = new CljCommunicator();
 
+    String actionHistory;
+
+    double player_bet;
+
     /**
      * TO DO: 
-     * Use legal move logic to determine which buttons to display -> button.setEnabled(false)
+     * Fix peek functionality on AI fold
      */
 
 
@@ -86,6 +90,10 @@ public class GUI extends JPanel implements ActionListener {
         // Set layout manager
         setLayout(new BorderLayout());
 
+        updateActionHistory();
+
+        getPlayerBet();
+
         // Create a panel for the game board
         boardPanel = new JPanel() {
             public Dimension getPreferredSize() {
@@ -103,7 +111,7 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(700,255, 20, 20);
                 g.fillOval(720,255, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Double.toString(pot), 700, 255);
+                g.drawString(String.format("%.1f", pot), 700, 255);
 
                 // Draw player stack
                 g.setColor(Color.RED);
@@ -111,7 +119,7 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(600,360, 20, 20);
                 g.fillOval(590,345, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Double.toString(player_stack), 590, 395);
+                g.drawString(String.format("%.1f", player_stack), 590, 395);
 
                 // Draw AI stack
                 g.setColor(Color.RED);
@@ -119,15 +127,22 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(600,65, 20, 20);
                 g.fillOval(590,80, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Double.toString(ai_stack), 590, 60);
+                g.drawString(String.format("%.1f", ai_stack), 590, 60);
 
-                // Draw current bet
-                g.setColor(Color.RED);
-                g.fillOval(580,65, 20, 20);
-                g.fillOval(600,65, 20, 20);
-                g.fillOval(590,80, 20, 20);
-                g.setColor(Color.BLACK);
-                g.drawString(Double.toString(ai_stack), 590, 60);
+                // // Draw current bet
+                // g.setColor(Color.RED);
+                // g.fillOval(580,65, 20, 20);
+                // g.fillOval(600,65, 20, 20);
+                // g.fillOval(590,80, 20, 20);
+                // g.setColor(Color.BLACK);
+                // g.drawString(String.format("%.1f", ai_stack), 590, 60);
+
+                // Write action history
+                String[] lines = actionHistory.split("\n");
+                for (int i = 0; i < lines.length; i++) {
+                    String line = lines[i];
+                    g.drawString(line, 150, 150 + (i * 20));
+                }
             }
         };
 
@@ -263,7 +278,7 @@ public class GUI extends JPanel implements ActionListener {
                 drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf('_') + 1).toLowerCase(), community_cards[i].substring(0, community_cards[i].indexOf('_')).toLowerCase());
             }
             // refreshElements();
-        } else if (round_name.equals("River")){
+        } else if (round_name.equals("River") || round_name.equals("Showdown")){
             communityCardsPanel.removeAll();
             // Draw 5 community cards
             for (int i=0;i<5;i++){
@@ -337,10 +352,10 @@ public class GUI extends JPanel implements ActionListener {
             game_active = false;
             
             // Remove previous elements
-            aiCardsPanel.removeAll();
-            communityCardsPanel.removeAll();
-            playerCardsPanel.removeAll();
-            boardPanel.removeAll();
+            // aiCardsPanel.removeAll();
+            // communityCardsPanel.removeAll();
+            // playerCardsPanel.removeAll();
+            // boardPanel.removeAll();
 
             // Print fold message
             displayMessage("You folded. AI wins the pot of $" + pot);
@@ -354,7 +369,7 @@ public class GUI extends JPanel implements ActionListener {
             betHalfPotButton.setEnabled(false);
             betPotButton.setEnabled(false);
             allInButton.setEnabled(false);
-            peekButton.setEnabled(false);
+            peekButton.setEnabled(true);
             betButton.setEnabled(false);
 
             // Refresh the board
@@ -372,7 +387,7 @@ public class GUI extends JPanel implements ActionListener {
         } else if ("call".equals(e.getActionCommand())){
             // Check if player can afford to call
             if (player_stack >= current_bet){
-                clj.update(current_bet, "Call");
+                clj.update(current_bet - player_bet, "Call");
                 refreshElements();
             } else {
                 // Player cannot afford to call, go all in
@@ -486,6 +501,13 @@ public class GUI extends JPanel implements ActionListener {
         player_hand[1] = clj.playerHands.get(index).get(1);
     }
 
+    public void getPlayerBet(){
+        System.out.println("PLAYER BET");
+        int index = ((Number)(1 - (clj.gameNum % 2))).intValue();
+        player_bet = clj.betValues.get(index);
+        System.out.println(player_bet);
+    }
+
     public void getCommunityCards(){
         // Get the community cards
         for (int i = 0; i < clj.visibleCards.size(); i++) {
@@ -511,7 +533,13 @@ public class GUI extends JPanel implements ActionListener {
 
     public void updatePot(){
         // Update the pot
-        pot = (float) clj.pot;
+        pot = (double) clj.pot;
+    }
+
+    public void updateActionHistory(){
+        actionHistory = clj.actionHistory;
+        System.out.println("HISTORY");
+        System.out.println(actionHistory);
     }
 
     public void updateButtonLegality(){
@@ -520,7 +548,7 @@ public class GUI extends JPanel implements ActionListener {
         // Make a move with all the main buttons and test if they we are able to make a move with them
 
         //"Check" 
-        if(clj.testLegality((float)0, "Check"))
+        if(clj.testLegality((double)0, "Check"))
         {
             // Set the Button to Active
             checkButton.setEnabled(true);
@@ -532,9 +560,12 @@ public class GUI extends JPanel implements ActionListener {
         }
 
         // "Min Bet"
-        if(clj.testLegality((float)clj.minimumBet, "Bet"))
+        if(clj.testLegality((double)clj.minimumBet, "Bet"))
         {
             // Set the Button to Active
+            minBetButton.setEnabled(true);
+        }
+        else if (clj.testLegality((double)clj.minimumRaise, "Raise")){
             minBetButton.setEnabled(true);
         }
         else
@@ -544,8 +575,9 @@ public class GUI extends JPanel implements ActionListener {
         }
         
         //"Call" 
-        if(clj.testLegality((float)clj.currentBet, "Call"))
+        if(clj.testLegality((double)current_bet - player_bet, "Call"))
         {
+
             // Set the Button to Active
             callButton.setEnabled(true);
         }
@@ -556,7 +588,7 @@ public class GUI extends JPanel implements ActionListener {
         }
         
         // "Fold" 
-        if(clj.testLegality((float)0, "Fold"))
+        if(clj.testLegality((double)0, "Fold"))
         {
             // Set the Button to Active
             foldButton.setEnabled(true);
@@ -568,13 +600,13 @@ public class GUI extends JPanel implements ActionListener {
         }
         
         // "Bet" 
-        if(clj.testLegality((float)clj.minimumBet, "Bet"))
+        if(clj.testLegality((double)clj.minimumBet, "Bet"))
         {
             // Set the Button to Active
             betButton.setEnabled(true);
             
         }
-        else if (clj.testLegality((float)clj.minimumBet, "Raise"))
+        else if (clj.testLegality((double)clj.minimumRaise, "Raise"))
         {
             // Set the Button to Active
             betButton.setEnabled(true);
@@ -585,12 +617,12 @@ public class GUI extends JPanel implements ActionListener {
         }
 
         // "Bet - Half Pot" 
-        if(clj.testLegality((float)(clj.pot/2), "Bet"))
+        if(clj.testLegality((pot/2), "Bet"))
         {
             // Set the Button to Active
             betHalfPotButton.setEnabled(true);
         }
-        else if (clj.testLegality((float)(clj.pot/2), "Raise"))
+        else if (clj.testLegality((pot/2), "Raise"))
         {
             // Set the Button to Active
             betButton.setEnabled(true);
@@ -601,12 +633,12 @@ public class GUI extends JPanel implements ActionListener {
         }
 
         // "Bet - Full Pot"
-        if(clj.testLegality((float)clj.pot, "Bet"))
+        if(clj.testLegality(pot, "Bet"))
         {
             // Set the Button to Active
             betPotButton.setEnabled(true);
         }
-        else if(clj.testLegality((float)clj.pot, "Raise"))
+        else if(clj.testLegality(pot, "Raise"))
         {
             // Set the Button to Active
             betPotButton.setEnabled(true);
@@ -617,7 +649,7 @@ public class GUI extends JPanel implements ActionListener {
         }
         
         // "All-In"
-        if(clj.testLegality(clj.playersMoney.get((int)(1 - (clj.gameNum % 2))).floatValue(), "All-In"))
+        if(clj.testLegality(player_stack, "All-In"))
         {
             // Set the Button to Active
             allInButton.setEnabled(true);
@@ -641,6 +673,8 @@ public class GUI extends JPanel implements ActionListener {
 
     public void refreshElements(){
 
+        
+
         if (player_stack > 0){
             // Adjust the bet spinner
             try {
@@ -653,7 +687,7 @@ public class GUI extends JPanel implements ActionListener {
             try {
                 SpinnerModel model = new SpinnerNumberModel(player_stack / 2, 0, player_stack, 1);
                 spinner.setModel(model);
-                spinner.setEnabled(false);
+                //spinner.setEnabled(false);
                 betButton.setEnabled(false);
             } catch (IllegalArgumentException e){
                 displayMessage("Invalid bet amount. Please try again.");
@@ -663,24 +697,26 @@ public class GUI extends JPanel implements ActionListener {
         // update game map
         clj.updateMap();
 
-        // update button legality
-        if (!init){
-            updateButtonLegality();
-        }
+        getPlayerBet();
 
-        // Update community cards
-        getCommunityCards();
-        drawCommunityCards(clj.bettingRound);
 
         // Update money and pot
         updateMoney();
         updatePot();
 
+        updateActionHistory();
+
+
         // Update the last bet
-        current_bet = (float) clj.currentBet;
+        current_bet = (double) clj.currentBet;
 
         // Update minimum raise
-        minimumRaise = (float) clj.minimumRaise;
+        minimumRaise = (double) clj.minimumRaise;
+
+        // update button legality
+        if (!init){
+            updateButtonLegality();
+        }
 
         // if showdown, show AI cards
         if (clj.bettingRound.equals("Showdown")){
@@ -691,17 +727,41 @@ public class GUI extends JPanel implements ActionListener {
             drawCard(aiCardsPanel, ai_hand[1].substring(ai_hand[1].indexOf('_') + 1), ai_hand[1].substring(0, ai_hand[1].indexOf('_')).toLowerCase());
         }
 
+        System.out.println("ROUND");
+        System.out.println(clj.isGameOver);
+        System.out.println(clj.bettingRound);
+
         // check if round over
         if (clj.isGameOver){
+            System.out.println("GAME OVER");
             // aiCardsPanel.removeAll();
             // playerCardsPanel.removeAll();
             // communityCardsPanel.removeAll();
             nextHandButton.setEnabled(true);
             // grey out every other button
             displayMessage("Round over!");
+            foldButton.setEnabled(false);
+            checkButton.setEnabled(false);
+            callButton.setEnabled(false);
+            minBetButton.setEnabled(false);
+            betHalfPotButton.setEnabled(false);
+            betPotButton.setEnabled(false);
+            allInButton.setEnabled(false);
+            //peekButton.setEnabled(true);
+            betButton.setEnabled(false);
+            //spinner.setEnabled(false);
+
             game_active = false;
             checkIfGameOver();
+            
         }
+        else{
+            peekButton.setEnabled(false);
+        }
+
+        // Update community cards
+        getCommunityCards();
+        drawCommunityCards(clj.bettingRound);
 
         // Revalidate and repaint
         boardPanel.revalidate();
@@ -724,7 +784,7 @@ public class GUI extends JPanel implements ActionListener {
             allInButton.setEnabled(false);
             peekButton.setEnabled(false);
             betButton.setEnabled(false);
-            spinner.setEnabled(false);
+            //spinner.setEnabled(false);
         } else if (ai_stack == 0 && !game_active){
             // Display game over message
             displayGameOverMessage("Game Over! You won all the AI's money. Please restart the game.");
@@ -738,7 +798,7 @@ public class GUI extends JPanel implements ActionListener {
             allInButton.setEnabled(false);
             peekButton.setEnabled(false);
             betButton.setEnabled(false);
-            spinner.setEnabled(false);
+            //spinner.setEnabled(false);
         }
     }
 

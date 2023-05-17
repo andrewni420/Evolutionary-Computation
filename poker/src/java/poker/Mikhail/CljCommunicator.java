@@ -61,6 +61,8 @@ public class CljCommunicator
     // Step game function
     public IFn stepGame;
 
+    public String actionHistory;
+
     public CljCommunicator(){
         gameState = null;
         g = null;
@@ -156,6 +158,10 @@ public class CljCommunicator
         pot = (double)maping.get(Clojure.read(":pot"));
 
         System.out.println("pot: " + pot);
+
+        //System.out.println("ACTIONS");
+        IFn readableActions = Clojure.var("poker.slumbot", "actions-as-readable");
+        actionHistory = (readableActions.invoke(maping.get(Clojure.read(":action-history")))).toString();
     }
 
     public void update(double actionAmount, String actionType){
