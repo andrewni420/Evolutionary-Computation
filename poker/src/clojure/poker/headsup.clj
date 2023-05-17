@@ -801,7 +801,9 @@
                                                                                      (:players game-state))}
                                                                       game-state))]
         (all-in? game-state) (recur (next-round game-state) game-encoding game-history)
-        (round-over-checkone game-state) [(next-round game-state) game-encoding game-history]
+        (round-over-checkone game-state) (if (all-in? (next-round game-state))
+                                           (recur (next-round game-state) game-encoding game-history)
+                                           [(next-round game-state) game-encoding game-history])
         :else [game-state game-encoding game-history]))
 
 (defn check-bot-move
@@ -823,10 +825,7 @@
                                  game-history))]
         (recur g e h))
       {:game-state game-state
-       :game-encoding (update-game-encoding game-encoding
-                                            manager
-                                            :state (onehot/encode-state game-state)
-                                            :position (onehot/encode-position game-state))
+       :game-encoding game-encoding
        :game-history game-history})))
 
 
@@ -877,17 +876,19 @@
                            :opponent opponent
                            :manager manager)
                {:net-gain 0.0})
-        (:game-over game-state) {:game-state (pay-blinds (init-game
-                                                          :players (map #(utils/set-money % utils/initial-stack) (reverse (:players game-state)))
-                                                          :manager (or (:manager game-state) (ndarray/new-base-manager))
-                                                          :game-num (inc (:game-num game-state))))
-                                 :game-encoding game-encoding
-                                 :game-history game-history
-                                 :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history)}
+        (:game-over game-state) (do (println game-encoding)(assoc (check-bot-move (pay-blinds (init-game
+                                                                    :players (map #(utils/set-money % utils/initial-stack) (reverse (:players game-state)))
+                                                                    :manager (or (:manager game-state) (ndarray/new-base-manager))
+                                                                    :game-num (inc (:game-num game-state))))
+                                                       game-encoding
+                                                       game-history)
+                                       :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history)))
         :else (do (assert (utils/is-legal? action game-state)
                           (str "Illegal action: " action " game-state " game-state))
-                  (let [[g e] (parse-action action game-state game-encoding)]
-                    (println "game over " (:game-over g))
+                  (let [[g e] (parse-action action game-state (update-game-encoding game-encoding
+                                                                                    manager
+                                                                                    :state (onehot/encode-state game-state)
+                                                                                    :position (onehot/encode-position game-state)))]
                     (assoc (apply check-bot-move (check-transition g e game-history))
                            :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history))))))
 
@@ -897,7 +898,7 @@
 
 #_g
 
-#_(def m (apply-step-game m :action ["Bet" 2.0]))
+#_(def m (apply-step-game m :action ["All-In" 199.5]))
 
 #_m
 

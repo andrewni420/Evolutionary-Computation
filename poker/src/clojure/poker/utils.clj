@@ -2150,7 +2150,6 @@
                            [["Call" call-cost call-cost]]))
                        (let [amount (- (+ current-bet min-raise)
                                        (bet-values current-player))]
-                         (println amount money raise?)
                          (when (and (>= money amount) raise?)
                            [["Raise" amount money]]))))))))
 
