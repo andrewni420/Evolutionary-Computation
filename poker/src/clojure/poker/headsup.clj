@@ -897,9 +897,10 @@
 
 #_g
 
-#_(def m (apply-step-game nil :action ["Check" 0.0]))
+#_(def m (apply-step-game m :action ["Bet" 2.0]))
 
 #_m
+
 
 
 ;;10x model
