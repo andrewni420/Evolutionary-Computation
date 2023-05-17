@@ -235,6 +235,8 @@ public class GUI extends JPanel implements ActionListener {
         add(boardPanel, BorderLayout.NORTH);
         add(messagePanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        refreshElements();
     }
 
     // Function to draw cards based on round name
@@ -308,7 +310,7 @@ public class GUI extends JPanel implements ActionListener {
             // Grey out the Next Hand, check, and peek buttons
             nextHandButton.setEnabled(false);
             foldButton.setEnabled(true);
-            checkButton.setEnabled(false);
+            checkButton.setEnabled(true);
             callButton.setEnabled(true);
             minBetButton.setEnabled(true);
             betHalfPotButton.setEnabled(true);
@@ -466,8 +468,9 @@ public class GUI extends JPanel implements ActionListener {
 
     public void getPlayerCards() {
         // Get the player cards
-        player_hand[0] = clj.playerHands.get(0).get(0);
-        player_hand[1] = clj.playerHands.get(0).get(1);
+        int index = ((Number)(1 - (clj.gameNum % 2))).intValue();
+        player_hand[0] = clj.playerHands.get(index).get(0);
+        player_hand[1] = clj.playerHands.get(index).get(1);
     }
 
     public void getCommunityCards(){
@@ -479,14 +482,18 @@ public class GUI extends JPanel implements ActionListener {
 
     public void getAiCards(){
         // Get the AI cards
-        ai_hand[0] = clj.playerHands.get(1).get(0);
-        ai_hand[1] = clj.playerHands.get(1).get(1);
+        int index = ((Number)((clj.gameNum % 2))).intValue();
+        ai_hand[0] = clj.playerHands.get(index).get(0);
+        ai_hand[1] = clj.playerHands.get(index).get(1);
     }
 
     public void updateMoney(){
         // Update the money
-        player_stack = clj.playersMoney.get(0).intValue();
-        ai_stack = clj.playersMoney.get(1).intValue();
+        int playerIndex = ((Number)(1 - (clj.gameNum % 2))).intValue();
+        player_stack = clj.playersMoney.get(playerIndex).intValue();
+
+        int aiIndex = ((Number)((clj.gameNum % 2))).intValue();
+        ai_stack = clj.playersMoney.get(aiIndex).intValue();
     }
 
     public void updatePot(){
@@ -528,36 +535,18 @@ public class GUI extends JPanel implements ActionListener {
             }
         }
 
+        // update game map
+        clj.updateMap();
+
         // Update money and pot
         updateMoney();
         updatePot();
 
-        // // Remove previous elements
-        // aiCardsPanel.removeAll();
-        // communityCardsPanel.removeAll();
-        // playerCardsPanel.removeAll();
-        // messagePanel.removeAll();
-        // boardPanel.removeAll();
-        
-        // // Draw ai cards
-        // boardPanel.add(Box.createVerticalStrut(50)); // Add vertical space
-        // drawBackCard(aiCardsPanel);
-        // drawBackCard(aiCardsPanel);
-        // boardPanel.add(aiCardsPanel);
+        // Update the last bet
+        current_bet = (float) clj.currentBet;
 
-        // boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
-
-        // drawCommunityCards(clj.bettingRound);
-
-        // boardPanel.add(communityCardsPanel);
-
-        // boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
-
-        // // Draw player cards
-        // for (int i=0;i<player_hand.length;i++){
-        //     drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf('_') + 1).toLowerCase(), player_hand[i].substring(0, player_hand[i].indexOf('_')).toLowerCase());
-        // }
-        // boardPanel.add(playerCardsPanel);
+        // Update minimum raise
+        minimumRaise = (float) clj.minimumRaise;
 
         // Revalidate and repaint
         boardPanel.revalidate();
@@ -630,13 +619,13 @@ public class GUI extends JPanel implements ActionListener {
 
         String newValue = value.toLowerCase();
 
-        if (value == "11".toLowerCase()){
+        if (value.equals("11".toLowerCase())){
             newValue = "jack";
-        } else if (value == "12".toLowerCase()){
+        } else if (value.equals("12".toLowerCase())){
             newValue = "queen";
-        } else if (value == "13".toLowerCase()){
+        } else if (value.equals("13".toLowerCase())){
             newValue = "king";
-        } else if (value == "14".toLowerCase()){
+        } else if (value.equals("14".toLowerCase())){
             newValue = "ace";
         }
 
