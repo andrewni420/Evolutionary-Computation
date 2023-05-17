@@ -56,6 +56,8 @@ public class GUI extends JPanel implements ActionListener {
 
     CljCommunicator clj = new CljCommunicator();
 
+    String actionHistory;
+
     /**
      * TO DO: 
      * Use legal move logic to determine which buttons to display -> button.setEnabled(false)
@@ -85,6 +87,8 @@ public class GUI extends JPanel implements ActionListener {
 
         // Set layout manager
         setLayout(new BorderLayout());
+
+        updateActionHistory();
 
         // Create a panel for the game board
         boardPanel = new JPanel() {
@@ -128,6 +132,13 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(590,80, 20, 20);
                 g.setColor(Color.BLACK);
                 g.drawString(Double.toString(ai_stack), 590, 60);
+
+                // Write action history
+                String[] lines = actionHistory.split("\n");
+                for (int i = 0; i < lines.length; i++) {
+                    String line = lines[i];
+                    g.drawString(line, 900, 150 + (i * 20));
+                }
             }
         };
 
@@ -514,6 +525,12 @@ public class GUI extends JPanel implements ActionListener {
         pot = (float) clj.pot;
     }
 
+    public void updateActionHistory(){
+        actionHistory = clj.actionHistory;
+        System.out.println("HISTORY");
+        System.out.println(actionHistory);
+    }
+
     public void updateButtonLegality(){
         // Update the button legality
 
@@ -675,6 +692,8 @@ public class GUI extends JPanel implements ActionListener {
         // Update money and pot
         updateMoney();
         updatePot();
+
+        updateActionHistory();
 
         // Update the last bet
         current_bet = (float) clj.currentBet;
