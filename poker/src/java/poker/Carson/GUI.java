@@ -277,7 +277,7 @@ public class GUI extends JPanel implements ActionListener {
                 drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf('_') + 1).toLowerCase(), community_cards[i].substring(0, community_cards[i].indexOf('_')).toLowerCase());
             }
             // refreshElements();
-        } else if (round_name.equals("River")){
+        } else if (round_name.equals("River") || round_name.equals("Showdown")){
             communityCardsPanel.removeAll();
             // Draw 5 community cards
             for (int i=0;i<5;i++){
@@ -571,7 +571,7 @@ public class GUI extends JPanel implements ActionListener {
         }
         
         //"Call" 
-        if(clj.testLegality((float)clj.currentBet - player_bet, "Call"))
+        if(clj.testLegality(current_bet - player_bet, "Call"))
         {
             // Set the Button to Active
             callButton.setEnabled(true);
@@ -595,13 +595,13 @@ public class GUI extends JPanel implements ActionListener {
         }
         
         // "Bet" 
-        if(clj.testLegality((float)clj.minimumBet, "Bet"))
+        if(clj.testLegality((double)clj.minimumBet, "Bet"))
         {
             // Set the Button to Active
             betButton.setEnabled(true);
             
         }
-        else if (clj.testLegality((float)clj.minimumBet, "Raise"))
+        else if (clj.testLegality((double)clj.minimumBet, "Raise"))
         {
             // Set the Button to Active
             betButton.setEnabled(true);
@@ -612,12 +612,12 @@ public class GUI extends JPanel implements ActionListener {
         }
 
         // "Bet - Half Pot" 
-        if(clj.testLegality((float)(clj.pot/2), "Bet"))
+        if(clj.testLegality((pot/2), "Bet"))
         {
             // Set the Button to Active
             betHalfPotButton.setEnabled(true);
         }
-        else if (clj.testLegality((float)(clj.pot/2), "Raise"))
+        else if (clj.testLegality((pot/2), "Raise"))
         {
             // Set the Button to Active
             betButton.setEnabled(true);
@@ -628,12 +628,12 @@ public class GUI extends JPanel implements ActionListener {
         }
 
         // "Bet - Full Pot"
-        if(clj.testLegality((float)clj.pot, "Bet"))
+        if(clj.testLegality(pot, "Bet"))
         {
             // Set the Button to Active
             betPotButton.setEnabled(true);
         }
-        else if(clj.testLegality((float)clj.pot, "Raise"))
+        else if(clj.testLegality(pot, "Raise"))
         {
             // Set the Button to Active
             betPotButton.setEnabled(true);
@@ -668,6 +668,8 @@ public class GUI extends JPanel implements ActionListener {
 
     public void refreshElements(){
 
+        
+
         if (player_stack > 0){
             // Adjust the bet spinner
             try {
@@ -690,14 +692,8 @@ public class GUI extends JPanel implements ActionListener {
         // update game map
         clj.updateMap();
 
-        // update button legality
-        if (!init){
-            updateButtonLegality();
-        }
+        getPlayerBet();
 
-        // Update community cards
-        getCommunityCards();
-        drawCommunityCards(clj.bettingRound);
 
         // Update money and pot
         updateMoney();
@@ -705,13 +701,17 @@ public class GUI extends JPanel implements ActionListener {
 
         updateActionHistory();
 
-        getPlayerBet();
 
         // Update the last bet
         current_bet = (float) clj.currentBet;
 
         // Update minimum raise
         minimumRaise = (float) clj.minimumRaise;
+
+        // update button legality
+        if (!init){
+            updateButtonLegality();
+        }
 
         // if showdown, show AI cards
         if (clj.bettingRound.equals("Showdown")){
@@ -733,6 +733,10 @@ public class GUI extends JPanel implements ActionListener {
             game_active = false;
             checkIfGameOver();
         }
+
+        // Update community cards
+        getCommunityCards();
+        drawCommunityCards(clj.bettingRound);
 
         // Revalidate and repaint
         boardPanel.revalidate();
