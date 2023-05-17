@@ -512,6 +512,115 @@ public class GUI extends JPanel implements ActionListener {
 
     public void updateButtonLegality(){
         // Update the button legality
+
+        // Make a move with all the main buttons and test if they we are able to make a move with them
+
+        //"Check" 
+        if(clj.testLegality(0.0f, "Check"))
+        {
+            // Set the Button to Active
+            checkButton.setEnabled(true);
+        }
+        else
+        {
+            // Set the Button to not Active
+            checkButton.setEnabled(false);
+        }
+
+        // "Min Bet"
+        if(clj.testLegality((float)clj.minimumBet, "Bet"))
+        {
+            // Set the Button to Active
+            minBetButton.setEnabled(true);
+        }
+        else
+        {
+            // Set the Button to not Active
+            minBetButton.setEnabled(false);
+        }
+        
+        //"Call" 
+        if(clj.testLegality((float)clj.currentBet, "Call"))
+        {
+            // Set the Button to Active
+            callButton.setEnabled(true);
+        }
+        else
+        {
+            // Set the Button to not Active
+            callButton.setEnabled(false);
+        }
+        
+        // "Fold" 
+        if(clj.testLegality(0.0f, "Fold"))
+        {
+            // Set the Button to Active
+            foldButton.setEnabled(true);
+        }
+        else
+        {
+            // Set the Button to not Active
+            foldButton.setEnabled(false);
+        }
+        
+        // "Bet" 
+        if(clj.testLegality(0.1f, "Bet"))
+        {
+            // Set the Button to Active
+            betButton.setEnabled(true);
+            
+        }
+        else
+        {
+            betButton.setEnabled(false);
+        }
+
+        // "Bet - Half Pot" 
+        if(clj.testLegality((float)clj.pot/2f, "Bet"))
+        {
+            // Set the Button to Active
+            betHalfPotButton.setEnabled(true);
+        }
+        else
+        {
+            betHalfPotButton.setEnabled(false);
+        }
+
+        // "Bet - Full Pot"
+        if(clj.testLegality((float)clj.pot, "Bet"))
+        {
+            // Set the Button to Active
+            betPotButton.setEnabled(true);
+        }
+        else
+        {
+            betPotButton.setEnabled(false);
+        }
+        
+        // // "Raise" 
+        // if(clj.testLegality(0.1f, "Raise"))
+        // {
+        //     // Set the Button to Active
+            
+            
+        // }
+        // else
+        // {
+        //     // Set the Button to not Active
+        // }
+
+        // "All-In"
+        if(clj.testLegality(clj.playersMoney.get((int)(1 - (clj.gameNum % 2))).floatValue(), "All-In"))
+        {
+            // Set the Button to Active
+            allInButton.setEnabled(true);
+        }
+        else
+        {
+            // Set the Button to not Active
+            allInButton.setEnabled(false);
+        }
+
     }
 
     public void setGameOver(){

@@ -176,6 +176,25 @@ public class CljCommunicator
         }
     }
 
+    public boolean testLegality(float actionAmount, String actionType){
+        try {
+            System.out.println("stepgame is about to run");
+            g = (APersistentMap) stepGame.invoke(g, Clojure.read(":action"), Clojure.read("[" + Float.toString(actionAmount) + "\"" + actionType + "\"]"));
+            System.out.println("stepgame ran");
+            gameState = (APersistentMap) g.get(Clojure.read(":game-state"));
+            System.out.println("gamestate ran");
+            System.out.println("g: " + g.get(Clojure.read(":net-gain")));
+            netGain = ((Number) g.get(Clojure.read(":net-gain"))).floatValue();
+            System.out.println("netgain: " + netGain);
+            return true;
+            //update interface
+        } catch (Exception e) {
+            //not a legal action. Throws an AssertionError
+            System.out.println("Not a legal action (Exception: " + e + ")");
+            //display warning on interface
+            return false;
+        }
+    }
     public void init(){
         update((float) 0, "Fold");
     }
