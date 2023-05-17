@@ -61,7 +61,7 @@ public class GUI extends JPanel implements ActionListener {
 
     /**
      * TO DO: 
-     * Use legal move logic to determine which buttons to display -> button.setEnabled(false)
+     * Fix peek functionality on AI fold
      */
 
 
@@ -140,7 +140,7 @@ public class GUI extends JPanel implements ActionListener {
                 String[] lines = actionHistory.split("\n");
                 for (int i = 0; i < lines.length; i++) {
                     String line = lines[i];
-                    g.drawString(line, 850, 150 + (i * 20));
+                    g.drawString(line, 150, 150 + (i * 20));
                 }
             }
         };
@@ -351,10 +351,10 @@ public class GUI extends JPanel implements ActionListener {
             game_active = false;
             
             // Remove previous elements
-            aiCardsPanel.removeAll();
-            communityCardsPanel.removeAll();
-            playerCardsPanel.removeAll();
-            boardPanel.removeAll();
+            // aiCardsPanel.removeAll();
+            // communityCardsPanel.removeAll();
+            // playerCardsPanel.removeAll();
+            // boardPanel.removeAll();
 
             // Print fold message
             displayMessage("You folded. AI wins the pot of $" + pot);
@@ -368,7 +368,7 @@ public class GUI extends JPanel implements ActionListener {
             betHalfPotButton.setEnabled(false);
             betPotButton.setEnabled(false);
             allInButton.setEnabled(false);
-            peekButton.setEnabled(false);
+            peekButton.setEnabled(true);
             betButton.setEnabled(false);
 
             // Refresh the board
@@ -564,6 +564,9 @@ public class GUI extends JPanel implements ActionListener {
             // Set the Button to Active
             minBetButton.setEnabled(true);
         }
+        else if (clj.testLegality((double)clj.minimumRaise, "Raise")){
+            minBetButton.setEnabled(true);
+        }
         else
         {
             // Set the Button to not Active
@@ -602,7 +605,7 @@ public class GUI extends JPanel implements ActionListener {
             betButton.setEnabled(true);
             
         }
-        else if (clj.testLegality((double)clj.minimumBet, "Raise"))
+        else if (clj.testLegality((double)clj.minimumRaise, "Raise"))
         {
             // Set the Button to Active
             betButton.setEnabled(true);
@@ -683,7 +686,7 @@ public class GUI extends JPanel implements ActionListener {
             try {
                 SpinnerModel model = new SpinnerNumberModel(player_stack / 2, 0, player_stack, 1);
                 spinner.setModel(model);
-                spinner.setEnabled(false);
+                //spinner.setEnabled(false);
                 betButton.setEnabled(false);
             } catch (IllegalArgumentException e){
                 displayMessage("Invalid bet amount. Please try again.");
@@ -743,13 +746,16 @@ public class GUI extends JPanel implements ActionListener {
             betHalfPotButton.setEnabled(false);
             betPotButton.setEnabled(false);
             allInButton.setEnabled(false);
-            peekButton.setEnabled(false);
+            //peekButton.setEnabled(true);
             betButton.setEnabled(false);
-            spinner.setEnabled(false);
+            //spinner.setEnabled(false);
 
             game_active = false;
             checkIfGameOver();
             
+        }
+        else{
+            peekButton.setEnabled(false);
         }
 
         // Update community cards
@@ -777,7 +783,7 @@ public class GUI extends JPanel implements ActionListener {
             allInButton.setEnabled(false);
             peekButton.setEnabled(false);
             betButton.setEnabled(false);
-            spinner.setEnabled(false);
+            //spinner.setEnabled(false);
         } else if (ai_stack == 0 && !game_active){
             // Display game over message
             displayGameOverMessage("Game Over! You won all the AI's money. Please restart the game.");
@@ -791,7 +797,7 @@ public class GUI extends JPanel implements ActionListener {
             allInButton.setEnabled(false);
             peekButton.setEnabled(false);
             betButton.setEnabled(false);
-            spinner.setEnabled(false);
+            //spinner.setEnabled(false);
         }
     }
 
