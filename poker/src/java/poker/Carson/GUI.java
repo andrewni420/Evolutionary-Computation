@@ -3,6 +3,7 @@ package poker.Carson;
 // import java.awt.*;
 import javax.swing.*;
 import java.awt.Image;
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -39,16 +40,17 @@ public class GUI extends JPanel implements ActionListener {
     JPanel messagePanel = new JPanel();
 
     // Variables for pot, current bet, player hand, ai hand, player stack, ai stack, community cards, round, and if game is active
-    float pot = 100;
-    float current_bet = 50;
-    float minimumRaise = 100;
+    float pot = 0;
+    float current_bet = 0;
+    float minimumRaise = 0;
     String[] player_hand = new String[2];
-    float player_stack = 100;
+    float player_stack = 200;
     String[] ai_hand = new String[2];
     float ai_stack = 200;
     String[] community_cards = new String[5];
     String round = "Pre-Flop";
     boolean game_active = true;
+    boolean init = true;
 
     JSpinner spinner;
 
@@ -237,6 +239,8 @@ public class GUI extends JPanel implements ActionListener {
         add(buttonPanel, BorderLayout.SOUTH);
 
         refreshElements();
+
+        init = false;
     }
 
     // Function to draw cards based on round name
@@ -313,15 +317,15 @@ public class GUI extends JPanel implements ActionListener {
 
             // Grey out the Next Hand, check, and peek buttons
             nextHandButton.setEnabled(false);
-            foldButton.setEnabled(true);
-            checkButton.setEnabled(true);
-            callButton.setEnabled(true);
-            minBetButton.setEnabled(true);
-            betHalfPotButton.setEnabled(true);
-            betPotButton.setEnabled(true);
-            allInButton.setEnabled(true);
-            peekButton.setEnabled(false);
-            betButton.setEnabled(true);
+            // foldButton.setEnabled(true);
+            // checkButton.setEnabled(true);
+            // callButton.setEnabled(true);
+            // minBetButton.setEnabled(true);
+            // betHalfPotButton.setEnabled(true);
+            // betPotButton.setEnabled(true);
+            // allInButton.setEnabled(true);
+            // peekButton.setEnabled(false);
+            // betButton.setEnabled(true);
 
             // Refresh the board
             refreshElements();
@@ -499,15 +503,15 @@ public class GUI extends JPanel implements ActionListener {
     public void updateMoney(){
         // Update the money
         int playerIndex = ((Number)(1 - (clj.gameNum % 2))).intValue();
-        player_stack = clj.playersMoney.get(playerIndex).intValue();
+        player_stack = clj.playersMoney.get(playerIndex).floatValue();
 
         int aiIndex = ((Number)((clj.gameNum % 2))).intValue();
-        ai_stack = clj.playersMoney.get(aiIndex).intValue();
+        ai_stack = clj.playersMoney.get(aiIndex).floatValue();
     }
 
     public void updatePot(){
         // Update the pot
-        pot = (int) clj.pot;
+        pot = (float) clj.pot;
     }
 
     public void updateButtonLegality(){
@@ -516,7 +520,7 @@ public class GUI extends JPanel implements ActionListener {
         // Make a move with all the main buttons and test if they we are able to make a move with them
 
         //"Check" 
-        if(clj.testLegality(0.0f, "Check"))
+        if(clj.testLegality((float)0, "Check"))
         {
             // Set the Button to Active
             checkButton.setEnabled(true);
@@ -552,7 +556,7 @@ public class GUI extends JPanel implements ActionListener {
         }
         
         // "Fold" 
-        if(clj.testLegality(0.0f, "Fold"))
+        if(clj.testLegality((float)0, "Fold"))
         {
             // Set the Button to Active
             foldButton.setEnabled(true);
@@ -564,11 +568,16 @@ public class GUI extends JPanel implements ActionListener {
         }
         
         // "Bet" 
-        if(clj.testLegality(0.1f, "Bet"))
+        if(clj.testLegality((float)clj.minimumBet, "Bet"))
         {
             // Set the Button to Active
             betButton.setEnabled(true);
             
+        }
+        else if (clj.testLegality((float)clj.minimumBet, "Raise"))
+        {
+            // Set the Button to Active
+            betButton.setEnabled(true);
         }
         else
         {
@@ -576,10 +585,15 @@ public class GUI extends JPanel implements ActionListener {
         }
 
         // "Bet - Half Pot" 
-        if(clj.testLegality((float)clj.pot/2f, "Bet"))
+        if(clj.testLegality((float)(clj.pot/2), "Bet"))
         {
             // Set the Button to Active
             betHalfPotButton.setEnabled(true);
+        }
+        else if (clj.testLegality((float)(clj.pot/2), "Raise"))
+        {
+            // Set the Button to Active
+            betButton.setEnabled(true);
         }
         else
         {
@@ -592,23 +606,16 @@ public class GUI extends JPanel implements ActionListener {
             // Set the Button to Active
             betPotButton.setEnabled(true);
         }
+        else if(clj.testLegality((float)clj.pot, "Raise"))
+        {
+            // Set the Button to Active
+            betPotButton.setEnabled(true);
+        }
         else
         {
             betPotButton.setEnabled(false);
         }
         
-        // // "Raise" 
-        // if(clj.testLegality(0.1f, "Raise"))
-        // {
-        //     // Set the Button to Active
-            
-            
-        // }
-        // else
-        // {
-        //     // Set the Button to not Active
-        // }
-
         // "All-In"
         if(clj.testLegality(clj.playersMoney.get((int)(1 - (clj.gameNum % 2))).floatValue(), "All-In"))
         {
@@ -655,6 +662,11 @@ public class GUI extends JPanel implements ActionListener {
 
         // update game map
         clj.updateMap();
+
+        // update button legality
+        if (!init){
+            updateButtonLegality();
+        }
 
         // Update community cards
         getCommunityCards();
