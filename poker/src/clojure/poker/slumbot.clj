@@ -139,6 +139,24 @@
   [action-history]
   (string/join "/" (map-indexed #(encode-round %2 (if (= 0 %1) [0.5 1.0] [0.0 0.0])) action-history)))
 
+(defn action-as-readable
+  [action]
+  (condp = (first action)
+    "Bet" (str "bet " (utils/round (second action) 2))
+    "Raise" (str "raised" (utils/round (second action) 2))
+    "Fold" "folded"
+    "Call" "called"
+    "All-In" (str "went all-in for " (utils/round (second action) 2))
+    "Check" "checked"))
+
+(defn actions-as-readable 
+  [action-history]
+  (transduce (map #(str (if (= :bot (first %)) "Bot " "You ")
+                        (action-as-readable (second %))
+                        "\n")) 
+             str 
+             (mapcat identity action-history)))
+
 (defn decode-action
   "Decode an incremental action from SlumBot\\
    -> action"
