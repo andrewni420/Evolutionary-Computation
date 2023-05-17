@@ -183,28 +183,27 @@ public class CljCommunicator
     }
 
     public boolean testLegality(double actionAmount, String actionType){
-        // try {
-        //     IFn isLegal = Clojure.var("poker.utils", "is-legal?");
-        //     return (Boolean) isLegal.invoke(Clojure.read("[\"" + actionType + "\"" + Double.toString(actionAmount) + "]"), maping);
-        //     // // System.out.println("stepgame is about to run");
-        //     // APersistentMap g_tester = (APersistentMap) stepGame.invoke(g, Clojure.read(":action"), Clojure.read("[\"" + actionType + "\"" + Float.toString(actionAmount) + "]"));
-        //     // APersistentMap gameState_tester = (APersistentMap) g_tester.get(Clojure.read(":game-state"));
-        //     // // System.out.println("gamestate ran");
-        //     // // System.out.println("g: " + g.get(Clojure.read(":net-gain")));
-        //     // float netGain_tester = ((Number) g_tester.get(Clojure.read(":net-gain"))).floatValue();
-        //     // System.out.println("netgain: " + netGain);
-        //     // return true;
-        //     //update interface
-        // } catch (java.lang.AssertionError e) {
-        //     //not a legal action. Throws an AssertionError
-        //     System.out.println("Not a legal action (Exception: " + e + ")");
-        //     //display warning on interface
-        //     return false;
-        // } catch (java.lang.NullPointerException ex) {
-        //     System.out.println("Not a legal action (Exception: " + ex + ")");
-        //     return false;
-        // }
-        return true;
+        try {
+            IFn isLegal = Clojure.var("poker.utils", "is-legal?");
+            return (Boolean) isLegal.invoke(Clojure.read("[\"" + actionType + "\"" + Double.toString(actionAmount) + "]"), maping);
+            // // System.out.println("stepgame is about to run");
+            // APersistentMap g_tester = (APersistentMap) stepGame.invoke(g, Clojure.read(":action"), Clojure.read("[\"" + actionType + "\"" + Float.toString(actionAmount) + "]"));
+            // APersistentMap gameState_tester = (APersistentMap) g_tester.get(Clojure.read(":game-state"));
+            // // System.out.println("gamestate ran");
+            // // System.out.println("g: " + g.get(Clojure.read(":net-gain")));
+            // float netGain_tester = ((Number) g_tester.get(Clojure.read(":net-gain"))).floatValue();
+            // System.out.println("netgain: " + netGain);
+            // return true;
+            //update interface
+        } catch (java.lang.AssertionError e) {
+            //not a legal action. Throws an AssertionError
+            System.out.println("Not a legal action (Exception: " + e + ")");
+            //display warning on interface
+            return false;
+        } catch (java.lang.NullPointerException ex) {
+            System.out.println("Not a legal action (Exception: " + ex + ")");
+            return false;
+        }
     }
     public void init(){
         update((double) 0, "Fold");

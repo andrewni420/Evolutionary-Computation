@@ -140,7 +140,7 @@ public class GUI extends JPanel implements ActionListener {
                 String[] lines = actionHistory.split("\n");
                 for (int i = 0; i < lines.length; i++) {
                     String line = lines[i];
-                    g.drawString(line, 900, 150 + (i * 20));
+                    g.drawString(line, 850, 150 + (i * 20));
                 }
             }
         };
@@ -571,7 +571,7 @@ public class GUI extends JPanel implements ActionListener {
         }
         
         //"Call" 
-        if(clj.testLegality(current_bet - player_bet, "Call"))
+        if(clj.testLegality((double)current_bet - player_bet, "Call"))
         {
 
             // Set the Button to Active
@@ -645,7 +645,7 @@ public class GUI extends JPanel implements ActionListener {
         }
         
         // "All-In"
-        if(clj.testLegality(clj.playersMoney.get((int)(1 - (clj.gameNum % 2))).floatValue(), "All-In"))
+        if(clj.testLegality(player_stack, "All-In"))
         {
             // Set the Button to Active
             allInButton.setEnabled(true);
@@ -723,16 +723,33 @@ public class GUI extends JPanel implements ActionListener {
             drawCard(aiCardsPanel, ai_hand[1].substring(ai_hand[1].indexOf('_') + 1), ai_hand[1].substring(0, ai_hand[1].indexOf('_')).toLowerCase());
         }
 
+        System.out.println("ROUND");
+        System.out.println(clj.isGameOver);
+        System.out.println(clj.bettingRound);
+
         // check if round over
         if (clj.isGameOver){
+            System.out.println("GAME OVER");
             // aiCardsPanel.removeAll();
             // playerCardsPanel.removeAll();
             // communityCardsPanel.removeAll();
             nextHandButton.setEnabled(true);
             // grey out every other button
             displayMessage("Round over!");
+            foldButton.setEnabled(false);
+            checkButton.setEnabled(false);
+            callButton.setEnabled(false);
+            minBetButton.setEnabled(false);
+            betHalfPotButton.setEnabled(false);
+            betPotButton.setEnabled(false);
+            allInButton.setEnabled(false);
+            peekButton.setEnabled(false);
+            betButton.setEnabled(false);
+            spinner.setEnabled(false);
+
             game_active = false;
             checkIfGameOver();
+            
         }
 
         // Update community cards
