@@ -161,13 +161,13 @@ public class CljCommunicator
     public void update(float actionAmount, String actionType){
         try {
             System.out.println("stepgame is about to run");
-            g = (APersistentMap) stepGame.invoke(g, Clojure.read(":action"), Clojure.read("[" + Float.toString(actionAmount) + "\"" + actionType + "\"]"));
+            g = (APersistentMap) stepGame.invoke(g, Clojure.read(":action"), Clojure.read("[\"" + actionType + "\"" + Float.toString(actionAmount) + "]"));
             System.out.println("stepgame ran");
             gameState = (APersistentMap) g.get(Clojure.read(":game-state"));
             System.out.println("gamestate ran");
             System.out.println("g: " + g.get(Clojure.read(":net-gain")));
-            netGain = ((Number) g.get(Clojure.read(":net-gain"))).floatValue();
-            System.out.println("netgain: " + netGain);
+            // netGain = ((Number) g.get(Clojure.read(":net-gain"))).floatValue();
+            // System.out.println("netgain: " + netGain);
             //update interface
         } catch (Exception e) {
             //not a legal action. Throws an AssertionError
