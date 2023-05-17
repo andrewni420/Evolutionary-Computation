@@ -573,6 +573,7 @@ public class GUI extends JPanel implements ActionListener {
         //"Call" 
         if(clj.testLegality(current_bet - player_bet, "Call"))
         {
+            
             // Set the Button to Active
             callButton.setEnabled(true);
         }
