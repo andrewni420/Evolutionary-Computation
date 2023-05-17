@@ -882,9 +882,9 @@
                                  :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history)}
         :else (do (assert (utils/is-legal? action game-state)
                           (str "Illegal action: " action " game-state " game-state))
-                  (let [[g e] (parse-action action game-state game-encoding)
-                        g (assoc g :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history))]
-                    (apply check-bot-move (check-transition g e game-history))))))
+                  (let [[g e] (parse-action action game-state game-encoding)]
+                    (assoc (apply check-bot-move (check-transition g e game-history))
+                           :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history))))))
 
 (defn apply-step-game 
   [g & {:keys [action] :as argmap}]
@@ -892,7 +892,7 @@
 
 #_g
 
-#_(def m (apply-step-game nil :action ["All-In" 199.0]))
+#_(def m (apply-step-game m :action ["Check" 0.0]))
 
 #_m
 
