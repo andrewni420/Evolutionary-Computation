@@ -40,13 +40,13 @@ public class GUI extends JPanel implements ActionListener {
     JPanel messagePanel = new JPanel();
 
     // Variables for pot, current bet, player hand, ai hand, player stack, ai stack, community cards, round, and if game is active
-    float pot = 0;
-    float current_bet = 0;
-    float minimumRaise = 0;
+    double pot = 0;
+    double current_bet = 0;
+    double minimumRaise = 0;
     String[] player_hand = new String[2];
-    float player_stack = 200;
+    double player_stack = 200;
     String[] ai_hand = new String[2];
-    float ai_stack = 200;
+    double ai_stack = 200;
     String[] community_cards = new String[5];
     String round = "Pre-Flop";
     boolean game_active = true;
@@ -103,7 +103,7 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(700,255, 20, 20);
                 g.fillOval(720,255, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Float.toString(pot), 700, 255);
+                g.drawString(Double.toString(pot), 700, 255);
 
                 // Draw player stack
                 g.setColor(Color.RED);
@@ -111,7 +111,7 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(600,360, 20, 20);
                 g.fillOval(590,345, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Float.toString(player_stack), 590, 395);
+                g.drawString(Double.toString(player_stack), 590, 395);
 
                 // Draw AI stack
                 g.setColor(Color.RED);
@@ -119,7 +119,7 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(600,65, 20, 20);
                 g.fillOval(590,80, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Float.toString(ai_stack), 590, 60);
+                g.drawString(Double.toString(ai_stack), 590, 60);
 
                 // Draw current bet
                 g.setColor(Color.RED);
@@ -127,7 +127,7 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(600,65, 20, 20);
                 g.fillOval(590,80, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Float.toString(ai_stack), 590, 60);
+                g.drawString(Double.toString(ai_stack), 590, 60);
             }
         };
 
@@ -364,7 +364,7 @@ public class GUI extends JPanel implements ActionListener {
             checkIfGameOver();
         } else if ("check".equals(e.getActionCommand())){
             try {
-                clj.update((float)0, "Check");
+                clj.update((double)0, "Check");
             } catch (Exception ex){
                 System.out.println(ex);
             }
