@@ -876,13 +876,13 @@
                            :opponent opponent
                            :manager manager)
                {:net-gain 0.0})
-        (:game-over game-state) (do (println game-encoding)(assoc (check-bot-move (pay-blinds (init-game
+        (:game-over game-state) (assoc (check-bot-move (pay-blinds (init-game
                                                                     :players (map #(utils/set-money % utils/initial-stack) (reverse (:players game-state)))
                                                                     :manager (or (:manager game-state) (ndarray/new-base-manager))
                                                                     :game-num (inc (:game-num game-state))))
                                                        game-encoding
                                                        game-history)
-                                       :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history)))
+                                       :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history))
         :else (do (assert (utils/is-legal? action game-state)
                           (str "Illegal action: " action " game-state " game-state))
                   (let [[g e] (parse-action action game-state (update-game-encoding game-encoding
