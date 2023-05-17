@@ -2117,7 +2117,7 @@
    of money that can be put into the pot while performing that action type\\
    -> [[type least most] ...]"
   [game-state & {:keys [suppress-fold? suppress-raise?]
-                 :or {suppress-raise? true
+                 :or {suppress-raise? false
                       suppress-fold? true}}]
   (let [{min-bet :min-bet
          min-raise :min-raise
@@ -2128,7 +2128,7 @@
          players :players} game-state
         p (players current-player)
         {money :money} p
-        raise? (and (not suppress-raise?) (< (count (last action-history)) 7))
+        raise? (or (not suppress-raise?) (< (count (last action-history)) 7))
         call-cost (- current-bet (bet-values current-player))]
     (#(cond
         (in? % ["All-In" 0.0 0.0]) %
@@ -2150,6 +2150,7 @@
                            [["Call" call-cost call-cost]]))
                        (let [amount (- (+ current-bet min-raise)
                                        (bet-values current-player))]
+                         (println amount money raise?)
                          (when (and (>= money amount) raise?)
                            [["Raise" amount money]]))))))))
 

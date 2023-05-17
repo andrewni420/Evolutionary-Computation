@@ -878,7 +878,7 @@
                            :manager manager)
                {:net-gain 0.0})
         (:game-over game-state) {:game-state (pay-blinds (init-game
-                                                          :players (reverse (:players game-state))
+                                                          :players (map #(utils/set-money % utils/initial-stack) (reverse (:players game-state)))
                                                           :manager (or (:manager game-state) (ndarray/new-base-manager))
                                                           :game-num (inc (:game-num game-state))))
                                  :game-encoding game-encoding
@@ -897,9 +897,10 @@
 
 #_g
 
-#_(def m (apply-step-game nil :action ["Check" 0.0]))
+#_(def m (apply-step-game m :action ["Bet" 2.0]))
 
 #_m
+
 
 
 ;;10x model
