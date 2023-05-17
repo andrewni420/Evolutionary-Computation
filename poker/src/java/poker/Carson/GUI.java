@@ -532,7 +532,7 @@ public class GUI extends JPanel implements ActionListener {
 
     public void updatePot(){
         // Update the pot
-        pot = (float) clj.pot;
+        pot = (double) clj.pot;
     }
 
     public void updateActionHistory(){
@@ -547,7 +547,7 @@ public class GUI extends JPanel implements ActionListener {
         // Make a move with all the main buttons and test if they we are able to make a move with them
 
         //"Check" 
-        if(clj.testLegality((float)0, "Check"))
+        if(clj.testLegality((double)0, "Check"))
         {
             // Set the Button to Active
             checkButton.setEnabled(true);
@@ -559,7 +559,7 @@ public class GUI extends JPanel implements ActionListener {
         }
 
         // "Min Bet"
-        if(clj.testLegality((float)clj.minimumBet, "Bet"))
+        if(clj.testLegality((double)clj.minimumBet, "Bet"))
         {
             // Set the Button to Active
             minBetButton.setEnabled(true);
@@ -573,7 +573,7 @@ public class GUI extends JPanel implements ActionListener {
         //"Call" 
         if(clj.testLegality(current_bet - player_bet, "Call"))
         {
-            
+
             // Set the Button to Active
             callButton.setEnabled(true);
         }
@@ -584,7 +584,7 @@ public class GUI extends JPanel implements ActionListener {
         }
         
         // "Fold" 
-        if(clj.testLegality((float)0, "Fold"))
+        if(clj.testLegality((double)0, "Fold"))
         {
             // Set the Button to Active
             foldButton.setEnabled(true);
@@ -704,10 +704,10 @@ public class GUI extends JPanel implements ActionListener {
 
 
         // Update the last bet
-        current_bet = (float) clj.currentBet;
+        current_bet = (double) clj.currentBet;
 
         // Update minimum raise
-        minimumRaise = (float) clj.minimumRaise;
+        minimumRaise = (double) clj.minimumRaise;
 
         // update button legality
         if (!init){
