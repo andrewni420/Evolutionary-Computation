@@ -241,31 +241,31 @@ public class GUI extends JPanel implements ActionListener {
 
     // Function to draw cards based on round name
     public void drawCommunityCards(String round_name) {
-        if (round_name == "Pre-Flop") {
+        if (round_name.equals("Pre-Flop")) {
             communityCardsPanel.removeAll();
             communityCardsPanel.add(Box.createRigidArea(new Dimension(0, 90))); // Add vertical space
-            refreshElements();
-        } else if (round_name == "Flop") {
+            // refreshElements();
+        } else if (round_name.equals("Flop")) {
             communityCardsPanel.removeAll();
             // Draw 3 community cards
             for (int i=0;i<3;i++){
                 drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf('_') + 1).toLowerCase(), community_cards[i].substring(0, community_cards[i].indexOf('_')).toLowerCase());
             }
-            refreshElements();
-        } else if (round_name == "Turn") {
+            // refreshElements();
+        } else if (round_name.equals("Turn")) {
             communityCardsPanel.removeAll();
             // Draw 4 community cards
             for (int i=0;i<4;i++){
                 drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf('_') + 1).toLowerCase(), community_cards[i].substring(0, community_cards[i].indexOf('_')).toLowerCase());
             }
-            refreshElements();
-        } else if (round_name == "River"){
+            // refreshElements();
+        } else if (round_name.equals("River")){
             communityCardsPanel.removeAll();
             // Draw 5 community cards
             for (int i=0;i<5;i++){
                 drawCard(communityCardsPanel, community_cards[i].substring(community_cards[i].indexOf('_') + 1).toLowerCase(), community_cards[i].substring(0, community_cards[i].indexOf('_')).toLowerCase());
             }
-            refreshElements();
+            // refreshElements();
         }
     }
 
@@ -274,7 +274,8 @@ public class GUI extends JPanel implements ActionListener {
 
             // Restart game on backend
             if (! game_active){
-                clj.update(0, "Check");
+                clj.update(0, "Fold");
+                clj.updateMap();
             }
 
             // Set game to active
@@ -301,6 +302,9 @@ public class GUI extends JPanel implements ActionListener {
 
             boardPanel.add(Box.createVerticalStrut(40)); // Add vertical space
 
+            // get player cards
+            getPlayerCards();
+
             // Draw player cards
             for (int i=0;i<player_hand.length;i++){
                 drawCard(playerCardsPanel, player_hand[i].substring(player_hand[i].indexOf('_') + 1).toLowerCase(), player_hand[i].substring(0, player_hand[i].indexOf('_')).toLowerCase());
@@ -323,7 +327,7 @@ public class GUI extends JPanel implements ActionListener {
             refreshElements();
         } else if ("fold".equals(e.getActionCommand())){
             // Send to backend
-            clj.update(player_stack, "Fold");
+            clj.update(0, "Fold");
 
             // Set game to inactive
             game_active = false;
@@ -355,7 +359,12 @@ public class GUI extends JPanel implements ActionListener {
             // Check if game over
             checkIfGameOver();
         } else if ("check".equals(e.getActionCommand())){
-            clj.update(0, "Check");
+            try {
+                clj.update((float)0, "Check");
+            } catch (Exception ex){
+                System.out.println(ex);
+            }
+            refreshElements();
         } else if ("call".equals(e.getActionCommand())){
             // Check if player can afford to call
             if (player_stack >= current_bet){
@@ -444,15 +453,15 @@ public class GUI extends JPanel implements ActionListener {
             timer.start();
         } else if ("bet".equals(e.getActionCommand())){
             // Get bet amount
-            float bet_amount = (float) spinner.getValue();
+            float bet_amount = ((Number)spinner.getValue()).floatValue();
 
             // Check if valid bet amount
             if ((bet_amount <= player_stack) && (bet_amount >= 1)){    
 
-                if (current_bet == 0){
+                try {
                     clj.update(bet_amount, "Bet");
                 }
-                else{
+                catch (Exception ex) {
                     clj.update(bet_amount, "Raise");
                 }
 
@@ -538,6 +547,10 @@ public class GUI extends JPanel implements ActionListener {
         // update game map
         clj.updateMap();
 
+        // Update community cards
+        getCommunityCards();
+        drawCommunityCards(clj.bettingRound);
+
         // Update money and pot
         updateMoney();
         updatePot();
@@ -547,6 +560,27 @@ public class GUI extends JPanel implements ActionListener {
 
         // Update minimum raise
         minimumRaise = (float) clj.minimumRaise;
+
+        // if showdown, show AI cards
+        if (clj.bettingRound.equals("Showdown")){
+            displayMessage("Showdown!");
+            aiCardsPanel.removeAll();
+            getAiCards();
+            drawCard(aiCardsPanel, ai_hand[0].substring(ai_hand[0].indexOf('_') + 1), ai_hand[0].substring(0, ai_hand[0].indexOf('_')).toLowerCase());
+            drawCard(aiCardsPanel, ai_hand[1].substring(ai_hand[1].indexOf('_') + 1), ai_hand[1].substring(0, ai_hand[1].indexOf('_')).toLowerCase());
+        }
+
+        // check if round over
+        if (clj.isGameOver){
+            // aiCardsPanel.removeAll();
+            // playerCardsPanel.removeAll();
+            // communityCardsPanel.removeAll();
+            nextHandButton.setEnabled(true);
+            // grey out every other button
+            displayMessage("Round over!");
+            game_active = false;
+            checkIfGameOver();
+        }
 
         // Revalidate and repaint
         boardPanel.revalidate();
@@ -560,6 +594,7 @@ public class GUI extends JPanel implements ActionListener {
             displayGameOverMessage("Game Over! You lost all your money. Please restart the game.");
             // Disable all buttons
             nextHandButton.setEnabled(false);
+            foldButton.setEnabled(false);
             checkButton.setEnabled(false);
             callButton.setEnabled(false);
             minBetButton.setEnabled(false);
@@ -573,6 +608,7 @@ public class GUI extends JPanel implements ActionListener {
             // Display game over message
             displayGameOverMessage("Game Over! You won all the AI's money. Please restart the game.");
             nextHandButton.setEnabled(false);
+            foldButton.setEnabled(false);
             checkButton.setEnabled(false);
             callButton.setEnabled(false);
             minBetButton.setEnabled(false);
@@ -713,6 +749,7 @@ public class GUI extends JPanel implements ActionListener {
         frame.setContentPane(newContentPane);
 
         frame.setResizable(false);
+        frame.setAlwaysOnTop(true);
 
         //Display the window.
         frame.pack();
