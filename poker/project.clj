@@ -29,10 +29,10 @@
              "-Dai.djl.disable_close_resource_on_finalize=true"
              "-Xmx1000g"
              "-XX:MaxGCPauseMillis=100"
-             "-Dcom.sun.management.jmxremote"
+             ;"-Dcom.sun.management.jmxremote"
              ;"-Dcom.sun.management.jmxremote.port=1089"
-             "-Dcom.sun.management.jmxremote.ssl=false"
-             "-Dcom.sun.management.jmxremote.authenticate=false"
+             ;"-Dcom.sun.management.jmxremote.ssl=false"
+             ;"-Dcom.sun.management.jmxremote.authenticate=false"
              ]
   :profiles {:precomp {:source-paths ["src/pre/clojure"]
                        :aot [poker.headsup

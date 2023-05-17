@@ -800,7 +800,8 @@
                                  (conj game-history (state-to-history {:players (map #(utils/set-money % utils/initial-stack)
                                                                                      (:players game-state))}
                                                                       game-state))]
-        (round-over-checkone game-state) (recur (next-round game-state) game-encoding game-history)
+        (all-in? game-state) (recur (next-round game-state) game-encoding game-history)
+        (round-over-checkone game-state) [(next-round game-state) game-encoding game-history]
         :else [game-state game-encoding game-history]))
 
 (defn check-bot-move
@@ -822,7 +823,10 @@
                                  game-history))]
         (recur g e h))
       {:game-state game-state
-       :game-encoding game-encoding
+       :game-encoding (update-game-encoding game-encoding
+                                            manager
+                                            :state (onehot/encode-state game-state)
+                                            :position (onehot/encode-position game-state))
        :game-history game-history})))
 
 
@@ -883,6 +887,7 @@
         :else (do (assert (utils/is-legal? action game-state)
                           (str "Illegal action: " action " game-state " game-state))
                   (let [[g e] (parse-action action game-state game-encoding)]
+                    (println "game over " (:game-over g))
                     (assoc (apply check-bot-move (check-transition g e game-history))
                            :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history))))))
 
@@ -892,7 +897,7 @@
 
 #_g
 
-#_(def m (apply-step-game m :action ["Check" 0.0]))
+#_(def m (apply-step-game nil :action ["Check" 0.0]))
 
 #_m
 
