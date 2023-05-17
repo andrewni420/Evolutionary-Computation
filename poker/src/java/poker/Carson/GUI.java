@@ -48,7 +48,6 @@ public class GUI extends JPanel implements ActionListener {
     String[] ai_hand = new String[2];
     double ai_stack = 200;
     String[] community_cards = new String[5];
-    String round = "Pre-Flop";
     boolean game_active = true;
     boolean init = true;
 
@@ -57,6 +56,8 @@ public class GUI extends JPanel implements ActionListener {
     CljCommunicator clj = new CljCommunicator();
 
     String actionHistory;
+
+    double player_bet;
 
     /**
      * TO DO: 
@@ -89,6 +90,8 @@ public class GUI extends JPanel implements ActionListener {
         setLayout(new BorderLayout());
 
         updateActionHistory();
+
+        getPlayerBet();
 
         // Create a panel for the game board
         boardPanel = new JPanel() {
@@ -383,7 +386,7 @@ public class GUI extends JPanel implements ActionListener {
         } else if ("call".equals(e.getActionCommand())){
             // Check if player can afford to call
             if (player_stack >= current_bet){
-                clj.update(current_bet, "Call");
+                clj.update(current_bet - player_bet, "Call");
                 refreshElements();
             } else {
                 // Player cannot afford to call, go all in
@@ -497,6 +500,13 @@ public class GUI extends JPanel implements ActionListener {
         player_hand[1] = clj.playerHands.get(index).get(1);
     }
 
+    public void getPlayerBet(){
+        System.out.println("PLAYER BET");
+        int index = ((Number)(1 - (clj.gameNum % 2))).intValue();
+        player_bet = clj.betValues.get(index);
+        System.out.println(player_bet);
+    }
+
     public void getCommunityCards(){
         // Get the community cards
         for (int i = 0; i < clj.visibleCards.size(); i++) {
@@ -561,7 +571,7 @@ public class GUI extends JPanel implements ActionListener {
         }
         
         //"Call" 
-        if(clj.testLegality((float)clj.currentBet, "Call"))
+        if(clj.testLegality((float)clj.currentBet - player_bet, "Call"))
         {
             // Set the Button to Active
             callButton.setEnabled(true);
@@ -694,6 +704,8 @@ public class GUI extends JPanel implements ActionListener {
         updatePot();
 
         updateActionHistory();
+
+        getPlayerBet();
 
         // Update the last bet
         current_bet = (float) clj.currentBet;
