@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import poker.Mikhail.CljCommunicator;
 
 
+
 // Client is numGames - 1 % 2
 // Ai is numGames % 2
 
@@ -110,7 +111,7 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(700,255, 20, 20);
                 g.fillOval(720,255, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Double.toString(pot), 700, 255);
+                g.drawString(String.format("%.1f", pot), 700, 255);
 
                 // Draw player stack
                 g.setColor(Color.RED);
@@ -118,7 +119,7 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(600,360, 20, 20);
                 g.fillOval(590,345, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Double.toString(player_stack), 590, 395);
+                g.drawString(String.format("%.1f", player_stack), 590, 395);
 
                 // Draw AI stack
                 g.setColor(Color.RED);
@@ -126,15 +127,15 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillOval(600,65, 20, 20);
                 g.fillOval(590,80, 20, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(Double.toString(ai_stack), 590, 60);
+                g.drawString(String.format("%.1f", ai_stack), 590, 60);
 
-                // Draw current bet
-                g.setColor(Color.RED);
-                g.fillOval(580,65, 20, 20);
-                g.fillOval(600,65, 20, 20);
-                g.fillOval(590,80, 20, 20);
-                g.setColor(Color.BLACK);
-                g.drawString(Double.toString(ai_stack), 590, 60);
+                // // Draw current bet
+                // g.setColor(Color.RED);
+                // g.fillOval(580,65, 20, 20);
+                // g.fillOval(600,65, 20, 20);
+                // g.fillOval(590,80, 20, 20);
+                // g.setColor(Color.BLACK);
+                // g.drawString(String.format("%.1f", ai_stack), 590, 60);
 
                 // Write action history
                 String[] lines = actionHistory.split("\n");
