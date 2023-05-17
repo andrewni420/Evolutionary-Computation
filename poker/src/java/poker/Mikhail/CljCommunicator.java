@@ -19,12 +19,12 @@ public class CljCommunicator
     public APersistentMap maping;
 
     // List of the bets that players will make
-    public List<Float> betValues;
+    public List<Double> betValues;
 
     // Integer of the game number
     public Long gameNum;
 
-    // float of the current bet on the table
+    // double of the current bet on the table
     public double currentBet;
 
     // List of the Cards that are in players hands
@@ -33,7 +33,7 @@ public class CljCommunicator
     // String name of the Betting Round
     public String bettingRound;
 
-    // float of the minimum bet
+    // double of the minimum bet
     public double minimumBet;
     
     // List of the Players Money
@@ -56,7 +56,7 @@ public class CljCommunicator
     public APersistentMap g;
 
     // netGain
-    public float netGain;
+    public double netGain;
 
     // Step game function
     public IFn stepGame;
@@ -76,7 +76,7 @@ public class CljCommunicator
         System.out.println("maping keys: " + maping.keySet());
 
         // We get the Bet Values
-        betValues = (List<Float>)maping.get(Clojure.read(":bet-values"));
+        betValues = (List<Double>)maping.get(Clojure.read(":bet-values"));
         System.out.println("betValues:" + betValues);
 
         // We get the game number
@@ -158,10 +158,10 @@ public class CljCommunicator
         System.out.println("pot: " + pot);
     }
 
-    public void update(float actionAmount, String actionType){
+    public void update(double actionAmount, String actionType){
         try {
             System.out.println("stepgame is about to run");
-            g = (APersistentMap) stepGame.invoke(g, Clojure.read(":action"), Clojure.read("[\"" + actionType + "\"" + Float.toString(actionAmount) + "]"));
+            g = (APersistentMap) stepGame.invoke(g, Clojure.read(":action"), Clojure.read("[\"" + actionType + "\"" + Double.toString(actionAmount) + "]"));
             System.out.println("stepgame ran");
             gameState = (APersistentMap) g.get(Clojure.read(":game-state"));
             System.out.println("gamestate ran");
@@ -176,10 +176,10 @@ public class CljCommunicator
         }
     }
 
-    public boolean testLegality(float actionAmount, String actionType){
+    public boolean testLegality(double actionAmount, String actionType){
         try {
             IFn isLegal = Clojure.var("poker.utils", "is-legal?");
-            return (Boolean) isLegal.invoke(Clojure.read("[\"" + actionType + "\"" + Float.toString(actionAmount) + "]"), maping);
+            return (Boolean) isLegal.invoke(Clojure.read("[\"" + actionType + "\"" + Double.toString(actionAmount) + "]"), maping);
             // // System.out.println("stepgame is about to run");
             // APersistentMap g_tester = (APersistentMap) stepGame.invoke(g, Clojure.read(":action"), Clojure.read("[\"" + actionType + "\"" + Float.toString(actionAmount) + "]"));
             // APersistentMap gameState_tester = (APersistentMap) g_tester.get(Clojure.read(":game-state"));
@@ -200,6 +200,6 @@ public class CljCommunicator
         }
     }
     public void init(){
-        update((float) 0, "Fold");
+        update((double) 0, "Fold");
     }
 }
