@@ -35,4 +35,27 @@ public class Indexing {
         for (int i=0;i<n;i++) res[i] = (float) r.nextGaussian();
         return res;
     }
+
+    public static float[] indexIntoBlock2(int iStart, int[] indices, float[] block, int n, float stdev){
+        float[] res = new float[n];
+        int N = block.length;
+        int indLength = indices.length;
+
+        int[] indicesTracker = new int[indLength];
+        for (int i=0;i<indLength;i++){
+            indices[i] = ((indices[i]% N)+N)%N;
+            indicesTracker[i] = ((indices[i]*iStart % N) + N) % N;
+        }
+
+        for (int i=0;i<n;i++){
+            // float IthRes=0;
+            // for (int j=0;j<indLength;j++){
+            //     IthRes+=stdev*block[indicesTracker[j]];
+            //     indicesTracker[j]=(indicesTracker[j]+indices[j])%N;
+            // }
+            // res[i]=IthRes;
+            res[i] = addIndices(indicesTracker, indices, block, N, stdev);
+        }
+        return res;
+    }
 }

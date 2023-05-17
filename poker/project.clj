@@ -15,6 +15,8 @@
                  [ai.djl.mxnet/mxnet-engine "0.22.1"]
                  [org.slf4j/slf4j-api "2.0.7"]
                  [org.slf4j/slf4j-simple "2.0.7"]
+                 [criterium "0.4.6"]
+                 [incanter "1.9.3"]
                  [org.apache.commons/commons-math3 "3.6.1"]]
   :exclusions []
   :main ^:skip-aot poker.core
@@ -25,10 +27,10 @@
              "-Dai.djl.pytorch.num_interop_threads=116"
              "-Dai.djl.pytorch.num_intraop_threads=1"
              "-Dai.djl.disable_close_resource_on_finalize=true"
-             "-Xmx100g"
+             "-Xmx1000g"
              "-XX:MaxGCPauseMillis=100"
              "-Dcom.sun.management.jmxremote"
-             "-Dcom.sun.management.jmxremote.port=1089"
+             ;"-Dcom.sun.management.jmxremote.port=1089"
              "-Dcom.sun.management.jmxremote.ssl=false"
              "-Dcom.sun.management.jmxremote.authenticate=false"
              ]

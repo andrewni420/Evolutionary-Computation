@@ -5,8 +5,10 @@
             [poker.headsup :as headsup]
             [poker.concurrent :as concurrent]
             [poker.utils :as utils]
+            [poker.ndarray :as ndarray]
             [poker.transformer :as transformer]
             [poker.Andrew.processresult :as processresult]
+            [poker.slumbot :as slumbot]
             [clojure.test :as t])
   (:import java.util.Random
            java.lang.Runtime))
@@ -92,7 +94,7 @@
 (require-python '[mpi4py :as mpi])
 (py/set-attr! mpi/rc "initialize" false)
 (py/set-attr! mpi/rc "finalize" false)
-(require-python '[mpi4py.MPI :as MPI])
+(require-python '[mpi4py.MPI])
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -103,14 +105,14 @@
 (defn close-MPI
   "Finalizes the MPI environment"
   []
-  (when (MPI/Is_initialized)
-    (MPI/Finalize)))
+  (when (mpi4py.MPI/Is_initialized)
+    (mpi4py.MPI/Finalize)))
 
 (defn initialize-MPI
   "Initializes the MPI environment"
   []
-  (when-not (MPI/Is_initialized)
-    (MPI/Init)))
+  (when-not (mpi4py.MPI/Is_initialized)
+    (mpi4py.MPI/Init)))
 
 
 (defmacro with-MPI
@@ -140,9 +142,9 @@
    -> {(:ind1 :ind2) (:net-gain) (:winner) (:action-count)} \\
    cf. ERL/versus"
   [& {:keys [players max-actions deck-seed max-seq-length num-games stdev from-block? argmaps]}]
-  (assert (or (and players max-actions deck-seed max-seq-length num-games)
+  (assert (or (and players max-actions max-seq-length num-games)
               argmaps)
-          (str "Must have all required parameters " players max-actions deck-seed max-seq-length num-games))
+          (str "Must have all required parameters " players max-actions max-seq-length num-games))
   #_(println "rank " (py. mpi4py.MPI/COMM_WORLD Get_rank) " evaluating task")
   (apply ERL/versus
          (first players)
@@ -203,20 +205,22 @@
   (assert (and comm task rank thread args) (str "Must provide task, rank, and thread" comm task rank thread args))
   #_(println "sending task to rank " rank " thread " thread)
   (assert (>= thread 0) "Thread cannot be negative")
-  (when-not (zero? rank) (py. comm isend (py/->py-dict task)
-                              :dest rank
-                              :tag thread))
-  {:rank rank
-   :thread thread
-   :result (if (zero? rank)
-             (concurrent/msubmit
-              (utils/apply-map evaluate-task
-                               task
-                               args
-                               {:argmaps [args task]}))
-             (py. comm irecv
-                  :source rank
-                  :tag thread))})
+  
+  (let [send-request (when-not (zero? rank) (py. comm isend (py/->py-dict task)
+                                                 :dest rank
+                                                 :tag thread))]
+    {:rank rank
+     :thread thread
+     :result (if (zero? rank)
+               (concurrent/msubmit
+                (utils/apply-map evaluate-task
+                                 task
+                                 args
+                                 {:argmaps [args task]}))
+               (py. comm irecv
+                    :source rank
+                    :tag thread))
+     :send-request send-request}))
 
 #_(defn send-and-collect
     "Send off tasks to the threads given by their rank, and return a vector of 
@@ -248,15 +252,17 @@
    -> [{:rank :thread :result} ...]\\
    cf. send-task"
   ([comm args rank-threads tasks]
-   #_(when (seq rank-threads) (println "resend-tasks to " (map (fn [{rank :rank thread :thread}] 
-                                      {:rank rank :thread thread}) 
-                                    (take (count tasks) rank-threads))))
-   (mapv #(utils/apply-map send-task
+   #_(when (seq rank-threads) (println "resend-tasks to " (map (fn [{rank :rank thread :thread}]
+                                                                 {:rank rank :thread thread})
+                                                               (take (count tasks) rank-threads))))
+   (let [results (mapv #(utils/apply-map send-task
                            {:comm comm :args args}
                            %1
                            {:task %2})
          rank-threads
-         tasks))
+         tasks)]
+     (mapv #(when (:send-request %) (py. (:send-request %) wait)) results)
+     (mapv #(dissoc % :send-request) results)))
   ([comm args ranks threads tasks]
    (resend-tasks comm
                  args
@@ -284,6 +290,7 @@
                       (if symmetrical?
                         (concat matches (map reverse matches))
                         matches))]
+    #_(println "start collect. heap size(GB): " (/ (.totalMemory (java.lang.Runtime/getRuntime)) 1000000000.))
     #_(println "Collecting fitness. Ranks: " num-ranks " threads: " (utils/num-processors) "match count: " (count matches))
     (loop [requests (resend-tasks comm args (range num-ranks) (range (utils/num-processors)) matches)
            matches (drop (count requests) matches)
@@ -309,7 +316,7 @@
   (let [matches (for [ind1 pop
                       ind2 bench
                       :when (not (= ind1 ind2))]
-                  [(dissoc ind1 :error) 
+                  [(dissoc ind1 :error)
                    (dissoc ind2 :error)])]
     (ERL/process-results pop
                          bench
@@ -326,7 +333,7 @@
   "Terminates the slave MPI processes when the evolutionary loop is over."
   [comm num-ranks]
   (run! #(do #_(println "sending terminate message to rank " %)
-          (py. comm isend (py/->python 1) :dest % :tag (utils/num-processors)))
+          (py. comm isend (py/->python 1) :dest % :tag 1000))
         (range 1 num-ranks)))
 
 
@@ -363,7 +370,7 @@
   [hof-input]
   (cond hof-input (if (string? hof-input)
                     (or (try (read-string (slurp hof-input))
-                             (catch Exception _ [])) 
+                             (catch Exception _ []))
                         [])
                     hof-input)
         :else []))
@@ -379,7 +386,7 @@
    Evaluate fitness of two opponents\\
    Stop evaluation early and return result\\
    Notify slaves that ERL loop is over"
-  [comm & {:keys [pop-size num-generations benchmark-count random-seed stdev hot-start hof-output hof-input gen-output gen-input bench-method bench-exp next-gen-method prop-hof]
+  [comm & {:keys [pop-size num-generations benchmark-count random-seed stdev hot-start hof-output hof-input gen-output gen-input bench-method bench-exp next-gen-method prop-hof terminate-slaves?]
            :or {pop-size 3
                 num-generations 1
                 benchmark-count 5
@@ -388,10 +395,11 @@
                 bench-exp Math/E
                 next-gen-method :parents
                 stdev 0.005
-                prop-hof 0.5}
+                prop-hof 0.5
+                terminate-slaves? true}
            :as argmap}]
   #_(println "Master argmap: " argmap)
-  (assert (MPI/Is_initialized) "MPI must be initialized for master thread to run")
+  (assert (mpi4py.MPI/Is_initialized) "MPI must be initialized for master thread to run")
   (let [r (if (int? random-seed) (utils/random random-seed) random-seed)
         gen (start-gen hot-start gen-input pop-size r stdev)]
     (loop [generation (:generation gen)
@@ -409,23 +417,24 @@
       (System/gc)
       (if (= generation num-generations)
         ;;Terminate slave MPI processes and return final result
-        (do (terminate-slaves comm (py. comm Get_size))
+        (do (when terminate-slaves? (terminate-slaves comm (py. comm Get_size)))
             {:last-pop pop
              :hall-of-fame hof #_(ERL/round-errors hof 3)})
         ;;Fitness evaluation using benchmarking individuals
-        (let [{{p :pop
+        (let [benchmark-pop (ERL/get-benchmark benchmark-count pop hof prop-hof :method bench-method :exp bench-exp)
+              {{p :pop
                 b :benchmark
                 a :action-counts} :result
                t :time} (utils/get-time
                          (benchmark comm
                                     pop
-                                    (ERL/get-benchmark benchmark-count pop hof prop-hof :method bench-method :exp bench-exp)
+                                    benchmark-pop
                                     :deck-seed (.nextInt r)
                                     :max-actions max-actions
                                     :symmetrical? true
                                     :args argmap))
               ;; Selection, mutation, and updating errors of individuals in the hall of fame
-              [p h] (ERL/next-generation p r :method next-gen-method)]
+              [p h] (ERL/next-generation p r :method next-gen-method :benchmark-pop benchmark-pop)]
           ;; Recur with updated population, hall of fame, max-actions, and time-taken
           (recur (inc generation)
                  p
@@ -477,12 +486,12 @@
    [{:thread :result}] -> [{:thread :message} ...]"
   [comm results]
   #_(println "rank " (py. mpi4py.MPI/COMM_WORLD Get_rank) "sent results of threads " (mapv :thread results) "to master")
-  (assert (seqable? results) (str "not seq results "results))
+  (assert (seqable? results) (str "not seq results " results))
   ;; Send evaluation results back to main MPI process
   (mapv #(do (assert (>= (:thread %) 0) "Thread cannot be negative")
              (py. comm isend (py/->py-dict (:result %))
-              :dest 0
-              :tag (:thread %)))
+                  :dest 0
+                  :tag (:thread %)))
         results)
   ;; Await new tasks from main MPI process
   (mapv (fn [{t :thread}]
@@ -508,18 +517,18 @@
                       (py/->jvm)
                       (process-message)
                       (utils/apply-map
-                               evaluate-task
-                               {:net-gain? true
-                                :action-count? true
-                                :gc? true}
-                               args)))]
-    #_(println "rank " (py. mpi4py.MPI/COMM_WORLD Get_rank) 
-             " sent futures to threads given the messages " messages)
+                       evaluate-task
+                       {:net-gain? true
+                        :action-count? true
+                        :gc? true}
+                       args)))]
+    #_(println "rank " (py. mpi4py.MPI/COMM_WORLD Get_rank)
+               " sent futures to threads given the messages " messages)
     (let [m (mapv (fn [{t :thread
-                m :message}]
-            {:thread t
-             :result (submit m)})
-          messages)]
+                        m :message}]
+                    {:thread t
+                     :result (submit m)})
+                  messages)]
       #_(println "MESSAGE TO THREAD " m)
       m)))
 
@@ -536,7 +545,7 @@
    tag 0: Fitness evaluation results"
   [comm & {:keys [args]}]
   (assert (and comm args) "Cannot be passed nil parameters")
-  (assert (MPI/Is_initialized) "MPI must be initialized for slave thread to run")
+  (assert (mpi4py.MPI/Is_initialized) "MPI must be initialized for slave thread to run")
   (System/gc)
   ;;Wait for a signal (fitness evaluation task / termination signal) from the main MPI process
   (let [get-status #(py. (:message %) Get_status)
@@ -546,10 +555,10 @@
                              :message (py. comm irecv :source 0 :tag t)})
                           (range (utils/num-processors)))
            threads []
-           terminate (py. comm irecv :source 0 :tag (utils/num-processors))]
+           terminate (py. comm irecv :source 0 :tag 1000)]
             ;;Terminate waiting loop and proceed to MPI finalization
       (cond (py. terminate Get_status) (do #_(println "rank " (py. comm Get_rank) " terminating with message " (py. terminate wait))
-                                         (mapv #(py. (:message %) cancel) messages)
+                                        (mapv #(py. (:message %) cancel) messages)
                                            (py. terminate cancel)
                                            nil)
             ;;Parse received message and send off fitness evaluation into a thread
@@ -561,16 +570,36 @@
                                                     terminate)))
             ;;Send derefed result of thread evaluation to master and await more messages
             (some #(.isDone (:result %)) threads) (do #_(println "process " rank "realized futures on threads " (mapv :thread (filter #(.isDone (:result %)) threads)))
-                                                        (let [{realized true
-                                                               unrealized false} (group-by #(.isDone (:result %)) threads)
-                                                              results (mapv #(update % :result deref) realized)]
-                                                          #_(println "rank " rank " realized results from futures: " results)
-                                                          (recur (into messages (thread-to-messages comm results))
-                                                                 unrealized
-                                                                 terminate)))
+                                                   (let [{realized true
+                                                          unrealized false} (group-by #(.isDone (:result %)) threads)
+                                                         results (mapv #(update % :result deref) realized)]
+                                                     #_(println "rank " rank " realized results from futures: " results)
+                                                     (recur (into messages (thread-to-messages comm results))
+                                                            unrealized
+                                                            terminate)))
             ;;Received nothing, so do nothing
             :else (recur messages threads terminate)))))
 
+(defn role-by-rank
+  "Assigns role of master or slave to MPI processes depending on their rank"
+  [argmap param-output]
+  (let [comm mpi4py.MPI/COMM_WORLD
+        rank (py. comm Get_rank)]
+        ;Rank 0 process is master thread
+    (if (= 0 rank)
+      (do (println (dissoc argmap :hot-start))
+          (when param-output (try (spit param-output (with-out-str (println argmap)))
+                                  (catch Exception _)))
+          #_(when hot-start (run! println hot-start))
+              ;pass on parameters to master process
+          (apply master comm (mapcat identity (into [] argmap))))
+          ;All other processes are slave threads
+      (slave comm :args argmap))
+    #_(println "Finalizing rank " rank)))
+
+(defn get-rank
+  []
+  (py. mpi4py.MPI/COMM_WORLD Get_rank))
 
 (defn ERL
   "Main function assigning the master-slave roles to MPI processes
@@ -599,7 +628,7 @@
    -> Reports out each generation\\
    -> caches information in files for resuming evolution\\
    -> returns the final population and hall-of-fame."
-  [& {:keys [pop-size num-generations benchmark-count random-seed num-games max-seq-length stdev from-block? block-size hot-start hof-output hof-input gen-output gen-input param-output param-input bench-method bench-exp next-gen-method prop-hof transformer-parameters with-MPI?]
+  [& {:keys [pop-size num-generations benchmark-count random-seed num-games max-seq-length stdev from-block? block-size hot-start hof-output hof-input gen-output gen-input param-output param-input bench-method bench-exp next-gen-method prop-hof transformer-parameters with-MPI? terminate-slaves?]
       :or {pop-size 3
            num-generations 1
            benchmark-count 5
@@ -617,56 +646,102 @@
            gen-output "src/clojure/poker/Andrew/results/_gen.out"
            gen-input "src/clojure/poker/Andrew/results/_gen.out"
            param-output "src/clojure/poker/Andrew/results/_param.out"
-           param-input "src/clojure/poker/Andrew/results/_param.out"}
+           param-input "src/clojure/poker/Andrew/results/_param.out"
+           terminate-slaves? true
+           with-MPI? true}
       :as argmap}]
-  (let [r (utils/random random-seed)]
+  (let [m (ndarray/new-base-manager)]
     ;;Pre-instantiate large block of gaussian noise
-    (when from-block? (utils/initialize-random-block (int block-size) r))
+    (when from-block? (ndarray/initialize-random-block (int block-size) random-seed :ndarray? true :manager m))
     (when transformer-parameters (transformer/set-parameters transformer-parameters))
     ;Open and close MPI environment
-    ((if with-MPI? #(with-MPI %) identity)
-      (let [comm mpi4py.MPI/COMM_WORLD
-            rank (py. comm Get_rank)]
-        ;Rank 0 process is master thread
-        (if (= 0 rank)
-          (do (println (dissoc argmap :hot-start))
-              (when param-output (try (spit param-output (with-out-str (println argmap))) 
-                                      (catch Exception _)))
-              #_(when hot-start (run! println hot-start))
-              ;pass on parameters to master process
-             (apply master comm (mapcat identity (into [] argmap))))
-          ;All other processes are slave threads
-          (slave comm :args argmap))
-        #_(println "Finalizing rank " rank)))))
+    (if with-MPI?
+      (with-MPI (role-by-rank argmap param-output))
+      (role-by-rank argmap param-output))))
+
+
+(defn hot-start
+  [& {:keys [hof-output hof-input gen-output gen-input param-output param-input default-pmap override-params?]
+      :as argmap}]
+  (let [params (try (read-string (slurp param-input))
+                    (catch Exception _ {}))]
+    (apply ERL
+           (mapcat identity
+                   (into []
+                         (merge (if override-params?
+                                  (merge params default-pmap)
+                                  (merge default-pmap params))
+                                (dissoc argmap
+                                        :default-pmap)))))))
 
 
 (defn multi-ERL
-  [& {:keys [ERL-argmaps intra-run? inter-run? num-games]
-      :or {num-games 5000}}]
-  (with-MPI 
-    (let [results (doall (map-indexed #(assoc (utils/apply-map ERL %2 {:with-MPI? false})
-                                     :index %1)
-                             ERL-argmaps))
-        total-error #(transduce (map second) + (:error %))
-        best-of-gen #(dissoc (assoc
-                              (apply max-key total-error %2)
-                              :id (keyword (str "p" %1)))
-                             :error)
-        id-to-generation (fn [idx gen ind] (dissoc (assoc ind :id (keyword (str "p-" idx "-" gen))) :error))
-        last-3-generation (fn [{hof :hall-of-fame idx :index}]
-                            (take-last 3 (map-indexed #(id-to-generation idx %1 (best-of-gen %1 %2))
-                                                      hof)))]
+  [& {:keys [ERL-argmaps intra-run? inter-run? intra-games inter-games]
+      :or {intra-games 5000
+           inter-games 5000}}]
+  (with-MPI
+    (let [results (doall (map-indexed #(assoc (utils/apply-map hot-start %2 {:with-MPI? false})
+                                              :index %1)
+                                      ERL-argmaps))
+          distinct-params (= 1 (count (distinct (map :transformer-parameters ERL-argmaps))))
+          total-error #(transduce (map second) + (:error %))
+          best-of-gen #(dissoc (assoc
+                                (apply max-key total-error %2)
+                                :id (keyword (str "p" %1)))
+                               :error)
+          id-to-generation (fn [idx gen ind] (dissoc (assoc ind :id (keyword (str "p-" idx "-" gen))) :error))
+          last-3-generation (fn [{hof :hall-of-fame idx :index}]
+                              (map (if-not distinct-params
+                                     #(assoc % :transformer-parameters (:transformer-parameters (nth ERL-argmaps idx)))
+                                     identity)
+                                   (take-last 3 (map-indexed #(id-to-generation idx %1 (best-of-gen %1 %2))
+                                                        hof))))]
       (println {:results (map #(dissoc % :last-pop) results)})
-    (when intra-run? (run! #(println {:intra-run (processresult/round-robin (map-indexed best-of-gen (:hall-of-fame %))
-                                                                            :num-games num-games)
-                                      :index (:index %)})
-                           results))
-    (when inter-run? (println {:inter-run (processresult/round-round-robin
-                                           (map last-3-generation results)
-                                           :num-games num-games)})))))
+      (when intra-run? (run! #(println {:intra-run (processresult/round-robin (map-indexed best-of-gen (:hall-of-fame %))
+                                                                              :num-games intra-games)
+                                        :index (:index %)})
+                             results))
+      (when inter-run? (println {:inter-run (processresult/round-round-robin
+                                             (map last-3-generation results)
+                                             :num-games inter-games)})))))
+
+
+(defn single-experiment
+  [ERL-argmap & {:keys [num-games-internal num-games-slumbot]
+                 :or {num-games-internal 5000
+                      num-games-slumbot 10}}]
+  (with-MPI
+    (let [results (utils/apply-map hot-start ERL-argmap {:with-MPI? false})
+          total-error #(transduce (map second) + (:error %))
+          best-of-gen #(dissoc (assoc
+                                (apply max-key total-error %2)
+                                :id (keyword (str "p" %1)))
+                               :error)]
+      (if (zero? (get-rank))
+        (do (println {:results (dissoc results :last-pop)})
+            #_(println {:intra-run (collect-fitness mpi4py.MPI/COMM_WORLD
+                                                  (let [inds (map-indexed best-of-gen (:hall-of-fame results))]
+                                                    (for [ind1 inds
+                                                          ind2 inds :while (not (= ind1 ind2))]
+                                                      [(dissoc ind1 :error) (dissoc ind2 :error)]))
+                                                  (py. mpi4py.MPI/COMM_WORLD Get_size)
+                                                  ##Inf
+                                                  nil
+                                                  :args (assoc (:default-pmap ERL-argmap)
+                                                               :num-games num-games-internal
+                                                               :as-list? true))})
+            #_(terminate-slaves mpi4py.MPI/COMM_WORLD (py. mpi4py.MPI/COMM_WORLD Get_size))
+            (println (last (map-indexed best-of-gen (:hall-of-fame results))))
+            (println {:slumbot-results (:net-gain (slumbot/transformer-vs-slumbot (assoc (last (map-indexed best-of-gen (:hall-of-fame results)))
+                                                                                         :id :client)
+                                                                                  num-games-slumbot
+                                                                                  (:max-seq-length (:default-pmap ERL-argmap))
+                                                                                  :from-block? true
+                                                                                  :as-list? true))}))
+        nil #_(role-by-rank (:default-pmap ERL-argmap) nil)))))
 
 (defn test-mpi []
-  (MPI/Init)
+  (mpi4py.MPI/Init)
   (let [comm mpi4py.MPI/COMM_WORLD
         rank (py/call-attr comm "Get_rank")]
     "if rank == 0:
@@ -675,18 +750,21 @@
 elif rank == 1:
     data = comm.recv(source=0, tag=11)"
     (cond (= 0 rank) (do (println "sending data " rank)
-                         (py/py. comm isend (py/->py-dict {:players [{:seeds [-1155869325] :id :p0 :stdev 0.005}, {:seeds [1761283695] :id :p2 :stdev 0.005}], :max-actions ##Inf, :deck-seed 7515937759503895804}) :dest 1 :tag 11)
+                         (mapv #(py. % wait) (doall (for [r (range (py. comm Get_size))]
+                                  (py/py. comm isend (py/->py-dict {:data 1}) :dest r :tag 11))))
                          (println "data sent"))
-          (= 1 rank) (do (println "receiving data " rank)
+          :else (do (println "receiving data " rank)
                          (let [d (py/py. comm irecv :source 0 :tag 11)]
-                           (py. d Test)
-                           (println "data received " (py. d wait))))))
-  (MPI/Finalize))
+                           (println rank " received data " (py. d wait))))))
+  (mpi4py.MPI/Finalize))
 
 (defn mpitest []
-  (MPI/Init)
+  (mpi4py.MPI/Init)
   (println (py/call-attr mpi4py.MPI/COMM_WORLD "Get_rank"))
-  (MPI/Finalize)
-  (MPI/Init)
+  (mpi4py.MPI/Finalize)
+  (mpi4py.MPI/Init)
   (println (py/call-attr mpi4py.MPI/COMM_WORLD "Get_rank"))
-  (MPI/Finalize))
+  (mpi4py.MPI/Finalize))
+
+
+

@@ -1,7 +1,12 @@
 (ns poker.Andrew.processresult
   (:require [poker.ERL :as ERL]
             [poker.utils :as utils]
-            [poker.concurrent :as concurrent]))
+            [poker.ndarray :as ndarray]
+            [incanter.core]
+            [incanter.charts]
+            [incanter.stats]
+            [poker.concurrent :as concurrent]
+            [poker.transformer :as transformer]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;    Utilities for parsing and     ;;;
@@ -205,7 +210,9 @@
                       (concurrent/msubmit
                        (ERL/versus ind1 ind2 seq-length num-games
                                    :net-gain? true
-                                   :as-list? true))))]
+                                   :as-list? true
+                                   :from-block? true
+                                   :gc? true))))]
     (map #(:net-gain (deref %)) futs)))
 
 (defn round-round-robin
@@ -219,7 +226,9 @@
                       (concurrent/msubmit
                        (ERL/versus ind1 ind2 seq-length num-games
                                    :net-gain? true
-                                   :as-list? true))))]
+                                   :as-list? true
+                                   :from-block? true
+                                   :gc? true))))]
     (map #(:net-gain (deref %)) futs)))
 
 (defn generation-versus
@@ -299,28 +308,186 @@
                                      :as-list? true))))]
       (println (map #(:net-gain (deref %)) futs)))))
 
+(defn results-vs
+  [filename]
+  (let [file (read-file filename :make-vector? true)
+        params (first file)]
+    (ndarray/initialize-random-block (int (:block-size params))
+                                   (:random-seed params)
+                                     :ndarray? true)
+    (transformer/set-parameters (:transformer-parameters params))
+    (let [individuals (->> file
+                           (filter :results)
+                           (first)
+                           (:results)
+                           (first)
+                           (:hall-of-fame)
+                           (map first)
+                           (map #(dissoc % :error))
+                           (map-indexed #(assoc %2 :id (keyword (str "p" %1)))))
+          results (doall (for [ind1 individuals
+                               ind2 individuals :when (not (= ind1 ind2))]
+                           (concurrent/msubmit (ERL/versus ind1 ind2 100 5000
+                                                           :net-gain? true
+                                                           :as-list? true
+                                                           :from-block? true
+                                                           :stdev (:stdev params)
+                                                           :gc? true))))]
+      (run! #(println (deref %)) results))))
 
 
-#_(sort-by
-   #(read-string (apply str (drop 2 (str (first %)))))
-   (let [f (read-file "generation-versus-69994.out" :make-vector? true)]
-     (apply merge-with
-            +
-            (map (fn [gain]
-                   (into {}
-                         (map #(vector (first %)
-                                       (:mean (second %))
-                                       #_(* (Math/sqrt 5000)
-                                          (/ (:mean (second %))
-                                             (:stdev (second %)))))
-                              gain)))
-                 (nth f 3)))))
+
+(defn moving-average
+  [coll n]
+  (assert (odd? n) "Even results in too many moving average elements")
+  (into []
+        (eduction 
+         (map (partial filter identity))
+                  (map utils/mean)
+                  (partition n 1 (concat (repeat (/ n 2) nil)
+                                         coll
+                                         (repeat (/ n 2) nil))))))
+
+(defn moving-average-simple
+  [coll n]
+  (map utils/mean (partition n 1 coll)))
+
+
+(defn multiplot
+  "Plots multiple y-series against x-series
+   ys: [y-values label]"
+  [x & ys]
+  (incanter.core/view
+   (reduce
+    #(incanter.charts/add-lines %1 x (first %2) :series-label (second %2))
+    (incanter.charts/xy-plot x (first (first ys)) :series-label (second (first ys)) :legend true :y-label "y")
+    (rest ys))))
+
+
+(defn plot-best-fit
+  [y & {:keys [label window]
+        :or {window 11}}]
+  (let [x (range (count y))
+        coefs (:coefs (incanter.stats/linear-model y (range (count y))))
+        best-fit (map #(+ (* % (second coefs)) (first coefs)) x)]
+    (println label coefs)
+    (multiplot x 
+               [y (or label "line")] 
+               [best-fit "best-fit"]
+               [(moving-average y window) (str "Moving Average, n=" window)])))
+
+
+#_(def file (read-file "0.0005-big-8b-125-2e-best-hard-0.75h-1200-74193.out" :make-vector? true))
+
+
+(defn process-inter
+  [filename]
+  (let [f (read-file filename :make-vector? true)
+        r (->> f
+               (filter :inter-run)
+               (first)
+               (:inter-run))
+        k (->> r
+               (mapcat keys)
+               (into #{}))]
+    (zipmap k (map #(->> r
+                         (map %)
+                         (map :mean)
+                         (filter identity)
+                         (reduce +))
+                   k))))
+
+#_(process-inter "0.0005-small-8b-50-2e-best-hard-0.75h-74289.out")
+
+#_(plot-best-fit
+   (drop 0 (map second
+        (sort-by
+         #(read-string (apply str (drop 2 (str (first %)))))
+         (let [f (read-file "0.005s-8b-0.75h-parents-hard-74070.out" :make-vector? true)]
+           (apply merge-with
+                  +
+                  (map (fn [gain]
+                         (into {}
+                               (map #(vector (first %)
+                                             (:mean (second %))
+                                             #_(* (Math/sqrt 5000)
+                                                  (/ (:mean (second %))
+                                                     (:stdev (second %)))))
+                                    gain)))
+                       #_(map :net-gain f) (->> f
+                                                (filter :intra-run)
+                                                (first )
+                                                (:intra-run))))))))
+   :label "0.005s-8b-0.75h-parents-hard-74070.out")
+
+
+
+#_[;;; small transformer models
+   ;;prop-hof
+   "0.5-prop-hof-8-small-results-73816.out"
+   ;; k-best vs hardexp, 8 vs 16 benchmark, how low can num-games go?
+   "0.005s-8b-0.75h-best-best-250-results-74053.out"
+   "0.005s-8b-0.75h-best-hard-250-results-74055.out"
+   "0.005s-8b-0.75h-best-hard-results-74059.out"
+   "0.005s-16b-1h-best-hard-125-results-74058.out"
+   "0.0005-small-8b-50-2e-best-hard-0.75h-74289.out"
+   ;; 8 vs 12 benchmark on 1.5 exp
+   "0.005s-12b-0.75h-parents-hard-1.5e-74071.out"
+   "0.005s-8b-0.75h-parents-hard-74070.out"
+   ;; stdev for small models
+   "0.0005s-8b-0.75h-best-hard-74067.out"
+   "0.001s-8b-0.75h-best-hard-74068.out"
+   "0.025s-8b-0.75h-best-hard-74069.out"
+   ;; sparse vs not
+   "0.0005-small-8b-125-2e-best-hard-0.75h-sparse3.vs.not-1K.intra-10K.inter-74281.out"
+   
+   ;;;big transformer models
+   ;;stdev ablation
+   "0.0005-big-8b-125-2e-parents-hard-0.75h-74187.out";;good improvement
+   "0.0001-big-8b-125-2e-best-hard-0.75h-74280.out";;actually k-best
+   "0.00005-big-8b-125-2e-parents-hard-0.75h-74191.out";;no improvement
+   ;;pop-size vs gen-number comparison
+   "0.0005-big-8b-125-2e-best-hard-0.75h-1200-74193.out"]
+
+
+#_(plot-best-fit
+   (map second (sort-by
+                #(read-string (apply str (drop 2 (str (first %)))))
+                (:error
+                 (first
+                  (let [r (->> file (filter :intra-run) (first) (:intra-run) (map :net-gain))]
+                    (reduce (fn [res incr]
+                              (map #(ERL/update-individual % incr)
+                                   res))
+                            [{:id :p99 :error {}}]
+                            (filter :p99 r)))
+                  #_(let [f (read-file "single-experiment-results-74168.out" :make-vector? true)]
+                    (reduce (fn [res incr]
+                              (map #(ERL/update-individual % incr)
+                                   res)) [{:id :p49 :error {}}]
+                            (map (fn [gain]
+                                   (into {} (map #(vector (first %)
+                                                          (second %)
+                                                          #_(:mean (second %))
+                                                          #_(* (Math/sqrt 5000)
+                                                               (/ (:mean (second %))
+                                                                  (:stdev (second %)))))
+                                                 gain)))
+                                 #_(map :net-gain f) (->> f
+                                                          (filter :intra-run)
+                                                          (first)
+                                                          (:intra-run)
+                                                          (map :net-gain)
+                                                          (take 1000)))))))))
+   :label "single-experiment-results-74168.out")
+
 
 (defn get-best
   [filename & {:keys [multiple?]}]
   (let [[params & pop] (read-file filename)]
-    (when (:from-block? params) (utils/initialize-random-block (or (:block-size params) (int 1e8))
-                                                               (:random-seed params)))
+    (when (:from-block? params) (ndarray/initialize-random-block (or (:block-size params) (int 1e8))
+                                                               (:random-seed params)
+                                                               :ndarray? true))
     (let [pop (drop-last 2 pop)
           erl #(ERL/single-elim (:pop %)
                                 20
@@ -459,126 +626,112 @@
     :3 -0.764613161862278,
     :4 20.833954044999988}])
 
-#_(* 0.0024249158681258765 (Math/sqrt 5000))
 
 
-
-#_(let [f (read-file "generation-versus-69994.out" :make-vector? true)]
-    (reduce (fn [res incr]
-              (map #(ERL/update-individual % incr)
-                   res)) [{:id :p1 :error {}}]
-            (map (fn [gain]
-                   (into {} (map #(vector (first %)
-                                          (:mean (second %))
-                                          #_(* (Math/sqrt 5000)
-                                               (/ (:mean (second %))
-                                                  (:stdev (second %)))))
-                                 gain)))
-                 (nth f 3)))
-    #_(spit "src/clojure/poker/Andrew/results/temp.txt"
-            (with-out-str (clojure.pprint/pprint
-                           (filter #(some (partial contains? (into #{} (map first %)))
-                                          [:p-0-23 :p-0-24 :p-0-25]) (nth f 2))))))
+#_{:slumbot-results {:mean -1.1848, :stdev 12.66235558496115, :CI-95% [-1.5429454999968553 -0.8266545000031449]}}
 
 #_(sort-by
-   #(read-string (apply str (drop 2 (str (first %)))))
-   {:p97 4.489108259836087,
-    :p51 3.4304706497962947,
-    :p11 3.0522443909213752,
-    :p73 1.6564058522956815,
-    :p87 -0.49232237160502246,
-    :p3 -3.8512355318557687,
-    :p35 -1.9053243740977936,
-    :p33 -4.3268724140182675,
-    :p75 10.64001517812119,
-    :p91 1.0680747914768856,
-    :p21 2.895022595208129,
-    :p83 1.6397962612952106,
-    :p99 5.743057437031725,
-    :p5 3.0774176404618725,
-    :p47 5.3306781491966735,
-    :p43 -1.1909240320905414,
-    :p9 0.6442596035585151,
-    :p93 -0.014316886306870114,
-    :p57 -2.170552598658751,
-    :p45 0.059079355582477566,
-    :p25 -1.395910966403542,
-    :p61 2.345773837052664,
-    :p41 0.02798426299927015,
-    :p49 3.7213417210861977,
-    :p39 1.9426201027739871,
-    :p53 0.7156910789549791,
-    :p7 -0.41942123286314015,
-    :p65 5.833088180749535,
-    :p19 -3.237639680846728,
-    :p63 -0.9063584762739895,
-    :p85 3.874275442033791,
-    :p15 1.0747868384557135,
-    :p13 -0.1684478397314404,
-    :p79 2.122556028310089,
-    :p17 1.7467111952669983,
-    :p67 4.014855387391798,
-    :p71 6.522252652248985,
-    :p77 -0.38275973617459114,
-    :p89 -0.7167953474374714,
-    :p37 2.8565253256152103,
-    :p31 6.99193142581964,
-    :p81 3.268431534863338,
-    :p27 -1.1149478410157057,
-    :p69 1.8394766899496648,
-    :p95 1.6764735729013005,
-    :p59 -1.3684901948201427,
-    :p55 6.442325449357152,
-    :p23 3.199498184183935,
-    :p29 1.1359888187914382})
+#(read-string (apply str (drop 2 (str (first %)))))
+ {:p11 -0.03702653464756178,
+  :p2 1.6385235421632935,
+  :p4 -1.8559997958559449,
+  :p3 -0.17911542014239362,
+  :p35 -1.993864468087909,
+  :p33 2.2886050274045893,
+  :p21 0.06914137130681175,
+  :p46 1.5301674679679007,
+  :p28 -0.7540962325062,
+  :p36 -1.7429776906711776,
+  :p48 -1.8219191571933666,
+  :p5 3.090059120475086,
+  :p8 4.737941163951412,
+  :p47 -1.8907586101924203,
+  :p43 -1.7739529644468206,
+  :p9 2.1575406098591614,
+  :p45 -4.52806140192151,
+  :p22 -0.8177429214810317,
+  :p25 -2.100719504952203,
+  :p24 -0.5139993567750836,
+  :p12 -6.543237331302951,
+  :p41 0.13122008985999645,
+  :p49 2.007870608905415,
+  :p0 3.622821538607565,
+  :p32 -5.062701202135638,
+  :p26 2.2265419427205275,
+  :p39 0.279608395743453,
+  :p38 -0.3666958272448248,
+  :p7 -0.8959226935856377,
+  :p19 0.8233624976263598,
+  :p30 0.8910468763515909,
+  :p14 -0.2961568194204476,
+  :p15 2.5149466124094912,
+  :p13 2.5518138079002437,
+  :p17 -2.940865661287308,
+  :p10 2.8346772776940847,
+  :p18 2.8946625983966014,
+  :p16 4.400494013372673,
+  :p44 -0.16067135578242409,
+  :p40 7.3405313633939855,
+  :p20 -0.4937134700706811,
+  :p37 -2.134318125665856,
+  :p31 -4.0772920983975345,
+  :p27 -3.5538817623517107,
+  :p34 -3.9267878274205925,
+  :p42 -0.8350671383951784,
+  :p6 0.27571770947597685,
+  :p23 0.5286252501963601,
+  :p29 5.339510424053925})
 
 
-#_(run! #(println % ",") (map second [[:p3 -3.8512355318557687]
-[:p5 3.0774176404618725]
-[:p7 -0.41942123286314015]
-[:p9 0.6442596035585151]
-[:p11 3.0522443909213752]
-[:p13 -0.1684478397314404]
-[:p15 1.0747868384557135]
-[:p17 1.7467111952669983]
-[:p19 -3.237639680846728]
-[:p21 2.895022595208129]
-[:p23 3.199498184183935]
-[:p25 -1.395910966403542]
-[:p27 -1.1149478410157057]
-[:p29 1.1359888187914382]
-[:p31 6.99193142581964]
-[:p33 -4.3268724140182675]
-[:p35 -1.9053243740977936]
-[:p37 2.8565253256152103]
-[:p39 1.9426201027739871]
-[:p41 0.02798426299927015]
-[:p43 -1.1909240320905414]
-[:p45 0.059079355582477566]
-[:p47 5.3306781491966735]
-[:p49 3.7213417210861977]
-[:p51 3.4304706497962947]
-[:p53 0.7156910789549791]
-[:p55 6.442325449357152]
-[:p57 -2.170552598658751]
-[:p59 -1.3684901948201427]
-[:p61 2.345773837052664]
-[:p63 -0.9063584762739895]
-[:p65 5.833088180749535]
-[:p67 4.014855387391798]
-[:p69 1.8394766899496648]
-[:p71 6.522252652248985]
-[:p73 1.6564058522956815]
-[:p75 10.64001517812119]
-[:p77 -0.38275973617459114]
-[:p79 2.122556028310089]
-[:p81 3.268431534863338]
-[:p83 1.6397962612952106]
-[:p85 3.874275442033791]
-[:p87 -0.49232237160502246]
-[:p89 -0.7167953474374714]
-[:p91 1.0680747914768856]
-[:p93 -0.014316886306870114]
-[:p95 1.6764735729013005]
-[:p97 4.489108259836087]
-[:p99 5.743057437031725]]))
+#_(run! #(println % ",") (map second 
+                              [[:p0 3.622821538607565]
+[:p2 1.6385235421632935]
+[:p3 -0.17911542014239362]
+[:p4 -1.8559997958559449]
+[:p5 3.090059120475086]
+[:p6 0.27571770947597685]
+[:p7 -0.8959226935856377]
+[:p8 4.737941163951412]
+[:p9 2.1575406098591614]
+[:p10 2.8346772776940847]
+[:p11 -0.03702653464756178]
+[:p12 -6.543237331302951]
+[:p13 2.5518138079002437]
+[:p14 -0.2961568194204476]
+[:p15 2.5149466124094912]
+[:p16 4.400494013372673]
+[:p17 -2.940865661287308]
+[:p18 2.8946625983966014]
+[:p19 0.8233624976263598]
+[:p20 -0.4937134700706811]
+[:p21 0.06914137130681175]
+[:p22 -0.8177429214810317]
+[:p23 0.5286252501963601]
+[:p24 -0.5139993567750836]
+[:p25 -2.100719504952203]
+[:p26 2.2265419427205275]
+[:p27 -3.5538817623517107]
+[:p28 -0.7540962325062]
+[:p29 5.339510424053925]
+[:p30 0.8910468763515909]
+[:p31 -4.0772920983975345]
+[:p32 -5.062701202135638]
+[:p33 2.2886050274045893]
+[:p34 -3.9267878274205925]
+[:p35 -1.993864468087909]
+[:p36 -1.7429776906711776]
+[:p37 -2.134318125665856]
+[:p38 -0.3666958272448248]
+[:p39 0.279608395743453]
+[:p40 7.3405313633939855]
+[:p41 0.13122008985999645]
+[:p42 -0.8350671383951784]
+[:p43 -1.7739529644468206]
+[:p44 -0.16067135578242409]
+[:p45 -4.52806140192151]
+[:p46 1.5301674679679007]
+[:p47 -1.8907586101924203]
+[:p48 -1.8219191571933666]
+[:p49 2.007870608905415]]))
+
+

@@ -11,6 +11,8 @@
          ai.djl.ndarray.index.NDIndex
          ai.djl.ndarray.NDList
          ai.djl.nn.Activation
+         java.util.Random
+         poker.Indexing
          java.lang.Class))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -465,6 +467,84 @@
                      (into [] (map get-value (range m))))))
 
 #_(n-fold-mask [3 6 3] 1 3 1)
+
+
+;;;;;;;;;;;;;;
+;; Random noise block ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def random-block
+  "Large block of gaussian noise. Instantiating a large block of gaussian noise
+   at the beginning of the ERL run and indexing into it using random integers is faster
+   than using the random integers to seed a random number generator. However, the 
+   gaussian noise produced by indexing will not be strictly independent"
+  (volatile! nil))
+
+#_(defn initialize-random-block
+    [n r]
+    (assert (int? n) "Must give an integer")
+    (let [^Random r (if (number? r) (random r) r)]
+      (vreset! random-block
+               (let [res (float-array n)]
+                 (loop [i 0]
+                   (if (= i n)
+                     res
+                     (do (aset res i (float (.nextGaussian r)))
+                         (recur (inc i)))))))))
+
+(defn initialize-random-block
+  "Initializes the random block with n independent gaussian random variables.\\
+   Supply either a number or a random number generator\\
+   Takes 1 second to generate 10 million random numbers"
+  [n r & {:keys [ndarray? manager]
+          :or {ndarray? true}}]
+  (assert (or (not ndarray?) (number? r)) "Cannot supply a Random to seed an NDArray")
+  (if ndarray?
+    (let [manager (or manager (new-base-manager))]
+      (vreset! random-block (.randomNormal manager (shape [(int n)]))))
+    (let [^Random r (if (number? r) (utils/random r) r)]
+      (vreset! random-block
+               (Indexing/initializeRandomBlock (int n) r)))))
+
+#_(time (do (initialize-random-block 10000000 1 :ndarray? true) nil))
+
+#_(defn index-into-block3
+  [indices n manager & {:keys [stdev]
+                        :or {stdev 0.005}}]
+  {:indices (map (partial + n) indices)
+   :result (do (.tempAttachAll manager (into-array NDArray [@random-block]))
+               (.get @random-block (ndindex "{}:{}" )))})
+
+(defn add-indexed [ndarray index & {:keys [stdev]
+                                    :or {stdev 0.005}}]
+  (assert (not (.isReleased @random-block)) "Block cannot be released before indexing")
+  (let [block @random-block
+        manager (.getManager ndarray)
+        n (.size ndarray)
+        s (.getShape ndarray)
+        start (mod index (- (.size block) n 1))]
+    (with-open [m (.newSubManager manager)]
+      (let [arr1 (.get block
+                       (ndindex "{}:{}"
+                                start
+                                (+ start (.size ndarray))))
+            arr (.reshape arr1 s)]
+        (.setRequiresGradient arr false)
+        (.setRequiresGradient ndarray false)
+        (.addi ndarray arr)
+        (.close arr)
+        (.close arr1)))
+    (assert (not (.isReleased @random-block)) "Block cannot be released before indexing")))
+
+(defn add-all-indices [ndarray indices & {:keys [stdev]
+                                          :or {stdev 0.005}}]
+  (doall (for [i indices]
+           (add-indexed ndarray i :stdev stdev))))
+
+#_(with-open [m (new-base-manager)]
+  (.tempAttachAll m (into-array ai.djl.ndarray.NDArray [@random-block]))
+  (println (.get @random-block (ndindex "1:2"))))
+
 
 
 

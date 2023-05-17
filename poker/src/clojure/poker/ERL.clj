@@ -119,6 +119,7 @@
       (let [mask (ndarray/ndarray manager (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))
             i1 (transformer/model-from-seeds ind1 max-seq-length manager mask :stdev stdev :from-block? from-block?)
             i2 (transformer/model-from-seeds ind2 max-seq-length manager mask :stdev stdev :from-block? from-block?)]
+        #_(println "versus post-model-from-seeds, pre-gc. heap size(GB): " (/ (.totalMemory (java.lang.Runtime/getRuntime)) 1000000000.))
         (when gc? (System/gc))
         ;;Ensure autoclosing of each individual's models
         (with-open [_i1 (utils/make-closeable i1 transformer/close-individual)
@@ -132,6 +133,7 @@
                                               num-games
                                               :max-actions max-actions
                                               :as-list? as-list?
+                                              :max-seq-length (apply max 100 (map #(get % :max-seq-length 0) [i1 i2]))
                                               (concat (when decks [:decks decks])))]
             ;;Return different information depending on optional arguments
             (merge (when update-error? {:ind1 (update ind1
@@ -147,23 +149,28 @@
                    (when action-count? {:action-count action-count}))))))))
 
 #_(utils/initialize-random-block (int 1e7) 1)
+#_(ndarray/initialize-random-block (int 1e7) 1)
 
-#_(transformer/set-parameters {:d-model 128;;
-                             :d-ff 512;;
-                             :num-layers 12;;
+#_(transformer/set-parameters {:d-model 64;;
+                             :d-ff 256;;
+                             :num-layers 6;;
                              :num-heads 8
-                             :d-pe [32 32 32 32];;
-                             :max-seq-length 512})
+                             :d-pe [16 16 16 16];;
+                             :max-seq-length 100
+                               :sparse true
+                               :topK 3
+                               })
 
-#_(time (versus {:seeds [2074038742],
+#_(time (versus {:seeds (range 10),
                :id :p1}
-              {:seeds [-888633566],
+              {:seeds (range 10),
                :id :p2}
-              20
-              10
+              100
+              100
               :net-gain? true
               :decks 1
               :from-block? true))
+
 
 (defn versus-other
   "Plays a transformer seed individual against another individual.\\
@@ -431,6 +438,18 @@
                :as-list? true
                :symmetrical? false)
 
+(defn mean-absolute-deviation
+  [data]
+  (let [m (utils/mean data)]
+    (utils/median (map #(abs (- % m)) data))))
+
+#_(def pop [{:seeds [69456685], :id :p0, :stdev 1.0E-4, :error {:p2 -199.25, :p4 -99.5, :p3 100.75, :p5 35.69446951953614, :p8 198.21875, :p9 0.75, :p1 -100.25, :p7 -100.25, :p6 1.0}} {:seeds [526191493], :id :p1, :stdev 1.0E-4, :error {:p8 100.25, :p0 100.25, :p5 -47.083298087120056, :p2 99.5}} {:seeds [-1894562570], :id :p2, :stdev 1.0E-4, :error {:p4 91.7265625, :p3 1.0, :p5 1.0, :p8 100.25, :p9 0.5, :p1 -99.5, :p0 199.25, :p7 0.0, :p6 -99.75}} {:seeds [-385186897], :id :p3, :stdev 1.0E-4, :error {:p0 -100.75, :p5 -0.75, :p2 -1.0, :p8 99.5}} {:seeds [2126344626], :id :p4, :stdev 1.0E-4, :error {:p5 -169.86429159073305, :p0 99.5, :p8 -0.75, :p2 -91.7265625}} {:seeds [684979260], :id :p5, :stdev 1.0E-4, :error {:p2 -1.0, :p4 169.86429159073305, :p3 0.75, :p8 99.75, :p9 99.5, :p1 47.083298087120056, :p0 -35.69446951953614, :p7 99.5, :p6 -99.5}} {:seeds [-706542571], :id :p6, :stdev 1.0E-4, :error {:p8 -1.0, :p5 99.5, :p2 99.75, :p0 -1.0}} {:seeds [-1427929116], :id :p7, :stdev 1.0E-4, :error {:p2 0.0, :p5 -99.5, :p0 100.25, :p8 -100.25}} {:seeds [437404342], :id :p8, :stdev 1.0E-4, :error {:p2 -100.25, :p4 0.75, :p3 -99.5, :p5 -99.75, :p9 99.25, :p1 -100.25, :p0 -198.21875, :p7 100.25, :p6 1.0}} {:seeds [1115512871], :id :p9, :stdev 1.0E-4, :error {:p5 -99.5, :p2 -0.5, :p0 -0.75, :p8 -99.25}}])
+
+#_(mean-absolute-deviation (map #(or (:p2 (:error %)) 0) pop))
+
+#_(filter #(>= (second %) 45)
+        (zipmap pop (map #(or (:p2 (:error %)) 0) pop)))
+
 (defn lexicase-selection
   "Epsilon lexicase selection using the individuals as test cases. Picks a random individual,
    and selects from the population by their match results against that individual\\
@@ -451,19 +470,19 @@
                                                (:error %))
                                               0)
                                          pop)
-                             avg-error (utils/mean errors)
-                             max-error (apply max errors)
-                             med-deviation (utils/median (map #(abs (- % avg-error))
-                                                              errors))]
+                             threshold (- (apply max errors) 
+                                          (mean-absolute-deviation errors))]
                          ;;Take only the individuals which have errors differing from the best error by at most MAD
                          (map first
-                              (filter #(>= (second %)
-                                          (- max-error med-deviation))
+                              (filter #(>= (second %) threshold)
                                       (zipmap pop errors))))))))
 
-#_(lexicase-selection [{:id :p0 :seeds [1 2] :errors {:p3 1 :p4 0}}
-                     {:id :p1 :seeds [1 2] :errors {:p3 2 :p4 -1}}
-                     {:id :p2 :seeds [1 2] :errors {:p3 3 :p4 -2}}])
+#_(lexicase-selection [{:id :p0 :seeds [1 2] :error {:p3 1 :p4 0}}
+                     {:id :p1 :seeds [1 2] :error {:p3 2 :p4 -1}}
+                     {:id :p2 :seeds [1 2] :error {:p3 3 :p4 -2}}]
+                      :benchmark-pop [{:id :p3}
+                                      {:id :p4}])
+
 
 
 (defn total-error
@@ -539,7 +558,7 @@
    of individuals\\
    method - method to use for constructing the hof. parents = only parents. all = all individuals. k-best = only k highest winnings\\
    -> pop"
-  [pop random & {:keys [method k selection]
+  [pop random & {:keys [method k selection benchmark-pop]
                  :or {method :parents
                       selection :lexicase
                       k 1}}]
@@ -565,8 +584,9 @@
                      p)
            :all (into #{} pop)
            :parents (persistent! parents))]
-        (let [parent (((or (selection-methods selection) 
-                           lexicase-selection)) pop)]
+        (let [parent (apply (or (selection-methods selection) 
+                           lexicase-selection) pop
+                            (if benchmark-pop [:benchmark-pop benchmark-pop] []))]
           (recur (conj! new-pop (mutate parent random i))
                  (conj! parents parent)
                  (inc i)))))))
@@ -592,7 +612,7 @@
   (condp = method
     :hardexp (loop [i 0
                     selected #{}]
-               (if (>= (Math/exp i) (count hof))
+               (if (> (Math/exp i) (count hof))
                  selected
                  (recur (inc i)
                         (->> hof
@@ -955,7 +975,7 @@
       :as argmap}]
   (println argmap)
   (let [r (utils/random random-seed)]
-    (when from-block? (utils/initialize-random-block (int block-size) r))
+    (when from-block? (ndarray/initialize-random-block (int block-size) r))
     (loop [generation 0
            pop (initialize-pop pop-size :r r :stdev stdev)
            hof []
@@ -963,18 +983,19 @@
       (if (= generation num-generations)
         {:last-pop pop
          :hall-of-fame (round-errors hof 3)}
-        (let [{{p :pop
+        (let [benchmark-pop (get-benchmark benchmark-count pop hof prop-hof :method bench-method)
+              {{p :pop
                 b :benchmark
                 a :action-counts} :result
                t :time} (utils/get-time (benchmark pop
-                                                   (get-benchmark benchmark-count pop hof prop-hof :method bench-method)
+                                                   benchmark-pop
                                                    max-seq-length
                                                    num-games
                                                    :symmetrical? true
                                                    :stdev stdev
                                                    :max-actions max-actions
                                                    :from-block? from-block?))
-              [p h] (next-generation p r :method next-gen-method)]
+              [p h] (next-generation p r :method next-gen-method :benchmark-pop benchmark-pop)]
           (report-generation pop generation
                              :max-actions max-actions
                              :time-ms t)

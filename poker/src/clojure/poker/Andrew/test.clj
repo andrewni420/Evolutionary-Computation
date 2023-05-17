@@ -4,8 +4,10 @@
    [poker.ndarray :as ndarray]
    [poker.utils :as utils]
    [poker.headsup :as headsup]
-   [clojure.core.matrix :as matrix])
-  (:import poker.TransformerDecoderBlock))
+   [clojure.core.matrix :as matrix]
+   #_[criterium.core])
+  (:import poker.TransformerDecoderBlock
+           poker.Mikhail.CljCommunicator))
 
 (poker.Andrew.Test/main)
 
@@ -495,6 +497,41 @@ cmake --build .")
    put -r poker ERL")
 
 (def delete-files 
-  ;;ls | grep -P "^vs-slumbot" | xargs -d "\n" rm
+  ;;ls | grep -P "^0.02" | xargs -d "\n" rm
   )
          
+
+
+
+
+
+#_(defn xo-points
+  "Returns a sorted list of k random integers from 0 through n-1"
+  [n k]
+  (->> n
+       (partial rand-int)
+       (repeatedly k)
+       (sort)))
+
+#_(defn two_point_xo
+  [first-bits second-bits]
+  (let [[low-cut high-cut] (xo-points (count first-bits) 2)]
+    (persistent! (reduce #(assoc! %1 %2 (nth second-bits %2))
+                         (transient first-bits)
+                         (range low-cut high-cut)))))
+
+#_(defn two_point_xo2
+  [first-bits second-bits]
+  (let [len (count first-bits)
+        first-cut (rand-int len)
+        second-cut (rand-int len)
+        low-cut (min first-cut second-cut)
+        high-cut (max first-cut second-cut)]
+    (concat (take low-cut first-bits)
+            (take (- high-cut low-cut) (drop low-cut second-bits))
+            (drop high-cut first-bits))))
+
+
+#_(let [arr1 (into [] (range 100))
+      arr2 (into [] (range 100))]
+  (criterium.core/quick-bench (two_point_xo2 arr1 arr2)))

@@ -93,16 +93,24 @@ public class SparseMax extends AbstractBlock {
         int lastDimSize = (int) input.size(input.getShape().dimension() - 1);
 
         // maskTopK should be: the topK in input is 0 and other is -10000
-        NDArray maskTopK =
-                NDArrays.add(
-                        IntStream.range(0, topK)
-                                .mapToObj(j -> level.get("..., {}", j).oneHot(lastDimSize))
-                                .toArray(NDArray[]::new))
-                        .subi(1)
-                        .muli(10000);
+        topK = Math.min(topK, lastDimSize);
+
+        NDArray maskTopK;
+        NDArray[] topKIndices = IntStream.range(0, topK)
+        .mapToObj(j -> level.get("..., {}", j).oneHot(lastDimSize))
+        .toArray(NDArray[]::new);
+
+        if (topK < 2) {
+            maskTopK = topKIndices[0].subi(1);
+        } else {
+            maskTopK = NDArrays.add(topKIndices).subi(1);
+        }
+
+        maskTopK.muli(10000);
+
 
         //Add mask and softmax to reduce non-topK inputs to 0
-        NDArray output = input.exp().add(maskTopK).softmax(-1);
+        NDArray output = input.add(maskTopK).softmax(-1);
 
         if (axis != -1) {
             output = output.swapAxes(axis, -1);

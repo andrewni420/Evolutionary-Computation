@@ -441,14 +441,18 @@
           gh :game-history} (play-game-slumbot (transformer/as-agent model) manager)]
      (clojure.pprint/pprint gh))))
 
-(defn process-net-gain 
+(defn process-net-gain
   "Process client's net-gain as an average amount won per game and possibly a 
    standard deviation in winnings per game.\\
    bb/game or {:mean :stdev}"
   [net-gain num-games & {:keys [as-list?]}]
   (if as-list?
-    {:mean (utils/mean net-gain)
-     :stdev (utils/stdev net-gain)}
+    (let [mean (utils/mean net-gain)
+          stdev (utils/stdev net-gain)
+          CI-radius (/ (* stdev 2) (Math/sqrt num-games))]
+      {:mean mean
+       :stdev stdev
+       :CI-95% [(- mean CI-radius) (+ mean CI-radius)]})
     (/ net-gain num-games)))
 
 
@@ -460,7 +464,8 @@
    game-history: current history of games played against slumbot\\
    -> {:token :game-encoding :net-gain :game-history}"
   [agent num-games & {:keys [token manager game-encoding game-history as-list?]}]
-   (let [manager (or manager (ndarray/new-base-manager))]
+   (let [manager (or manager (ndarray/new-base-manager))
+         max-seq-length (max 2 (get agent :max-seq-length 0))]
      (loop [i 0
           token (or token (slumbot-login))
           net-gain (if as-list? [] 0.0)
@@ -482,29 +487,31 @@
          (recur (inc i)
                 token
                 ((if as-list? conj +) net-gain winnings)
-                game-encoding
+                (utils/print-return (headsup/truncate-game-encoding game-encoding max-seq-length))
                 game-history))))))
 
 (defn transformer-vs-slumbot
   "Plays a transformer model represented as an individual {:seeds :id :stdev}
    against slumbot and returns the results"
-  [ind n-games & {:keys [as-list? from-block?]}]
+  [ind n-games max-seq-length & {:keys [as-list? from-block?]}]
   (transformer/from-seeds
    (assoc ind :id :client)
    from-block?
+   max-seq-length
    (fn [& {:keys [model manager]}]
      (let [g (iterate-games-slumbot (transformer/as-agent model)
                                     n-games
                                     :manager manager
                                     :as-list? as-list?)]
-       g))))
+       (println g)))))
 
 #_(transformer-vs-slumbot
    {:seeds [1]
     :id :client
     :stdev 0.005}
-   5
-   :from-block? true)
+   20
+   :from-block? true
+   :as-list? true)
 
 #_(iterate-games-slumbot utils/random-agent 5 :as-list? true)
 

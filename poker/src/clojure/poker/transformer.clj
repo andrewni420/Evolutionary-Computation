@@ -5,7 +5,8 @@
    [poker.ndarray :as ndarray]
    [clojure.pprint :as pprint]
    [clojure.core.matrix :as m]
-   [clojure.test :as t])
+   [clojure.test :as t]
+   [poker.concurrent :as concurrent])
   (:import poker.TransformerDecoderBlock
            poker.UnembedBlock
            poker.SinglePositionEncoding
@@ -527,20 +528,23 @@
    -> nnet"
   [nnet parameter-map]
   (let [params (get-parameters nnet :as-array? true)]
-    (run! #(.set ^NDArray (params %)
-                 (float-array (map +
-                                   (parameter-map %)
-                                   (.toArray ^NDArray (params %)))))
+    (run! #(with-open [m (.newSubManager (.getManager (params %)))]
+             (let [^NDArray arr (params %)]
+               (.setRequiresGradient arr false)
+               (.addi arr
+                      (.create m
+                               (parameter-map %)
+                               (.getShape arr)))))
           (map first params))
     nnet))
 
-
-#_(with-open [m (nd/new-base-manager)]
+#_(with-open [m (ndarray/new-base-manager)]
     (let [l (linear 4)]
       (initialize-model l m "float" [1 2])
-      (add-parameters! l {"weight" [10 10 10 10 10 10 10 10]
-                          "bias" [-10 -10 -10 -10]})
-      (println (ndarray/get-parameters l))))
+      (add-parameters! l {"weight" (float-array [10 10 10 10 10 10 10 10])
+                          "bias" (float-array [-10 -10 -10 -10])})
+      (println (get-parameters l))
+      (println (.getManagedArrays m))))
 
 #_(defn add-gaussian-model!
     "Adds gaussian noise to an individual\\
@@ -767,7 +771,7 @@
    initializer: The initializer to use for the weights\\
    component-map? Whether to return the final model, or a map of {component-name component-block} of each part of the model\\
    -> Block: input-shapes -> (take 2 input-shapes)"
-  [manager input-shapes & {:keys [d-model d-ff num-layers num-heads d-pe max-seq-length activation-function dropout-probability initializer component-map?]
+  [manager input-shapes & {:keys [d-model d-ff num-layers num-heads d-pe max-seq-length activation-function dropout-probability initializer sparse topK component-map?]
                            :or {activation-function (utils/make-function #(Activation/relu %))
                                 dropout-probability 0.1
                                 initializer default-xavier-initializer}
@@ -802,6 +806,8 @@
                                                    d-model
                                                    num-heads
                                                    d-ff
+                                                   :sparse sparse 
+                                                   :topK topK
                                                    :activation-function activation-function
                                                    :dropout-probability dropout-probability)))
         output-layer (separate-parallel-block
@@ -871,7 +877,7 @@
               :num-layers 6;;
               :num-heads 8
               :d-pe [16 16 16 16];;
-              :max-seq-length 512}))
+              :max-seq-length 100}))
 
 
 (defn current-transformer
@@ -1045,13 +1051,39 @@
                                     (int n)
                                     (float stdev))})
 
+#_(defn index-into-block2
+  "Helper for indexing into a block of random noise. Returns updated indices\\
+   indices: vector of indices into the block\\
+   block: float array of random noise\\
+   n: number of samples to take\\
+   stdev: number to multiply each sampled number by\\
+   -> {:indices :result}"
+  [i-start indices block n & {:keys [stdev]
+                              :or {stdev 0.005}}]
+  {:i-start (+ i-start n)
+   :result (Indexing/indexIntoBlock2 (int i-start)
+                                    (int-array indices)
+                                    block
+                                    (int n)
+                                    (float stdev))})
+
+
+
 #_(utils/initialize-random-block 1000000 1)
 
-#_(utils/initialize-random-block 2.5e8 1)
-
-#_(index-into-block 1 [-10 10] @utils/random-block 100)
+#_(= (into [] (index-into-block 1 [-10 10] @utils/random-block 10))
+     (into [] (index-into-block2 1 [-10 10] @utils/random-block 10)))
 
 #_(time (do (dotimes [_ 10] (index-into-block 1  (range 100) @utils/random-block 100000)) nil))
+
+
+
+#_(mapv deref (doall (for [i (range 4)]
+                     (future (locking (Engine/getInstance)
+                               (.setRandomSeed (Engine/getInstance) i)
+                               (java.lang.Thread/sleep 10)
+                               (println i (.getSeed (Engine/getInstance))))))))
+
 
 
 (defn expand-via-indexing
@@ -1073,6 +1105,7 @@
                  (recur (assoc! to-return k res)
                         (dissoc p k)
                         i)))))))
+
 
 (defn expand-via-sampling
   "Expand seeds into parameter block by sampling noise from random number generators"
@@ -1099,36 +1132,9 @@
       (expand-via-indexing individual random stdev)
       (expand-via-sampling individual (map utils/random (:parameter-seeds individual)) stdev))))
 
-#_(loop [to-return (transient {})
-         p initial-parameter-map
-         i (:parameter-seeds individual)]
-    (if (empty? p)
-      (persistent! to-return)
-      (let [[k v] (first p)
-            {i :indices res :result} (index-into-block i random (count v))]
-        (recur (assoc to-return k res)
-               (dissoc p k)
-               i))))
-#_(let [stdev (or (:stdev individual) stdev)
-        randoms (map utils/random (:parameter-seeds individual))]
-    (assoc individual
-           :parameter-map
-           (into {}
-                 (map (fn [[key value]]
-                        [key (utils/make-vector (fn []
-                                                  (transduce (map #(* stdev (.nextGaussian %)))
-                                                             +
-                                                             randoms))
-                                                (count value))]))
-                 initial-parameter-map)))
 
 
 
-(def max-seq-length
-  "The maximum sequence length for transformer models.\\
-   Currently set at 100 for the fastest possible models with still decent-ish sequence
-   length"
-  100)
 
 (defn make-model
   "Given an individual, creates a transformer model from its parameter-map\\
@@ -1144,33 +1150,152 @@
            :manager m
            :mask mask)))
 
+(defn make-model2
+  "Given an individual, creates a transformer model from its parameter-map\\
+   Also removes the parameter map\\
+   -> individual with {model manager mask}"
+  [individual manager mask]
+  (let [model (Model/newInstance (str "transformer " (:id individual)))
+        m (.newSubManager manager)]
+    (.setBlock model ((:nn-factory individual) m))
+    (loop [params (map second (get-parameters (.getBlock model)))
+           indices (:parameter-seeds individual)]
+      (when-not (empty? params)
+        (when (< (rand) (/ 1 1000)) (System/gc))
+        (doall (for [i indices]
+                 (ndarray/add-indexed (first params) i :stdev (:stdev individual))))
+        (recur (rest params)
+               (map (partial + (.size (first params))) indices))))
+    (assoc individual
+           :model model
+           :manager m
+           :mask mask)))
+
 #_(with-open [m (ndarray/new-base-manager)]
     (initialize-individual :manager m :nn-factory #(current-transformer m)
                            :mask (ndarray/ndarray m (ndarray/causal-mask [1 7 7] -2))
                            :id :p0
                            :max-seq-length 7))
 
+(defmacro with-parameters
+  "Sets the transformer parameters within the body"
+  [parameters & body]
+  `(let [p# @transformer-parameters]
+     (when ~parameters (set-parameters ~parameters))
+     (try ~@body
+          (finally (set-parameters p#)))))
+
+
 (defn model-from-seeds
   "Given a map of seeds and ids, returns an individual with the current
    default settings"
   [individual max-seq-length manager mask & {:keys [stdev from-block?]
                                              :or {stdev 1}}]
-  (let [{seeds :seeds id :id std :stdev} individual]
-    (.setRandomSeed (Engine/getInstance) (first seeds))
-    (-> (initialize-individual
-         :nn-factory current-transformer
-         :parameter-seeds (rest seeds)
-         :id id
-         :max-seq-length max-seq-length)
-        (expand-param-seeds :stdev (or std stdev) :from-block? from-block?)
-        (make-model manager mask))))
+  (let [{seeds :seeds id :id std :stdev} individual
+        engine (Engine/getInstance)
+        individual (locking engine
+                     (.setRandomSeed engine (first seeds))
+                     (with-parameters (:transformer-parameters individual)
+                       (initialize-individual :nn-factory current-transformer
+                                            :parameter-seeds (rest seeds)
+                                            :id id
+                                            :max-seq-length max-seq-length)))]
+    (-> individual
+        #_(expand-param-seeds :stdev (or std stdev) :from-block? from-block?)
+        (make-model2 manager mask))))
 
-(set-parameters {:d-model 256;;
-:d-ff 512;;
-:num-layers 12;;
-:num-heads 16
-:d-pe [64 64 64 64];;
-:max-seq-length 512})
+(defn load-model
+  "Given an individual, disregard that individual's seeds and instead loads its parameters
+   from the given file path.\\
+   Hyperparameter override can be provided either via optional argument or via a :transformer-parameters
+   key in the individual."
+  [individual manager parameter-file & {:keys [hyperparameters]}]
+  (with-parameters (or hyperparameters (:transformer-parameters individual))
+    (let [max-seq-length (or (:max-seq-length individual) (:max-seq-length hyperparameters) 100)
+          model (model-from-seeds (assoc individual :seeds [1])
+                                  max-seq-length
+                                  manager
+                                  (ndarray/ndarray manager (ndarray/causal-mask [1 max-seq-length max-seq-length] -2)))]
+      (->> parameter-file
+           (java.io.File.)
+           (.toPath)
+           (#(java.nio.file.Files/newInputStream % (into-array java.nio.file.OpenOption [])))
+           (java.io.DataInputStream.)
+           (.loadParameters (.getBlock (:model model)) manager))
+      model)))
+
+(defn save-model
+  "Saves an individual's model parameters into a file"
+  [individual block-size random-seed stdev filename & {:keys [transformer-parameters]}]
+  (ndarray/initialize-random-block (int block-size) random-seed)
+  (with-parameters (or transformer-parameters (:transformer-parameters individual))
+    (with-open [m (ndarray/new-base-manager)]
+      (let [max-seq-length (or (:max-seq-length individual)
+                               (:max-seq-length @transformer-parameters)
+                               100)
+            model (model-from-seeds individual max-seq-length m (ndarray/ndarray m (ndarray/causal-mask [1 100 100] -2))
+                                    :from-block? true
+                                    :stdev (or stdev (:stdev individual)))]
+        (->> filename
+             (java.io.File.)
+             (.toPath)
+             (#(java.nio.file.Files/newOutputStream % (into-array java.nio.file.OpenOption [])))
+             (java.io.DataOutputStream.)
+             (#(.saveParameters (.getBlock (:model model)) %)))))))
+
+#_(def test (load-model opponent m "src/clojure/poker/Andrew/models/transformer.param" ))
+
+
+
+#_(def opponent
+  {:id :bot
+   :seeds [2142999098 -1756556595 2146591251 -148922201 360373762 1969481751 75922402 -1812728485 -929039210 2119301010 1047092426 1517245651 1248204414 2052596547 -561985855 774037304 -1065524875 -1917066726 -1179280012 -691501894 1882663832 -404319704 -1003258202 1233610338 -860368459 1607015441 1900008606 -638199505 -1547689629 1031490533 -1401119134 -42700240 972598154 -1664380241 -1480002255 -151424838 -472487563 2094161750 1791578381 530396650 772469599 1201407129 560230804 88000226 -996313306 -242262641 -1471261669 -1894874292 1252976996 -829951142 -668206891 -1319963433 409880465 568592079 173862725 1324595629 -715927057 1307658470 1263713864 -1711727892 -866536830 -896105915 -118258470 -140852648 -1195429868 617031876 483751407 1789878683 -471755020 -428240904 -1792382421 1874296883 -489159127 -465491177 1320542614 1442797160 -507978612 -1467089035 -1343874496 -885825881 -1735217253 206649137 1680775581 -1653815184 -244183086 439208377 -523829743 2114704879 -92036331 1615251094 -1804732241 1106543322 1377550705 1731911539 -1270614649 1763702328 -1806934417 2079069387 -2083965664 -936491572]
+   :random-seed -8411666870417163767
+   :block-size (int 1e9)
+   :transformer-parameters {:d-model 64, :d-ff 256, :num-layers 6, :num-heads 8, :d-pe [16 16 16 16], :max-seq-length 100}})
+
+#_(def model (let [ind opponent]
+             (ndarray/initialize-random-block (int 1e9) -8411666870417163767)
+             (set-parameters (:transformer-parameters opponent))
+             (let [model (model-from-seeds ind 100 m  (ndarray/ndarray m (ndarray/causal-mask [1 100 100] -2))
+                                                       :from-block? true
+                                                       :stdev 0.005)]
+               (:model model))))
+
+#_(let [file "src/clojure/poker/Andrew/models/transformer.param"]
+    (->> file
+         (java.io.File.)
+         (.toPath)
+         (#(java.nio.file.Files/newOutputStream % (into-array java.nio.file.OpenOption [])))
+         (java.io.DataOutputStream.)
+         (#(.saveParameters (.getBlock model) %))))
+
+#_(def model2 (model-from-seeds {:seeds [2] :id :bot1} 100 m (ndarray/ndarray m (ndarray/causal-mask [1 100 100] -2)) :from-block? true :stdev 0.005))
+
+#_(.loadParameters (.getBlock (:model model2))
+                   m
+                   (->> "src/clojure/poker/Andrew/models/transformer.param"
+                        (java.io.File.)
+                        (.toPath)
+                        (#(java.nio.file.Files/newInputStream % (into-array java.nio.file.OpenOption [])))
+                        (java.io.DataInputStream.)))
+
+#_(every? identity (map #(.equals (second %1) (second %2))
+                        (get-parameters (.getBlock (:model test)))
+                        (get-parameters (.getBlock model))))
+;; (def m (ndarray/new-base-manager))
+;; (ndarray/initialize-random-block (int 1e8) 1 :ndarray? true :manager m)
+;; (utils/initialize-random-block (int 1e8) 1)
+
+;; (time (with-open [m (ndarray/new-base-manager)]
+;;         (model-from-seeds {:seeds (range 100)
+;;                            :id :p0
+;;                            :std 0.005}
+;;                           100
+;;                           m
+;;                           nil
+;;                           :from-block? true)))
+
 
 
 #_(with-open [m (ndarray/new-base-manager)]
@@ -1180,13 +1305,13 @@
                     :id :p0
                     :max-seq-length max-seq-length)
                    (expand-param-seeds :stdev 1)))
-    (println (take 10 (.toArray (get (get-parameters (.getBlock (:model (model-from-seeds {:seeds [1]
-                                                                   :id :p0
+    #_(println (take 10 (.toArray (get (get-parameters (.getBlock (:model (model-from-seeds {:seeds [1 2]
+                                                                                           :id :p0
                                                                                            :stdev 0.005}
-                                                                  10
-                                                                  m
-                                                                  1
-                                                                  :from-block? true))))
+                                                                                          10
+                                                                                          m
+                                                                                          1
+                                                                                          :from-block? true))))
                   "02SequentialBlock_05TransformerDecoderBlock_01selfAttention_03valueProjection_weight")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1210,10 +1335,11 @@
       "Raise"
       chosen-type)))
 
-#_(parse-action-encoding-type (onehot/encode-action-type "Bet")
+
+#_(parse-action-encoding-type [0.4086045 -1.68003 -3.4908776 -3.8605895 0.027715206]
                               #(mapv * (into [] %1) %2)
                               #(first (apply max-key second %))
-                              [["All-In" 200.0 200.0] ["Check" 0.0 0.0] ["Raise" 1.0 199.0] ["Fold" 0.0 0.0]])
+                              [["All-In" 199.5 199.5] ["Call" 0.5 0.5] ["Fold" 0.0 0.0]])
 
 (defn parse-action-encoding-amount
   "Helper method for parse-action-encoding\\
@@ -1224,14 +1350,19 @@
           (str "Cannot have nils in legal-actions " legal-actions))
   (let [[min-amt max-amt] (first (filter #(< (first %) (second %))
                                          (map rest legal-actions)))
-        money-mask (mapv #(if (utils/in-range % min-amt max-amt) 1 0) buckets)]
+        money-mask (mapv #(if (some nil? [% min-amt max-amt])
+                            (do (println "nil stuff " % min-amt max-amt legal-actions encoding)
+                                (utils/in-range % min-amt max-amt))
+                            (if (utils/in-range % min-amt max-amt) 1 0))
+                         buckets)]
     (sampler (mapv vector buckets (preprocessing (drop 5 encoding) money-mask)))))
 
 ;;Mean squared error for information loss upon encoding then decoding a range of monetary amounts 
 #_(reduce +
           (map utils/square
                (for [i (utils/log-scale 1 200 :num-buckets 20)]
-                 (let [amount (parse-action-encoding-amount (concat [1 1 1 1 1] (onehot/encode-money i 10 200 onehot/default-action-buckets :multi-hot? false :logscale? false))
+                 (let [amount (parse-action-encoding-amount [1150.6177978515625 -582.7982788085938 1732.9071044921875 -1157.5816650390625 852.3092651367188 2520.81396484375 3752.94775390625 2929.3603515625 2775.132568359375 -3024.29833984375 356.63946533203125 850.2755126953125 -1091.3560791015625 -2941.26416015625 -4453.81396484375 1398.6817626953125 -100.01994323730469 -547.5033569335938 -2692.711181640625 1719.557373046875 -801.2042236328125 1626.02490234375 491.79168701171875 -3062.88623046875 -931.99658203125 -1946.3629150390625 253.47161865234375 -1698.22314453125 95.12320709228516 734.0512084960938 -542.2075805664062 2551.64453125 1798.5889892578125 -1406.3194580078125 1389.4111328125 3695.5224609375 1421.5780029296875 -403.6596374511719 1317.2342529296875 -560.0914916992188 -857.8198852539062 -59.11506652832031 -608.1195068359375 -743.1815795898438 -1514.747314453125 -504.83984375 2670.49560546875 -1764.0318603515625 1477.94970703125 -2450.529541015625 -666.187744140625 -1609.3609619140625 416.6956787109375 -637.8123168945312 1732.5919189453125 -234.60787963867188 2280.431884765625 1119.8341064453125 -3407.9296875 -711.9293212890625 607.6550903320312 668.6657104492188 1326.5775146484375 -1278.9287109375]
+                               #_(concat [1 1 1 1 1] (onehot/encode-money i 10 200 onehot/default-action-buckets :multi-hot? false :logscale? false))
                                                             #(mapv * (into [] %1) %2)
                                                             #(first (apply max-key second %))
                                                             [["All-In" 200.0 200.0] ["Check" 0.0 0.0] ["Bet" 1.0 199.0] ["Fold" 0.0 0.0]]
@@ -1248,8 +1379,11 @@
                                need-softmax? true}}]
   (assert (not (and need-exp? need-softmax?)) "Encoding cannot simultaneously represent log-softmax and unsoftmaxed weights")
   (assert (every? identity encoding) "Cannot have nil in the encoding")
-  (let [legal-actions (utils/legal-actions game-state)
-        converter (if (or need-exp? need-softmax?) #(if (zero? %) ##-Inf %) identity)
+  (let [encoding (map #(if (NaN? %) ##-Inf %) encoding)
+        legal-actions (utils/legal-actions game-state)
+        converter (if (or need-exp? need-softmax?) 
+                    #(if (zero? %) ##-Inf %) 
+                    identity)
         preprocessing #((comp (if need-softmax? utils/softmax identity)
                               (if need-exp? (partial mapv (fn [x] (Math/exp x))) identity))
                         (mapv (if (or need-softmax? need-exp?) + *)
@@ -1271,13 +1405,18 @@
                                                       legal-actions
                                                       (onehot/buckets-to-money buckets game-state))
                         (utils/sfirst (filter #(= chosen-type (first %)) legal-actions)))]
-    (assert (and chosen-type chosen-amount) (str "cannot have nil chosen type or amount " chosen-type chosen-amount))
+    (assert (and chosen-type chosen-amount) 
+            (str "cannot have nil chosen type or amount " 
+                 chosen-type 
+                 chosen-amount
+                 (into [] encoding)
+                 game-state))
     [chosen-type chosen-amount]))
 
 #_(let [g (poker.headsup/init-game)]
     #_(onehot/encode-action ["Fold" 0.0] g)
-    (parse-action-encoding (onehot/encode-action ["Bet" 100.0] g)
-                           g
+    (parse-action-encoding [0.4086045 -1.68003 -3.4908776 -3.8605895 0.027715206 -0.5328543 -5.8286715 -0.61751366 -4.405943 7.578722 3.8539941 -3.5134287 1.336853 1.7621366 1.1076269 -3.5605984 -2.7703774 5.8767405 1.7512885 -4.2395005 -0.9003396 -2.2775126 -1.1417572 -2.9602427 4.615011 1.7721927 3.348711 -2.6283898 -0.37497187 0.35874718 -4.350223 -3.9133494 3.6003737 -2.7882085 1.1762142 2.015797 -2.7518754 4.227375 1.2794746 0.21538949 1.679158 -5.864751 2.1718087 -3.5022817 0.89017934 -2.6834426 -0.6608646 4.0826607 1.6914246 -0.010414839 1.9016724 4.841662 1.9513214 4.185919 -3.0815935 6.805232 -2.6480093 -0.6733075 0.094842196 1.6365243 -1.2657623 6.5102115 3.2543888 4.0868597]
+                           {:player-ids [:p11 :p24], :num-players 2, :community [[13 "Diamonds"] [12 "Clubs"] [10 "Clubs"] [5 "Diamonds"] [11 "Hearts"]], :bet-values [0.5 1.0], :game-num 0, :current-bet 1.0, :hands [[[12 "Spades"] [7 "Spades"]] [[9 "Spades"] [13 "Hearts"]]], :action-history [[]], :betting-round "Pre-Flop", :active-players [0 1], :min-bet 1.0, :players [{:money 199.5, :id :p11} {:money 199.0, :id :p24}], :game-over false, :visible [], :min-raise 1.0, :visible-hands [], :pot 1.5, :current-player 0}
                            (utils/legal-actions g)))
 
 
@@ -1326,10 +1465,10 @@
 
 #_(with-open [manager (ndarray/new-base-manager)
             model (Model/newInstance "transformer")]
-  (let [actions (ndarray/ndarray manager float-array (ndarray/identical-array [1 100 onehot/action-length] 1))
-        state (ndarray/ndarray manager float-array (ndarray/identical-array [1 100 onehot/state-length] 1))
-        position (ndarray/ndarray manager int-array (ndarray/identical-array [1 200 onehot/position-length] 1))
-        mask (ndarray/ndarray manager float-array (ndarray/identical-array [1 200 200] 1))
+  (let [actions (.create manager (ndarray/shape [0 onehot/action-length]))#_(ndarray/ndarray manager float-array (ndarray/identical-array [ 0 onehot/action-length] 1))
+        state (ndarray/ndarray manager float-array (ndarray/identical-array [ 1 onehot/state-length] 1))
+        position (ndarray/ndarray manager int-array (ndarray/identical-array [ 1 onehot/position-length] 1))
+        mask (ndarray/ndarray manager float-array (ndarray/identical-array [ 1 1] 1))
         {embedding :embedding
          pos-encoding :pos-encoding
          input-layer :input-layer
@@ -1348,14 +1487,16 @@
                                 :num-heads 8
                                 :d-pe [16 16 16 16]
                                 :max-seq-length 512
+                                :sparse true
+                                :topK 3
                                 :component-map? true)]
     (.setBlock model m)
     (let [first-size (transduce (map #(.size %)) + (.getManagedArrays manager))]
-      (println (forward (sequential-block input-layer core-layer) (ndarray/ndlist manager state actions position mask)))
-      #_(with-open [p (.newPredictor model (TransformerTranslator. manager))]
+      #_(println (forward (sequential-block input-layer core-layer) (ndarray/ndlist manager state actions position mask)))
+      (with-open [p (.newPredictor model (TransformerTranslator. manager))]
           (println "prediction: " (map vec (into [] (.predict p [state actions position mask])))))
       #_(println (.getManagedArrays manager))
-      (println "Additional size: " (- (transduce (map #(.size %)) + (.getManagedArrays manager))
+      #_(println "Additional size: " (- (transduce (map #(.size %)) + (.getManagedArrays manager))
                                       first-size)))))
 
 
@@ -1422,7 +1563,7 @@
                                 1)
               nil)))
 
-#_(with-open [manager (nd/new-base-manager)]
+#_(with-open [manager (ndarray/new-base-manager)]
     (time (let [[B F E] [1 2 64];;[10 10 512] 
                 [D1 D2] [64 183];;[1024 256]
                 input (ndarray/ndlist manager
@@ -1431,11 +1572,11 @@
                                       (ndarray/identical-array [B F 4] 1);;B F 3
                                       (ndarray/causal-mask [B F F] 1))
 
-                input-shapes #_(into-array Shape (map nd/new-shape [[1 4 4]
+                input-shapes #_(into-array Shape (map ndarray/shape [[1 4 4]
                                                                     [1 3 2]
                                                                     [7 3]
                                                                     [1 7 7]]))
-                (into-array Shape (map nd/new-shape [[B (/ F 2) D1]
+                (into-array Shape (map ndarray/shape [[B (/ F 2) D1]
                                                      [B (/ F 2) D2]
                                                      [B F 4]
                                                      [B F F]]))
@@ -1448,6 +1589,8 @@
                                    :d-pe [16 16 16 16];;[256 128 128]
                                    :dropout-probability 0.1
                                    :max-seq-length 256;;1024
+                                   :sparse true
+                                   :topK 3
                                    :component-map? true)
                 {embedding :embedding
                  pos-encoding :pos-encoding
@@ -1458,7 +1601,7 @@
             #_(set-all-parameters model 1 float-array)
             #_(get-pnames model)
             (println manager)
-            (time (forward model input))
+            (println (.get (time (forward model input)) 0))
             (println manager)
             #_(time (add-gaussian-model! model 0 1 float-array))
             #_(type model)
@@ -1475,12 +1618,11 @@
   "Given an unexpanded individual {:seeds :id :stdev}, expands the individual using a new base manager,
    and wraps a call to the given function and arguments with optional arguments :model :manager for the expanded individual
    and manager in a with-open expression that closes the model."
-  [individual from-block? f & args]
+  [individual from-block? max-seq-length f & args]
   `(with-open [manager# (ndarray/new-base-manager)]
-     (let [max-seq-length# (:max-seq-length @transformer-parameters)
-           mask# (ndarray/ndarray manager# (ndarray/causal-mask [1 max-seq-length# max-seq-length#] -2))
+     (let [mask# (ndarray/ndarray manager# (ndarray/causal-mask [1 ~max-seq-length ~max-seq-length] -2))
            model# (model-from-seeds ~individual
-                                    max-seq-length#
+                                    ~max-seq-length
                                     manager#
                                     mask#
                                     :stdev 0.005
@@ -1488,5 +1630,8 @@
        (with-open [_model# (utils/make-closeable model# close-individual)]
          (~f ~@args :model model# :manager manager#)))))
 
-
+#_(with-open [m (ndarray/new-base-manager)]
+  (let [s (poker.SparseMax. -1 3)
+        arr (ndarray/ndlist m [1 2 3 4 5])]
+    (println (.get (forward s arr) 0))))
 

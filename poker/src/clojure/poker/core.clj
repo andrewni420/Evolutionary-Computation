@@ -125,19 +125,6 @@
   (println gen-output)
   (println gen-input))
 
-(defn hot-start
-  [& {:keys [hof-output hof-input gen-output gen-input param-output param-input default-pmap override-params?]
-      :as argmap}]
-  (let [params (try (read-string (slurp param-input))
-                    (catch Exception _ {}))]
-    (apply MPI/ERL
-           (mapcat identity
-                   (into []
-                         (merge (if override-params?
-                                  (merge params default-pmap)
-                                  (merge default-pmap params))
-                                (dissoc argmap
-                                        :default-pmap)))))))
 
 ;;hot-start editing: :max-actions 2198.9734734734734, :time-ms 2154080.222549}
 
@@ -152,20 +139,7 @@
                ;:param-output "src/clojure/poker/Andrew/results/__param.out"
                ;:param-input "src/clojure/poker/Andrew/results/__param.out"
 
-(def default-pmap
-  {:pop-size 100
-   :num-generations 50
-   :num-games 500
-   :benchmark-count 3
-   :random-seed -8411666870417163767
-   :max-seq-length 100
-   :stdev 0.005
-   :from-block? true
-   :next-gen-method :k-best
-   :bench-method :k-best
-   :bench-exp 2
-   :prop-hof 1.0
-   :block-size 1e9})
+
 
 (def default-transformer-map
   {:d-model 256;;
@@ -173,7 +147,23 @@
    :num-layers 12;;
    :num-heads 8
    :d-pe [64 64 64 64];;
-   :max-seq-length 512})
+   :max-seq-length 100})
+
+(def default-pmap
+  {:pop-size 250
+   :num-generations 100
+   :num-games 125
+   :benchmark-count 8
+   :random-seed -8411666870417163767
+   :max-seq-length 100
+   :stdev 0.0005
+   :from-block? true
+   :next-gen-method :k-best
+   :bench-method :hardexp
+   :bench-exp 2
+   :prop-hof 0.75
+   :block-size 1e9
+   :transformer-parameters default-transformer-map})
 
 
 #_(MPI/multi-ERL
@@ -195,43 +185,108 @@
    :inter-run? true
    :num-games 5000)
 
+(defn versus 
+  []
+  (transformer/set-parameters {:d-model 64;;
+                               :d-ff 256;;
+                               :num-layers 6;;
+                               :num-heads 8
+                               :d-pe [16 16 16 16];;
+                               :max-seq-length 100
+                               :sparse true
+                               :topK 3})
+(ndarray/initialize-random-block (int 1e7) 1 :ndarray? true)
+(ERL/versus {:seeds (range 10),
+             :id :p1}
+            {:seeds (range 10),
+             :id :p2}
+            100
+            100
+            :net-gain? true
+            :decks 1
+            :from-block? true))
+
+
 (defn -main
   [& args]
+  #_(MPI/test-mpi )
+  #_(MPI/single-experiment {:hof-output  nil ;"src/clojure/poker/Andrew/results/_hof1.out"
+                          :hof-input "src/clojure/poker/Andrew/results/_hof1.out"
+                          :gen-output nil; "src/clojure/poker/Andrew/results/_gen1.out"
+                          :gen-input "src/clojure/poker/Andrew/results/_gen1.out"
+                          :param-output  nil;"src/clojure/poker/Andrew/results/_param1.out"
+                          :param-input  "src/clojure/poker/Andrew/results/_param1.out"
+                          :default-pmap (assoc default-pmap
+                                               :terminate-slaves? false
+                                               :pop-size 250
+                                               :num-generations 100
+                                               :benchmark-count 8
+                                               :num-games 125
+                                               :transformer-parameters {:d-model 64;;
+                                                                        :d-ff 256;;
+                                                                        :num-layers 6;;
+                                                                        :num-heads 8
+                                                                        :d-pe [16 16 16 16];;
+                                                                        :max-seq-length 100})}
+                         :num-games-internal 5000
+                         :num-games-slumbot 5000)
   #_(slumbot/slumbot-rollout challenger "vsSlumbot-1.txt" 10 2000
                              :transformer? true
                              :from-block? true
                              :random-seed -5907454322436654
                              :block-size 1e8)
+  #_(pprint/pprint
+   (MPI/ERL :pop-size 5
+            :num-generations 3
+            :num-games 150
+            :benchmark-count 6
+            :stdev 0.005
+
+            :random-seed -8411666870417163767
+            :max-seq-length 100
+            :from-block? true
+            :next-gen-method :k-best
+            :bench-method :hardexp
+            :bench-exp 2
+            :prop-hof 2/3
+            :block-size 1e8
+            :with-MPI? true
+            :transformer-parameters default-transformer-map))
+  #_(processresult/results-vs "0.005s-8b-0.75h-best-hard-73830.out")
   (MPI/multi-ERL
-   :ERL-argmaps (for [stdev [0.0001]]
-                  (assoc default-pmap
-                         :stdev stdev
-                         :pop-size 25
-                         :num-generations 25
-                         :num-games 125
-                         :benchmark-count 10
-                         :bench-exp 1.5
-                         :next-gen-method :parents
-                         :bench-method :hardexp
-                         :transformer-parameters default-transformer-map))
-   :intra-run? true
-   :inter-run? false
-   :num-games 5000)
-  #_(MPI/with-MPI
-      (doall (for [bench-method [:k-best]
-                   benchmark-count [2 4 6 8]]
-               (println (hot-start :default-pmap (assoc default-pmap
-                                                        :pop-size 10
-                                                        :num-generations 3
-                                                        :num-games 10
-                                                        :bench-method bench-method
-                                                        :benchmark-count benchmark-count)
-                                   :transformer-parameters default-transformer-map)))))
+     :ERL-argmaps (for [prop [6/8]]
+                    (assoc default-pmap
+                           :stdev 0.0001
+                           :benchmark-count 8
+                           :num-generations 50
+                           :pop-size 50
+                           :num-games 125
+                           :bench-exp 2
+                           :next-gen-method :parents
+                           :bench-method :hardexp
+                           :prop-hof 0.75
+                           :max-seq-length 100
+                           #_:transformer-parameters #_{:d-model 64;;
+                                                    :d-ff 256;;
+                                                    :num-layers 6;;
+                                                    :num-heads 8
+                                                    :d-pe [16 16 16 16]
+                                                    :max-seq-length 100}))
+     :intra-run? true
+     :inter-run? false
+     :intra-games 5000
+     :inter-games 10000)
 
   #_(println (slumbot/net-gain "slumbot-history-random.txt" :as-list? true :mapcat? true))
   #_(processresult/generation-versus "ERL-250x100-67545.out"))
 
 
+(def files 
+  ["0.5-prop-hof-8-250-73631.out"
+   "0.5-prop-hof-8-73630.out"
+   "0.67-prop-hof-73628.out"
+   "0.75-prop-hof-8-73629.out"
+   ])
 
 #_(-main)
 

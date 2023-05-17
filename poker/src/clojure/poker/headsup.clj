@@ -3,9 +3,9 @@
             [clojure.pprint :as pprint]
             [poker.onehot :as onehot]
             [poker.ndarray :as ndarray]
-            [poker.transformer :as transformer]
             [clojure.core.matrix :as m]
-            [clojure.set :as set])
+            [clojure.set :as set]
+            [poker.transformer :as transformer])
   (:gen-class)
   (:import SwingTest))
 
@@ -89,11 +89,12 @@
    Current-player - the player whose turn it is to act\\
    num-players - the number of players\\
    game-over - whether the game has terminated\\"
-  [& {:keys [players deck verbosity game-num player-ids manager]
+  [& {:keys [players deck verbosity game-num player-ids manager max-seq-length]
       :or {players [(constantly ["Fold" 0.0]) (constantly ["Fold" 0.0])]
            deck (shuffle utils/deck)
            verbosity 0
-           game-num 0}}]
+           game-num 0
+           max-seq-length 512}}]
   (let [players (utils/process-players players)
         player-ids (if player-ids player-ids (mapv :id players))
         deal (utils/deal-hands 2 deck)]
@@ -147,6 +148,16 @@
 ;;    Single Move    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn close-encoding 
+  "Closes all ndarrays in the now outdated game-encoding"
+  [game-encoding]
+  (let [{actions :actions
+         state :state
+         position :position} game-encoding]
+    (run! #(.close (second %)) state)
+    (.close actions)
+    (.close position)))
+
 (defn update-game-encoding
   "Given the additional state, position, and or actions encodings to be added, updates the game-encoding\\
    by appending these encodings onto the appropriate tensors.\\
@@ -190,6 +201,21 @@
       (.close (:actions game-encoding)))
     ;;Return updated encoding
     updated-encoding))
+
+
+(defn truncate-game-encoding
+  [game-encoding max-seq-length]
+  (let [current-length (.size (:position game-encoding) 0)]
+    (if (>= current-length (* 2 max-seq-length))
+      (let [truncate-encoding #(.get % (ndarray/ndindex "{}:" (- max-seq-length)))
+            truncate-state #(into {} (map vector (map first %) (map (comp truncate-encoding second) %)))
+            new-game-encoding (-> game-encoding 
+                                  (update :state truncate-state)
+                                  (update :actions truncate-encoding)
+                                  (update :position truncate-encoding))]
+        (close-encoding game-encoding)
+        new-game-encoding)
+      game-encoding)))
 
 (defn make-move
   "Asks the current player for a move\\
@@ -762,8 +788,7 @@
   "Returns game-state, game-encoding, and game-history. Responsible for updates
    at boundaries, such as at the end of a round or game."
   [game-state game-encoding game-history]
-  (cond (round-over-checkone game-state) [(next-round game-state) game-encoding game-history]
-        (:game-over game-state) [game-state
+  (cond (:game-over game-state) [game-state
                                  (let [{manager :manager} game-state]
                                    (-> game-encoding
                                        (update-game-encoding manager
@@ -775,6 +800,7 @@
                                  (conj game-history (state-to-history {:players (map #(utils/set-money % utils/initial-stack)
                                                                                      (:players game-state))}
                                                                       game-state))]
+        (round-over-checkone game-state) (recur (next-round game-state) game-encoding game-history)
         :else [game-state game-encoding game-history]))
 
 (defn check-bot-move
@@ -805,7 +831,20 @@
   (assert (or (and game-history game-encoding)
               (and opponent manager))
           "Must provide either game-encoding and history, or an opponent and a manager")
-  (let [manager (or manager (:manager game-state))
+  (when (:seeds opponent)
+    (when @ndarray/random-block (.close @ndarray/random-block))
+    (ndarray/initialize-random-block (:block-size opponent) (:random-seed opponent))
+    (transformer/set-parameters (:transformer-parameters opponent)))
+  (let [max-seq-length (get (:transformer-parameters opponent) :max-seq-length 100)
+        manager (or manager (:manager game-state))
+        opponent (cond (:seeds opponent)
+                       (transformer/as-player
+                        (transformer/model-from-seeds opponent
+                                                      max-seq-length
+                                                      manager
+                                                      (ndarray/ndarray manager (ndarray/causal-mask [1 max-seq-length max-seq-length] -2))))
+                       (:parameter-file opponent) (transformer/as-player (transformer/load-model opponent manager (:parameter-file opponent)))
+                       :else  opponent)
         game-state (pay-blinds (init-game
                                 :players [(if (:id opponent) opponent (utils/init-player opponent :bot))
                                           (utils/init-player :client :client)]
@@ -816,11 +855,15 @@
     (check-bot-move game-state game-encoding game-history)))
 
 
+(def opponent
+    {:id :bot
+     :parameter-file "src/clojure/poker/Andrew/models/transformer.param"
+     :transformer-parameters {:d-model 64, :d-ff 256, :num-layers 6, :num-heads 8, :d-pe [16 16 16 16], :max-seq-length 100}})
 
 (defn step-game
   "returns {:game-state :game-encoding :game-history :net-gain}"
   [& {:keys [game-state game-encoding game-history action opponent manager]
-      :or {opponent utils/random-agent
+      :or {opponent opponent
            manager (ndarray/new-base-manager)}}]
   (assert (or (and game-state game-encoding game-history action) opponent))
   (cond (not game-state)
@@ -829,7 +872,7 @@
                            :game-history game-history
                            :opponent opponent
                            :manager manager)
-               {:net-gain 0})
+               {:net-gain 0.0})
         (:game-over game-state) {:game-state (pay-blinds (init-game
                                                           :players (reverse (:players game-state))
                                                           :manager (or (:manager game-state) (ndarray/new-base-manager))
@@ -839,22 +882,20 @@
                                  :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history)}
         :else (do (assert (utils/is-legal? action game-state)
                           (str "Illegal action: " action " game-state " game-state))
-                  (let [[g e] (parse-action action game-state game-encoding)]
+                  (let [[g e] (parse-action action game-state game-encoding)
+                        g (assoc g :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history))]
                     (apply check-bot-move (check-transition g e game-history))))))
 
 (defn apply-step-game 
   [g & {:keys [action] :as argmap}]
-  (apply step-game (mapcat identity (into [] (merge g argmap)))))
-
-#_(def m (ndarray/new-base-manager))
-#_(def g (volatile! (step-game :manager m :opponent utils/random-agent)))
-
-#_(vreset! g (apply step-game
-                  (mapcat identity
-                          (into [] (merge {:action ["Check" 0.0]}
-                                          @g)))))
+  (utils/apply-map step-game g argmap))
 
 #_g
+
+#_(def m (apply-step-game nil :action ["All-In" 199.0]))
+
+#_m
+
 
 ;;10x model
 ;;2xpopulation
@@ -958,9 +999,10 @@
    the total gain over all games\\
    Do not print out the last item (game-history) - it can get very big\\
    -> {players, net-gain = [gain ...] or {:mean :stdev}, game-encoding, game-history}"
-  [players manager num-games & {:keys [as-list? decks game-history game-encoding max-actions]
+  [players manager num-games & {:keys [as-list? decks game-history game-encoding max-actions max-seq-length]
                                 :or {as-list? false
-                                     max-actions ##Inf}}]
+                                     max-actions ##Inf
+                                     max-seq-length 100}}]
   (loop [players (utils/process-players players)
          net-gain (zipmap (map :id players) (if as-list? [[] []] [0.0 0.0]))
          game-num 0
@@ -985,7 +1027,7 @@
         (recur (into [] (reverse players))
                (update-net-gain net-gain [p1 p2] :as-list? as-list?)
                (inc game-num)
-               game-encoding
+               (truncate-game-encoding game-encoding max-seq-length)
                game-history
                (rest decks)
                (+ action-count (/ (count (flatten (:action-history (last game-history)))) 3)))))))

@@ -20,6 +20,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Math and Auxiliary ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -54,13 +56,6 @@
   "Gets the number of processors available"
   []
   (.availableProcessors (Runtime/getRuntime)))
-
-(def random-block
-  "Large block of gaussian noise. Instantiating a large block of gaussian noise
-   at the beginning of the ERL run and indexing into it using random integers is faster
-   than using the random integers to seed a random number generator. However, the 
-   gaussian noise produced by indexing will not be strictly independent"
-  (volatile! nil))
 
 (defmacro make-fn
   "Turns a macro into a function"
@@ -401,9 +396,15 @@
   "Softmax function\\
    [number ...] -> [number(0, 1) ...]"
   [args]
-  (let [e (map #(Math/exp %) args)
+  (let [m (apply max args)
+        args (map #(- % m) args)
+        e (map #(Math/exp %) args)
         s (reduce + e)]
-    (map #(/ % s) e)))
+    (cond (infinite? s) (let [m (apply max args)]
+                          (map #(if (= m %) 1 0) args))
+          (NaN? s) (repeat (count args) (/ 1. (count args)))
+          :else (map #(/ % s) e))))
+
 
 (defn L1-normalize
   "Normalizes by the L1 sum"
@@ -531,9 +532,9 @@
    max-exclusive: x ≠ x-max\\
    -> boolean"
   [x x-min x-max & {:keys [min-exclusive? max-exclusive?]}]
-  (assert x "X cannot be nil")
-  (assert x-min "X-min cannot be nil")
-  (assert x-max "X-max cannot be nil")
+  (assert x (str "X cannot be nil " x))
+  (assert x-min (str "X-min cannot be nil " x-min))
+  (assert x-max (str "X-max cannot be nil" x-max))
   (and ((if min-exclusive? > >=) x x-min) 
        ((if max-exclusive? < <=) x x-max)))
 
@@ -578,28 +579,24 @@
   ([] (Random.)))
 
 
-#_(defn initialize-random-block
+(def random-block
+  "Large block of gaussian noise. Instantiating a large block of gaussian noise
+   at the beginning of the ERL run and indexing into it using random integers is faster
+   than using the random integers to seed a random number generator. However, the 
+   gaussian noise produced by indexing will not be strictly independent"
+  (volatile! nil))
+
+(defn initialize-random-block
   [n r]
   (assert (int? n) "Must give an integer")
   (let [^Random r (if (number? r) (random r) r)]
     (vreset! random-block
              (let [res (float-array n)]
                (loop [i 0]
-               (if (= i n)
-                 res
-                 (do (aset res i (float (.nextGaussian r)))
-                     (recur (inc i)))))))))
-
-(defn initialize-random-block
-  "Initializes the random block with n independent gaussian random variables.\\
-   Supply either a number or a random number generator\\
-   Takes 1 second to generate 10 million random numbers"
-  [n r]
-  (let [^Random r (if (number? r) (random r) r)]
-    (vreset! random-block
-             (Indexing/initializeRandomBlock (int n) r))))
-
-#_(time (do (initialize-random-block 100000000 1) nil))
+                 (if (= i n)
+                   res
+                   (do (aset res i (float (.nextGaussian r)))
+                       (recur (inc i)))))))))
 
 (defn available-memory
   "Gets the amount of memory that should be able to be allocated before
