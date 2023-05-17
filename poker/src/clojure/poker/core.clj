@@ -256,17 +256,17 @@
   (MPI/multi-ERL
      :ERL-argmaps (for [prop [6/8]]
                     (assoc default-pmap
-                           :stdev 0.0001
-                           :benchmark-count 8
+                           :stdev (reverse (utils/log-scale 0.0001 0.0005 :num-buckets 50))
+                           :benchmark-count 2
                            :num-generations 50
-                           :pop-size 50
-                           :num-games 125
+                           :pop-size 4
+                           :num-games 1
                            :bench-exp 2
                            :next-gen-method :parents
                            :bench-method :hardexp
                            :prop-hof 0.75
                            :max-seq-length 100
-                           #_:transformer-parameters #_{:d-model 64;;
+                           :transformer-parameters {:d-model 64;;
                                                     :d-ff 256;;
                                                     :num-layers 6;;
                                                     :num-heads 8
@@ -274,8 +274,8 @@
                                                     :max-seq-length 100}))
      :intra-run? true
      :inter-run? false
-     :intra-games 5000
-     :inter-games 10000)
+     :intra-games 1
+     :inter-games 1)
 
   #_(println (slumbot/net-gain "slumbot-history-random.txt" :as-list? true :mapcat? true))
   #_(processresult/generation-versus "ERL-250x100-67545.out"))

@@ -1159,13 +1159,17 @@
         m (.newSubManager manager)]
     (.setBlock model ((:nn-factory individual) m))
     (loop [params (map second (get-parameters (.getBlock model)))
-           indices (:parameter-seeds individual)]
+           indices (:parameter-seeds individual)
+           stdev (if (number? (:stdev individual))
+                   (repeat (count params) (:stdev individual))
+                   (:stdev individual))]
       (when-not (empty? params)
         (when (< (rand) (/ 1 1000)) (System/gc))
         (doall (for [i indices]
-                 (ndarray/add-indexed (first params) i :stdev (:stdev individual))))
+                 (ndarray/add-indexed (first params) i :stdev (first stdev))))
         (recur (rest params)
-               (map (partial + (.size (first params))) indices))))
+               (map (partial + (.size (first params))) indices)
+               (rest stdev))))
     (assoc individual
            :model model
            :manager m

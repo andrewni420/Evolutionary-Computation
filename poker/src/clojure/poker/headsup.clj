@@ -801,7 +801,9 @@
                                                                                      (:players game-state))}
                                                                       game-state))]
         (all-in? game-state) (recur (next-round game-state) game-encoding game-history)
-        (round-over-checkone game-state) [(next-round game-state) game-encoding game-history]
+        (round-over-checkone game-state) (if (all-in? (next-round game-state))
+                                           (recur (next-round game-state) game-encoding game-history)
+                                           [(next-round game-state) game-encoding game-history])
         :else [game-state game-encoding game-history]))
 
 (defn check-bot-move
@@ -887,7 +889,6 @@
         :else (do (assert (utils/is-legal? action game-state)
                           (str "Illegal action: " action " game-state " game-state))
                   (let [[g e] (parse-action action game-state game-encoding)]
-                    (println "game over " (:game-over g))
                     (assoc (apply check-bot-move (check-transition g e game-history))
                            :net-gain (transduce (map #(:client (into {} (:net-gain %)))) + game-history))))))
 
@@ -897,7 +898,7 @@
 
 #_g
 
-#_(def m (apply-step-game m :action ["Bet" 2.0]))
+#_(def m (apply-step-game m :action ["All-In" 199.0]))
 
 #_m
 
