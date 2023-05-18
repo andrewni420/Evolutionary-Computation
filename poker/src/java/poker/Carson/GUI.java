@@ -383,7 +383,7 @@ public class GUI extends JPanel implements ActionListener {
                     clj.update(clj.minimumRaise, "Bet");
                 }
                 else{
-                    clj.update(clj.minimumRaise, "Raise");
+                    clj.update(clj.minimumRaise + clj.currentBet, "Raise");
                 }
                 refreshElements();
             } else {
@@ -456,7 +456,7 @@ public class GUI extends JPanel implements ActionListener {
             double bet_amount = ((Number)spinner.getValue()).doubleValue();
 
             // Check if valid bet amount
-            if ((bet_amount <= player_stack) && (bet_amount >= 1) && (bet_amount > clj.minimumRaise)){ 
+            if ((bet_amount <= player_stack) && (bet_amount >= 1) && (bet_amount > clj.minimumRaise + clj.currentBet)){ 
                 try{
                     if (clj.currentBet == 0){
                         clj.update(bet_amount, "Bet");
@@ -537,7 +537,7 @@ public class GUI extends JPanel implements ActionListener {
             // Set the Button to Active
             minBetButton.setEnabled(true);
         }
-        else if (clj.testLegality((double) clj.minimumRaise, "Raise")){
+        else if (clj.testLegality((double) clj.minimumRaise + clj.currentBet, "Raise")){
             minBetButton.setEnabled(true);
         }
         else
