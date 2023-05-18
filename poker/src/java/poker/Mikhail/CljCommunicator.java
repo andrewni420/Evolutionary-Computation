@@ -75,19 +75,14 @@ public class CljCommunicator
         // We get the maping to be the given map
         maping = (APersistentMap)g.get(Clojure.read(":game-state"));
 
-        System.out.println("maping keys: " + maping.keySet());
-
         // We get the Bet Values
         betValues = (List<Double>)maping.get(Clojure.read(":bet-values"));
-        System.out.println("betValues:" + betValues);
 
         // We get the game number
         gameNum = (Long)maping.get(Clojure.read(":game-num"));
-        System.out.println("gameNum: " + gameNum);
 
         // We get the current bet
         currentBet = (double)maping.get(Clojure.read(":current-bet"));
-        System.out.println("currentBet: " + currentBet);
 
         // We get the hands and then turn them into strings
         List<List<List<Object>>> placeHolder = (List<List<List<Object>>>)maping.get(Clojure.read(":hands"));
@@ -108,15 +103,12 @@ public class CljCommunicator
             playerHands.add(playersHandTemporary);
         }
 
-        System.out.println("playerHands: " + playerHands);
 
         // We now get the betting round
         bettingRound = (String)maping.get(Clojure.read(":betting-round"));
-        System.out.println("bettingRound: " + bettingRound);
 
         // Get the minimum bet
         minimumBet = (Double)maping.get(Clojure.read(":min-bet"));
-        System.out.println("minimumBet: " + minimumBet);
 
         // We wnat to get players money
         List<APersistentMap> players = (List<APersistentMap>)maping.get(Clojure.read(":players"));
@@ -132,12 +124,10 @@ public class CljCommunicator
         playersMoney.add(player1Money);
         playersMoney.add(player2Money);
 
-        System.out.println("playersMoney: " + playersMoney);
 
         // Get the is Game Over Variable
         isGameOver = (boolean)maping.get(Clojure.read(":game-over"));
 
-        System.out.println("isGameOver: " + isGameOver);
 
         // Get the visible hands
         visibleCards = new ArrayList<>();
@@ -147,17 +137,14 @@ public class CljCommunicator
             visibleCards.add(card.get(0).toString() + "_" + card.get(1).toString());
         }
 
-        System.out.println("visibleCards: " + visibleCards);
 
         // Get the Minimum Raise
         minimumRaise = (double)maping.get(Clojure.read(":min-raise"));
 
-        System.out.println("minimumRaise: " + minimumRaise);
 
         // Get the pot
         pot = (double)maping.get(Clojure.read(":pot"));
 
-        System.out.println("pot: " + pot);
 
         //System.out.println("ACTIONS");
         IFn readableActions = Clojure.var("poker.slumbot", "actions-as-readable");
@@ -166,12 +153,8 @@ public class CljCommunicator
 
     public void update(double actionAmount, String actionType){
         try {
-            System.out.println("stepgame is about to run");
             g = (APersistentMap) stepGame.invoke(g, Clojure.read(":action"), Clojure.read("[\"" + actionType + "\"" + Double.toString(actionAmount) + "]"));
-            System.out.println("stepgame ran");
             gameState = (APersistentMap) g.get(Clojure.read(":game-state"));
-            System.out.println("gamestate ran");
-            System.out.println("g: " + g.get(Clojure.read(":net-gain")));
             // netGain = ((Number) g.get(Clojure.read(":net-gain"))).floatValue();
             // System.out.println("netgain: " + netGain);
             //update interface
@@ -197,11 +180,11 @@ public class CljCommunicator
             //update interface
         } catch (java.lang.AssertionError e) {
             //not a legal action. Throws an AssertionError
-            System.out.println("Not a legal action (Exception: " + e + ")");
+            //System.out.println("Not a legal action (Exception: " + e + ")");
             //display warning on interface
             return false;
         } catch (java.lang.NullPointerException ex) {
-            System.out.println("Not a legal action (Exception: " + ex + ")");
+            //System.out.println("Not a legal action (Exception: " + ex + ")");
             return false;
         }
     }
