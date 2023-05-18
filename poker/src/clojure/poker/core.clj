@@ -254,28 +254,28 @@
             :transformer-parameters default-transformer-map))
   #_(processresult/results-vs "0.005s-8b-0.75h-best-hard-73830.out")
   (MPI/multi-ERL
-     :ERL-argmaps (for [prop [6/8]]
+     :ERL-argmaps (for [num-heads [16 32]]
                     (assoc default-pmap
-                           :stdev (reverse (utils/log-scale 0.0001 0.0005 :num-buckets 50))
-                           :benchmark-count 2
+                           :stdev 0.0005 #_(reverse (utils/log-scale 0.0001 0.0005 :num-buckets 50))
+                           :benchmark-count 8
                            :num-generations 50
-                           :pop-size 4
-                           :num-games 1
+                           :pop-size 50
+                           :num-games 125
                            :bench-exp 2
-                           :next-gen-method :parents
+                           :next-gen-method :k-best
                            :bench-method :hardexp
                            :prop-hof 0.75
                            :max-seq-length 100
-                           :transformer-parameters {:d-model 64;;
-                                                    :d-ff 256;;
+                           :transformer-parameters {:d-model 256;;
+                                                    :d-ff 1024;;
                                                     :num-layers 6;;
-                                                    :num-heads 8
-                                                    :d-pe [16 16 16 16]
+                                                    :num-heads num-heads
+                                                    :d-pe [64 64 64 64]
                                                     :max-seq-length 100}))
      :intra-run? true
-     :inter-run? false
-     :intra-games 1
-     :inter-games 1)
+     :inter-run? true
+     :intra-games 5000
+     :inter-games 20000)
 
   #_(println (slumbot/net-gain "slumbot-history-random.txt" :as-list? true :mapcat? true))
   #_(processresult/generation-versus "ERL-250x100-67545.out"))

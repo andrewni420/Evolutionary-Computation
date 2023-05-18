@@ -45,8 +45,8 @@ srun --mpi pmix --overlap lein run
 #SBATCH -n 1
 #SBATCH --cpus-per-task 116
 #SBATCH --time=7-00:00:00
-#SBATCH --output=0.0001-big-8b-125-2e-parents-hard-0.75h-%j.out
-#SBATCH --error=0.0001-big-8b-125-2e-parents-hard-0.75h-%j.err
+#SBATCH --output=0.0005-bigish-8b-125-2e-best-hard-0.75h-16v32heads-%j.out
+#SBATCH --error=0.0005-bigish-8b-125-2e-best-hard-0.75h-16v32heads-%j.err
 module load cm-pmix4/4.1.1
 module load openmpi4/gcc/4.1.
 module load amh-clojure

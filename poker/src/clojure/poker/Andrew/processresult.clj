@@ -377,8 +377,19 @@
                [(moving-average y window) (str "Moving Average, n=" window)])))
 
 
-#_(def file (read-file "0.0005-big-8b-125-2e-best-hard-0.75h-1200-74193.out" :make-vector? true))
+#_(def file (read-file "0.0005-small-8b-125-2e-best-hard-0.75h-sparse3.vs.not-1K.intra-10K.inter-74281.out" :make-vector? true))
 
+(->> file
+     (map :time-ms)
+     (filter identity)
+     (partition 50))
+
+
+(->> file 
+     (map :results)
+     (filter identity)
+     (first)
+     (map :index))
 
 (defn process-inter
   [filename]
@@ -397,13 +408,13 @@
                          (reduce +))
                    k))))
 
-#_(process-inter "0.0005-small-8b-50-2e-best-hard-0.75h-74289.out")
+#_(process-inter "0.0005-small-8b-125-2e-best.v.parents-hard-0.75h-74288.out")
 
 #_(plot-best-fit
    (drop 0 (map second
         (sort-by
          #(read-string (apply str (drop 2 (str (first %)))))
-         (let [f (read-file "0.005s-8b-0.75h-parents-hard-74070.out" :make-vector? true)]
+         (let [f (read-file "0.0005-small-8b-125-2e-best.v.parents-hard-0.75h-74288.out" :make-vector? true)]
            (apply merge-with
                   +
                   (map (fn [gain]
@@ -416,9 +427,9 @@
                                     gain)))
                        #_(map :net-gain f) (->> f
                                                 (filter :intra-run)
-                                                (first )
+                                                (second )
                                                 (:intra-run))))))))
-   :label "0.005s-8b-0.75h-parents-hard-74070.out")
+   :label "0.0005-small-8b-125-2e-best.v.parents-hard-0.75h-74288.out")
 
 
 
@@ -440,6 +451,8 @@
    "0.025s-8b-0.75h-best-hard-74069.out"
    ;; sparse vs not
    "0.0005-small-8b-125-2e-best-hard-0.75h-sparse3.vs.not-1K.intra-10K.inter-74281.out"
+   ;;parents vs best
+   "0.0005-small-8b-125-2e-best.v.parents-hard-0.75h-74288.out"
    
    ;;;big transformer models
    ;;stdev ablation
